@@ -1,0 +1,94 @@
+//fs = font size; m=margin; mb=marg bottom; p=padding; pb; lh=line height; bg = background; p-m = padding mobile; fs-m = fs mobile
+
+//start dimensions
+$container-max-width: 93.75rem;
+$content-width: 80%;
+$card-max-width: 41.66667%;
+$full-size: 100%;
+//end dimensions
+
+//start color
+$first-color: #ed553b;
+$second-color: #ffdc4d;
+$bg-main-color: #fff;
+$bg-alternate-color: #f8f6f4;
+//$bg-alternate-color: #F8F9FF;
+$text-color: #002251;
+$text-grey: #aeacac;
+$border-color: #EAE9F2;
+$error-color: red;
+$success-msg-color: lightgreen;
+//end color
+
+//font-family
+$font-family: "Noto Sans", sans-serif;
+//end font-family
+
+//start font size
+$fs-title: 4rem;
+$fs-section-title: 3rem;
+$fs-small-subtitle: 1.313rem;
+$fs-card-title: 1.21875rem;
+$fs-text: 1.313rem;
+$fs-btn: 1.01562rem;
+$fs-link: 1rem;
+//end font size
+
+//start font weight
+$bold-title: 600;
+$bold-subtitle: 400;
+//section title?
+$bold-section-subtitle: 700;
+$bold-card-title: 500;
+$bold-text: 300;
+$bold-btn: 400;
+//end font weight
+
+//start font line height
+$lh-text: 1.2;
+$lh-btn: 1.5;
+//end font line height
+
+//start padding
+$p-btn: 1rem 3rem;
+$p-link: 0.5rem 0.125rem;
+$p-section-subtitle: 0.5rem 0.125rem;
+$p-section: 7.5rem 1.5rem;
+$p-card: 1rem;
+$p-exterior-card: 0 3.5rem 5rem;
+//end padding
+
+//start margin
+$mb-section-title: 2rem;
+$mb-section-small-subtitle: 1rem;
+$m-btn: 3rem 0;
+$mb-section-title-subtitle: 2rem;
+$mb-section-header: 3rem;
+$mb-card-elem: 1.5rem;
+$m-h-center: 0 auto;
+//end margin
+
+
+//start border
+$border: 1px solid $border-color;
+$border-radius: 0.625rem;
+//end border
+
+//start mobile
+//start mobile font-size
+$fs-m-title: 2.4rem;
+$fs-m-subtitle: 2rem;
+$fs-m-link: 0.7rem;
+//end mobile font size
+
+//start mobile padding
+$p-m-btn: 0.5rem 1rem;
+$p-m-link: 0.5rem 0.125rem;
+$p-m-section-subtitle: 1.313rem;
+$p-m-text: 1rem;
+//end mobile padding
+//end mobile
+
+//card images
+$card-img-dimmensions: 3.75rem;
+//card images

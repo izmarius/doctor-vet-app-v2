@@ -1,0 +1,125 @@
+//start colors
+.bg-main {
+    background: $bg-main-color;
+  }
+  
+  .bg-alternative {
+    background: $bg-alternate-color;
+  }
+  
+  .bg-second-color {
+    background: $second-color;
+  }
+  
+  .error-msg {
+    color: $error-color;
+    font-size: $fs-link;
+  }
+  
+  .success-msg {
+    color: $success-msg-color;
+    font-size: $fs-link;
+  }
+  
+  .button--active {
+    background: $first-color;
+    color: $bg-main-color;
+  }
+  
+  .modal-close-icon {
+    color: $first-color;
+  }
+  
+  .button--active:hover {
+    background: $first-color;
+    font-size: calc(1rem + 0.1rem);
+    color: $bg-main-color;
+  }
+  //end colors
+  
+  //start input
+  .input-checkbox:hover {
+    cursor: pointer;
+  }
+  
+  //end input
+  
+  //start anchor
+  .highlighted-link {
+    color: cornflowerblue;
+  }
+  
+  a {
+    text-decoration: none;
+    color: $text-color;
+    font-size: $fs-link;
+  }
+  
+  a:hover {
+    cursor: pointer;
+  }
+  
+  .highlighted-link:hover {
+    text-decoration: underline $border-color;
+  }
+  
+  //end anchor
+  
+  //start border
+  .border-with-radius {
+    border: $border;
+    border-radius: $border-radius;
+  }
+  
+  .vet-border {
+    border: $border;
+  }
+  
+  .vet-border-right {
+    border-right: $border;
+  }
+  
+  //end border
+  
+  //start text
+  .main-title {
+    font-size: $fs-title;
+    font-weight: $bold-title;
+  }
+  
+  .section-title {
+    font-size: $fs-section-title;
+    font-weight: $bold-subtitle;
+    margin-bottom: $mb-section-title;
+  }
+  
+  .bold-text {
+    font-size: $fs-small-subtitle;
+    font-weight: $bold-subtitle;
+  }
+  
+  .section-subtitle {
+    font-size: $fs-small-subtitle;
+    margin-bottom: $mb-section-small-subtitle;
+  }
+  
+  .list-style-type-none {
+    list-style-type: none;
+  }
+  
+  span[class^="icon"] {
+    font-size: $fs-text;
+  }
+  
+  span[class^="icon"]:hover {
+    cursor: pointer;
+  }
+  
+  //end text
+  
+  //start display
+  .hide {
+    display: none;
+  }
+  
+  //end display
