@@ -9,10 +9,30 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFirestore } from '@angular/fire/firestore';
 
 import { AppComponent } from './app.component';
+import { HomePageComponent } from './ui/home-page/home-page.component';
+import { LoginComponent } from './ui/login/login.component';
+import { SignupComponent } from './ui/signup/signup.component';
+import { FooterComponent } from './ui/shared/footer/footer.component';
+import { NavbarComponent } from './ui/shared/navbar/navbar.component';
+import {AppRoutingModule} from "./app-routing.module";
+import {LoginDialogComponent} from "./ui/login-dialog/login-dialog.component";
+import MaterialModule from "./material-module";
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {AuthDialogComponent} from "./ui/shared/auth-dialog/auth-dialog.component";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {SignupDialogComponent} from "./ui/signup-dialog/signup-dialog.component";
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    HomePageComponent,
+    LoginComponent,
+    SignupComponent,
+    FooterComponent,
+    NavbarComponent,
+    LoginDialogComponent,
+    AuthDialogComponent,
+    SignupDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -20,7 +40,12 @@ import { AppComponent } from './app.component';
     AngularFireFunctionsModule,
     AngularFireDatabaseModule,
     AngularFireAuthModule,
-    AngularFirestoreModule
+    AngularFirestoreModule,
+    AppRoutingModule,
+    MaterialModule,
+    BrowserAnimationsModule,
+    FormsModule,
+    ReactiveFormsModule,
   ],
   providers: [AngularFirestore],
   bootstrap: [AppComponent]

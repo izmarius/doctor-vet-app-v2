@@ -1,0 +1,61 @@
+.vet-content {
+  width: $content-width;
+  margin: $m-h-center;
+}
+
+.vet-container {
+  padding: $p-section
+}
+
+.m-subtitle-bottom {
+  margin-bottom: $mb-section-small-subtitle;
+}
+
+.m-btn-card-row {
+  margin-bottom: $mb-section-header;
+}
+
+.m-btn-dialog-row {
+  margin-bottom: $mb-section-title-subtitle;
+}
+
+.m-btn-header {
+  margin-bottom: $mb-section-header;
+}
+
+.m-btn-small {
+  margin-bottom: $mb-card-elem;
+}
+
+.m-top-small {
+  margin-top: $mb-section-small-subtitle;
+}
+
+.p-bottom-top-small {
+  padding: $p-card 0;
+}
+
+//todo - see where to use boostrap and clean this paddings
+
+input {
+  height: 2rem !important;
+}
+
+button {
+  min-width: 8rem;
+}
+
+//for header particles
+.particle-header #tsparticles {
+  height: 100% !important;
+}
+
+//end for header particles
+
+ul {
+  padding: 0;
+}
+
+.header-height {
+  height: 300px;
+}

@@ -1,0 +1,12 @@
+.navbar-container {
+  min-height: 6.25rem;
+}
+
+.my-account-icon-container {
+  flex-grow: 0;
+}
+
+.navbar {
+  margin: auto;
+}
+
