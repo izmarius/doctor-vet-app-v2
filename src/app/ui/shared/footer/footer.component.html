@@ -1,1 +1,24 @@
-<p>footer works!</p>
+<div id="contact" class="vet-container d-flex justify-content-between footer">
+  <div class="vet-content">
+    <div class="d-flex justify-content-between">
+      <div>
+        <p class="p--strong vertical-dist-btn-elem"><strong>Contact</strong></p>
+        <p>
+          <strong>Lorem ipsum : </strong>loremipsum@gmail.com</p>
+      </div>
+      <div class="footer__form__container">
+        <p class=""><strong>Scrie-ne un mesaj:</strong></p>
+        <form class="d-flex flex-column" [formGroup]="contactForm" (ngSubmit)="onFormSubmit(errorElement)">
+          <label>{{formText?.labels.emailLabel}}</label>
+          <input type="text" name="email" class="form-control m-btn-small"
+                 [placeholder]="formText.placeholderEmail" formControlName="email">
+          <label for="message">{{formText?.labels.messageLabel}}</label>
+          <textarea id="message" type="text" name="message" class="form-control m-btn-small"
+                    [placeholder]="formText.placeholderMessage" formControlName="message"></textarea>
+          <li class="hide error-msg m-btn-small" #errorElement>{{errorMessage}}</li>
+          <button class="btn button--active">{{formText.buttonText}}</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

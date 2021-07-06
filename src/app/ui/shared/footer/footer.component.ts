@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {FOOTER_COMPONENT, FOOTER_ERROR_MSG, INPUT_LABELS_TXT} from "../../../shared-data/Constants";
 import {MessagesService} from "../../../services/messages/messages.service";
@@ -9,23 +9,26 @@ import {MessagesService} from "../../../services/messages/messages.service";
   styleUrls: ['./footer.component.css']
 })
 export class FooterComponent implements OnInit {
-
   contactForm!: FormGroup;
-  errorMessage: string = '';
+  errorMessage!: string;
   formText: any;
 
   constructor(private messageService: MessagesService) {
-    this.initContactForm();
+
   }
 
   ngOnInit(): void {
     this.formText = FOOTER_COMPONENT;
     this.formText.labels = INPUT_LABELS_TXT;
+    this.initContactForm();
   }
 
   initContactForm(): void {
     const emailPattern = '^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$';
-
+    this.contactForm = new FormGroup({
+      email: new FormControl('', [Validators.required, Validators.pattern(emailPattern)]),
+      message: new FormControl('', [Validators.required, Validators.maxLength(250), Validators.minLength(5)]),
+    });
   }
 
   onFormSubmit(errorElement: HTMLLIElement): void {
@@ -44,5 +47,4 @@ export class FooterComponent implements OnInit {
       email: this.contactForm.controls.email.value
     });
   }
-
 }

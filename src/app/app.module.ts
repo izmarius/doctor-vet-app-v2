@@ -7,8 +7,6 @@ import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFirestore } from '@angular/fire/firestore';
-
-import { AppComponent } from './app.component';
 import { HomePageComponent } from './ui/home-page/home-page.component';
 import { LoginComponent } from './ui/login/login.component';
 import { SignupComponent } from './ui/signup/signup.component';
@@ -21,6 +19,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {AuthDialogComponent} from "./ui/shared/auth-dialog/auth-dialog.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {SignupDialogComponent} from "./ui/signup-dialog/signup-dialog.component";
+import {AppComponent} from "./app.component";
 
 @NgModule({
   declarations: [
