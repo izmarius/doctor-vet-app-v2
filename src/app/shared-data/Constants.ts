@@ -137,17 +137,18 @@ export const AUTH_SIGNUP_FORM_TEXT = {
   title: 'Creeaza cont nou',
   emailPlaceholder: 'john@gmail.com',
   passwordPlaceholder: 'Parola - minim 6 caractere',
-  step1: 'Urmatorul pas - 1/2 ',
-  step2: 'Trimite inspre validare - 2/2',
-  secondStepTitle: 'Mai ai inca un pas',
-  secondStepText: 'Incarca o fotografie cu buletinul si certificatul de doctor; Asigura-te ca ambele documente sunt in original; Tine documentele la piept astfel incat sa te putem identifica',
+  step1: 'Urmatorul pas - 1/3 ',
+  step2: 'Mergi spre ultimul pas - 2/3',
+  step3: 'Creeaza cont - 3/3',
+  secondStepTitle: 'Ne asiguram ca esti doctorul potrivit',
+  secondStepText: 'Incarca o fotografie cu buletinul si certificatul de doctor.; Asigura-te ca ambele documente sunt in original.; Tine documentele la piept astfel incat sa te putem identifica.',
   isLogin: false,
   emailValidationTxt: 'Retrimite emailul de validare',
   phonePlaceholder: '0743934XXX',
   namePlaceholder: 'Nume si prenume',
   county: 'Alege judetul',
-  buttonStepTwo: 'Creeaza cont',
-  formErrorMessage: 'Te rugam sa verifici ca toate inputurile sunt completate si ca datele sunt corecte.'
+  formErrorMessage: 'Te rugam sa verifici ca toate inputurile sunt completate si ca datele sunt corecte.',
+  thirdStepTitle: 'Selecteaza serviciile pe care le prestezi',
 };
 
 export const SCHEDULE_HEADER_TEXT = {

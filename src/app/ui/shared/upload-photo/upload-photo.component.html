@@ -1,0 +1,8 @@
+<div class="m-btn-dialog-row">
+  <button (click)="uploadFile()" class="btn btn-light upload-btn">Upload<span class="ml-2 icon-cloud-upload"></span></button>
+  <div class="m-top-small">
+    <input class="hide" type="file" #uploadInput (change)="readFile($event)" accept=".png, .jpeg, .jpg"/>
+    <li class="text-center list-style-type-none" *ngIf="isUploaded">Image uploaded</li>
+    <!--    todo: add style for success messages - after choosing the color-->
+  </div>
+</div>

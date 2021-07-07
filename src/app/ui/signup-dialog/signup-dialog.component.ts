@@ -5,6 +5,7 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {FirebaseUtilsService} from "../../services/firebase-utils-service/firebase-utils.service";
 import {SignUpService} from "../../services/signup/sign-up.service";
 import {DoctorDTO} from "../../data/model-dto/doctor-DTO";
+import {DOCTOR_SERVICES} from "../../shared-data/DoctorServicesConstants";
 
 @Component({
   selector: 'app-signup-dialog',
@@ -16,13 +17,14 @@ export class SignupDialogComponent implements OnInit {
   signupText: any;
   counties!: string[];
   isAllowedToGoToSecondStep!: boolean;
+  isAllowedToGoToFirstStep = true;
   isErrorMessage!: boolean;
-  isNextStepButtonDisabled = true;
-  isRegisterButtonDisabled = true;
+  isPhotoUploaded = true;
   photo!: string;
   secondStepGuide!: string[];
-  // todo: delete after testing
   selectedCounty!: string;
+  isAllowedToGoToThirdStep = false;
+  services: any;
 
   constructor(public dialogRef: MatDialogRef<SignupDialogComponent>,
               private firebaseUtils: FirebaseUtilsService,
@@ -46,7 +48,7 @@ export class SignupDialogComponent implements OnInit {
 
   getUploadedImage(base64Image: any): void {
     this.photo = base64Image;
-    this.isRegisterButtonDisabled = false;
+    this.isPhotoUploaded = false;
   }
 
   initAuthForm(): void {
@@ -61,11 +63,11 @@ export class SignupDialogComponent implements OnInit {
     });
   }
 
-  onFormSubmit(): void {
-    if (!this.authFormGroup.valid || !this.selectedCounty) {
+  firstStepOnFormSubmit(): void {
+    if (!this.authFormGroup.valid) {
       this.isErrorMessage = true;
     } else {
-      this.isNextStepButtonDisabled = false;
+      this.isAllowedToGoToFirstStep = false;
       this.isErrorMessage = false;
       this.secondStepGuide = AUTH_SIGNUP_FORM_TEXT.secondStepText.split(';');
       this.isAllowedToGoToSecondStep = true;
@@ -84,6 +86,12 @@ export class SignupDialogComponent implements OnInit {
     doctor.phoneNumber = this.authFormGroup.controls.phoneNumber.value;
     doctor.email = this.authFormGroup.controls.email.value;
     return doctor;
+  }
+
+  goToServicesStep(): void {
+    this.services = DOCTOR_SERVICES;
+    this.isAllowedToGoToThirdStep = true;
+    this.isAllowedToGoToSecondStep = false;
   }
 
   resendValidationEmail(): void {

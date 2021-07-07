@@ -42,7 +42,7 @@ export class NavbarComponent implements OnInit {
   openSignupDialog(): void {
     const dialogRef = this.dialog.open(SignupDialogComponent, {
       width: '26%',
-      height: '39rem',
+      minHeight: '28.125rem',
       data: null
     });
 

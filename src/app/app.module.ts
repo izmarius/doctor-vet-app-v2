@@ -20,6 +20,7 @@ import {AuthDialogComponent} from "./ui/shared/auth-dialog/auth-dialog.component
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {SignupDialogComponent} from "./ui/signup-dialog/signup-dialog.component";
 import {AppComponent} from "./app.component";
+import { UploadPhotoComponent } from './ui/shared/upload-photo/upload-photo.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import {AppComponent} from "./app.component";
     NavbarComponent,
     LoginDialogComponent,
     AuthDialogComponent,
-    SignupDialogComponent
+    SignupDialogComponent,
+    UploadPhotoComponent
   ],
   imports: [
     BrowserModule,

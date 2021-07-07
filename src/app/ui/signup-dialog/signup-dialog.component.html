@@ -1,10 +1,12 @@
 <div id="container" class="d-flex align-content-center justify-content-center">
-  <div *ngIf="!isAllowedToGoToSecondStep">
-    <div class="d-flex justify-content-end"><span class="icon-close modal-close-icon" (click)="closeDialog()"></span></div>
+  <!--  <div *ngIf="isAllowedToGoToFirstStep">-->
+  <div *ngIf="false">
+    <div class="d-flex justify-content-end"><span class="icon-close modal-close-icon" (click)="closeDialog()"></span>
+    </div>
     <p class="section-subtitle text-center m-btn-dialog-row"><strong>{{signupText?.title}}</strong></p>
     <p class="card-text text-center" *ngIf="!!signupText?.subtitle">{{signupText?.subtitle}}</p>
     <div class="m-btn-dialog-row">
-      <form class="mg-bottom" [formGroup]="authFormGroup" (ngSubmit)="onFormSubmit()">
+      <form class="mg-bottom" [formGroup]="authFormGroup" (ngSubmit)="firstStepOnFormSubmit()">
         <div class="d-flex justify-content-between">
           <div class="col-element">
             <label>{{signupText?.labels.emailLabel}}</label>
@@ -50,12 +52,31 @@
   </div>
   <div *ngIf="isAllowedToGoToSecondStep">
     <div class="d-flex justify-content-end"><span class="icon-close" (click)="closeDialog()"></span></div>
-    <p class="section-subtitle text-center m-btn-dialog-row"><strong>{{signupText?.secondStepTitle}}</strong></p>
-    <p class="card-text text-center m-btn-dialog-row" *ngFor="let step of secondStepGuide">{{step}}</p>
+    <p class="section-subtitle m-btn-dialog-row"><strong>{{signupText?.secondStepTitle}}</strong></p>
+    <p class="card-text m-btn-dialog-row" *ngFor="let step of secondStepGuide">{{step}}</p>
     <app-upload-photo (fileEmitter)="getUploadedImage($event)"></app-upload-photo>
     <div class="d-flex justify-content-center">
-      <button [disabled]="isRegisterButtonDisabled" class="btn button--active"
-              (click)="signupWithEmailAndPassword()">{{signupText?.buttonStepTwo}}</button>
+      <button [disabled]="isPhotoUploaded" class="btn button--active"
+              (click)="goToServicesStep()">{{signupText?.step2}}</button>
+    </div>
+  </div>
+  <!--  <div *ngIf="isAllowedToGoToThirdStep">-->
+  <div *ngIf="true">
+    <h2>{{signupText?.thirdStepTitle}}</h2>
+    <div class="services-container">
+      <div *ngFor="let service of services | date">
+        <h4>{{service.value.serviceName}}</h4>
+        <div class="row" *ngFor="let serviceDesc of service.value.services">
+          <span class="service-name col-10">{{serviceDesc}}</span>
+          <div class="col-2 service-checkbox">
+            <input type="checkbox" [value]="false"/>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex justify-content-center">
+      <button class="btn button--active"
+              (click)="signupWithEmailAndPassword()">{{signupText?.step3}}</button>
     </div>
   </div>
 </div>

@@ -1,5 +1,4 @@
 export const DOCTOR_SERVICES = {
-
   GENERAL: {
     serviceName: 'General',
     services: ['Consultatie generala', 'Control periodic', 'Consultatie la domiciliu', 'Vaccinare', 'Insamantare artificiala caini']
@@ -44,6 +43,4 @@ export const DOCTOR_SERVICES = {
     serviceName: 'Farmacie si suplimente alimentare',
     services: ['Hrana și diete speciale', 'Suplimente', 'Unguente si sampoane medicamentoase', 'Medicamente']
   }
-
-
 }
