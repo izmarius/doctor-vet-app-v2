@@ -64,14 +64,14 @@
   <div *ngIf="true">
     <h2>{{signupText?.thirdStepTitle}}</h2>
     <div class="services-container">
-      <div *ngFor="let service of services | date">
-        <h4>{{service.value.serviceName}}</h4>
-        <div class="row" *ngFor="let serviceDesc of service.value.services">
-          <span class="service-name col-10">{{serviceDesc}}</span>
-          <div class="col-2 service-checkbox">
-            <input type="checkbox" [value]="false"/>
-          </div>
-        </div>
+      <div *ngFor="let service of services | keyvalue">
+        <h4>{{service.key}}</h4>
+<!--        <div class="row" *ngFor="let serviceDesc of service.value.services">-->
+<!--          <span class="service-name col-10">{{serviceDesc}}</span>-->
+<!--          <div class="col-2 service-checkbox">-->
+<!--            <input type="checkbox" [value]="false"/>-->
+<!--          </div>-->
+<!--        </div>-->
       </div>
     </div>
     <div class="d-flex justify-content-center">
