@@ -63,15 +63,15 @@
   <!--  <div *ngIf="isAllowedToGoToThirdStep">-->
   <div *ngIf="true">
     <h2>{{signupText?.thirdStepTitle}}</h2>
-    <div class="services-container">
-      <div *ngFor="let service of services | keyvalue">
-        <h4>{{service.key}}</h4>
-<!--        <div class="row" *ngFor="let serviceDesc of service.value.services">-->
-<!--          <span class="service-name col-10">{{serviceDesc}}</span>-->
-<!--          <div class="col-2 service-checkbox">-->
-<!--            <input type="checkbox" [value]="false"/>-->
-<!--          </div>-->
-<!--        </div>-->
+    <div class="services-container mt-4 mb-4 vet-border-top-bottom pt-1 pb-1">
+      <div *ngFor="let serviceObj of services | keyvalue">
+        <h4>{{serviceObj.value.serviceName}}</h4>
+        <div class="row" *ngFor="let serviceDesc of serviceObj.value.services">
+          <span class="service-name col-10">{{serviceDesc}}</span>
+          <div class="col-2 service-checkbox">
+            <input type="checkbox" [value]="false"/>
+          </div>
+        </div>
       </div>
     </div>
     <div class="d-flex justify-content-center">

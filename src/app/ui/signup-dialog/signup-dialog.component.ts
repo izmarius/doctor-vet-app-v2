@@ -36,6 +36,7 @@ export class SignupDialogComponent implements OnInit {
     this.signupText = AUTH_SIGNUP_FORM_TEXT;
     this.signupText.labels = INPUT_LABELS_TXT;
     this.initAuthForm();
+    this.goToServicesStep();
   }
 
   closeDialog(): void {
