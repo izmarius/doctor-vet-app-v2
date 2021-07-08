@@ -25,6 +25,7 @@ export class SignupDialogComponent implements OnInit {
   selectedCounty!: string;
   isAllowedToGoToThirdStep = false;
   services: any;
+  private selectedServices: string[] = [];
 
   constructor(public dialogRef: MatDialogRef<SignupDialogComponent>,
               private firebaseUtils: FirebaseUtilsService,
@@ -93,6 +94,13 @@ export class SignupDialogComponent implements OnInit {
     this.services = DOCTOR_SERVICES;
     this.isAllowedToGoToThirdStep = true;
     this.isAllowedToGoToSecondStep = false;
+  }
+  toggleServiceSelection(serviceDesc: string): void {
+      if(this.selectedServices.indexOf(serviceDesc) !== -1) {
+        this.selectedServices.splice(this.selectedServices.indexOf(serviceDesc), 1);
+      } else {
+        this.selectedServices.push(serviceDesc);
+      }
   }
 
   resendValidationEmail(): void {

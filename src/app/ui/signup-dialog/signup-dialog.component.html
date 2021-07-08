@@ -69,7 +69,7 @@
         <div class="row" *ngFor="let serviceDesc of serviceObj.value.services">
           <span class="service-name col-10">{{serviceDesc}}</span>
           <div class="col-2 service-checkbox">
-            <input type="checkbox" [value]="false"/>
+            <input type="checkbox" (click)="toggleServiceSelection(serviceDesc)"/>
           </div>
         </div>
       </div>
