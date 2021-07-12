@@ -1,6 +1,7 @@
 <div id="container" class="d-flex align-content-center justify-content-center">
-  <!--  <div *ngIf="isAllowedToGoToFirstStep">-->
-  <div *ngIf="false">
+    <div *ngIf="isAllowedToGoToFirstStep">
+<!--  <div *ngIf="false">-->
+<!--    todo: set icon as one elem -->
     <div class="d-flex justify-content-end"><span class="icon-close modal-close-icon" (click)="closeDialog()"></span>
     </div>
     <p class="section-subtitle text-center m-btn-dialog-row"><strong>{{signupText?.title}}</strong></p>
@@ -27,7 +28,7 @@
           </div>
           <div class="col-element">
             <label>{{signupText?.labels.phoneLabel}}</label>
-            <input formControlName="phoneNumber" type="text"
+            <input formControlName="phoneNumber" type="text" maxlength="10"
                    class="m-btn-dialog-row form-control" [placeholder]="signupText?.phonePlaceholder">
           </div>
         </div>
@@ -45,38 +46,52 @@
         <li *ngIf="isErrorMessage"
             class="m-btn-dialog-row error-msg list-style-type-none">{{signupText?.formErrorMessage}}</li>
         <div class="d-flex justify-content-center">
-          <button type="submit" class="btn button--active">{{signupText?.step1}}</button>
+          <button type="submit" class="btn button--active"
+          [disabled]="isFormCompleted()">{{signupText?.step1}}</button>
         </div>
       </form>
     </div>
   </div>
+
+<!--  STEP 2-->
   <div *ngIf="isAllowedToGoToSecondStep">
-    <div class="d-flex justify-content-end"><span class="icon-close" (click)="closeDialog()"></span></div>
+    <div class="d-flex justify-content-end"><span class="icon-close modal-close-icon" (click)="closeDialog()"></span>
+    </div>
     <p class="section-subtitle m-btn-dialog-row"><strong>{{signupText?.secondStepTitle}}</strong></p>
     <p class="card-text m-btn-dialog-row" *ngFor="let step of secondStepGuide">{{step}}</p>
     <app-upload-photo (fileEmitter)="getUploadedImage($event)"></app-upload-photo>
-    <div class="d-flex justify-content-center">
+    <div class="d-flex justify-content-around">
+      <button class="btn button--active mr-2"
+              (click)="goBackToPreviousStep(1)">Pasul anterior</button>
       <button [disabled]="isPhotoUploaded" class="btn button--active"
               (click)="goToServicesStep()">{{signupText?.step2}}</button>
     </div>
   </div>
-  <!--  <div *ngIf="isAllowedToGoToThirdStep">-->
-  <div *ngIf="true">
+
+  <!--  STEP 3-->
+
+  <div *ngIf="isAllowedToGoToThirdStep">
+<!--  <div *ngIf="true">-->
+    <div class="d-flex justify-content-end"><span class="icon-close modal-close-icon" (click)="closeDialog()"></span></div>
     <h2>{{signupText?.thirdStepTitle}}</h2>
     <div class="services-container mt-4 mb-4 vet-border-top-bottom pt-1 pb-1">
-      <div *ngFor="let serviceObj of services | keyvalue">
+      <div class="mb-4" *ngFor="let serviceObj of servicesUI | keyvalue">
         <h4>{{serviceObj.value.serviceName}}</h4>
         <div class="row" *ngFor="let serviceDesc of serviceObj.value.services">
           <span class="service-name col-10">{{serviceDesc}}</span>
           <div class="col-2 service-checkbox">
-            <input type="checkbox" (click)="toggleServiceSelection(serviceDesc)"/>
+            <input type="checkbox" (click)="toggleServiceSelection(serviceDesc, serviceObj.value.serviceName)"/>
           </div>
         </div>
       </div>
     </div>
-    <div class="d-flex justify-content-center">
+    <p class="error-msg text-center" *ngIf="isErrorMessage">{{errorMessage}}</p>
+    <div class="d-flex justify-content-around">
+      <button class="btn button--active mr-2"
+              (click)="goBackToPreviousStep(2)">Pasul anterior</button>
       <button class="btn button--active"
-              (click)="signupWithEmailAndPassword()">{{signupText?.step3}}</button>
+              (click)="signupWithEmailAndPassword()"
+      [disabled]="isSignUpButtonDisabled()">{{signupText?.step3}}</button>
     </div>
   </div>
 </div>

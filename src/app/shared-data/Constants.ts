@@ -149,6 +149,7 @@ export const AUTH_SIGNUP_FORM_TEXT = {
   county: 'Alege judetul',
   formErrorMessage: 'Te rugam sa verifici ca toate inputurile sunt completate si ca datele sunt corecte.',
   thirdStepTitle: 'Selecteaza serviciile pe care le prestezi',
+  selectAtLeastOneService: 'Selecteaza cel putin un serviciu',
 };
 
 export const SCHEDULE_HEADER_TEXT = {

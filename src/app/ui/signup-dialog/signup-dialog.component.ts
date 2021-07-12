@@ -14,18 +14,19 @@ import {DOCTOR_SERVICES} from "../../shared-data/DoctorServicesConstants";
 })
 export class SignupDialogComponent implements OnInit {
   authFormGroup!: FormGroup;
-  signupText: any;
   counties!: string[];
-  isAllowedToGoToSecondStep!: boolean;
+  errorMessage: string = '';
   isAllowedToGoToFirstStep = true;
-  isErrorMessage!: boolean;
+  isAllowedToGoToSecondStep = false;
+  isAllowedToGoToThirdStep = false;
+  isErrorMessage = false;
   isPhotoUploaded = true;
   photo!: string;
   secondStepGuide!: string[];
   selectedCounty!: string;
-  isAllowedToGoToThirdStep = false;
-  services: any;
-  private selectedServices: string[] = [];
+  private selectedServices: any = {};
+  servicesUI: any;
+  signupText: any;
 
   constructor(public dialogRef: MatDialogRef<SignupDialogComponent>,
               private firebaseUtils: FirebaseUtilsService,
@@ -37,7 +38,7 @@ export class SignupDialogComponent implements OnInit {
     this.signupText = AUTH_SIGNUP_FORM_TEXT;
     this.signupText.labels = INPUT_LABELS_TXT;
     this.initAuthForm();
-    this.goToServicesStep();
+    // this.goToServicesStep();
   }
 
   closeDialog(): void {
@@ -77,30 +78,67 @@ export class SignupDialogComponent implements OnInit {
   }
 
   signupWithEmailAndPassword(): void {
+    // todo refactor here? || ALL KEYS HAVE EMPTY
+    if (this.isSignUpButtonDisabled()) {
+      this.isErrorMessage = true;
+      this.errorMessage = AUTH_SIGNUP_FORM_TEXT.selectAtLeastOneService;
+      return;
+    }
+    this.isErrorMessage = false;
+    debugger;
     this.signUpService.signUpDoctor(this.authFormGroup.controls.password.value, this.dialogRef, this.getDoctorDto());
+  }
+
+  goBackToPreviousStep(stepToGo: number) {
+    if (stepToGo === 1) {
+      this.isAllowedToGoToSecondStep = false;
+      this.isAllowedToGoToFirstStep = true;
+    } else if (stepToGo === 2) {
+      this.isAllowedToGoToThirdStep = false;
+      this.isAllowedToGoToSecondStep = true;
+    }
   }
 
   getDoctorDto(): any {
     const doctor = new DoctorDTO();
     doctor.photoCertificate = this.photo;
-    doctor.location = this.selectedCounty + ', ' + this.authFormGroup.controls.address.value;
+    doctor.location = this.authFormGroup.controls.address.value;
     doctor.doctorName = this.authFormGroup.controls.name.value;
     doctor.phoneNumber = this.authFormGroup.controls.phoneNumber.value;
     doctor.email = this.authFormGroup.controls.email.value;
+    doctor.services = this.selectedServices;
     return doctor;
   }
 
   goToServicesStep(): void {
-    this.services = DOCTOR_SERVICES;
+    this.servicesUI = DOCTOR_SERVICES;
     this.isAllowedToGoToThirdStep = true;
     this.isAllowedToGoToSecondStep = false;
   }
-  toggleServiceSelection(serviceDesc: string): void {
-      if(this.selectedServices.indexOf(serviceDesc) !== -1) {
-        this.selectedServices.splice(this.selectedServices.indexOf(serviceDesc), 1);
+
+  toggleServiceSelection(serviceDesc: string, serviceKey: string): void {
+    if (!this.selectedServices[serviceKey]) {
+      this.selectedServices[serviceKey] = [serviceDesc];
+    } else {
+      if (this.selectedServices[serviceKey].indexOf(serviceDesc) !== -1) {
+        this.selectedServices[serviceKey].splice(this.selectedServices[serviceKey].indexOf(serviceDesc), 1);
       } else {
-        this.selectedServices.push(serviceDesc);
+        this.selectedServices[serviceKey].push(serviceDesc);
       }
+    }
+  }
+
+  isFormCompleted(): boolean {
+    return !this.authFormGroup.valid;
+  }
+
+  isSignUpButtonDisabled(): boolean {
+    for(let service in this.selectedServices) {
+      if(this.selectedServices[service].length > 0){
+        return false;
+      }
+    }
+    return true;
   }
 
   resendValidationEmail(): void {

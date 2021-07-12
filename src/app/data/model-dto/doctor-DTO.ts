@@ -1,14 +1,13 @@
 export class DoctorDTO {
   public id: string | undefined;
-  public clinicLogo?: string;
-  public clinicName?: string;
-  public email: string;
-  public doctorName: string;
-  public location: string;
-  public locationGMapsUrl?: string;
-  public phoneNumber: string;
+  public clinicId?: string;
+  public email!: string;
+  public doctorName!: string;
+  public location!: string;
+  public phoneNumber!: string;
   public photoCertificate?: string;
   public schedule?: Map<string, IDaySchedule>;
+  public services?: Map<string, string[]>;
 }
 
 export interface IDaySchedule {

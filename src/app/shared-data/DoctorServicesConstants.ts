@@ -4,7 +4,7 @@ export const DOCTOR_SERVICES = {
     services: ['Consultatie generala', 'Control periodic', 'Consultatie la domiciliu', 'Vaccinare', 'Insamantare artificiala caini']
   },
   DATA: {
-    serviceName: 'DATE',
+    serviceName: 'Documente',
     services: ['Carnet de sanatate', 'Creare pasaport', 'Implantare microcip']
   },
   IMAGERY: {
@@ -24,7 +24,7 @@ export const DOCTOR_SERVICES = {
     services: ['Fizioterapie prin laser', 'Fizioterapie prin magneti', 'Fizioterapie in apa']
   },
   CARE: {
-    serviceName: 'TOALETAJ',
+    serviceName: 'Toaletaj',
     services: ['Toaletaj canin si felin']
   },
   SURGERY: {
