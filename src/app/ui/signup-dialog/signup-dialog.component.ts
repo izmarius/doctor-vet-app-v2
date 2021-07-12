@@ -38,7 +38,6 @@ export class SignupDialogComponent implements OnInit {
     this.signupText = AUTH_SIGNUP_FORM_TEXT;
     this.signupText.labels = INPUT_LABELS_TXT;
     this.initAuthForm();
-    // this.goToServicesStep();
   }
 
   closeDialog(): void {
@@ -78,7 +77,7 @@ export class SignupDialogComponent implements OnInit {
   }
 
   signupWithEmailAndPassword(): void {
-    // todo refactor here? || ALL KEYS HAVE EMPTY
+    // todo refactor here?
     if (this.isSignUpButtonDisabled()) {
       this.isErrorMessage = true;
       this.errorMessage = AUTH_SIGNUP_FORM_TEXT.selectAtLeastOneService;

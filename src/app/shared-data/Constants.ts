@@ -96,6 +96,12 @@ export const INPUT_LABELS_TXT = {
   messageLabel: 'Scrie-ne un mesaj:',
 };
 
+export const USER_STATE = {
+  emailVerified: 'Verifica emailul pentru a putea folosi aplicatia',
+}
+
+export const USER_LOCALSTORAGE = 'user'
+
 export const INPUT_REGEX_TEXTS = {
   email: '^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$',
   phoneNumber: '^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$'

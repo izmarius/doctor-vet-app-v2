@@ -5,6 +5,7 @@ import {MatDialogRef} from '@angular/material/dialog';
 import {SignupDialogComponent} from '../../ui/signup-dialog/signup-dialog.component';
 import {DoctorService} from '../doctor/doctor.service';
 import {DoctorDTO} from "../../data/model-dto/doctor-DTO";
+import {LogInService} from "../login/log-in.service";
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,8 @@ export class SignUpService {
 
   constructor(
     private afAuth: AngularFireAuth,
-    private doctorService: DoctorService
+    private doctorService: DoctorService,
+    private loginService: LogInService
   ) {
   }
 
@@ -23,7 +25,7 @@ export class SignUpService {
         userCredentials?.user?.sendEmailVerification();
         doctorDTO.id = userCredentials?.user?.uid;
         this.doctorService.createDoctor(doctorDTO);
-        dialogRef.close();
+        this.loginService.logIn(doctorDTO.email, password, dialogRef);
       })
       .catch((error) => {
         window.alert(error.message);

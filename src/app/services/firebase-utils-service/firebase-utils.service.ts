@@ -11,9 +11,9 @@ export class FirebaseUtilsService {
 
   resendValidationEmail(): void {
     this.afAuth.user.subscribe((user) => {
-      if(!user) {
+      if (!user) {
         // this.uiAlert.setUiAlertMessage(new AlertDTO(AUTH_DATA.resendValidationEmail, ALERT_STYLE_CLASS.success));
-      }else {
+      } else {
         // this.uiAlert.setUiAlertMessage(new AlertDTO(AUTH_DATA.resendValidationEmail, ALERT_STYLE_CLASS.success));
         user.sendEmailVerification();
       }
