@@ -1,0 +1,13 @@
+<div class="vet-container">
+  <div class="vet-content" *ngFor="let appList of appointmentMap | keyvalue">
+    <h4 class="m-title-bottom">{{appList.key}}</h4>
+    <div class="m-btn-card-row row">
+      <!--      todo: flex or col? - see with one element or after testing with real user-->
+      <app-user-card class="col user-card-component" #cardComponent *ngFor="let appointment of appList.value"
+                     [cardPlaceholder]="userCardPlaceholder"
+                     [cardData]="mapToCardData(appointment)"
+                     (cardButtonEmitter)="openModalWithAnimalDetails($event)"></app-user-card>
+      <div class="user__animal__display"></div>
+    </div>
+  </div>
+</div>

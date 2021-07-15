@@ -45,15 +45,14 @@ export class NavbarComponent implements OnInit {
       minHeight: '28.125rem',
       data: null
     });
-
     dialogRef.afterClosed().subscribe(result => {
     });
   }
 
   setHiddenNavLinks(): void {
-      if (localStorage.getItem(USER_LOCALSTORAGE)) {
-        this.isUserLoggedIn = true;
-      }
+    if (localStorage.getItem(USER_LOCALSTORAGE)) {
+      this.isUserLoggedIn = true;
+    }
   }
 
   signOut(): void {

@@ -1,0 +1,23 @@
+<div class="card__container bg-alternative">
+  <div class="m-btn-small d-flex">
+    <div class="card__img_container">
+      <img class="card__img" src="https://www.pngkey.com/png/full/114-1149878_setting-user-avatar-in-specific-size-without-breaking.png" alt="User image">
+    </div>
+    <h4><a>{{cardData?.title}}</a></h4>
+  </div>
+  <div class="m-btn-small">
+    <p class="card__label">{{cardPlaceholder.datePlaceholder}}</p>
+    <p>{{cardData?.values[1]}}</p>
+  </div>
+  <div class="m-btn-small">
+    <p class="card__label">{{cardPlaceholder.services}}</p>
+    <p>{{cardData?.values[0]}}</p>
+  </div>
+  <div class="m-btn-small">
+    <p class="card__label">{{cardPlaceholder.animalName}}</p>
+    <p>{{cardData?.values[2]}}</p>
+  </div>
+  <div class="m-btn-small d-flex justify-content-center">
+    <button class="btn button--active" (click)="cardButtonIsClicked()">{{cardPlaceholder.buttonValue}}</button>
+  </div>
+</div>
