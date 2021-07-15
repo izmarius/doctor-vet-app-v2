@@ -6,8 +6,9 @@
       <app-user-card class="col user-card-component" #cardComponent *ngFor="let appointment of appList.value"
                      [cardPlaceholder]="userCardPlaceholder"
                      [cardData]="mapToCardData(appointment)"
-                     (cardButtonEmitter)="openModalWithAnimalDetails($event)"></app-user-card>
+                     (cardButtonEmitter)="openSectionWithAnimalDetails($event)"></app-user-card>
       <div class="user__animal__display"></div>
+      <app-user-animal-info *ngIf="isUserCardClicked"></app-user-animal-info>
     </div>
   </div>
 </div>

@@ -16,8 +16,8 @@ export class DoctorAppointmentsComponent implements OnInit {
   private APPOINTMENT_SUB!: Subscription;
   private appointmentList!: IDoctorsAppointmentsDTO[];
   @ViewChild('cardComponent') private cardComponent: undefined;
-
   public appointmentMap: any = {};
+  public isUserCardClicked = false;
   public userCardPlaceholder: any;
   private user: any;
 
@@ -49,7 +49,8 @@ export class DoctorAppointmentsComponent implements OnInit {
     };
   }
 
-  openModalWithAnimalDetails(animalId: string | number): void {
+  openSectionWithAnimalDetails(animalId: string | number): void {
+    this.isUserCardClicked = true;
     // we do this because we want to let the card to be generic
     // const selectedAppointment: IDoctorsAppointmentsDTO = this.appointmentList.find(appointment => appointment.animalData.uid === animalId);
     // const userAnimalObs$ = this.animalService.getAnimalDataAndMedicalHistoryByAnimalId(animalId, selectedAppointment.userId);
@@ -69,7 +70,7 @@ export class DoctorAppointmentsComponent implements OnInit {
 
   setAppointmentMap(appointments: IDoctorsAppointmentsDTO[]): void {
     appointments.forEach((appointment) => {
-      const date = appointment.dateTime.split(',')[0];
+      const date = appointment.dateTime.split('-')[0].trim();
       if (this.appointmentMap[date]) {
         this.appointmentMap[date].push(appointment);
       } else {

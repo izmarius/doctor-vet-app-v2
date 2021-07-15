@@ -23,6 +23,7 @@ import {AppComponent} from "./app.component";
 import { UploadPhotoComponent } from './ui/shared/upload-photo/upload-photo.component';
 import { DoctorAppointmentsComponent } from './ui/doctor-appointments/doctor-appointments.component';
 import { UserCardComponent } from './ui/shared/user-card/user-card.component';
+import { UserAnimalInfoComponent } from './ui/user-animal-info/user-animal-info.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { UserCardComponent } from './ui/shared/user-card/user-card.component';
     SignupDialogComponent,
     UploadPhotoComponent,
     DoctorAppointmentsComponent,
-    UserCardComponent
+    UserCardComponent,
+    UserAnimalInfoComponent
   ],
   imports: [
     BrowserModule,
