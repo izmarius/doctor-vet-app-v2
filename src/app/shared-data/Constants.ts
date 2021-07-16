@@ -28,6 +28,7 @@ export const APPOINTMENTFORM_DATA = {
   title: 'Programare noua',
   medicLabel: 'Medic',
   dateLabel: 'Data',
+  dateFormat: 'dd/mm/yyyy',
   startTimeLabel: 'Ora',
   patientLabel: 'Pacient',
   animalLabel: 'Animal',

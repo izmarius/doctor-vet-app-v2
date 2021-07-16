@@ -1,5 +1,5 @@
 <div class="container">
-  <h4 class="text-center">{{formTitle}}</h4>
+  <h4 class="text-center">{{appointmentFormPlaceHolder.title}}</h4>
   <form [formGroup]="appointmentForm" (ngSubmit)="onSubmit()">
     <div class="m-btn-small">
       <label for="medic">{{ appointmentFormPlaceHolder.medicLabel }}</label>
@@ -8,17 +8,17 @@
              [placeholder]="appointmentFormPlaceHolder.medicInputPlaceholder"/>
     </div>
     <div class="m-btn-small">
-      <label for="date">{{ appointmentFormPlaceHolder.dateLabel }}</label>
-      <input formControlName="startDate" placeholder="yyyy-mm-dd" id="date" class="form-control"/>
+      <label>{{ appointmentFormPlaceHolder.dateLabel }}</label>
+      <div class="d-flex">
+        <input matInput class="form-control" [min]="minDate" [matDatepicker]="picker" formControlName="startDate" [placeholder]="appointmentFormPlaceHolder.dateFormat">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      </div>
+      <mat-datepicker #picker color="accent"></mat-datepicker>
     </div>
     <div class="m-btn-small">
       <label>{{ appointmentFormPlaceHolder.startTimeLabel }}</label>
-      <!--      <ngb-timepicker-->
-      <!--        formControlName="startTime"-->
-      <!--        [spinners]="true"-->
-      <!--        id="time"-->
-      <!--        [minuteStep]="15"-->
-      <!--      ></ngb-timepicker>-->
+      <ngx-mat-timepicker formControl]="startTime"  [showSpinners]="true" [stepHour]="1" [stepMinute]="1">
+      </ngx-mat-timepicker>
     </div>
     <div class="m-btn-small">
       <label for="patient">{{ appointmentFormPlaceHolder.patientLabel }}</label>
@@ -67,7 +67,8 @@
       <button class="btn btn-light" type="button" (click)="onCancelForm()">
         {{ appointmentFormPlaceHolder.cancelBtn }}
       </button>
-      <button class="btn button--active" type="submit" [disabled]="!appointmentForm.valid">
+<!--      <button class="btn button&#45;&#45;active" type="submit" [disabled]="!appointmentForm.valid">-->
+      <button class="btn button--active" type="submit">
         {{ appointmentFormPlaceHolder.submitBtn }}
       </button>
     </div>

@@ -9,6 +9,7 @@ import {APPOINTMENTFORM_DATA, USER_LOCALSTORAGE} from "../../shared-data/Constan
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Observable} from "rxjs";
 import {DoctorAppointmentFormService} from "./services/doctor-appointment-form.service";
+import {MatDialogRef} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-doctor-appointment-modal',
@@ -16,8 +17,8 @@ import {DoctorAppointmentFormService} from "./services/doctor-appointment-form.s
   styleUrls: ['./doctor-appointment-modal.component.css']
 })
 export class DoctorAppointmentModalComponent implements OnInit {
+  public time: any;
   public appointmentForm!: FormGroup;
-  public formTitle: string = '';
   public patientName: string = '';
   public users!: Observable<any>;
   public animals!: AnimalUtilInfo[];
@@ -26,11 +27,14 @@ export class DoctorAppointmentModalComponent implements OnInit {
   public doctor: any;
   public doctorServiceList: string[] = [];
   public isErrorDisplayed: boolean = false;
+  public minDate = new Date();
+
   @ViewChild('patientList') patientList: any;
   @ViewChild('inputPatientName') inputPatientName: any;
   @ViewChild('animalList') animalList: any;
 
   constructor(
+    public dialogRef: MatDialogRef<DoctorAppointmentModalComponent>,
     private doctorService: DoctorService,
     private doctorAppointmentService: DoctorAppointmentsService,
     private appointmentFormService: DoctorAppointmentFormService,
@@ -40,7 +44,6 @@ export class DoctorAppointmentModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.appointmentFormPlaceHolder = APPOINTMENTFORM_DATA;
-    this.formTitle = APPOINTMENTFORM_DATA.title;
     this.doctor = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
     for (let service in this.doctor.services) {
       this.doctorServiceList = this.doctorServiceList.concat(this.doctor.services[service]);
@@ -50,7 +53,6 @@ export class DoctorAppointmentModalComponent implements OnInit {
 
   initForm() {
     this.appointmentForm = new FormGroup({
-      // todo: set to date now
       startDate: new FormControl(null, Validators.required),
       startTime: new FormControl(null, Validators.required),
       medicId: new FormControl(null, Validators.required),
@@ -64,6 +66,16 @@ export class DoctorAppointmentModalComponent implements OnInit {
   }
 
   onSubmit(): void {
+    // todo time >= now
+    var time = new Date();
+    var hours = time.getHours();
+    var minutes = time.getMinutes();
+    debugger;
+    if (!this.appointmentForm.valid) {
+      this.isErrorDisplayed = true;
+      return;
+    }
+    this.isErrorDisplayed = false;
     const newAnimalInfo = new AnimalUtilInfo()
       .setName(this.appointmentForm.value.patientAnimal.animalName)
       .setUid(this.appointmentForm.value.patientAnimal.animalId);
@@ -81,16 +93,14 @@ export class DoctorAppointmentModalComponent implements OnInit {
       .setAnimal(newAnimalInfo)
       .setLocation(this.appointmentForm.value.medLocation);
 
-    if (!this.appointmentForm.invalid) {
-      this.doctorAppointmentService.createAppointment(
-        [newDoctorAppointment],
-        this.appointmentForm.value.medicId
-      );
-    }
+    this.doctorAppointmentService.createAppointment(
+      [newDoctorAppointment],
+      this.appointmentForm.value.medicId
+    );
   }
 
   onCancelForm(): void {
-
+    this.dialogRef.close();
   }
 
   filterPatients(searchText: string): void {
