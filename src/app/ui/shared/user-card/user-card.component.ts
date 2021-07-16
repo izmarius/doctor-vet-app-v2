@@ -6,7 +6,6 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
   styleUrls: ['./user-card.component.scss']
 })
 export class UserCardComponent implements OnInit {
-  @Input() cardPlaceholder: any;
   @Input() cardData!: ICardData;
   @Output() cardButtonEmitter: EventEmitter<string | number>;
 
@@ -18,13 +17,13 @@ export class UserCardComponent implements OnInit {
   }
 
   cardButtonIsClicked(): void {
-    this.cardButtonEmitter.emit(this.cardData.buttonId);
+    this.cardButtonEmitter.emit(this.cardData.buttonData.buttonId);
   }
 }
 
 export interface ICardData {
   title: string;
-  buttonId: string | number;
-  values: string[];
+  buttonData: any;
+  values: any;
 }
 

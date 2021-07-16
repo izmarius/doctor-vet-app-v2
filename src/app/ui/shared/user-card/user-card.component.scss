@@ -26,3 +26,9 @@
 .card__button {
   margin: $m-h-center;
 }
+
+//overrides the original class
+.m-btn-small {
+  margin-bottom: 1rem;
+}
+

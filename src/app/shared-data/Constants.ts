@@ -29,9 +29,9 @@ export const APPOINTMENTFORM_DATA = {
   medicLabel: 'Medic',
   dateLabel: 'Data',
   startTimeLabel: 'Ora',
-  pacientLabel: 'Pacient',
+  patientLabel: 'Pacient',
   animalLabel: 'Animal',
-  servicesLabel: 'Sericii',
+  servicesLabel: 'Servicii',
   cancelBtn: 'Anuleaza',
   submitBtn: 'Salveaza',
   medicInputPlaceholder: 'Nume doctor veterinar',
@@ -39,7 +39,7 @@ export const APPOINTMENTFORM_DATA = {
   servicesSelectDefaultOption: 'Alege un serviciu',
   animalSelectDefaultOption: 'Alege un animal',
   formValidationMessage: 'Toate campurile trebuie completate!',
-  pacientOnFocusMessage: 'Selecteaza un client din lista'
+  patientOnFocusMessage: 'Selecteaza un client din lista'
 };
 
 export const DOCTORAPPOINTMENTSECTION_DATA = {

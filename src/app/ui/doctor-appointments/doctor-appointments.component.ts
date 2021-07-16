@@ -1,7 +1,7 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Subscription} from "rxjs";
 import {IDoctorsAppointmentsDTO} from "./dto/doctor-appointments-dto";
-import {USER_CARD_TXT, USER_LOCALSTORAGE} from "../../shared-data/Constants";
+import {INPUT_LABELS_TXT, USER_CARD_TXT, USER_LOCALSTORAGE} from "../../shared-data/Constants";
 import {DoctorAppointmentsService} from "./services/doctor-appointments.service";
 import {AnimalService} from "./services/animal.service";
 import {ICardData} from "../shared/user-card/user-card.component";
@@ -11,7 +11,7 @@ import {ICardData} from "../shared/user-card/user-card.component";
   templateUrl: './doctor-appointments.component.html',
   styleUrls: ['./doctor-appointments.component.css']
 })
-export class DoctorAppointmentsComponent implements OnInit {
+export class DoctorAppointmentsComponent implements OnInit, OnDestroy {
 
   private APPOINTMENT_SUB!: Subscription;
   private appointmentList!: IDoctorsAppointmentsDTO[];
@@ -28,6 +28,7 @@ export class DoctorAppointmentsComponent implements OnInit {
 
   ngOnInit(): void {
     // this is needed because the af auth subscription sets the localstorage after auth is done;
+    // so when we enter this component the localstorage is not set and we need to wait for the af auth answer
     setTimeout(() => {
       this.user = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
       this.userCardPlaceholder = USER_CARD_TXT;
@@ -52,9 +53,21 @@ export class DoctorAppointmentsComponent implements OnInit {
 
   mapToCardData(appointment: any): ICardData {
     return {
-      title: appointment.userName,
-      values: [appointment.services, appointment.dateTime, appointment.animalData.name],
-      buttonId: appointment.animalData.uid
+      title: appointment.userName + ' - ' +appointment.phone,
+      values: [{
+        placeholder: this.userCardPlaceholder.datePlaceholder,
+        value: appointment.dateTime
+      }, {
+        placeholder: this.userCardPlaceholder.services,
+        value: appointment.services
+      }, {
+        placeholder: this.userCardPlaceholder.animalName,
+        value: appointment.animalData.name
+      }, {
+        placeholder: INPUT_LABELS_TXT.emailLabel,
+        value: appointment.userEmail
+      }],
+      buttonData: {buttonId: appointment.animalData.uid, placeholder: this.userCardPlaceholder.buttonValue}
     };
   }
 

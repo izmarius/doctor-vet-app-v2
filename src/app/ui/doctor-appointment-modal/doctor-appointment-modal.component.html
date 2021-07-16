@@ -1,116 +1,73 @@
-<div class="container" class="modal-body">
-  <div class="modal-header">
-    <app-section-title-subtitle [title]="formTitle">
-    </app-section-title-subtitle>
-  </div>
-  <form [formGroup]="sampleForm" (ngSubmit)="onSubmit()">
-    <div class="form-group">
+<div class="container">
+  <h4 class="text-center">{{formTitle}}</h4>
+  <form [formGroup]="appointmentForm" (ngSubmit)="onSubmit()">
+    <div class="m-btn-small">
       <label for="medic">{{ appointmentFormPlaceHolder.medicLabel }}</label>
-      <input
-        type="text"
-        id="medic"
-        class="form-control"
-        formControlName="medicName"
-        [placeholder]="appointmentFormPlaceHolder.medicInputPlaceholder"
-        readonly
-      />
+      <input type="text" id="medic" class="form-control" readonly
+             formControlName="medicName"
+             [placeholder]="appointmentFormPlaceHolder.medicInputPlaceholder"/>
     </div>
-    <div class="form-group">
+    <div class="m-btn-small">
       <label for="date">{{ appointmentFormPlaceHolder.dateLabel }}</label>
-      <input
-        formControlName="startDate"
-        placeholder="yyyy-mm-dd"
-        id="date"
-        class="form-control"
-      />
+      <input formControlName="startDate" placeholder="yyyy-mm-dd" id="date" class="form-control"/>
     </div>
-    <div class="form-group">
+    <div class="m-btn-small">
       <label>{{ appointmentFormPlaceHolder.startTimeLabel }}</label>
-<!--      <ngb-timepicker-->
-<!--        formControlName="startTime"-->
-<!--        [spinners]="true"-->
-<!--        id="time"-->
-<!--        [minuteStep]="15"-->
-<!--      ></ngb-timepicker>-->
+      <!--      <ngb-timepicker-->
+      <!--        formControlName="startTime"-->
+      <!--        [spinners]="true"-->
+      <!--        id="time"-->
+      <!--        [minuteStep]="15"-->
+      <!--      ></ngb-timepicker>-->
     </div>
-    <div class="form-group">
-      <label for="pacient">{{ appointmentFormPlaceHolder.pacientLabel }}</label>
-      <input
-        [(ngModel)]="patientName"
-        type="text"
-        id="pacient"
-        class="form-control"
-        formControlName="patientName"
-        [placeholder]="appointmentFormPlaceHolder.userNameInputPlaceholder"
-        (ngModelChange)="filterPatients($event)"
-        #inputPatientName
-        (focus)="onFocusPatient()"
-      />
-      <ul class="list-group" #pacientList>
-        <li
-          class="list-group-item list-group-item-action"
-          *ngFor="let user of users | async"
-          (click)="onSelectPatient(user)"
-        >
+    <div class="m-btn-small">
+      <label for="patient">{{ appointmentFormPlaceHolder.patientLabel }}</label>
+      <input type="text" id="patient" class="form-control" #inputPatientName
+             formControlName="patientName"
+             [(ngModel)]="patientName"
+             [placeholder]="appointmentFormPlaceHolder.userNameInputPlaceholder"
+             (ngModelChange)="filterPatients($event)"
+             (focus)="onFocusPatient()"/>
+      <ul class="list-group" #patientList>
+        <li class="list-group-item list-group-item-action"
+            *ngFor="let user of users | async"
+            (click)="onSelectPatient(user)">
           {{ user.name }}
         </li>
       </ul>
-      <div class="help-block" *ngIf="focusedPatient">
-        {{ appointmentFormPlaceHolder.pacientOnFocusMessage }}
-      </div>
     </div>
-    <div class="form-group" #animalList>
+    <div class="m-btn-small hide" #animalList>
       <label for="animal">{{ appointmentFormPlaceHolder.animalLabel }}</label>
-      <select
-        name="animal"
-        id="animal"
-        class="form-control"
-        formControlName="pacientAnimal"
-        ngModel
-      >
+      <select name="animal" id="animal" class="form-control" formControlName="patientAnimal">
         <option value="" disabled="true" [selected]="true">
           {{ appointmentFormPlaceHolder.animalSelectDefaultOption }}
         </option>
         <option
-          *ngFor="let pacientAnimal of animals"
-          [value]="pacientAnimal"
-          [ngValue]="pacientAnimal"
-        >
-          {{ pacientAnimal.animalName }}
+          *ngFor="let patientAnimal of animals"
+          [ngValue]="patientAnimal">
+          {{ patientAnimal.animalName }}
         </option>
       </select>
     </div>
-    <div class="form-group">
-      <label for="services">{{
-        appointmentFormPlaceHolder.servicesLabel
-        }}</label>
-      <select
-        name="services"
-        id="services"
-        class="form-control"
-        formControlName="medService"
-      >
+    <div class="m-btn-small">
+      <label for="services">{{appointmentFormPlaceHolder.servicesLabel}}</label>
+      <select name="services" id="services" class="form-control" formControlName="medService">
         <option value="null" disabled="true" [selected]="true">
           {{ appointmentFormPlaceHolder.servicesSelectDefaultOption }}
         </option>
-        <option
-          *ngFor="let medicService of medicServices | async"
-          [value]="medicService"
-          [ngValue]="medicService"
-        >
-          {{ medicService }}
+        <option *ngFor="let service of doctorServiceList" [value]="service">
+          {{ service }}
         </option>
       </select>
-      <div class="help-block" *ngIf="!sampleForm.valid">
-        <hr>
+      <p class="error-msg m-top-small" *ngIf="isErrorDisplayed">
         {{ appointmentFormPlaceHolder.formValidationMessage }}
-      </div>
+      </p>
     </div>
     <div class="modal-footer">
       <button class="btn btn-light" type="button" (click)="onCancelForm()">
         {{ appointmentFormPlaceHolder.cancelBtn }}
       </button>
-      <button class="btn btn-dark" type="submit" [disabled]="!sampleForm.valid">
+      <button class="btn button--active" type="submit" [disabled]="!appointmentForm.valid">
         {{ appointmentFormPlaceHolder.submitBtn }}
       </button>
     </div>

@@ -24,7 +24,7 @@ export class LogInService {
   }
 
   isLoggedIn(): boolean {
-    const user = JSON.parse(<string>localStorage.getItem('user'));
+    const user = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
     return !(user === null || !user.emailVerified);
   }
 
