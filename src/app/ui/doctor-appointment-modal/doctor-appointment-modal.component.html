@@ -10,14 +10,16 @@
     <div class="m-btn-small">
       <label>{{ appointmentFormPlaceHolder.dateLabel }}</label>
       <div class="d-flex">
-        <input matInput class="form-control" [min]="minDate" [matDatepicker]="picker" formControlName="startDate" [placeholder]="appointmentFormPlaceHolder.dateFormat">
+        <input matInput class="form-control" [min]="minDate" [matDatepicker]="picker" formControlName="startDate"
+               [placeholder]="appointmentFormPlaceHolder.dateFormat">
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       </div>
       <mat-datepicker #picker color="accent"></mat-datepicker>
     </div>
     <div class="m-btn-small">
       <label>{{ appointmentFormPlaceHolder.startTimeLabel }}</label>
-      <ngx-mat-timepicker formControl]="startTime"  [showSpinners]="true" [stepHour]="1" [stepMinute]="1">
+      <ngx-mat-timepicker [(ngModel)]="time" [ngModelOptions]="{standalone: true}" [showSpinners]="true" [stepHour]="1"
+                          [stepMinute]="1">
       </ngx-mat-timepicker>
     </div>
     <div class="m-btn-small">
@@ -59,6 +61,7 @@
           {{ service }}
         </option>
       </select>
+      <!--      todo: add different types of error msgs -->
       <p class="error-msg m-top-small" *ngIf="isErrorDisplayed">
         {{ appointmentFormPlaceHolder.formValidationMessage }}
       </p>
@@ -67,7 +70,7 @@
       <button class="btn btn-light" type="button" (click)="onCancelForm()">
         {{ appointmentFormPlaceHolder.cancelBtn }}
       </button>
-<!--      <button class="btn button&#45;&#45;active" type="submit" [disabled]="!appointmentForm.valid">-->
+      <!--      <button class="btn button&#45;&#45;active" type="submit" [disabled]="!appointmentForm.valid">-->
       <button class="btn button--active" type="submit">
         {{ appointmentFormPlaceHolder.submitBtn }}
       </button>

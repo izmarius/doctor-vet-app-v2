@@ -66,10 +66,17 @@ export class DoctorAppointmentModalComponent implements OnInit {
   }
 
   onSubmit(): void {
-    // todo time >= now
-    var time = new Date();
-    var hours = time.getHours();
-    var minutes = time.getMinutes();
+    const currentTime = new Date();
+    const currentHours = currentTime.getHours();
+    const currentMinutes = currentTime.getMinutes();
+    const selectedHours =this.time.getHours();
+    const selectedMinutes = this.time.getMinutes();
+    if(!this.time || (selectedHours < currentHours && selectedMinutes < currentMinutes + 1) ) {
+      this.isErrorDisplayed = true;
+      // todo add error message
+      return;
+    }
+    this.appointmentForm.controls.startTime.setValue(selectedHours +':'+ selectedMinutes);
     debugger;
     if (!this.appointmentForm.valid) {
       this.isErrorDisplayed = true;
