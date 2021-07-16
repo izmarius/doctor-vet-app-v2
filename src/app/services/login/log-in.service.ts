@@ -15,6 +15,7 @@ export class LogInService {
     return this.afAuth.signInWithEmailAndPassword(email, password)
       .then(() => {
         dialogRef.close(true);
+        this.router.navigate(['/appointments'])
       })
       .catch((error) => {
         window.alert(error.message);

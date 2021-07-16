@@ -4,6 +4,7 @@ import {LogInService} from "../../../services/login/log-in.service";
 import {NAVBAR_TEXT, USER_LOCALSTORAGE} from "../../../shared-data/Constants";
 import {LoginDialogComponent} from "../../login-dialog/login-dialog.component";
 import {SignupDialogComponent} from "../../signup-dialog/signup-dialog.component";
+import {DoctorAppointmentModalComponent} from "../../doctor-appointment-modal/doctor-appointment-modal.component";
 
 @Component({
   selector: 'app-navbar',
@@ -23,6 +24,17 @@ export class NavbarComponent implements OnInit {
   ngOnInit(): void {
     this.setHiddenNavLinks();
     this.navbarText = NAVBAR_TEXT;
+  }
+
+  openAppointmentsModal(): void {
+    const dialogRef = this.dialog.open(DoctorAppointmentModalComponent, {
+      width: '25%',
+      height: '37.5rem',
+      data: null
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+    });
   }
 
   openLoginDialog(): void {
@@ -45,15 +57,14 @@ export class NavbarComponent implements OnInit {
       minHeight: '28.125rem',
       data: null
     });
-
     dialogRef.afterClosed().subscribe(result => {
     });
   }
 
   setHiddenNavLinks(): void {
-      if (localStorage.getItem(USER_LOCALSTORAGE)) {
-        this.isUserLoggedIn = true;
-      }
+    if (localStorage.getItem(USER_LOCALSTORAGE)) {
+      this.isUserLoggedIn = true;
+    }
   }
 
   signOut(): void {

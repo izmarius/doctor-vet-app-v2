@@ -7,23 +7,26 @@
     </button>
     <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
       <ul class="navbar-nav">
+        <li class="nav-item dropdown" *ngIf="isUserLoggedIn">
+          <a class="nav-link" (click)="openAppointmentsModal()"><span class="icon-plus px-2"></span>{{navbarText.createAppointment}}</a>
+        </li>
         <li class="nav-item">
           <a class="nav-link" routerLink="/"> <span class="icon-home px-1"></span>{{navbarText.home}}</a>
         </li>
-<!--        <li class="nav-item" *ngIf="isUserLoggedIn">-->
-<!--          <a class="nav-link" routerLink="/appointments"><span-->
-<!--            class="icon-people px-2"></span>{{navbarText.appointments}}</a>-->
-<!--        </li>-->
-<!--        <li class="nav-item dropdown" *ngIf="isUserLoggedIn">-->
-<!--          <a class="nav-link" routerLink="/calendar"><span class="icon-calendar px-2"></span>{{navbarText.calendar}}</a>-->
-<!--        </li>-->
-<!--        <li class="nav-item" *ngIf="isUserLoggedIn">-->
-<!--          <a class="nav-link" routerLink="/schedule"><span class="icon-clock px-2"></span>{{navbarText.schedule}}</a>-->
-<!--        </li>-->
-<!--        <li class="nav-item" *ngIf="isUserLoggedIn">-->
-<!--          <a class="nav-link" routerLink="/profile"><span-->
-<!--            class="icon-settings px-2"></span>{{navbarText.myProfile}}</a>-->
-<!--        </li>-->
+        <li class="nav-item" *ngIf="isUserLoggedIn">
+          <a class="nav-link" routerLink="/appointments"><span
+            class="icon-people px-2"></span>{{navbarText.appointments}}</a>
+        </li>
+        <!--        <li class="nav-item dropdown" *ngIf="isUserLoggedIn">-->
+        <!--          <a class="nav-link" routerLink="/calendar"><span class="icon-calendar px-2"></span>{{navbarText.calendar}}</a>-->
+        <!--        </li>-->
+        <!--        <li class="nav-item" *ngIf="isUserLoggedIn">-->
+        <!--          <a class="nav-link" routerLink="/schedule"><span class="icon-clock px-2"></span>{{navbarText.schedule}}</a>-->
+        <!--        </li>-->
+        <!--        <li class="nav-item" *ngIf="isUserLoggedIn">-->
+        <!--          <a class="nav-link" routerLink="/profile"><span-->
+        <!--            class="icon-settings px-2"></span>{{navbarText.myProfile}}</a>-->
+        <!--        </li>-->
         <li class="nav-item" (click)="openLoginDialog()" *ngIf="!isUserLoggedIn">
           <a class="nav-link"><span class="icon-login px-2"></span>{{navbarText.signIn}}</a>
         </li>

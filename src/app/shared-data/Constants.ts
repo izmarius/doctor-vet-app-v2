@@ -47,14 +47,14 @@ export const DOCTORAPPOINTMENTSECTION_DATA = {
   subTitle: 'Section Subtitle here'
 };
 export const USER_ANIMAL_DIALOG = {
-  ownersPets: 'Animalele mele: ',
+  ownersPets: 'Animale: ',
   medicalHistory: 'Istoric recomandari:',
   animalDiseases: 'Patologii asociate:',
-  name: 'Nume',
-  age: 'Varsta',
-  weight: 'Greutate',
-  bloodType: 'Tipul de sange',
-  birthDay: 'Zi de nastere',
+  name: 'Nume: ',
+  age: 'Varsta: ',
+  weight: 'Greutate: ',
+  bloodType: 'Tipul de sange: ',
+  birthDay: 'Zi de nastere: ',
   addRecommendation: 'Adauga recomandare',
   addDisease: 'Adauga patologie',
   editInputPlaceholder: 'Max 250 caractere'
@@ -110,6 +110,7 @@ export const INPUT_REGEX_TEXTS = {
 export const NAVBAR_TEXT = {
   locations: 'Locatii',
   appointments: 'Programari',
+  createAppointment: 'Adauga programare',
   patient: 'Pacienti',
   calendar: 'Calendar',
   schedule: 'Programul meu',

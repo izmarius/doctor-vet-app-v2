@@ -1,0 +1,28 @@
+@import "src/app/scss/constants";
+
+.card__container {
+  border: $border;
+  border-radius: $border-radius;
+}
+
+.card__container p {
+  padding: 0 $p-card;
+}
+
+.card__img_container {
+  padding: $p-card;
+}
+
+.card__img {
+  width: $card-img-dimmensions;
+  height: $card-img-dimmensions
+}
+
+.card__label {
+  color: #aeacac;
+  font-size: $fs-link;
+}
+
+.card__button {
+  margin: $m-h-center;
+}

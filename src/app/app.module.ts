@@ -21,6 +21,12 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {SignupDialogComponent} from "./ui/signup-dialog/signup-dialog.component";
 import {AppComponent} from "./app.component";
 import { UploadPhotoComponent } from './ui/shared/upload-photo/upload-photo.component';
+import { DoctorAppointmentsComponent } from './ui/doctor-appointments/doctor-appointments.component';
+import { UserCardComponent } from './ui/shared/user-card/user-card.component';
+import { UserAnimalInfoComponent } from './ui/user-animal-info/user-animal-info.component';
+import { UserProfileComponent } from './ui/user-profile/user-profile.component';
+import { DoctorAppointmentModalComponent } from './ui/doctor-appointment-modal/doctor-appointment-modal.component';
+import { SectionTitleSubtitleComponent } from './ui/shared/section-title-subtitle/section-title-subtitle.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +39,13 @@ import { UploadPhotoComponent } from './ui/shared/upload-photo/upload-photo.comp
     LoginDialogComponent,
     AuthDialogComponent,
     SignupDialogComponent,
-    UploadPhotoComponent
+    UploadPhotoComponent,
+    DoctorAppointmentsComponent,
+    UserCardComponent,
+    UserAnimalInfoComponent,
+    UserProfileComponent,
+    DoctorAppointmentModalComponent,
+    SectionTitleSubtitleComponent
   ],
   imports: [
     BrowserModule,

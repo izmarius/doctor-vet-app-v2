@@ -84,7 +84,6 @@ export class SignupDialogComponent implements OnInit {
       return;
     }
     this.isErrorMessage = false;
-    debugger;
     this.signUpService.signUpDoctor(this.authFormGroup.controls.password.value, this.dialogRef, this.getDoctorDto());
   }
 
