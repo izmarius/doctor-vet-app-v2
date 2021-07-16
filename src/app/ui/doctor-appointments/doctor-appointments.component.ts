@@ -27,15 +27,19 @@ export class DoctorAppointmentsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.user = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
-    this.userCardPlaceholder = USER_CARD_TXT;
-    this.APPOINTMENT_SUB = this.doctorAppointmentService
-      .getAllAppointments(this.user.id)
-      .subscribe((appointments) => {
-        // need to do this because we want to leave the card as a generic component
-        this.appointmentList = appointments;
-        this.setAppointmentMap(appointments);
-      });
+    // this is needed because the af auth subscription sets the localstorage after auth is done;
+    setTimeout(() => {
+      this.user = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
+      this.userCardPlaceholder = USER_CARD_TXT;
+      this.APPOINTMENT_SUB = this.doctorAppointmentService
+        .getAllAppointments(this.user.id)
+        .subscribe((appointments) => {
+          // need to do this because we want to leave the card as a generic component
+          this.appointmentList = appointments;
+          this.setAppointmentMap(appointments);
+        });
+    }, 300)
+
   }
 
   ngOnDestroy(): void {

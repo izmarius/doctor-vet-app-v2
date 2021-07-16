@@ -23,6 +23,7 @@ export class AuthStateChangeService {
             if (!doctor) {
               alert('A aparut o eroare, te rugam sa incerci din nou');
             }
+            // todo handle if not doctor
             localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(doctor));
           });
       } else {
