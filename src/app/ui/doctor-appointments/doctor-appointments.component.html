@@ -8,7 +8,7 @@
                      [cardData]="mapToCardData(appointment)"
                      (cardButtonEmitter)="openSectionWithAnimalDetails($event)"></app-user-card>
       <div class="user__animal__display"></div>
-      <app-user-animal-info *ngIf="isUserCardClicked"></app-user-animal-info>
+      <app-user-animal-info *ngIf="isUserCardClicked" [data]="userAnimalData"></app-user-animal-info>
     </div>
   </div>
 </div>

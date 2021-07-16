@@ -1,0 +1,76 @@
+@import "src/app/scss/constants";
+
+.link--active {
+  color: $error-color;
+}
+
+.animal-data {
+  max-width: 18.188rem;
+  display: flex;
+}
+
+.add-btn:hover {
+  cursor: pointer;
+  text-decoration: underline $border-color;
+}
+
+.action-icon {
+  align-self: center;
+}
+
+.action-icon:hover {
+  color: $error-color;
+}
+
+.action-input {
+  width: 70%;
+}
+
+.close-btn {
+  background: $bg-main-color;
+  border: $border;
+}
+
+.close-btn:hover {
+  font-size: calc(1rem + 0.1rem);
+}
+
+.dialog-container {
+  position: relative;
+  height: $full-size;
+  overflow-y: scroll;
+&::-webkit-scrollbar {
+   display: none;
+ }
+}
+
+.dialog-btn-container {
+  position: absolute;
+  bottom: 0;
+  width: $full-size;
+}
+
+.dialog-list-container {
+  width: 70%;
+}
+
+.dialog-list-item {
+  width: $full-size;
+}
+
+.recommendation-container {
+  border-bottom: 1px solid lightgray;
+  margin-bottom: 1rem;
+}
+.schedule-button {
+  align-self: end;
+  margin-left: auto;
+}
+
+.animal-data-container {
+  width: 20%;
+}
+
+.animal-medical-data-container {
+  width: 75%;
+}

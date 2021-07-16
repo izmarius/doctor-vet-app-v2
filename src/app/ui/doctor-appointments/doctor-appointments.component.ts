@@ -20,6 +20,7 @@ export class DoctorAppointmentsComponent implements OnInit {
   public isUserCardClicked = false;
   public userCardPlaceholder: any;
   private user: any;
+  userAnimalData: any;
 
   constructor(private doctorAppointmentService: DoctorAppointmentsService,
               private animalService: AnimalService) {
@@ -50,22 +51,18 @@ export class DoctorAppointmentsComponent implements OnInit {
   }
 
   openSectionWithAnimalDetails(animalId: string | number): void {
-    this.isUserCardClicked = true;
     // we do this because we want to let the card to be generic
-    // const selectedAppointment: IDoctorsAppointmentsDTO = this.appointmentList.find(appointment => appointment.animalData.uid === animalId);
-    // const userAnimalObs$ = this.animalService.getAnimalDataAndMedicalHistoryByAnimalId(animalId, selectedAppointment.userId);
-    // const dialogRef = this.dialog.open(UserAnimalDataDialogComponent, {
-    //   width: '50%',
-    //   height: '45.625rem',
-    //   data: {
-    //     userAnimalDataObs: userAnimalObs$,
-    //     userId: selectedAppointment.userId
-    //   }
-    // });
-    //
-    // dialogRef.afterClosed().subscribe(result => {
-    //   // console.log(result);
-    // });
+    const selectedAppointment = this.appointmentList.find(appointment => appointment.animalData.uid === animalId);
+    if(!selectedAppointment || !selectedAppointment.userId) {
+      alert('No user found');
+      return;
+    }
+    const userAnimalObs$ = this.animalService.getAnimalDataAndMedicalHistoryByAnimalId(animalId, selectedAppointment.userId);
+    this.isUserCardClicked = true;
+    this.userAnimalData = {
+      userAnimalDataObs: userAnimalObs$,
+      userId: selectedAppointment.userId
+    }
   }
 
   setAppointmentMap(appointments: IDoctorsAppointmentsDTO[]): void {
