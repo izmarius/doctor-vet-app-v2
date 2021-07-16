@@ -25,6 +25,8 @@ import { DoctorAppointmentsComponent } from './ui/doctor-appointments/doctor-app
 import { UserCardComponent } from './ui/shared/user-card/user-card.component';
 import { UserAnimalInfoComponent } from './ui/user-animal-info/user-animal-info.component';
 import { UserProfileComponent } from './ui/user-profile/user-profile.component';
+import { DoctorAppointmentModalComponent } from './ui/doctor-appointment-modal/doctor-appointment-modal.component';
+import { SectionTitleSubtitleComponent } from './ui/shared/section-title-subtitle/section-title-subtitle.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +43,9 @@ import { UserProfileComponent } from './ui/user-profile/user-profile.component';
     DoctorAppointmentsComponent,
     UserCardComponent,
     UserAnimalInfoComponent,
-    UserProfileComponent
+    UserProfileComponent,
+    DoctorAppointmentModalComponent,
+    SectionTitleSubtitleComponent
   ],
   imports: [
     BrowserModule,

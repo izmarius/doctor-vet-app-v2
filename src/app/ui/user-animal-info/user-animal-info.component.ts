@@ -3,6 +3,8 @@ import {Subscription} from "rxjs";
 import {AnimalService} from "../doctor-appointments/services/animal.service";
 import {IUserAnimalAndMedicalHistory} from "./dto/user-animal-medical-history-dto";
 import {DIALOG_UI_ERRORS, USER_ANIMAL_DIALOG} from "../../shared-data/Constants";
+import {MatDialog} from "@angular/material/dialog";
+import {DoctorAppointmentModalComponent} from "../doctor-appointment-modal/doctor-appointment-modal.component";
 
 @Component({
   selector: 'app-user-animal-info',
@@ -14,7 +16,6 @@ export class UserAnimalInfoComponent implements OnInit {
   @ViewChild('animalsParent') private ANIMAL_PARENT_ELEM!: ElementRef;
   private USER_ANIMAL_SUB!: Subscription;
 
-  public editedRecommendation: string = '';
   public isActiveLink!: boolean;
   public isAddDiseaseEnabled!: boolean;
   public isAddRecEnabled!: boolean;
@@ -27,9 +28,9 @@ export class UserAnimalInfoComponent implements OnInit {
   @Input() data: any;
   @Output() closeAppointmentSectionEmitter: EventEmitter<any> = new EventEmitter<any>();
 
-  constructor(private animalService: AnimalService) {
+  constructor(private animalService: AnimalService,
+              private dialog: MatDialog) {
   }
-
 
   ngOnInit(): void {
     this.userAnimalDialog = USER_ANIMAL_DIALOG;
@@ -58,7 +59,15 @@ export class UserAnimalInfoComponent implements OnInit {
   }
 
   addNewAppointment(): void {
-    // todo: add appointment and take animal id from selectedLink
+    // todo send selected data?
+    const dialogRef = this.dialog.open(DoctorAppointmentModalComponent, {
+      width: '25%',
+      height: '37.5rem',
+      data: null
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+    });
   }
 
   addRecommendation(): void {

@@ -110,6 +110,7 @@ export const INPUT_REGEX_TEXTS = {
 export const NAVBAR_TEXT = {
   locations: 'Locatii',
   appointments: 'Programari',
+  createAppointment: 'Adauga programare',
   patient: 'Pacienti',
   calendar: 'Calendar',
   schedule: 'Programul meu',

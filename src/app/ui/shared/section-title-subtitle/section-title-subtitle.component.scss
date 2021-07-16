@@ -1,0 +1,22 @@
+@import "src/app/scss/constants";
+
+.header-container {
+//  background: $bg-alternate-color;
+  padding: $p-section-subtitle;
+  max-width: 800px;
+  margin: 0 auto 3rem;
+}
+
+.header-btn-container {
+  margin: $m-h-center;
+}
+
+.header-content {
+  margin: auto;
+}
+
+.title {
+  font-size: $fs-section-title;
+  font-weight: $bold-section-subtitle;
+  margin-bottom: $mb-section-header;
+}
