@@ -1,4 +1,4 @@
-import {Component, ElementRef, Inject, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Inject, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {Subscription} from "rxjs";
 import {AnimalService} from "../doctor-appointments/services/animal.service";
 import {IUserAnimalAndMedicalHistory} from "./dto/user-animal-medical-history-dto";
@@ -25,6 +25,7 @@ export class UserAnimalInfoComponent implements OnInit {
   public userAnimalDialog: any;
   public userAnimalDialogErrorTxt: any;
   @Input() data: any;
+  @Output() closeAppointmentSectionEmitter: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(private animalService: AnimalService) {
   }
@@ -69,6 +70,10 @@ export class UserAnimalInfoComponent implements OnInit {
     this.hideRecommendationInput();
   }
 
+  closeAppointmentDetails(): void {
+    this.closeAppointmentSectionEmitter.emit();
+  }
+
   showRecommendationInput(): void {
     this.isAddRecEnabled = true;
   }
@@ -101,7 +106,11 @@ export class UserAnimalInfoComponent implements OnInit {
       return;
     }
     this.resetErrorMessage(errorElem);
-    this.userAnimalData.animalMedicalHistory.diseases.push(this.newDisease.trim());
+    const indexOfDisease = this.userAnimalData.animalMedicalHistory.diseases.indexOf(diseaseItem.innerText);
+    if(indexOfDisease === -1) {
+      return;
+    }
+    this.userAnimalData.animalMedicalHistory.diseases[indexOfDisease] = this.newDisease.trim();
     this.updateMedicalHistory(this.data.userId, this.selectedLink.id, {diseases: this.userAnimalData.animalMedicalHistory.diseases});
     this.toggleEditInputAndListItem(false, editIcon, editInput, errorElem, checkIcon, closeInputIcon, diseaseItem);
   }
@@ -113,12 +122,16 @@ export class UserAnimalInfoComponent implements OnInit {
                       closeInputIcon: HTMLSpanElement,
                       recItem: HTMLLIElement): void {
 
-    if (!recItem.innerText || !this.editedRecommendation || recItem.innerText === this.editedRecommendation.trim()) {
+    if (!recItem.innerText || !this.newRecommendation || recItem.innerText === this.newRecommendation.trim()) {
       errorElem.classList.remove('hide');
       return;
     }
     this.resetErrorMessage(errorElem);
-    this.userAnimalData.animalMedicalHistory.recommendations.push(this.editedRecommendation.trim());
+    const indexOfRecommendation = this.userAnimalData.animalMedicalHistory.recommendations.indexOf(recItem.innerText);
+    if(indexOfRecommendation === -1) {
+      return;
+    }
+    this.userAnimalData.animalMedicalHistory.recommendations[indexOfRecommendation] = this.newRecommendation.trim();
     this.updateMedicalHistory(this.data.userId, this.selectedLink.id, {recommendations: this.userAnimalData.animalMedicalHistory.recommendations});
     this.toggleEditInputAndListItem(false, editIcon, editInput, errorElem, checkIcon, closeInputIcon, recItem);
   }
@@ -183,8 +196,16 @@ export class UserAnimalInfoComponent implements OnInit {
     this.animalService.updateAnimalsSubCollections(url, this.userAnimalData.medicalHistoryDocId, payload);
   }
 
-  deleteFromMedicalHistory(): void {
+  deleteFromDiseases(data: string): void {
+    const indexOfDisease = this.userAnimalData.animalMedicalHistory.diseases.indexOf(data);
+    this.userAnimalData.animalMedicalHistory.diseases.splice(indexOfDisease, 1);
+    this.updateMedicalHistory(this.data.userId, this.selectedLink.id, {diseases: this.userAnimalData.animalMedicalHistory.diseases});
+  }
 
+  deleteFromRecommendation(data: string): void {
+    const indexOfRecommendation = this.userAnimalData.animalMedicalHistory.recommendations.indexOf(data);
+    this.userAnimalData.animalMedicalHistory.recommendations.splice(indexOfRecommendation, 1);
+    this.updateMedicalHistory(this.data.userId, this.selectedLink.id, {recommendations: this.userAnimalData.animalMedicalHistory.recommendations});
   }
 }
 

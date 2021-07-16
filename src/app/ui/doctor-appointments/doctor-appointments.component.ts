@@ -42,6 +42,10 @@ export class DoctorAppointmentsComponent implements OnInit {
     this.APPOINTMENT_SUB?.unsubscribe();
   }
 
+  closeAppointmentDetails(): void {
+    this.isUserCardClicked = false;
+  }
+
   mapToCardData(appointment: any): ICardData {
     return {
       title: appointment.userName,
@@ -53,7 +57,7 @@ export class DoctorAppointmentsComponent implements OnInit {
   openSectionWithAnimalDetails(animalId: string | number): void {
     // we do this because we want to let the card to be generic
     const selectedAppointment = this.appointmentList.find(appointment => appointment.animalData.uid === animalId);
-    if(!selectedAppointment || !selectedAppointment.userId) {
+    if (!selectedAppointment || !selectedAppointment.userId) {
       alert('No user found');
       return;
     }

@@ -1,7 +1,7 @@
 <div class="dialog-container mt-4 bg-alternative p-around">
     <div class="schedule-button d-flex justify-content-end m-btn-dialog-row">
       <button class="btn button--active me-2" (click)="addNewAppointment()">Adauga programare noua</button>
-      <button class="btn btn-light close-btn" (click)="addNewAppointment()">Close</button>
+      <button class="btn btn-light close-btn" (click)="closeAppointmentDetails()">Close</button>
     </div>
   <div class="d-flex justify-content-between">
     <!--  ANIMAL GENERAL DATA -->
@@ -78,7 +78,7 @@
                         (click)="editDisease(editIcon, editInput, errorElem, checkIcon, closeInputIcon, diseaseItem)"></span>
                   <span class="icon-close px-2 action-icon hide" #closeInputIcon
                         (click)="toggleEditInputAndListItem(false, editIcon, editInput, errorElem, checkIcon, closeInputIcon, diseaseItem)"></span>
-                  <span class="icon-trash hover-button-active-state" (click)="deleteFromMedicalHistory()"></span>
+                  <span class="icon-trash hover-button-active-state" (click)="deleteFromDiseases(disease)"></span>
                 </div>
               </div>
             </div>
@@ -107,7 +107,7 @@
                  class="d-flex justify-content-between recommendation-container">
               <div class="dialog-list-container">
                 <li #diseaseItem class="dialog-list-item list-style-type-none">{{recommendation}}</li>
-                <input #editInput [(ngModel)]="editedRecommendation"
+                <input #editInput [(ngModel)]="newRecommendation"
                        class="form-control action-input dialog-list-item m-btn-small hide" type="text"
                        [placeholder]="userAnimalDialog.editInputPlaceholder">
                 <li class="hide list-style-type-none error-msg m-btn-small"
@@ -120,7 +120,7 @@
                       (click)="editRecommendations(editIcon, editInput, errorElem, checkIcon, closeInputIcon, diseaseItem)"></span>
                 <span class="icon-close px-2 action-icon hide" #closeInputIcon
                       (click)="toggleEditInputAndListItem(false, editIcon, editInput, errorElem, checkIcon, closeInputIcon, diseaseItem)"></span>
-                <span class="icon-trash hover-button-active-state" (click)="deleteFromMedicalHistory()"></span>
+                <span class="icon-trash hover-button-active-state" (click)="deleteFromRecommendation(recommendation)"></span>
               </div>
             </div>
           </div>
