@@ -23,6 +23,7 @@ export class LoginDialogComponent implements OnInit {
   }
 
   loginWithEmailAndPassword(loginPayload: any): void {
+    // todo: validate inputs
     this.loginService.logIn(loginPayload.email, loginPayload.password, this.dialogRef);
   }
 

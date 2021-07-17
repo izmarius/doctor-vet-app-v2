@@ -8,6 +8,10 @@ export interface IDoctorsAppointmentsDTO {
   userId: string;
   userName: string;
   services: string;
+  userEmail: string;
+  phone: string;
+  isAppointmentFinished: boolean;
+  isConfirmedByDoctor: boolean;
 }
 
 export class DoctorsAppointmentDTO {
@@ -18,7 +22,10 @@ export class DoctorsAppointmentDTO {
   private userId: string;
   private userName: string;
   private services: string;
-
+  private userEmail: string;
+  private phone: string;
+  private isAppointmentFinished: boolean;
+  private isConfirmedByDoctor: boolean;
 // todo: getter and setter when to use in typescript
   getId(): string {
     return this.id;
@@ -80,6 +87,26 @@ export class DoctorsAppointmentDTO {
 
   setServices(value: string): DoctorsAppointmentDTO {
     this.services = value;
+    return this;
+  }
+
+  setUserEmail(value: string): DoctorsAppointmentDTO {
+    this.userEmail = value;
+    return this;
+  }
+
+  setPhone(value: string): DoctorsAppointmentDTO {
+    this.phone = value;
+    return this;
+  }
+
+  setIsAppointmentFinished (value: boolean): DoctorsAppointmentDTO {
+    this.isAppointmentFinished = value;
+    return this;
+  }
+
+  setIsConfirmedByDoctor (value: boolean): DoctorsAppointmentDTO {
+    this.isConfirmedByDoctor = value;
     return this;
   }
 }

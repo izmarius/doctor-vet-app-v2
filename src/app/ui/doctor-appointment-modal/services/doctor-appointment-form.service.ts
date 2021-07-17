@@ -12,9 +12,8 @@ export class DoctorAppointmentFormService {
   constructor(private userService: UserService) { }
 
   // @ts-ignore
-  filterPatients(searchText: string, patientName: string): Observable<any> {
-    searchText = patientName;
-    if (patientName.length >= 2) {
+  filterPatients(searchText: string): Observable<any> {
+    if (searchText.length >= 2) {
       return this.userService.getAllUsers().pipe(
         debounceTime(200),
         distinctUntilChanged(),

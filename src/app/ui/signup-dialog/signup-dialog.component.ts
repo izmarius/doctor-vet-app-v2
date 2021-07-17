@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {MatDialogRef} from '@angular/material/dialog';
-import {AUTH_SIGNUP_FORM_TEXT, COUNTIES, INPUT_LABELS_TXT} from '../../shared-data/Constants';
+import {AUTH_SIGNUP_FORM_TEXT, COUNTIES, INPUT_LABELS_TXT, INPUT_REGEX_TEXTS} from '../../shared-data/Constants';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {FirebaseUtilsService} from "../../services/firebase-utils-service/firebase-utils.service";
 import {SignUpService} from "../../services/signup/sign-up.service";
@@ -54,12 +54,10 @@ export class SignupDialogComponent implements OnInit {
   }
 
   initAuthForm(): void {
-    const emailPattern = '^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$';
-    const phonePattern = '^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$';
     this.authFormGroup = new FormGroup({
-      email: new FormControl('pausan.ionut.adrian@gmail.com', [Validators.required, Validators.pattern(emailPattern)]),
+      email: new FormControl('pausan.ionut.adrian@gmail.com', [Validators.required, Validators.pattern(INPUT_REGEX_TEXTS.email)]),
       password: new FormControl('Start123', [Validators.required, Validators.minLength(6)]),
-      phoneNumber: new FormControl('0743922689', [Validators.required, Validators.minLength(10), Validators.pattern(phonePattern)]),
+      phoneNumber: new FormControl('0743922689', [Validators.required, Validators.minLength(10), Validators.pattern(INPUT_REGEX_TEXTS.phoneNumber)]),
       name: new FormControl('ionu', Validators.required),
       address: new FormControl('Cluj-Napoca, 5', Validators.required),
     });

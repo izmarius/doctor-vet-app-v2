@@ -1,3 +1,27 @@
+export const INPUT_LABELS_TXT = {
+  doctorNameLabel: 'Nume',
+  locationLabel: 'Location',
+  locationURLLabel: 'Google Maps URL',
+  clinicLabel: 'Clinica',
+  emailLabel: 'Email',
+  phoneLabel: 'Telefon',
+  passwordLabel: 'Parola',
+  countyLabel: 'Judet',
+  messageLabel: 'Scrie-ne un mesaj:',
+};
+
+export const MY_PROFILE = {
+  editBtn: 'Editeaza profilul',
+  namePlaceholder: 'Ion Popescu',
+  emailPlaceholder: 'pausan@gmail.com',
+  locationPlaceholder: 'Cluj-Napoca, nr 5, sc 5 app 33',
+  locationURLPlaceholder: 'URL se poate copia de pe google maps',
+  phonePlaceholder: '0743922xxx',
+  clinicPlaceholder: 'Regina Maria',
+  errorMessage: ['Campul', 'lipseste sau este incorect'],
+  formSuccessMessage: 'Editarea profilului a fost facuta cu succes'
+};
+
 export const USER_CARD_TXT = {
   datePlaceholder: 'Data si ora procesarii',
   services: 'Servicii cerute',
@@ -29,7 +53,8 @@ export const APPOINTMENTFORM_DATA = {
   medicLabel: 'Medic',
   dateLabel: 'Data',
   dateFormat: 'dd/mm/yyyy',
-  startTimeLabel: 'Ora',
+  hourLabel: 'Ora',
+  minuteLabel: 'Minut',
   patientLabel: 'Pacient',
   animalLabel: 'Animal',
   servicesLabel: 'Servicii',
@@ -40,7 +65,11 @@ export const APPOINTMENTFORM_DATA = {
   servicesSelectDefaultOption: 'Alege un serviciu',
   animalSelectDefaultOption: 'Alege un animal',
   formValidationMessage: 'Toate campurile trebuie completate!',
-  patientOnFocusMessage: 'Selecteaza un client din lista'
+  patientOnFocusMessage: 'Selecteaza un client din lista',
+  patientPhoneLabel: INPUT_LABELS_TXT.phoneLabel,
+  patientPhonePlaceholder: MY_PROFILE.phonePlaceholder,
+  patientEmailLabel: INPUT_LABELS_TXT.emailLabel,
+  patientEmailPlaceholder: MY_PROFILE.emailPlaceholder
 };
 
 export const DOCTORAPPOINTMENTSECTION_DATA = {
@@ -71,30 +100,6 @@ export const FOOTER_COMPONENT = {
   buttonText: 'Trimite mesajul!',
   placeholderMessage: 'Min 5 caractere, max 250 caractere',
   placeholderEmail: 'popescu1234@gmail.com',
-};
-
-export const MY_PROFILE = {
-  editBtn: 'Editeaza profilul',
-  namePlaceholder: 'Ion Popescu',
-  emailPlaceholder: 'pausan@gmail.com',
-  locationPlaceholder: 'Cluj-Napoca, nr 5, sc 5 app 33',
-  locationURLPlaceholder: 'URL se poate copia de pe google maps',
-  phonePlaceholder: '0743922xxx',
-  clinicPlaceholder: 'Regina Maria',
-  errorMessage: ['Campul', 'lipseste sau este incorect'],
-  formSuccessMessage: 'Editarea profilului a fost facuta cu succes'
-};
-
-export const INPUT_LABELS_TXT = {
-  doctorNameLabel: 'Nume',
-  locationLabel: 'Location',
-  locationURLLabel: 'Google Maps URL',
-  clinicLabel: 'Clinica',
-  emailLabel: 'Email',
-  phoneLabel: 'Telefon',
-  passwordLabel: 'Parola',
-  countyLabel: 'Judet',
-  messageLabel: 'Scrie-ne un mesaj:',
 };
 
 export const USER_STATE = {
@@ -137,7 +142,6 @@ export const AUTH_LOGIN_FORM_TEXT = {
   isLogin: true,
   forgotPasswordMsg: 'Ai uitat parola?'
 };
-
 
 export const AUTH_SIGNUP_FORM_TEXT = {
   address: 'Adresa clinicii - Oras, Strada, Numar',
@@ -183,6 +187,7 @@ export const SCHEDULE_COMPONENT = {
   ERROR_MSG: 'Asigura-te ca orele de inceput si de sfarsit ale zilei sunt completate corect.',
   DAY_OFF: 'Zi libera'
 };
+
 export const COUNTIES = [
   'Bucuresti',
   'Iasi',

@@ -1,3 +1,11 @@
+export interface IUserDTO {
+  city: string;
+  email: string;
+  name: string;
+  phone: string;
+  photo: string;
+}
+
 export class UserDTO {
   private city: string;
   private email: string;

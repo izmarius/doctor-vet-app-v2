@@ -16,17 +16,28 @@
       </div>
       <mat-datepicker #picker color="accent"></mat-datepicker>
     </div>
-    <div class="m-btn-small">
-      <label>{{ appointmentFormPlaceHolder.startTimeLabel }}</label>
-      <ngx-mat-timepicker [(ngModel)]="time" [ngModelOptions]="{standalone: true}" [showSpinners]="true" [stepHour]="1"
-                          [stepMinute]="1">
-      </ngx-mat-timepicker>
+    <div class="m-btn-small d-flex">
+      <div>
+        <label>{{ appointmentFormPlaceHolder.hourLabel }}</label>
+        <mat-select class="form-control" [(ngModel)]="stepHour" [ngModelOptions]="{standalone: true}">
+          <mat-option *ngFor="let step of stepHours" [value]="step">
+            {{step}}
+          </mat-option>
+        </mat-select>
+      </div>
+      <div>
+        <label>{{ appointmentFormPlaceHolder.minuteLabel }}</label>
+        <mat-select class="form-control" [(ngModel)]="stepMinute" [ngModelOptions]="{standalone: true}">
+          <mat-option *ngFor="let step of stepMinutes" [value]="step">
+            {{step}}
+          </mat-option>
+        </mat-select>
+      </div>
     </div>
     <div class="m-btn-small">
       <label for="patient">{{ appointmentFormPlaceHolder.patientLabel }}</label>
-      <input type="text" id="patient" class="form-control" #inputPatientName
+      <input type="text" id="patient" class="form-control" autocomplete="off" #inputPatientName
              formControlName="patientName"
-             [(ngModel)]="patientName"
              [placeholder]="appointmentFormPlaceHolder.userNameInputPlaceholder"
              (ngModelChange)="filterPatients($event)"
              (focus)="onFocusPatient()"/>
@@ -39,9 +50,10 @@
       </ul>
     </div>
     <div class="m-btn-small hide" #animalList>
-      <label for="animal">{{ appointmentFormPlaceHolder.animalLabel }}</label>
+      <label for="animal">{{ appointmentFormPlaceHolder.animalSelectDefaultOption }}</label>
+      <!--      todo - set as an input -->
       <select name="animal" id="animal" class="form-control" formControlName="patientAnimal">
-        <option value="" disabled="true" [selected]="true">
+        <option [value]="appointmentFormPlaceHolder.animalSelectDefaultOption" disabled="true" [selected]="true">
           {{ appointmentFormPlaceHolder.animalSelectDefaultOption }}
         </option>
         <option
@@ -50,6 +62,18 @@
           {{ patientAnimal.animalName }}
         </option>
       </select>
+    </div>
+    <div class="m-btn-small">
+      <label for="medic">{{ appointmentFormPlaceHolder.patientPhoneLabel }}</label>
+      <input type="text" id="phone" class="form-control" readonly
+             formControlName="patientPhone"
+             [placeholder]="appointmentFormPlaceHolder.patientPhonePlaceholder"/>
+    </div>
+    <div class="m-btn-small">
+      <label for="medic">{{ appointmentFormPlaceHolder.patientEmailLabel }}</label>
+      <input type="text" id="email" class="form-control" readonly
+             formControlName="patientEmail"
+             [placeholder]="appointmentFormPlaceHolder.patientEmailPlaceholder"/>
     </div>
     <div class="m-btn-small">
       <label for="services">{{appointmentFormPlaceHolder.servicesLabel}}</label>
