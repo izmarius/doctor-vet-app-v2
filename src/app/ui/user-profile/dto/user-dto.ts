@@ -1,4 +1,5 @@
 export interface IUserDTO {
+  id: string;
   city: string;
   email: string;
   name: string;

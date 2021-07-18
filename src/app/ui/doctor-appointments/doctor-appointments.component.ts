@@ -50,6 +50,7 @@ export class DoctorAppointmentsComponent implements OnInit, OnDestroy {
   closeAppointmentDetails(): void {
     this.isUserCardClicked = false;
   }
+  // todo : daca au depasit orele de munca? sau programarea a expirat?
 
   mapToCardData(appointment: any): ICardData {
     return {

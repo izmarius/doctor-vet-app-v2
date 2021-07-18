@@ -51,25 +51,28 @@ export const DOCTORAPPOINTMENTHEADER_DATA = {
 export const APPOINTMENTFORM_DATA = {
   title: 'Programare noua',
   medicLabel: 'Medic',
-  dateLabel: 'Data',
+  dateLabel: 'Selecteaza data',
   dateFormat: 'dd/mm/yyyy',
   hourLabel: 'Ora',
   minuteLabel: 'Minut',
-  patientLabel: 'Pacient',
+  patientLabel: 'Nume client',
   animalLabel: 'Animal',
   servicesLabel: 'Servicii',
   cancelBtn: 'Anuleaza',
   submitBtn: 'Salveaza',
   medicInputPlaceholder: 'Nume doctor veterinar',
   userNameInputPlaceholder: 'Cauta in lista de pacienti',
-  servicesSelectDefaultOption: 'Alege un serviciu',
-  animalSelectDefaultOption: 'Alege un animal',
-  formValidationMessage: 'Toate campurile trebuie completate!',
+  servicesSelectDefaultOption: 'Selecteaza un serviciu',
+  animalSelectDefaultOption: 'Cauta un animal sau adauga unul nou',
+  formAllFieldsValidMessage: 'Toate campurile trebuie completate!',
   patientOnFocusMessage: 'Selecteaza un client din lista',
   patientPhoneLabel: INPUT_LABELS_TXT.phoneLabel,
   patientPhonePlaceholder: MY_PROFILE.phonePlaceholder,
   patientEmailLabel: INPUT_LABELS_TXT.emailLabel,
-  patientEmailPlaceholder: MY_PROFILE.emailPlaceholder
+  patientEmailPlaceholder: MY_PROFILE.emailPlaceholder,
+  timeValidation: 'Ora programarii nu poate fi setata in trecut',
+  patientDoesNotExist: 'Nu am gasit nici un user cu acest email, te rugam sa incerci din nou sau sa creezi un user clientului in sectiunea "Creeaza client nou"',
+  userDoesNotHaveAnimal: 'Acest user nu are nici un animal inregistrat, insereaza in input numele animalului pentru a-l adauga clientului'
 };
 
 export const DOCTORAPPOINTMENTSECTION_DATA = {
@@ -124,7 +127,8 @@ export const NAVBAR_TEXT = {
   signIn: 'Intra in cont',
   signUp: 'Creeaza cont',
   myProfile: 'Profilul meu',
-  home: 'Acasa'
+  home: 'Acasa',
+  newAccount: 'Creeaza client nou'
 };
 
 export const HEADER_TEXT = {

@@ -56,6 +56,13 @@ export class FirestoreService {
   }
 
   /**
+   * Gets value of a document by document id from a collection
+   */
+  getNewFirestoreId(): string {
+    return this.firestore.createId();
+  }
+
+  /**
    * Gets value of a collection where a match is found
    */
   getCollectionByWhereClause(collection: string, key: string, operator: any, value: string): Observable<any> {
@@ -68,6 +75,13 @@ export class FirestoreService {
    */
   saveDocumentByAutoId(collection: string, data: any): Promise<any> {
     return this.firestore.collection(collection).add(JSON.parse(JSON.stringify(data)));
+  }
+
+  /**
+   * Saves a new empty document into a collection
+   */
+  saveDocumentByWithEmptyDoc(collection: string, documentId: string): any {
+    return this.firestore.collection(collection).doc(documentId);
   }
 
   /**
