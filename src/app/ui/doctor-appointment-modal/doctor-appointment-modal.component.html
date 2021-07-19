@@ -1,7 +1,7 @@
 <div class="container">
   <div class="d-flex justify-content-end"><span class="icon-close modal-close-icon" (click)="onCancelForm()"></span></div>
   <h4 class="text-center">{{appointmentFormPlaceHolder.title}}</h4>
-  <form [formGroup]="appointmentForm" (ngSubmit)="onSubmit()">
+  <form [formGroup]="appointmentForm" (ngSubmit)="onSubmitAppointment()">
     <div class="m-btn-small">
       <label>{{ appointmentFormPlaceHolder.dateLabel }}</label>
       <div class="d-flex">
@@ -90,6 +90,7 @@
         {{ appointmentFormPlaceHolder.cancelBtn }}
       </button>
       <button class="btn button--active" type="submit" [disabled]="!appointmentForm.valid">
+<!--      <button class="btn button&#45;&#45;active" type="submit">-->
         {{ appointmentFormPlaceHolder.submitBtn }}
       </button>
     </div>

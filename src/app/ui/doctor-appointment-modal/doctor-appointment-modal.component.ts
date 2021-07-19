@@ -49,6 +49,8 @@ export class DoctorAppointmentModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // todo: set time in inputs to the closest hour possible that can be booked today - if current day -set to closest from dropdonw
+    // if no hours available display message to user that today is out of work hours
     this.appointmentFormPlaceHolder = APPOINTMENTFORM_DATA;
     this.doctor = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
     for (let service in this.doctor.services) {
@@ -60,7 +62,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
   initForm() {
     this.appointmentForm = new FormGroup({
       startDate: new FormControl(null, Validators.required),
-      startTime: new FormControl(null, Validators.required),
+      startTime: new FormControl(this.dateTimeUtils.formatTime(this.stepHour, this.stepMinute), Validators.required),
       medService: new FormControl(null, Validators.required),
       patientName: new FormControl(null, Validators.required),
       animalName: new FormControl(null, Validators.required),
@@ -69,7 +71,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
     });
   }
 
-  onSubmit(): void {
+  onSubmitAppointment(): void {
     this.validateTime();
     if (!this.appointmentForm.valid) {
       this.setErrorMessage(APPOINTMENTFORM_DATA.formAllFieldsValidMessage);
@@ -89,9 +91,9 @@ export class DoctorAppointmentModalComponent implements OnInit {
 
 
     const newDoctorAppointment = new DoctorsAppointmentDTO()
-      .setUserName(this.appointmentForm.value.patientName.value)
+      .setUserName(this.appointmentForm.value.patientName)
       .setUserId(this.selectedPatient?.id)
-      .setServices(this.appointmentForm.value.medService.value)
+      .setServices(this.appointmentForm.value.medService)
       .setDateTime(
         this.appointmentForm.value.startDate.toLocaleDateString() + ' - ' +
         this.appointmentForm.value.startTime
@@ -128,7 +130,11 @@ export class DoctorAppointmentModalComponent implements OnInit {
     const currentMinutes = currentTime.getMinutes();
     // todo check when doctor has last appointment - set in dropdown only available hours?
     // todo - add start hour/ end hour? - if doctor wants to block 2 hours for an appointment what he'll do?
-    if (!this.stepHour || !this.stepMinute || (this.stepHour < currentHours && this.stepMinute < currentMinutes + 1)) {
+    if (this.stepHour === null
+      || this.stepMinute === null
+      || !this.dateTimeUtils.isSelectedDateGreaterOrEqualComparedToCurrentDate(this.appointmentForm.value.startDate.toLocaleDateString())
+      || (this.stepHour < currentHours && this.dateTimeUtils.isCurrentDay(this.appointmentForm.value.startDate.toLocaleDateString()))
+      || (this.stepHour >= currentHours && this.stepMinute <= currentMinutes)) {
       this.setErrorMessage(APPOINTMENTFORM_DATA.timeValidation);
       return;
     }
@@ -168,10 +174,12 @@ export class DoctorAppointmentModalComponent implements OnInit {
   setErrorMessage(value: string): void {
     if (!value) {
       this.isErrorDisplayed = false;
+      this.errorMessage = value;
     } else {
       this.isErrorDisplayed = true;
+      this.errorMessage = value;
+      throw value;
     }
-    this.errorMessage = value;
   }
 
   onSelectPatient(selectedPatient: IUserDTO | any): void {

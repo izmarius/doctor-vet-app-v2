@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {FirestoreService} from "../../../data/http/firestore.service";
 import {Observable} from "rxjs";
 import {map, mergeMap, take} from "rxjs/operators";
@@ -55,8 +55,8 @@ export class AnimalService {
             map((medicalHistoryCollection: any) => {
               return {
                 animalData,
-                animalMedicalHistory: medicalHistoryCollection.docs[0].data(),
-                medicalHistoryDocId: medicalHistoryCollection.docs[0].id
+                animalMedicalHistory: medicalHistoryCollection.docs.length === 0 ? [] : medicalHistoryCollection.docs[0].data(),
+                medicalHistoryDocId: medicalHistoryCollection.docs.length === 0 ? '' : medicalHistoryCollection.docs[0].id
               };
             })
           );
