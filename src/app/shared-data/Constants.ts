@@ -72,7 +72,8 @@ export const APPOINTMENTFORM_DATA = {
   patientEmailPlaceholder: MY_PROFILE.emailPlaceholder,
   timeValidation: 'Ora programarii nu poate fi setata in trecut',
   patientDoesNotExist: 'Nu am gasit nici un user cu acest email, te rugam sa incerci din nou sau sa creezi un user clientului in sectiunea "Creeaza client nou"',
-  userDoesNotHaveAnimal: 'Acest user nu are nici un animal inregistrat, insereaza in input numele animalului pentru a-l adauga clientului'
+  userDoesNotHaveAnimal: 'Acest user nu are nici un animal inregistrat, insereaza in input numele animalului pentru a-l adauga clientului',
+  successAppointment: 'Programarea a fost facut cu succes'
 };
 
 export const DOCTORAPPOINTMENTSECTION_DATA = {

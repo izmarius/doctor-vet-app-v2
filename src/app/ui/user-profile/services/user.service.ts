@@ -35,8 +35,8 @@ export class UserService {
   saveAnimal(user: any, animalName: string): string {
     const payload = {
       id: '',
-      birthDay: '',
-      bloodType: '',
+      birthDay: '-',
+      bloodType: '-',
       age: 0,
       name: animalName,
       weight: 0

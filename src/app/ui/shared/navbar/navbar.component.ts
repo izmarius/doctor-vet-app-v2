@@ -34,6 +34,9 @@ export class NavbarComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      if(result) {
+
+      }
     });
   }
 

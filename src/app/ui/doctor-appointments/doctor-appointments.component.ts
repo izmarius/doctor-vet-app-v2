@@ -36,8 +36,11 @@ export class DoctorAppointmentsComponent implements OnInit, OnDestroy {
         .getAllAppointments(this.user.id)
         .subscribe((appointments) => {
           // need to do this because we want to leave the card as a generic component
+          // refresh data if already exists - see if we can improve here
+          this.appointmentList = [];
+          this.appointmentMap = {};
           this.appointmentList = appointments;
-          this.setAppointmentMap(appointments);
+          this.setAppointmentMap();
         });
     }, 300)
 
@@ -87,8 +90,8 @@ export class DoctorAppointmentsComponent implements OnInit, OnDestroy {
     }
   }
 
-  setAppointmentMap(appointments: IDoctorsAppointmentsDTO[]): void {
-    appointments.forEach((appointment) => {
+  setAppointmentMap(): void {
+    this.appointmentList.forEach((appointment) => {
       const date = appointment.dateTime.split('-')[0].trim();
       if (this.appointmentMap[date]) {
         this.appointmentMap[date].push(appointment);

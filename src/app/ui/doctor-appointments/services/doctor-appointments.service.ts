@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {FirestoreService} from "../../../data/http/firestore.service";
 import {DoctorsAppointmentDTO, IDoctorsAppointmentsDTO} from "../dto/doctor-appointments-dto";
 import {Observable} from "rxjs";
@@ -19,8 +19,7 @@ export class DoctorAppointmentsService {
   getAllAppointments(doctorId: string): Observable<IDoctorsAppointmentsDTO[]> {
     return this.firestoreService.getCollection(this.getAppointmentUrl(doctorId)).pipe(
       map(snaps => convertSnapshots<IDoctorsAppointmentsDTO[]>(snaps)
-      ),
-      first()
+      )
     );
     // firebase uses websocket to transfer data and first closes that connection after first value was transmited - for multiple tryes we will use take method
     // todo: subscribe in component

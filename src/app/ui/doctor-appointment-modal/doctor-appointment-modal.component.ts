@@ -110,6 +110,8 @@ export class DoctorAppointmentModalComponent implements OnInit {
       [newDoctorAppointment],
       this.doctor.id
     );
+    alert(APPOINTMENTFORM_DATA.successAppointment);
+    this.onCancelForm(true);
   }
 
   isAnimalRegisteredToUser(): boolean {
@@ -142,8 +144,8 @@ export class DoctorAppointmentModalComponent implements OnInit {
     this.appointmentForm.controls.startTime.setValue(this.dateTimeUtils.formatTime(this.stepHour, this.stepMinute));
   }
 
-  onCancelForm(): void {
-    this.dialogRef.close();
+  onCancelForm(isAppointmentSuccess: boolean): void {
+    this.dialogRef.close(isAppointmentSuccess);
   }
 
   filterClients(searchText: string): void {

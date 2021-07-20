@@ -1,10 +1,10 @@
 import {Component, ElementRef, EventEmitter, Inject, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {Subscription} from "rxjs";
 import {AnimalService} from "../doctor-appointments/services/animal.service";
 import {IUserAnimalAndMedicalHistory} from "./dto/user-animal-medical-history-dto";
 import {DIALOG_UI_ERRORS, USER_ANIMAL_DIALOG} from "../../shared-data/Constants";
 import {MatDialog} from "@angular/material/dialog";
 import {DoctorAppointmentModalComponent} from "../doctor-appointment-modal/doctor-appointment-modal.component";
+import {take} from "rxjs/operators";
 
 @Component({
   selector: 'app-user-animal-info',
@@ -14,7 +14,6 @@ import {DoctorAppointmentModalComponent} from "../doctor-appointment-modal/docto
 export class UserAnimalInfoComponent implements OnInit {
 
   @ViewChild('animalsParent') private ANIMAL_PARENT_ELEM!: ElementRef;
-  private USER_ANIMAL_SUB!: Subscription;
 
   public isActiveLink!: boolean;
   public isAddDiseaseEnabled!: boolean;
@@ -35,18 +34,21 @@ export class UserAnimalInfoComponent implements OnInit {
   ngOnInit(): void {
     this.userAnimalDialog = USER_ANIMAL_DIALOG;
     this.userAnimalDialogErrorTxt = DIALOG_UI_ERRORS;
-    this.USER_ANIMAL_SUB = this.data.userAnimalDataObs.subscribe((userAnimalData: any) => {
-      this.userAnimalData = userAnimalData;
-      setTimeout(() => this.setSelectedAnimalActive(userAnimalData.animalData.id), 0);
-    });
-  }
-
-  ngOnDestroy(): void {
-    this.USER_ANIMAL_SUB?.unsubscribe();
+    this.data.userAnimalDataObs
+      .pipe(take(1))
+      .subscribe((userAnimalData: any) => {
+        this.userAnimalData = userAnimalData;
+        setTimeout(() => this.setSelectedAnimalActive(userAnimalData.animalData.id), 0);
+        if (userAnimalData && userAnimalData.animalMedicalHistory.length === 0) {
+          this.userAnimalData.animalMedicalHistory.diseases = [];
+          this.userAnimalData.animalMedicalHistory.recommendations = [];
+          return;
+        }
+      });
   }
 
   addDisease(): void {
-    if (!!!this.newDisease) {
+    if (!this.newDisease) {
       return;
     }
     this.userAnimalData.animalMedicalHistory.diseases.push(this.newDisease);
@@ -71,7 +73,7 @@ export class UserAnimalInfoComponent implements OnInit {
   }
 
   addRecommendation(): void {
-    if (!!!this.newRecommendation) {
+    if (!this.newRecommendation) {
       return;
     }
     this.userAnimalData.animalMedicalHistory.recommendations.push(this.newRecommendation);
@@ -116,7 +118,7 @@ export class UserAnimalInfoComponent implements OnInit {
     }
     this.resetErrorMessage(errorElem);
     const indexOfDisease = this.userAnimalData.animalMedicalHistory.diseases.indexOf(diseaseItem.innerText);
-    if(indexOfDisease === -1) {
+    if (indexOfDisease === -1) {
       return;
     }
     this.userAnimalData.animalMedicalHistory.diseases[indexOfDisease] = this.newDisease.trim();
@@ -137,7 +139,7 @@ export class UserAnimalInfoComponent implements OnInit {
     }
     this.resetErrorMessage(errorElem);
     const indexOfRecommendation = this.userAnimalData.animalMedicalHistory.recommendations.indexOf(recItem.innerText);
-    if(indexOfRecommendation === -1) {
+    if (indexOfRecommendation === -1) {
       return;
     }
     this.userAnimalData.animalMedicalHistory.recommendations[indexOfRecommendation] = this.newRecommendation.trim();

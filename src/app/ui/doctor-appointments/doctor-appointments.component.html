@@ -1,9 +1,9 @@
 <div class="vet-container">
-  <div class="vet-content" *ngFor="let appList of appointmentMap | keyvalue">
-    <h4 class="m-title-bottom">{{appList.key}}</h4>
+  <div class="vet-content" *ngFor="let appObj of appointmentMap | keyvalue">
+    <h4 class="m-title-bottom">{{appObj.key}}</h4>
     <div class="m-btn-card-row row">
       <!--      todo: flex or col? - see with one element or after testing with real user-->
-      <app-user-card class="col user-card-component" #cardComponent *ngFor="let appointment of appList.value"
+      <app-user-card class="col-4 user-card-component m-btn-card-row" #cardComponent *ngFor="let appointment of appObj.value"
                      [cardData]="mapToCardData(appointment)"
                      (cardButtonEmitter)="openSectionWithAnimalDetails($event)"></app-user-card>
       <div class="user__animal__display"></div>
