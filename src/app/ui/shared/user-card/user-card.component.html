@@ -1,15 +1,19 @@
-<div class="card__container bg-alternative">
-  <div class="m-btn-small d-flex">
-    <div class="card__img_container">
-      <img class="card__img" src="https://www.pngkey.com/png/full/114-1149878_setting-user-avatar-in-specific-size-without-breaking.png" alt="User image">
+<div>
+  <div class="card__container bg-alternative">
+    <div class="m-btn-small d-flex">
+      <div class="card__img_container">
+        <img class="card__img"
+             src="https://www.pngkey.com/png/full/114-1149878_setting-user-avatar-in-specific-size-without-breaking.png"
+             alt="User image">
+      </div>
+      <h4>{{cardData?.title}}</h4>
     </div>
-    <h4>{{cardData?.title}}</h4>
-  </div>
-  <div class="m-btn-small" *ngFor="let data of cardData.values">
-    <p class="card__label">{{data.placeholder}}</p>
-    <p>{{data?.value}}</p>
-  </div>
-  <div class="m-btn-small d-flex justify-content-center">
-    <button class="btn button--active" (click)="cardButtonIsClicked()">{{cardData.buttonData.placeholder}}</button>
+    <div class="m-btn-small" *ngFor="let data of cardData.values">
+      <p class="card__label">{{data.placeholder}}</p>
+      <p>{{data?.value}}</p>
+    </div>
+    <div class="m-btn-small d-flex justify-content-center">
+      <button class="btn button--active" (click)="cardButtonIsClicked()">{{cardData.buttonData.placeholder}}</button>
+    </div>
   </div>
 </div>

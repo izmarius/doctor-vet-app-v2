@@ -2,7 +2,7 @@ import {Component, ElementRef, EventEmitter, Inject, Input, OnInit, Output, View
 import {AnimalService} from "../doctor-appointments/services/animal.service";
 import {IUserAnimalAndMedicalHistory} from "./dto/user-animal-medical-history-dto";
 import {DIALOG_UI_ERRORS, USER_ANIMAL_DIALOG} from "../../shared-data/Constants";
-import {MatDialog} from "@angular/material/dialog";
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {DoctorAppointmentModalComponent} from "../doctor-appointment-modal/doctor-appointment-modal.component";
 import {take} from "rxjs/operators";
 
@@ -24,17 +24,18 @@ export class UserAnimalInfoComponent implements OnInit {
   public userAnimalData!: IUserAnimalAndMedicalHistory;
   public userAnimalDialog: any;
   public userAnimalDialogErrorTxt: any;
-  @Input() data: any;
-  @Output() closeAppointmentSectionEmitter: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(private animalService: AnimalService,
-              private dialog: MatDialog) {
+              private dialog: MatDialog,
+              public dialogRef: MatDialogRef<UserAnimalInfoComponent>,
+              @Inject(MAT_DIALOG_DATA) public data: any
+              ) {
   }
 
   ngOnInit(): void {
     this.userAnimalDialog = USER_ANIMAL_DIALOG;
     this.userAnimalDialogErrorTxt = DIALOG_UI_ERRORS;
-    this.data.userAnimalDataObs
+    this.data?.userAnimalDataObs
       .pipe(take(1))
       .subscribe((userAnimalData: any) => {
         this.userAnimalData = userAnimalData;
@@ -61,12 +62,12 @@ export class UserAnimalInfoComponent implements OnInit {
   }
 
   addNewAppointment(): void {
-    // todo send selected data?
     const dialogRef = this.dialog.open(DoctorAppointmentModalComponent, {
       width: '25%',
       height: '37.5rem',
       data: null
     });
+
 
     dialogRef.afterClosed().subscribe(result => {
     });
@@ -82,7 +83,7 @@ export class UserAnimalInfoComponent implements OnInit {
   }
 
   closeAppointmentDetails(): void {
-    this.closeAppointmentSectionEmitter.emit();
+    this.dialogRef.close()
   }
 
   showRecommendationInput(): void {

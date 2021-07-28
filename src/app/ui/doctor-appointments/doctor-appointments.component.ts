@@ -1,29 +1,38 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Subscription} from "rxjs";
 import {IDoctorsAppointmentsDTO} from "./dto/doctor-appointments-dto";
 import {INPUT_LABELS_TXT, USER_CARD_TXT, USER_LOCALSTORAGE} from "../../shared-data/Constants";
 import {DoctorAppointmentsService} from "./services/doctor-appointments.service";
 import {AnimalService} from "./services/animal.service";
 import {ICardData} from "../shared/user-card/user-card.component";
+import {MatDialog} from "@angular/material/dialog";
+import {DoctorAppointmentModalComponent} from "../doctor-appointment-modal/doctor-appointment-modal.component";
+import {UserAnimalInfoComponent} from "../user-animal-info/user-animal-info.component";
 
 @Component({
   selector: 'app-doctor-appointments',
   templateUrl: './doctor-appointments.component.html',
   styleUrls: ['./doctor-appointments.component.css']
 })
-export class DoctorAppointmentsComponent implements OnInit, OnDestroy {
+export class DoctorAppointmentsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private APPOINTMENT_SUB!: Subscription;
   private appointmentList!: IDoctorsAppointmentsDTO[];
-  @ViewChild('cardComponent') private cardComponent: undefined;
+  @ViewChild('cardRow') cardRow: any;
+  @ViewChild('animalInfo') animalInfo: any;
   public appointmentMap: any = {};
-  public isUserCardClicked = false;
   public userCardPlaceholder: any;
   private user: any;
   userAnimalData: any;
+  cardParentStats: any;
 
   constructor(private doctorAppointmentService: DoctorAppointmentsService,
-              private animalService: AnimalService) {
+              private animalService: AnimalService,
+              private dialogRef: MatDialog ) {
+  }
+
+  ngAfterViewInit(): void {
+    this.cardParentStats = this.cardRow.nativeElement;
   }
 
   ngOnInit(): void {
@@ -43,21 +52,17 @@ export class DoctorAppointmentsComponent implements OnInit, OnDestroy {
           this.setAppointmentMap();
         });
     }, 300)
-
   }
 
   ngOnDestroy(): void {
     this.APPOINTMENT_SUB?.unsubscribe();
   }
 
-  closeAppointmentDetails(): void {
-    this.isUserCardClicked = false;
-  }
   // todo : daca au depasit orele de munca? sau programarea a expirat?
 
   mapToCardData(appointment: any): ICardData {
     return {
-      title: appointment.userName + ' - ' +appointment.phone,
+      title: appointment.userName + ' - ' + appointment.phone,
       values: [{
         placeholder: this.userCardPlaceholder.datePlaceholder,
         value: appointment.dateTime
@@ -83,11 +88,22 @@ export class DoctorAppointmentsComponent implements OnInit, OnDestroy {
       return;
     }
     const userAnimalObs$ = this.animalService.getAnimalDataAndMedicalHistoryByAnimalId(animalId, selectedAppointment.userId);
-    this.isUserCardClicked = true;
     this.userAnimalData = {
       userAnimalDataObs: userAnimalObs$,
       userId: selectedAppointment.userId
     }
+    this.openUserAnimalAppointmentModal();
+  }
+
+  openUserAnimalAppointmentModal(): void {
+    const dialogRef = this.dialogRef.open(UserAnimalInfoComponent, {
+      width: '80%',
+      panelClass: 'panelClass',
+      data: this.userAnimalData
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+    });
   }
 
   setAppointmentMap(): void {

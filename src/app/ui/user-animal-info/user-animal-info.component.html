@@ -1,4 +1,4 @@
-<div class="dialog-container mt-4 bg-alternative p-around">
+<div class="dialog-container bg-alternative p-around">
     <div class="schedule-button d-flex justify-content-end m-btn-dialog-row">
       <button class="btn button--active me-2" (click)="addNewAppointment()">Adauga programare noua</button>
       <button class="btn btn-light close-btn" (click)="closeAppointmentDetails()">Close</button>
@@ -10,7 +10,7 @@
         <p>{{userAnimalData?.userData.name}}</p>
         <div class="d-flex">
           <p class="bold-text me-2">{{userAnimalDialog.ownersPets}}</p>
-          <div class="d-flex" #animalsParent>
+          <div class="d-flex flex-wrap" #animalsParent>
             <p class="me-2 link-pointer hover-button-active-state" [class.link--active]="selectedLink?.id == animal.animalId && isActiveLink"
                *ngFor="let animal of userAnimalData?.userData.animals"
                id="{{animal.animalId}}" (click)="getAndSetAnimalData($event, animal.animalId)">{{animal.animalName}}</p>

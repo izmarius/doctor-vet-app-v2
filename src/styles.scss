@@ -33,3 +33,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .mat-datepicker-toggle-default-icon {
   color: #ed553b !important;
 }
+
+.panelClass .mat-dialog-container {
+  background: $bg-alternate-color!important;
+}

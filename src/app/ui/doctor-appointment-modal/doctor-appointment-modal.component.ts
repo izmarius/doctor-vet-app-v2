@@ -80,6 +80,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
     const newAnimalInfo = new AnimalUtilInfo()
       .setName(this.selectedAnimal.animalName);
     if (!this.isAnimalRegisteredToUser()) {
+      // todo: save also new collections with empty document? to avoid errors
       // save animal to user - create new animal + insert in user animal name + id
       // todo: check animal subcolection if we have problems - create an appointment and get data
       newAnimalInfo.setUid(this.appointmentFormService.saveAnimal(this.selectedPatient, this.appointmentForm.value.animalName));
