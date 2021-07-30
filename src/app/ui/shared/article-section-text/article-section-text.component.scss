@@ -1,0 +1,15 @@
+@import "src/app/scss/constants";
+
+.art-text {
+  text-align: center;
+}
+
+.subtitle {
+  font-weight: $bold-section-subtitle;
+}
+
+.title {
+  font-size: $fs-section-title;
+  font-weight: $bold-section-subtitle;
+  margin-bottom: $mb-section-title;
+}

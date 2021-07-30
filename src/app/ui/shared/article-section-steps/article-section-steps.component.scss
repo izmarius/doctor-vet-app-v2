@@ -1,0 +1,24 @@
+@import "src/app/scss/constants";
+
+.article-title {
+  font-weight: $bold-section-subtitle;
+  margin-bottom: 2rem;
+}
+
+.article-list-item {
+  display: flex;
+}
+
+.article-icon {
+  margin-right: 1rem;
+}
+
+.article-link {
+  color: #ed553b;
+  text-decoration: underline #ed553b;
+  font-weight: $bold-section-subtitle;
+}
+
+.article-link:hover {
+  text-decoration: none;
+}
