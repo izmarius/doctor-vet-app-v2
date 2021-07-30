@@ -1,3 +1,4 @@
+import { ArticleSectionStepsComponent } from './ui/shared/article-section-steps/article-section-steps.component';
 import { NgModule } from '@angular/core';
 import { AngularFireModule } from '@angular/fire';
 import { BrowserModule } from '@angular/platform-browser';
@@ -27,6 +28,11 @@ import { UserAnimalInfoComponent } from './ui/user-animal-info/user-animal-info.
 import { UserProfileComponent } from './ui/user-profile/user-profile.component';
 import { DoctorAppointmentModalComponent } from './ui/doctor-appointment-modal/doctor-appointment-modal.component';
 import { SectionTitleSubtitleComponent } from './ui/shared/section-title-subtitle/section-title-subtitle.component';
+import { HeaderComponent } from './ui/shared/header/header.component';
+import { TextCardComponent } from './ui/shared/text-card/text-card.component';
+import { FeaturesComponent } from './ui/features/features.component';
+import { FeaturesSectionComponent } from './ui/features-section/features-section.component';
+import { ArticleSectionTextComponent } from './ui/shared/article-section-text/article-section-text.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +51,13 @@ import { SectionTitleSubtitleComponent } from './ui/shared/section-title-subtitl
     UserAnimalInfoComponent,
     UserProfileComponent,
     DoctorAppointmentModalComponent,
-    SectionTitleSubtitleComponent
+    SectionTitleSubtitleComponent,
+    HeaderComponent,
+    TextCardComponent,
+    FeaturesComponent,
+    FeaturesSectionComponent,
+    ArticleSectionTextComponent,
+    ArticleSectionStepsComponent
   ],
   imports: [
     BrowserModule,
