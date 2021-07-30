@@ -2,7 +2,18 @@ export const USER_CARD_TXT = {
   datePlaceholder: 'Data si ora procesarii',
   services: 'Servicii cerute',
   animalName: 'Nume animal',
-  buttonValue: 'Vezi detalii pacient'
+  buttonValue: 'Vezi detalii pacient',
+};
+
+export const HOMEPAGE_CARD_TEXT = {
+  photo: '../../../assets/photos/svg.svg',
+  title: 'Notifications',
+  text: 'Assign owners to conversations, and delegate to team members to follow every update.'
+};
+
+export const HOMEPAGE_SECTION_DATA = {
+  title: 'Aici vin feature urile aplicatiei doctor vet',
+  subTitle: 'subtitle here in care s povesti be aburit'
 };
 
 export const CALENDAR_DATA = {
@@ -11,17 +22,17 @@ export const CALENDAR_DATA = {
   todayBtn: 'Luna curenta',
   monthBtn: 'Luna',
   weekBtn: 'Saptamana',
-  dayBtn: 'Zi'
+  dayBtn: 'Zi',
 };
 
 export const DOCTORAPPOINTMENT_DATA = {
   newAppointmentBtn: 'Programare noua',
-  scheduleBtn: 'Orele de lucru'
+  scheduleBtn: 'Orele de lucru',
 };
 
 export const DOCTORAPPOINTMENTHEADER_DATA = {
   title: 'Creeaza o programare',
-  subTitle: 'Rapid si eficient'
+  subTitle: 'Rapid si eficient',
 };
 
 export const APPOINTMENTFORM_DATA = {
@@ -39,12 +50,12 @@ export const APPOINTMENTFORM_DATA = {
   servicesSelectDefaultOption: 'Alege un serviciu',
   animalSelectDefaultOption: 'Alege un animal',
   formValidationMessage: 'Toate campurile trebuie completate!',
-  pacientOnFocusMessage: 'Selecteaza un client din lista'
+  pacientOnFocusMessage: 'Selecteaza un client din lista',
 };
 
 export const DOCTORAPPOINTMENTSECTION_DATA = {
   title: 'Section title here',
-  subTitle: 'Section Subtitle here'
+  subTitle: 'Section Subtitle here',
 };
 export const USER_ANIMAL_DIALOG = {
   ownersPets: 'Animale: ',
@@ -57,14 +68,15 @@ export const USER_ANIMAL_DIALOG = {
   birthDay: 'Zi de nastere: ',
   addRecommendation: 'Adauga recomandare',
   addDisease: 'Adauga patologie',
-  editInputPlaceholder: 'Max 250 caractere'
+  editInputPlaceholder: 'Max 250 caractere',
 };
 
 export const DIALOG_UI_ERRORS = {
-  noChangeDetected: 'Nu a fost detectata nici o modificare!'
+  noChangeDetected: 'Nu a fost detectata nici o modificare!',
 };
 
-export const FOOTER_ERROR_MSG = 'Verifica inca o data daca emailul tau este valid sau daca mesajul tau nu e gol sau are mai mult de 250 de caractere.';
+export const FOOTER_ERROR_MSG =
+  'Verifica inca o data daca emailul tau este valid sau daca mesajul tau nu e gol sau are mai mult de 250 de caractere.';
 
 export const FOOTER_COMPONENT = {
   buttonText: 'Trimite mesajul!',
@@ -81,7 +93,7 @@ export const MY_PROFILE = {
   phonePlaceholder: '0743922xxx',
   clinicPlaceholder: 'Regina Maria',
   errorMessage: ['Campul', 'lipseste sau este incorect'],
-  formSuccessMessage: 'Editarea profilului a fost facuta cu succes'
+  formSuccessMessage: 'Editarea profilului a fost facuta cu succes',
 };
 
 export const INPUT_LABELS_TXT = {
@@ -98,13 +110,13 @@ export const INPUT_LABELS_TXT = {
 
 export const USER_STATE = {
   emailVerified: 'Verifica emailul pentru a putea folosi aplicatia',
-}
+};
 
-export const USER_LOCALSTORAGE = 'user'
+export const USER_LOCALSTORAGE = 'user';
 
 export const INPUT_REGEX_TEXTS = {
   email: '^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$',
-  phoneNumber: '^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$'
+  phoneNumber: '^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$',
 };
 
 export const NAVBAR_TEXT = {
@@ -118,13 +130,14 @@ export const NAVBAR_TEXT = {
   signIn: 'Intra in cont',
   signUp: 'Creeaza cont',
   myProfile: 'Profilul meu',
-  home: 'Acasa'
+  home: 'Acasa',
 };
 
 export const HEADER_TEXT = {
   title: 'Datele animalelor tale intr-o singura aplicatie',
-  subtitle: 'Iti permite sa inregistrezi animalele tale in aplicatie, sa creezi notificari pentru vaccinuri, operatii, sau programari la medicul veterinar',
-  buttonText: 'See projects'
+  subtitle:
+    'Iti permite sa inregistrezi animalele tale in aplicatie, sa creezi notificari pentru vaccinuri, operatii, sau programari la medicul veterinar',
+  buttonText: 'See projects',
 };
 
 export const AUTH_LOGIN_FORM_TEXT = {
@@ -134,9 +147,8 @@ export const AUTH_LOGIN_FORM_TEXT = {
   passwordPlaceholder: 'Parola - minim 6 caractere',
   btnText: 'Intra in cont',
   isLogin: true,
-  forgotPasswordMsg: 'Ai uitat parola?'
+  forgotPasswordMsg: 'Ai uitat parola?',
 };
-
 
 export const AUTH_SIGNUP_FORM_TEXT = {
   address: 'Adresa clinicii - Oras, Strada, Numar',
@@ -148,13 +160,15 @@ export const AUTH_SIGNUP_FORM_TEXT = {
   step2: 'Mergi spre ultimul pas - 2/3',
   step3: 'Creeaza cont - 3/3',
   secondStepTitle: 'Ne asiguram ca esti doctorul potrivit',
-  secondStepText: 'Incarca o fotografie cu buletinul si certificatul de doctor.; Asigura-te ca ambele documente sunt in original.; Tine documentele la piept astfel incat sa te putem identifica.',
+  secondStepText:
+    'Incarca o fotografie cu buletinul si certificatul de doctor.; Asigura-te ca ambele documente sunt in original.; Tine documentele la piept astfel incat sa te putem identifica.',
   isLogin: false,
   emailValidationTxt: 'Retrimite emailul de validare',
   phonePlaceholder: '0743934XXX',
   namePlaceholder: 'Nume si prenume',
   county: 'Alege judetul',
-  formErrorMessage: 'Te rugam sa verifici ca toate inputurile sunt completate si ca datele sunt corecte.',
+  formErrorMessage:
+    'Te rugam sa verifici ca toate inputurile sunt completate si ca datele sunt corecte.',
   thirdStepTitle: 'Selecteaza serviciile pe care le prestezi',
   selectAtLeastOneService: 'Selecteaza cel putin un serviciu',
 };
@@ -162,10 +176,18 @@ export const AUTH_SIGNUP_FORM_TEXT = {
 export const SCHEDULE_HEADER_TEXT = {
   title: 'Seteaza orele de munca pentru aceasta saptamana',
   subtitle: 'Orele se vor propaga in calendarul dumneavoastra timp de o luna',
-  scheduleButtonText: 'Salveaza programul'
+  scheduleButtonText: 'Salveaza programul',
 };
 
-export const DAYS_OF_WEEK = ['Luni', 'Marti', 'Miercuri', 'Joi', 'Vineri', 'Sambata', 'Duminica'];
+export const DAYS_OF_WEEK = [
+  'Luni',
+  'Marti',
+  'Miercuri',
+  'Joi',
+  'Vineri',
+  'Sambata',
+  'Duminica',
+];
 
 export const DAYS_OF_WEEK_MAP = {
   monday: 'Luni',
@@ -174,13 +196,13 @@ export const DAYS_OF_WEEK_MAP = {
   thursday: 'Joi',
   friday: 'Vineri',
   saturday: 'Sambata',
-  sunday: 'Duminica'
+  sunday: 'Duminica',
 };
 
-
 export const SCHEDULE_COMPONENT = {
-  ERROR_MSG: 'Asigura-te ca orele de inceput si de sfarsit ale zilei sunt completate corect.',
-  DAY_OFF: 'Zi libera'
+  ERROR_MSG:
+    'Asigura-te ca orele de inceput si de sfarsit ale zilei sunt completate corect.',
+  DAY_OFF: 'Zi libera',
 };
 export const COUNTIES = [
   'Bucuresti',
@@ -224,5 +246,5 @@ export const COUNTIES = [
   'Mehedinti',
   'Salaj',
   'Tulcea',
-  'Covasna'
+  'Covasna',
 ];
