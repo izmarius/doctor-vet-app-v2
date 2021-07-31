@@ -4,6 +4,7 @@ import {DoctorsAppointmentDTO, IDoctorsAppointmentsDTO} from "../dto/doctor-appo
 import {Observable} from "rxjs";
 import {first, map} from "rxjs/operators";
 import {convertSnapshots} from "../../../data/utils/firestore-utils.service";
+import {AnimalAppointmentService} from "../../../services/animal-appointment/animal-appointment.service";
 
 @Injectable({
   providedIn: 'root'
@@ -11,9 +12,10 @@ import {convertSnapshots} from "../../../data/utils/firestore-utils.service";
 export class DoctorAppointmentsService {
   private DOCTOR_COLLECTION = 'doctors/';
   private APPOINTMENT_COLLECTION = '/appointments';
-  private appoitmentList: any[] = [];
+  private appointmentList: any[] = [];
 
-  constructor(private firestoreService: FirestoreService) {
+  constructor(private firestoreService: FirestoreService,
+              private animalAppointment: AnimalAppointmentService) {
   }
 
   getAllAppointments(doctorId: string): Observable<IDoctorsAppointmentsDTO[]> {
@@ -43,19 +45,25 @@ export class DoctorAppointmentsService {
       });
   }
 
-  cancelAppointment(selectedAppointment: any, doctor: any): Observable<any> {
-    debugger;
-
-    // this.deleteAppointment(selectedAppointment.id, doctor.id);
-    return new Observable<any>();
+  cancelAppointment(selectedAppointment: any, doctor: any): void {
+    //todo maybe update also doctor's appointment instead of deleting it?
+    this.deleteAppointment(selectedAppointment.id, doctor.id).then((res) => {
+      // update animal appointment isCanceled
+      this.animalAppointment.updateAnimalAppointment(
+        {isCanceled: true},
+        selectedAppointment.userId,
+        selectedAppointment.animalData.uid,
+        selectedAppointment.animalAppointmentId)
+        .then(() => {
+          // todo alert message and notify user
+        });
+    }).catch((error) => {
+      console.log(error);
+    })
   }
 
-  deleteAppointment(appointmentId: string, doctorId: string): void {
-    this.firestoreService.deleteDocById(this.getAppointmentUrl(doctorId), appointmentId).then(() => {
-      // do something here
-    }, (error) => {
-      console.log('Error deleting appointment', error);
-    });
+  deleteAppointment(appointmentId: string, doctorId: string): Promise<any> {
+    return this.firestoreService.deleteDocById(this.getAppointmentUrl(doctorId), appointmentId)
   }
 
   getAppointmentUrl(doctorId: string): string {
@@ -66,7 +74,7 @@ export class DoctorAppointmentsService {
     return this.getAllAppointments(doctorId).pipe(
       map((appointments) => {
         appointments.forEach((appointment) => {
-          this.appoitmentList = [...this.appoitmentList,
+          this.appointmentList = [...this.appointmentList,
             {
               start: new Date(appointment['dateTime']), // cant use DTO methods, why??
               title: appointment['services']
@@ -81,7 +89,7 @@ export class DoctorAppointmentsService {
             }
           ];
         });
-        return this.appoitmentList;
+        return this.appointmentList;
       })
     );
   }

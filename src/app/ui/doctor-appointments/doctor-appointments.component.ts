@@ -8,6 +8,7 @@ import {ICardData} from "../shared/user-card/user-card.component";
 import {MatDialog} from "@angular/material/dialog";
 import {DoctorAppointmentModalComponent} from "../doctor-appointment-modal/doctor-appointment-modal.component";
 import {UserAnimalInfoComponent} from "../user-animal-info/user-animal-info.component";
+import {ConfirmDialogComponent} from "../shared/confirm-dialog/confirm-dialog.component";
 
 @Component({
   selector: 'app-doctor-appointments',
@@ -60,12 +61,10 @@ export class DoctorAppointmentsComponent implements OnInit, OnDestroy, AfterView
 
   // todo : daca au depasit orele de munca? sau programarea a expirat?
   cancelAppointment(animalId: string | number): void {
+
     const selectedAppointment = this.appointmentList.find(appointment => appointment.animalData.uid === animalId);
     // delete appointment from doctor - update animal appointment and set with status canceled
-    this.doctorAppointmentService.cancelAppointment(selectedAppointment, this.user).subscribe(() => {
-
-    })
-
+    this.openConfirmationModalModal(selectedAppointment);
   }
 
 
@@ -116,6 +115,19 @@ export class DoctorAppointmentsComponent implements OnInit, OnDestroy, AfterView
     });
 
     dialogRef.afterClosed().subscribe(result => {
+    });
+  }
+
+  openConfirmationModalModal(selectedAppointment: any): void {
+    const dialogRef = this.dialogRef.open(ConfirmDialogComponent, {
+      width: '25%',
+      height: '150px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.doctorAppointmentService.cancelAppointment(selectedAppointment, this.user)
+      }
     });
   }
 
