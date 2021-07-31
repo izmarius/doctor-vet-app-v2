@@ -10,6 +10,8 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {DoctorAppointmentFormService} from "./services/doctor-appointment-form.service";
 import {MatDialogRef} from "@angular/material/dialog";
 import {Subscription} from "rxjs";
+import {AnimalAppointmentService} from "../../services/animal-appointment/animal-appointment.service";
+import {FirestoreService} from "../../data/http/firestore.service";
 
 @Component({
   selector: 'app-doctor-appointment-modal',
@@ -20,7 +22,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
   // add minutes and hours depending on the schedule
   stepMinutes: any = [0, 15, 30, 45];
   stepMinute: number = this.stepMinutes[0];
-  stepHours: any = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
+  stepHours: any = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
   stepHour: number = this.stepHours[0];
   public appointmentForm!: FormGroup;
   public users!: IUserDTO[];
@@ -33,7 +35,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
   public isErrorDisplayed: boolean = false;
   public minDate = new Date();
   public selectedPatient!: IUserDTO;
-  public selectedAnimal: any;
+  public selectedAnimal: any = {};
   public errorMessage: string = '';
 
   @ViewChild('patientList') patientListElem: any;
@@ -44,7 +46,9 @@ export class DoctorAppointmentModalComponent implements OnInit {
     private doctorService: DoctorService,
     private doctorAppointmentService: DoctorAppointmentsService,
     private appointmentFormService: DoctorAppointmentFormService,
-    private dateTimeUtils: DateUtilsService
+    private dateTimeUtils: DateUtilsService,
+    private animalAppointment: AnimalAppointmentService,
+    private firestoreService: FirestoreService
   ) {
   }
 
@@ -79,19 +83,46 @@ export class DoctorAppointmentModalComponent implements OnInit {
     }
     const newAnimalInfo = new AnimalUtilInfo()
       .setName(this.selectedAnimal.animalName);
+
     if (!this.isAnimalRegisteredToUser()) {
       // todo: save also new collections with empty document? to avoid errors
       // save animal to user - create new animal + insert in user animal name + id
       // todo: check animal subcolection if we have problems - create an appointment and get data
-      newAnimalInfo.setUid(this.appointmentFormService.saveAnimal(this.selectedPatient, this.appointmentForm.value.animalName));
+      // todo get data directly from user service
+      const animalDocUID = this.firestoreService.getNewFirestoreId();
+      this.selectedAnimal.animalId = animalDocUID;
+      this.appointmentFormService.saveAnimal(this.selectedPatient, this.appointmentForm.value.animalName, animalDocUID);
+      newAnimalInfo.setUid(animalDocUID);
     } else {
       newAnimalInfo.setUid(this.selectedAnimal.animalId)
     }
 
     this.setErrorMessage('');
 
+    const doctorAppointmentId = this.firestoreService.getNewFirestoreId();
+    const animalAppointmentId = this.firestoreService.getNewFirestoreId();
 
-    const newDoctorAppointment = new DoctorsAppointmentDTO()
+    const newDoctorAppointment = this.getDoctorAppointment(animalAppointmentId, newAnimalInfo);
+    const newAnimalAppointment = this.getAnimalAppointmentPayload(doctorAppointmentId);
+
+    this.doctorAppointmentService.createAppointment(
+      newDoctorAppointment,
+      this.doctor.id,
+      doctorAppointmentId
+    ).then(() => {
+      this.animalAppointment.saveAnimalAppointment(newAnimalAppointment, this.selectedPatient?.id, this.selectedAnimal.animalId, animalAppointmentId)
+        .then((res: any) => {
+          // todo alert message
+          alert(APPOINTMENTFORM_DATA.successAppointment);
+          this.onCancelForm(true);
+        });
+    }).catch((error: any) => {
+      console.log('Error: ',error);
+    });
+  }
+
+  getDoctorAppointment(animalAppointmentId: string, newAnimalInfo: any) {
+    return new DoctorsAppointmentDTO()
       .setUserName(this.appointmentForm.value.patientName)
       .setUserId(this.selectedPatient?.id)
       .setServices(this.appointmentForm.value.medService)
@@ -101,22 +132,28 @@ export class DoctorAppointmentModalComponent implements OnInit {
       )
       .setAnimal(newAnimalInfo)
       .setLocation(this.doctor.location)
-      //todo: if patient is selected and exists in db
       .setUserEmail(this.selectedPatient.name)
       .setPhone(this.selectedPatient.phone)
       .setIsAppointmentFinished(false)
-      .setIsConfirmedByDoctor(true);
+      .setIsConfirmedByDoctor(true)
+      .setAnimalAppointmentId(animalAppointmentId);
+  }
 
-    this.doctorAppointmentService.createAppointment(
-      [newDoctorAppointment],
-      this.doctor.id
-    );
-    alert(APPOINTMENTFORM_DATA.successAppointment);
-    this.onCancelForm(true);
+  getAnimalAppointmentPayload(doctorAppointmentId: string): any {
+    return {
+      isCanceled: false,
+      dateTime: this.appointmentForm.value.startDate.toLocaleDateString() + ' - ' +
+        this.appointmentForm.value.startTime,
+      doctorId: this.doctor.id,
+      doctorName: this.doctor.doctorName,
+      location: this.doctor.location,
+      service: this.appointmentForm.value.medService,
+      doctorAppointmentId: doctorAppointmentId,
+    }
   }
 
   isAnimalRegisteredToUser(): boolean {
-    if (this.animals.length !== 0) {
+    if (this.animals && this.animals.length !== 0) {
       const filteredAnimals = this.animals.filter((animal) => {
         return animal.animalName === this.appointmentForm.value.animalName;
       });
@@ -137,7 +174,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
       || this.stepMinute === null
       || !this.dateTimeUtils.isSelectedDateGreaterOrEqualComparedToCurrentDate(this.appointmentForm.value.startDate.toLocaleDateString())
       || (this.stepHour < currentHours && this.dateTimeUtils.isCurrentDay(this.appointmentForm.value.startDate.toLocaleDateString()))
-      || (this.stepHour >= currentHours && this.stepMinute <= currentMinutes)) {
+      || (this.stepHour <= currentHours && this.stepMinute <= currentMinutes)) {
       this.setErrorMessage(APPOINTMENTFORM_DATA.timeValidation);
       return;
     }
@@ -166,7 +203,9 @@ export class DoctorAppointmentModalComponent implements OnInit {
   }
 
   filterAnimals(searchText: string): void {
-    if (this.animals.length === 0) {
+    if (!this.animals  || this.animals.length === 0) {
+      this.selectedAnimal.animalName = searchText;
+      this.isErrorDisplayed = false;
       return;
     }
     this.filteredAnimals = this.animals.filter((animal) => {
@@ -202,7 +241,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
   }
 
   onFocusAnimal(): void {
-    if (this.selectedPatient && this.animals.length === 0) {
+    if (this.selectedPatient && (!this.animals || this.animals.length === 0)) {
       this.setErrorMessage(APPOINTMENTFORM_DATA.userDoesNotHaveAnimal);
     }
     if (this.animalListElem.nativeElement.classList.contains('hide')) {

@@ -29,7 +29,7 @@ export class UserAnimalInfoComponent implements OnInit {
               private dialog: MatDialog,
               public dialogRef: MatDialogRef<UserAnimalInfoComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any
-              ) {
+  ) {
   }
 
   ngOnInit(): void {

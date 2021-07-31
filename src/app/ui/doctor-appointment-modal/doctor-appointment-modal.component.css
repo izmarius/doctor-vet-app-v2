@@ -2,3 +2,7 @@
   background: #EAE9F2;
 }
 
+.dropdown-elem:hover {
+  cursor: pointer;
+}
+

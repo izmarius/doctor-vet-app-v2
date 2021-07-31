@@ -26,7 +26,8 @@ export const USER_CARD_TXT = {
   datePlaceholder: 'Data si ora procesarii',
   services: 'Servicii cerute',
   animalName: 'Nume animal',
-  buttonValue: 'Vezi detalii pacient'
+  buttonValue: 'Vezi detalii programare',
+  buttonCancelValue: 'Anuleaza programarea'
 };
 
 export const CALENDAR_DATA = {
@@ -72,7 +73,7 @@ export const APPOINTMENTFORM_DATA = {
   patientEmailPlaceholder: MY_PROFILE.emailPlaceholder,
   timeValidation: 'Ora programarii nu poate fi setata in trecut',
   patientDoesNotExist: 'Nu am gasit nici un user cu acest email, te rugam sa incerci din nou sau sa creezi un user clientului in sectiunea "Creeaza client nou"',
-  userDoesNotHaveAnimal: 'Acest user nu are nici un animal inregistrat, insereaza in input numele animalului pentru a-l adauga clientului',
+  userDoesNotHaveAnimal: 'Acest user nu are nici un animal inregistrat, insereaza in casuta numele animalului pentru a-l adauga clientului',
   successAppointment: 'Programarea a fost facut cu succes'
 };
 

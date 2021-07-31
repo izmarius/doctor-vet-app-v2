@@ -28,7 +28,7 @@ export class DoctorAppointmentsComponent implements OnInit, OnDestroy, AfterView
 
   constructor(private doctorAppointmentService: DoctorAppointmentsService,
               private animalService: AnimalService,
-              private dialogRef: MatDialog ) {
+              private dialogRef: MatDialog) {
   }
 
   ngAfterViewInit(): void {
@@ -59,6 +59,15 @@ export class DoctorAppointmentsComponent implements OnInit, OnDestroy, AfterView
   }
 
   // todo : daca au depasit orele de munca? sau programarea a expirat?
+  cancelAppointment(animalId: string | number): void {
+    const selectedAppointment = this.appointmentList.find(appointment => appointment.animalData.uid === animalId);
+    // delete appointment from doctor - update animal appointment and set with status canceled
+    this.doctorAppointmentService.cancelAppointment(selectedAppointment, this.user).subscribe(() => {
+
+    })
+
+  }
+
 
   mapToCardData(appointment: any): ICardData {
     return {
@@ -76,7 +85,11 @@ export class DoctorAppointmentsComponent implements OnInit, OnDestroy, AfterView
         placeholder: INPUT_LABELS_TXT.emailLabel,
         value: appointment.userEmail
       }],
-      buttonData: {buttonId: appointment.animalData.uid, placeholder: this.userCardPlaceholder.buttonValue}
+      buttonData: {
+        buttonId: appointment.animalData.uid,
+        placeholder: this.userCardPlaceholder.buttonValue,
+        cancelPlaceholder: this.userCardPlaceholder.buttonCancelValue
+      }
     };
   }
 
@@ -84,7 +97,7 @@ export class DoctorAppointmentsComponent implements OnInit, OnDestroy, AfterView
     // we do this because we want to let the card to be generic
     const selectedAppointment = this.appointmentList.find(appointment => appointment.animalData.uid === animalId);
     if (!selectedAppointment || !selectedAppointment.userId) {
-      alert('No user found');
+      console.log('No user found');
       return;
     }
     const userAnimalObs$ = this.animalService.getAnimalDataAndMedicalHistoryByAnimalId(animalId, selectedAppointment.userId);

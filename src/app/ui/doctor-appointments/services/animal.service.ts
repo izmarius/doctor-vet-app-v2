@@ -72,7 +72,7 @@ export class AnimalService {
     // todo: add also animal Id to user - generate the id from here
     return this.fireStoreService.saveDocumentByAutoId(this.getAnimalUrl(userId), animalDto)
       .then(() => {
-        window.alert('new animal addded');
+        console.log('new animal addded');
       })
       .catch((error) => {
         console.log(error.message);
@@ -82,7 +82,7 @@ export class AnimalService {
   updateUserAnimalInfo(animalDto: AnimalDTO, animalId: string, userId: string): Promise<void> {
     return this.fireStoreService.updateDocumentById(this.getAnimalUrl(userId), animalId, animalDto)
       .then(() => {
-        window.alert('animal updated');
+        // todo: alert message
       })
       .catch((error) => {
         console.log(error.message);
@@ -91,7 +91,7 @@ export class AnimalService {
 
   updateAnimalsSubCollections(url: string, documentId: string, documentToUpdate: any): void {
     this.fireStoreService.updateDocumentById(url, documentId, documentToUpdate).then(() => {
-      window.alert('Update success');
+      console.log('Update success');
     }).catch((error) => {
       console.log(error.message);
     });
@@ -100,7 +100,7 @@ export class AnimalService {
   deleteUserAnimal(animalId: string, userId: string): Promise<void> {
     return this.fireStoreService.deleteDocById(this.getAnimalUrl(userId), animalId)
       .then(() => {
-        window.alert('animal deleted');
+        console.log('animal deleted');;
       })
       .catch((error) => {
         console.log(error.message);

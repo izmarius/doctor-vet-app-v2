@@ -15,13 +15,15 @@ export class AuthStateChangeService {
               private doctorService: DoctorService) {
     this.afAuth.authState.subscribe((user) => {
       if (user && !user.emailVerified) {
-        alert(USER_STATE.emailVerified);
+        // todo alert message
+        // alert(USER_STATE.emailVerified);
       } else if (user && user.emailVerified) {
         this.doctorServiceSubscription = this.doctorService.getDoctorById(user.uid)
           .pipe(take(1))
           .subscribe((doctor) => {
             if (!doctor) {
-              alert('A aparut o eroare, te rugam sa incerci din nou');
+              // todo alert message
+              // alert('A aparut o eroare, te rugam sa incerci din nou');
             }
             // todo handle if not doctor
             localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(doctor));

@@ -11,9 +11,9 @@ export class DoctorAppointmentFormService {
 
   constructor(private userService: UserService) {
   }
-
-  saveAnimal(user: any, animalName: string): string {
-    return this.userService.saveAnimal(user, animalName);
+  // todo move from here?
+  saveAnimal(user: any, animalName: string, animalDocUID: string): void {
+    this.userService.saveAnimal(user, animalName, animalDocUID);
   }
 
   // @ts-ignore

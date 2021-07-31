@@ -37,7 +37,7 @@
              (ngModelChange)="filterClients($event)"
              (focus)="onFocusPatient()"/>
       <ul class="list-group" #patientList>
-        <li class=" list-group-item list-group-item-action link-pointer dropdown-elem"
+        <li class=" list-group-item list-group-item-action pointer dropdown-elem"
             *ngFor="let user of users"
             (click)="onSelectPatient(user)">
           {{ user.name }}
@@ -52,7 +52,7 @@
              (ngModelChange)="filterAnimals($event)"
              (focus)="onFocusAnimal()"/>
       <ul class="list-group hide" #animalList>
-        <li class="list-group-item list-group-item-action link-pointer dropdown-elem"
+        <li class="list-group-item list-group-item-action pointer dropdown-elem"
             *ngFor="let animal of filteredAnimals"
             (click)="onSelectAnimal(animal)">
           {{ animal.animalName }}
@@ -73,11 +73,11 @@
     </div>
     <div class="m-btn-small">
       <label for="services">{{appointmentFormPlaceHolder.servicesLabel}}</label>
-      <select name="services" id="services" class="form-control" formControlName="medService">
+      <select name="services" id="services" class="form-control pointer" formControlName="medService">
         <option class="dropdown-elem" value="null" disabled="true" [selected]="true">
           {{ appointmentFormPlaceHolder.servicesSelectDefaultOption }}
         </option>
-        <option class="dropdown-elem link-pointer" *ngFor="let service of doctorServiceList" [value]="service">
+        <option class="dropdown-elem pointer" *ngFor="let service of doctorServiceList" [value]="service">
           {{ service }}
         </option>
       </select>

@@ -30,15 +30,8 @@ export class DoctorAppointmentsService {
     // todo: subscribe in component
   }
 
-  createAppointment(app: DoctorsAppointmentDTO[], doctorId: string): void {
-    app.forEach(animal => {
-      this.firestoreService.saveDocumentByAutoId(this.getAppointmentUrl(doctorId), animal).then(() => {
-        // firebasse will not return the created object
-        // if success - we will return the promise and display new created data in ui
-      }, (error) => {
-        console.log('Error creating appointment', error);
-      });
-    });
+  createAppointment(doctorAppointmentDTO: DoctorsAppointmentDTO, doctorId: string, doctorAppointmentId: string): Promise<any> {
+    return this.firestoreService.saveDocumentWithGeneratedFirestoreId(this.getAppointmentUrl(doctorId), doctorAppointmentId, JSON.parse(JSON.stringify(doctorAppointmentDTO)));
   }
 
   updateAppointment(app: DoctorsAppointmentDTO, appointmentId: string, doctorId: string): void {
@@ -48,6 +41,13 @@ export class DoctorAppointmentsService {
       }, (error) => {
         console.log('Error updating appointment', error);
       });
+  }
+
+  cancelAppointment(selectedAppointment: any, doctor: any): Observable<any> {
+    debugger;
+
+    // this.deleteAppointment(selectedAppointment.id, doctor.id);
+    return new Observable<any>();
   }
 
   deleteAppointment(appointmentId: string, doctorId: string): void {

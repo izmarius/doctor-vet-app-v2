@@ -32,26 +32,27 @@ export class UserService {
     });
   }
 
-  saveAnimal(user: any, animalName: string): string {
+  saveAnimal(user: any, animalName: string, animalDocUid: string): void {
     const payload = {
-      id: '',
+      id: animalDocUid,
       birthDay: '-',
       bloodType: '-',
       age: 0,
       name: animalName,
       weight: 0
     }
-    const documentId = this.firestoreService.getNewFirestoreId();
-    const animalDocumentRef = this.firestoreService.saveDocumentByWithEmptyDoc(this.USER_COLLECTION + user.id + this.ANIMAL_COLLECTION, documentId);
-    payload.id = documentId;
+    const animalDocumentRef = this.firestoreService.saveDocumentWithEmptyDoc(this.USER_COLLECTION + user.id + this.ANIMAL_COLLECTION, animalDocUid);
     animalDocumentRef.set(payload);
+    if(!user.animals) {
+      // todo: refactor and don't do the check
+      user.animals = [];
+    }
     user.animals.push({
       animalName: animalName,
-      animalId: documentId
+      animalId: animalDocUid
     })
     const userAnimal = {animals: user.animals}
     this.updateUserInfo(userAnimal, user.id);
-    return documentId;
   }
 
   getUserDataById(userId: string): Observable<any> {
@@ -69,30 +70,30 @@ export class UserService {
   createUser(userDto: UserDTO): Promise<void> {
     return this.firestoreService.saveDocumentByAutoId(this.USER_COLLECTION, userDto)
       .then(() => {
-        window.alert('User created');
+        // todo alert message
       })
       .catch((error) => {
-        window.alert(error.message);
+        console.log('Error:', error);
       });
   }
 
   updateUserInfo(userDto: any, userId: string): Promise<void> {
     return this.firestoreService.updateDocumentById(this.USER_COLLECTION, userId, userDto)
       .then(() => {
-        window.alert('User updated with new info');
+        // todo alert message
       })
       .catch((error) => {
-        window.alert(error.message);
+        console.log('Error:', error);
       });
   }
 
   deleteUser(userId: string): Promise<void> {
     return this.firestoreService.deleteDocById(this.USER_COLLECTION, userId)
       .then(() => {
-        window.alert('User deleted');
+        // todo alert message
       })
       .catch((error) => {
-        window.alert(error.message);
+        console.log('Error:', error);
       });
   }
 }

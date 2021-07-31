@@ -28,7 +28,7 @@ export class SignUpService {
         this.loginService.logIn(doctorDTO.email, password, dialogRef);
       })
       .catch((error) => {
-        window.alert(error.message);
+        console.log('Error', error);
       });
   }
 }

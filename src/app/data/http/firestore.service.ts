@@ -80,8 +80,15 @@ export class FirestoreService {
   /**
    * Saves a new empty document into a collection
    */
-  saveDocumentByWithEmptyDoc(collection: string, documentId: string): any {
+  saveDocumentWithEmptyDoc(collection: string, documentId: string): any {
     return this.firestore.collection(collection).doc(documentId);
+  }
+
+  /**
+   * Saves a new document into a collection with an id generated from application
+   */
+  saveDocumentWithGeneratedFirestoreId(collection: string, documentId: string, payload: any): any {
+    return this.firestore.collection(collection).doc(documentId).set(payload);
   }
 
   /**

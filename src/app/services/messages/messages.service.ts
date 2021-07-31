@@ -12,10 +12,10 @@ export class MessagesService {
   sendMessage(messageDTO: IMessageDTO): Promise<void> {
     return this.firestoreService.saveDocumentByAutoId(this.MESSAGE_COLLECTION, messageDTO)
       .then(() => {
-        window.alert('Message sent');
+        // todo alert message
       })
       .catch((error: any) => {
-        window.alert(error.message);
+        console.log('Error', error);
       });
   }
 }

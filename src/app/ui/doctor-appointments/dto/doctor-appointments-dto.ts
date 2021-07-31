@@ -12,6 +12,7 @@ export interface IDoctorsAppointmentsDTO {
   phone: string;
   isAppointmentFinished: boolean;
   isConfirmedByDoctor: boolean;
+  animalAppointmentId: string;
 }
 
 export class DoctorsAppointmentDTO {
@@ -26,6 +27,7 @@ export class DoctorsAppointmentDTO {
   private phone: string;
   private isAppointmentFinished: boolean;
   private isConfirmedByDoctor: boolean;
+  private animalAppointmentId: string;
 // todo: getter and setter when to use in typescript
   getId(): string {
     return this.id;
@@ -107,6 +109,11 @@ export class DoctorsAppointmentDTO {
 
   setIsConfirmedByDoctor (value: boolean): DoctorsAppointmentDTO {
     this.isConfirmedByDoctor = value;
+    return this;
+  }
+
+  setAnimalAppointmentId (value: string): DoctorsAppointmentDTO {
+    this.animalAppointmentId = value;
     return this;
   }
 }

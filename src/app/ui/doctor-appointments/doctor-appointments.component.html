@@ -7,7 +7,9 @@
         <!--      todo: flex or col? - see with one element or after testing with real user-->
         <app-user-card class="col-4 user-card-component m-btn-card-row" *ngFor="let appointment of appObj.value"
                        [cardData]="mapToCardData(appointment)"
-                       (cardButtonEmitter)="openSectionWithAnimalDetails($event)"></app-user-card>
+                       (cardButtonEmitter)="openSectionWithAnimalDetails($event)"
+                       (cardButtonCancelEmitter)="cancelAppointment($event)"
+        ></app-user-card>
       </div>
     </div>
   </div>

@@ -1,13 +1,9 @@
 import {
-  AfterViewInit,
   Component,
   EventEmitter,
   Input,
-  OnChanges,
   OnInit,
   Output,
-  SimpleChanges,
-  ViewChild
 } from '@angular/core';
 
 @Component({
@@ -18,9 +14,11 @@ import {
 export class UserCardComponent implements OnInit {
   @Input() cardData!: ICardData;
   @Output() cardButtonEmitter: EventEmitter<string | number>;
+  @Output() cardButtonCancelEmitter: EventEmitter<string | number>;
 
   constructor() {
     this.cardButtonEmitter = new EventEmitter<string | number>();
+    this.cardButtonCancelEmitter = new EventEmitter<string | number>();
   }
 
   ngOnInit(): void {
@@ -28,6 +26,10 @@ export class UserCardComponent implements OnInit {
 
   cardButtonIsClicked(): void {
     this.cardButtonEmitter.emit(this.cardData.buttonData.buttonId);
+  }
+
+  cardButtonCancelIsClicked(): void {
+    this.cardButtonCancelEmitter.emit(this.cardData.buttonData.buttonId);
   }
 }
 

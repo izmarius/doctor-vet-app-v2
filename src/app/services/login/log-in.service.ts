@@ -19,7 +19,7 @@ export class LogInService {
         this.router.navigate(['/appointments'])
       })
       .catch((error) => {
-        window.alert(error.message);
+        console.log('Error', error);
       });
   }
 
