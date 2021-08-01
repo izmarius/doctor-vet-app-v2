@@ -105,6 +105,7 @@ export class SignupDialogComponent implements OnInit {
     doctor.services = this.selectedServices;
     // todo add also photo ulpad at sign up?
     doctor.photo = '';
+    doctor.outOfOfficeDays = [];
     return doctor;
   }
 

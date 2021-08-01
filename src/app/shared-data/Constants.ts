@@ -173,7 +173,11 @@ export const AUTH_SIGNUP_FORM_TEXT = {
 export const SCHEDULE_HEADER_TEXT = {
   title: 'Seteaza orele de munca pentru aceasta saptamana',
   subtitle: 'Orele se vor propaga in calendarul dumneavoastra timp de o luna',
-  scheduleButtonText: 'Salveaza programul'
+  scheduleButtonText: 'Salveaza programul',
+  startDateLabel: 'Selecteaza data de start a concediului',
+  endDateLabel: 'Selecteaza data de sfarsit a concediului',
+  dateFormat: APPOINTMENTFORM_DATA.dateFormat,
+  buttonOutOfOfficePlaceholder: 'Salveaza concediul'
 };
 
 export const DAYS_OF_WEEK = ['Luni', 'Marti', 'Miercuri', 'Joi', 'Vineri', 'Sambata', 'Duminica'];

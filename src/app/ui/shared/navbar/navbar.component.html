@@ -22,13 +22,13 @@
           <a class="nav-link" routerLink="/appointments"><span
             class="icon-people px-2"></span>{{navbarText.appointments}}</a>
         </li>
-        <!--        <li class="nav-item" *ngIf="isUserLoggedIn">-->
-        <!--          <a class="nav-link" routerLink="/schedule"><span class="icon-clock px-2"></span>{{navbarText.schedule}}</a>-->
-        <!--        </li>-->
-                <li class="nav-item" *ngIf="isUserLoggedIn">
-                  <a class="nav-link" routerLink="/profile"><span
-                    class="icon-settings px-2"></span>{{navbarText.myProfile}}</a>
-                </li>
+        <li class="nav-item" *ngIf="isUserLoggedIn">
+          <a class="nav-link" routerLink="/schedule"><span class="icon-clock px-2"></span>{{navbarText.schedule}}</a>
+        </li>
+        <li class="nav-item" *ngIf="isUserLoggedIn">
+          <a class="nav-link" routerLink="/profile"><span
+            class="icon-settings px-2"></span>{{navbarText.myProfile}}</a>
+        </li>
         <li class="nav-item" (click)="openLoginDialog()" *ngIf="!isUserLoggedIn">
           <a class="nav-link"><span class="icon-login px-2"></span>{{navbarText.signIn}}</a>
         </li>

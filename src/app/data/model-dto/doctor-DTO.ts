@@ -9,13 +9,13 @@ export class DoctorDTO {
   public schedule?: Map<string, IDaySchedule>;
   public services?: Map<string, string[]>;
   public photo?: string;
+  public outOfOfficeDays?: any[];
 }
 
 export interface IDaySchedule {
   day: string;
   endTime: string;
   isChecked: boolean;
-  isOutOfOffice: boolean;
   startTime: string;
 }
 

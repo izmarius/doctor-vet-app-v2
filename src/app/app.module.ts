@@ -30,6 +30,9 @@ import { SectionTitleSubtitleComponent } from './ui/shared/section-title-subtitl
 import { ConfirmDialogComponent } from './ui/shared/confirm-dialog/confirm-dialog.component';
 import { MyProfileComponent } from './ui/my-profile/my-profile.component';
 import { PhotoTextComponent } from './ui/my-profile/photo-text/photo-text.component';
+import { DoctorScheduleComponent } from './ui/doctor-schedule/doctor-schedule.component';
+import { ScheduleSetterComponent } from './ui/doctor-schedule/schedule-setter/schedule-setter.component';
+import { AdjustableHeaderComponent } from './ui/shared/adjustable-header/adjustable-header.component';
 
 @NgModule({
   declarations: [
@@ -52,6 +55,9 @@ import { PhotoTextComponent } from './ui/my-profile/photo-text/photo-text.compon
     ConfirmDialogComponent,
     MyProfileComponent,
     PhotoTextComponent,
+    DoctorScheduleComponent,
+    ScheduleSetterComponent,
+    AdjustableHeaderComponent,
   ],
   imports: [
     BrowserModule,

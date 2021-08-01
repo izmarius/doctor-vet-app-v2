@@ -1,0 +1,21 @@
+.schedule-btn-container {
+  width: 50%;
+  margin: 1rem auto;
+}
+
+.schedule-btn {
+  position: relative;
+  left: calc(100% - 10rem);
+}
+
+.test {
+  padding: 7.5rem;
+}
+
+
+.out-of-office-container {
+  width: 50%;
+  margin: 0 auto;
+  overflow: hidden;
+  margin-bottom: 3rem;
+}
