@@ -161,6 +161,7 @@ export class MyProfileComponent implements OnInit {
       this.formSuccessMessage = MY_PROFILE.formSuccessMessage;
       this.isFormValid = false;
       this.profileHeaderData.title = this.userData.doctorName;
+      this.profileHeaderData.photo = this.userData.photo;
       setTimeout(() => {
         this.isFormValid = true;
       }, 5000);
@@ -176,7 +177,7 @@ export class MyProfileComponent implements OnInit {
 
   setProfileData(): void {
     this.profileHeaderData = {};
-    this.profileHeaderData.photo = '';
+    this.profileHeaderData.photo = this.userData.photo;
     this.profileHeaderData.title = this.userData.doctorName;
     this.profileHeaderData.style = {
       'margin-bottom': '2rem',
