@@ -177,7 +177,8 @@ export const SCHEDULE_HEADER_TEXT = {
   startDateLabel: 'Selecteaza data de start a concediului',
   endDateLabel: 'Selecteaza data de sfarsit a concediului',
   dateFormat: APPOINTMENTFORM_DATA.dateFormat,
-  buttonOutOfOfficePlaceholder: 'Salveaza concediul'
+  buttonOutOfOfficePlaceholder: 'Salveaza concediul',
+  outOfOfficeError: 'Selecteaza o data de start si o data de sfarsit a concediului SAU asigura-te ca data de start nu e mai mare decat data de sfarsit a concediului'
 };
 
 export const DAYS_OF_WEEK = ['Luni', 'Marti', 'Miercuri', 'Joi', 'Vineri', 'Sambata', 'Duminica'];

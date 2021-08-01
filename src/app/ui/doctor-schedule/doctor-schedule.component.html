@@ -7,7 +7,7 @@
       <div class="m-btn-small">
         <label>{{ schedulePlaceholder.startDateLabel }}</label>
         <div class="d-flex">
-          <input matInput class="form-control" [min]="minDate" [matDatepicker]="picker2" [ngModel]="startDate"
+          <input matInput class="form-control" [min]="minDate" [matDatepicker]="picker2" [(ngModel)]="startDate"
                  [placeholder]="schedulePlaceholder.dateFormat">
           <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
         </div>
@@ -17,12 +17,13 @@
       <div class="m-btn-small">
         <label>{{ schedulePlaceholder.endDateLabel }}</label>
         <div class="d-flex">
-          <input matInput class="form-control" [min]="minDate" [matDatepicker]="picker" [ngModel]="endDate"
+          <input matInput class="form-control" [min]="minDate" [matDatepicker]="picker" [(ngModel)]="endDate"
                  [placeholder]="schedulePlaceholder.dateFormat">
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         </div>
         <mat-datepicker #picker color="accent"></mat-datepicker>
       </div>
+      <p class="error-msg" *ngIf="isOutOfOfficeError">{{schedulePlaceholder.outOfOfficeError}}</p>
       <div>
         <button class="btn button--active float-end" (click)="saveOutOfOfficeDate()">{{schedulePlaceholder.buttonOutOfOfficePlaceholder}}</button>
       </div>

@@ -24,8 +24,9 @@ export class DoctorScheduleComponent implements OnInit {
   isSaveButtonDisabled = false;
   public minDate = new Date();
   public schedulePlaceholder: any;
-  startDate = '';
-  endDate = '';
+  startDate: any;
+  endDate: any;
+  isOutOfOfficeError = false;
 
   constructor(private doctorService: DoctorService) {
   }
@@ -81,11 +82,12 @@ export class DoctorScheduleComponent implements OnInit {
   }
 
   saveOutOfOfficeDate(): void {
-    if (!this.startDate && !this.endDate) {
+    if (!this.startDate && !this.endDate || this.endDate.getTime() < this.startDate.getTime()) {
       // todo display error
+      this.isOutOfOfficeError = true;
       return;
     }
-
+    this.isOutOfOfficeError = false;
     const doctorPayload = {
       // @ts-ignore
       outOfOfficeDays: this.storedDoctor.outOfOfficeDays.push({
@@ -97,6 +99,7 @@ export class DoctorScheduleComponent implements OnInit {
     // @ts-ignore
     this.doctorService.updateDoctorInfo(doctorPayload, this.storedDoctor.id)
       .then(() => {
+        this.isOutOfOfficeError = true;
         localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.storedDoctor));
         console.log('service updated');
       }, (error) => {
