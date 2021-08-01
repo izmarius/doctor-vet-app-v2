@@ -1,0 +1,9 @@
+<div [ngStyle]="data.style">
+  <div class="photo-container">
+    <img class="profile-photo" [src]="data?.photo" alt="Profile photo doctor vet">
+  </div>
+  <div>
+    <p class="profile-title">{{data?.title}}</p>
+    <p *ngIf="data?.subtitle">{{data.subtitle}}</p>
+  </div>
+</div>

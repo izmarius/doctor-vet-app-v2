@@ -1,46 +1,46 @@
 export const DOCTOR_SERVICES = {
   GENERAL: {
     serviceName: 'General',
-    services: ['Consultatie generala', 'Control periodic', 'Consultatie la domiciliu', 'Vaccinare', 'Insamantare artificiala caini']
+    services: [['Consultatie generala', false], ['Control periodic', false], ['Consultatie la domiciliu', false], ['Vaccinare', false], ['Insamantare artificiala caini', false]]
   },
   DATA: {
     serviceName: 'Documente',
-    services: ['Carnet de sanatate', 'Creare pasaport', 'Implantare microcip']
+    services: [['Carnet de sanatate', false], ['Creare pasaport', false], ['Implantare microcip', false]]
   },
   IMAGERY: {
     serviceName: 'Imagistica',
-    services: ['Ecografie', 'Ecocardografie', 'Radiografie']
+    services: [['Ecografie', false], ['Ecocardografie', false], ['Radiografie', false]]
   },
   ANALYZES: {
     serviceName: 'Analize',
-    services: ['Analize sange', 'Analize scaun', 'Analize urina']
+    services: [['Analize sange', false], ['Analize scaun', false], ['Analize urina', false]]
   },
   DENTISTRY: {
     serviceName: 'Stomatologie',
-    services: ['Detartraj', 'Extractii(molari,premolari,canini,incisivi)']
+    services: [['Detartraj', false], ['Extractii(molari,premolari,canini,incisivi)', false]]
   },
   PHYSIOTHERAPY: {
     serviceName: 'Fizioterapie',
-    services: ['Fizioterapie prin laser', 'Fizioterapie prin magneti', 'Fizioterapie in apa']
+    services: [['Fizioterapie prin laser', false], ['Fizioterapie prin magneti', false], ['Fizioterapie in apa', false]]
   },
   CARE: {
     serviceName: 'Toaletaj',
-    services: ['Toaletaj canin si felin']
+    services: [['Toaletaj canin si felin', false]]
   },
   SURGERY: {
     serviceName: 'Chirurgie',
-    services: ['Chirurgia cavitatii bucale', 'Sterilizare', 'Cezariana', 'Fracturi', 'Amputare membru', 'Chirurgie articulara', 'Chirurgie cardiologica']
+    services: [['Chirurgia cavitatii bucale', false], ['Sterilizare', false], ['Cezariana', false], ['Fracturi', false], ['Amputare membru', false], ['Chirurgie articulara', false], ['Chirurgie cardiologica', false]]
   },
   URGENT: {
     serviceName: 'Urgente',
-    services: ['Urgente']
+    services: [['Urgente', false]]
   },
   HOSPITALIZATION: {
     serviceName: 'Spitalizare',
-    services: ['Terapie intensiva si postoperatorie', 'Internare perioada de convalescenta', 'Internare in regim de pensiune']
+    services: [['Terapie intensiva si postoperatorie', false], ['Internare perioada de convalescenta', false], ['Internare in regim de pensiune', false]]
   },
   PHARMACY: {
     serviceName: 'Farmacie si suplimente alimentare',
-    services: ['Hrana și diete speciale', 'Suplimente', 'Unguente si sampoane medicamentoase', 'Medicamente']
+    services: [['Hrana și diete speciale', false], ['Suplimente', false], ['Unguente si sampoane medicamentoase', false], ['Medicamente', false]]
   }
 }

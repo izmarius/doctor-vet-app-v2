@@ -28,6 +28,8 @@ import { UserProfileComponent } from './ui/user-profile/user-profile.component';
 import { DoctorAppointmentModalComponent } from './ui/doctor-appointment-modal/doctor-appointment-modal.component';
 import { SectionTitleSubtitleComponent } from './ui/shared/section-title-subtitle/section-title-subtitle.component';
 import { ConfirmDialogComponent } from './ui/shared/confirm-dialog/confirm-dialog.component';
+import { MyProfileComponent } from './ui/my-profile/my-profile.component';
+import { PhotoTextComponent } from './ui/my-profile/photo-text/photo-text.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +49,9 @@ import { ConfirmDialogComponent } from './ui/shared/confirm-dialog/confirm-dialo
     UserProfileComponent,
     DoctorAppointmentModalComponent,
     SectionTitleSubtitleComponent,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    MyProfileComponent,
+    PhotoTextComponent,
   ],
   imports: [
     BrowserModule,
