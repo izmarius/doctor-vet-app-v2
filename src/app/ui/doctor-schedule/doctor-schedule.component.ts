@@ -68,7 +68,7 @@ export class DoctorScheduleComponent implements OnInit {
 
   saveSchedule(): void {
     // @ts-ignore
-    if (!this.storedDoctor.schedule && Object.keys(this.storedDoctor.schedule).length === 0) {
+    if (!this.storedDoctor.schedule || Object.keys(this.storedDoctor.schedule).length === 0) {
       return;
     }
 
@@ -77,7 +77,10 @@ export class DoctorScheduleComponent implements OnInit {
       .then(() => {
         localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.storedDoctor));
         console.log('service updated');
+        //   todo alert message
       }, (error) => {
+        //   todo alert message
+
         console.log('Error updating service', error);
       });
   }
@@ -88,9 +91,12 @@ export class DoctorScheduleComponent implements OnInit {
     // @ts-ignore
     this.doctorService.updateDoctorInfo({outOfOfficeDays: this.storedDoctor.outOfOfficeDays}, this.storedDoctor.id)
       .then(() => {
+        // todo - alert message?
         localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.storedDoctor));
         console.log('concediu canceled');
       }, (error) => {
+        // todo - alert message?
+
         console.log('Error updating service', error);
       });
   }
@@ -111,9 +117,11 @@ export class DoctorScheduleComponent implements OnInit {
     this.doctorService.updateDoctorInfo({outOfOfficeDays: this.storedDoctor.outOfOfficeDays}, this.storedDoctor.id)
       .then(() => {
         this.isOutOfOfficeError = false;
+        // todo - alert message?
         localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.storedDoctor));
-        console.log('service updated');
+        console.log('concediu added');
       }, (error) => {
+        // todo - alert message?
         console.log('Error updating service', error);
       });
   }
