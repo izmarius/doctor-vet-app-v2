@@ -282,12 +282,12 @@ export const DOCTOR_DEFAULT_SCHEDULE = {
     day: 'Sambata',
     startTime: '09:00',
     endTime: '17:00',
-    isChecked: true
+    isChecked: false
   },
   sunday: {
     day: 'Duminica',
     startTime: '09:00',
     endTime: '17:00',
-    isChecked: true
+    isChecked: false
   }
 }

@@ -1,0 +1,3 @@
+set env variables to firebase
+firebase functions:config:set twilio.sid="account sid" twilio.token="auth token"
+ firebase deploy --only functions

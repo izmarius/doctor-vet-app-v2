@@ -69,10 +69,10 @@ export class DoctorScheduleComponent implements OnInit {
   saveSchedule(): void {
     // @ts-ignore
     if (!this.storedDoctor.schedule || Object.keys(this.storedDoctor.schedule).length === 0) {
+      // todo : display error
       return;
     }
-
-    debugger;
+    // todo - cover also if the schedule is not changed
     this.doctorService.updateDoctorInfo({schedule: this.storedDoctor.schedule}, <string>this.storedDoctor.id)
       .then(() => {
         localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.storedDoctor));
