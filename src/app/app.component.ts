@@ -8,8 +8,9 @@ import {AngularFireFunctions} from "@angular/fire/functions";
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
   title = 'doctor-vet-appv2';
+
   constructor(private authStateChange: AuthStateChangeService,
               private router: Router,
               private functions: AngularFireFunctions) {
@@ -19,12 +20,14 @@ export class AppComponent implements OnInit{
     if (!localStorage.getItem('user')) {
       this.router.navigate(['']);
     }
+    this.testApp();
   }
 
-//   const callable = this.functions.httpsCallable('sendSMSNotification');
-//   let obs = callable();
-//
-//   obs.subscribe((res: any) => {
-//   console.log(res);
-// });
+  testApp(): void {
+    const callable = this.functions.httpsCallable('sendSMSNotification');
+    const obs = callable({phoneNumber: '+40743922689'});
+    obs.subscribe((res: any) => {
+      console.log(res);
+    });
+  }
 }
