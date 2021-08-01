@@ -11,6 +11,10 @@
   margin-bottom: $mb-section-small-subtitle;
 }
 
+.m-bottom-top {
+  margin: $mb-section-title-subtitle 0;
+}
+
 .m-btn-card-row {
   margin-bottom: $mb-section-header;
 }
@@ -41,6 +45,10 @@
 
 .p-around {
   padding: 1rem;
+}
+
+.p-bottom {
+  padding-bottom: 3rem;
 }
 
 //todo - see where to use boostrap and clean this paddings

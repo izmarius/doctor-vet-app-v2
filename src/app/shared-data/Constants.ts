@@ -178,7 +178,10 @@ export const SCHEDULE_HEADER_TEXT = {
   endDateLabel: 'Selecteaza data de sfarsit a concediului',
   dateFormat: APPOINTMENTFORM_DATA.dateFormat,
   buttonOutOfOfficePlaceholder: 'Salveaza concediul',
-  outOfOfficeError: 'Selecteaza o data de start si o data de sfarsit a concediului SAU asigura-te ca data de start nu e mai mare decat data de sfarsit a concediului'
+  outOfOfficeError: 'Selecteaza o data de start si o data de sfarsit a concediului SAU asigura-te ca data de start nu e mai mare decat data de sfarsit a concediului',
+  cancelOutOfOfficeDaysBtnPlaceholder: 'Anuleaza concediul',
+  startOutOfOfficePeriodPlaceholder: 'Concediul incepe in: ',
+  endOutOfOfficePeriodPlaceholder: ' si se termina in: '
 };
 
 export const DAYS_OF_WEEK = ['Luni', 'Marti', 'Miercuri', 'Joi', 'Vineri', 'Sambata', 'Duminica'];

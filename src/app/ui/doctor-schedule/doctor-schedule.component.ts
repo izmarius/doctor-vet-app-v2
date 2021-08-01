@@ -72,10 +72,24 @@ export class DoctorScheduleComponent implements OnInit {
       return;
     }
 
+    debugger;
     this.doctorService.updateDoctorInfo({schedule: this.storedDoctor.schedule}, <string>this.storedDoctor.id)
       .then(() => {
         localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.storedDoctor));
         console.log('service updated');
+      }, (error) => {
+        console.log('Error updating service', error);
+      });
+  }
+
+  cancelOutOfOffice(index: number): void {
+    this.storedDoctor.outOfOfficeDays?.splice(index, 1);
+    // todo - alert message?
+    // @ts-ignore
+    this.doctorService.updateDoctorInfo({outOfOfficeDays: this.storedDoctor.outOfOfficeDays}, this.storedDoctor.id)
+      .then(() => {
+        localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.storedDoctor));
+        console.log('concediu canceled');
       }, (error) => {
         console.log('Error updating service', error);
       });
@@ -87,19 +101,16 @@ export class DoctorScheduleComponent implements OnInit {
       this.isOutOfOfficeError = true;
       return;
     }
-    this.isOutOfOfficeError = false;
-    const doctorPayload = {
-      // @ts-ignore
-      outOfOfficeDays: this.storedDoctor.outOfOfficeDays.push({
-        startDate: this.startDate,
-        endDate: this.endDate
-      })
-    }
+    // @ts-ignore
+    this.storedDoctor.outOfOfficeDays.push({
+      startDate: this.startDate.toLocaleDateString(),
+      endDate: this.endDate.toLocaleDateString()
+    });
 
     // @ts-ignore
-    this.doctorService.updateDoctorInfo(doctorPayload, this.storedDoctor.id)
+    this.doctorService.updateDoctorInfo({outOfOfficeDays: this.storedDoctor.outOfOfficeDays}, this.storedDoctor.id)
       .then(() => {
-        this.isOutOfOfficeError = true;
+        this.isOutOfOfficeError = false;
         localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.storedDoctor));
         console.log('service updated');
       }, (error) => {
