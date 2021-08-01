@@ -246,3 +246,48 @@ export const COUNTIES = [
   'Tulcea',
   'Covasna'
 ];
+
+export const DOCTOR_DEFAULT_SCHEDULE = {
+  monday: {
+    day: 'Luni',
+    startTime: '09:00',
+    endTime: '17:00',
+    isChecked: true
+  },
+  tuesday: {
+    day: 'Marti',
+    startTime: '09:00',
+    endTime: '17:00',
+    isChecked: true
+  },
+  wednesday: {
+    day: 'Miercuri',
+    startTime: '09:00',
+    endTime: '17:00',
+    isChecked: true
+  },
+  thursday: {
+    day: 'Joi',
+    startTime: '09:00',
+    endTime: '17:00',
+    isChecked: true
+  },
+  friday: {
+    day: 'Vineri',
+    startTime: '09:00',
+    endTime: '17:00',
+    isChecked: true
+  },
+  saturday: {
+    day: 'Sambata',
+    startTime: '09:00',
+    endTime: '17:00',
+    isChecked: true
+  },
+  sunday: {
+    day: 'Duminica',
+    startTime: '09:00',
+    endTime: '17:00',
+    isChecked: true
+  }
+}

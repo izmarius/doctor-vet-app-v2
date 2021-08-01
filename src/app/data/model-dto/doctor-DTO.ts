@@ -6,7 +6,7 @@ export class DoctorDTO {
   public location!: string;
   public phoneNumber!: string;
   public photoCertificate?: string;
-  public schedule?: Map<string, IDaySchedule>;
+  public schedule?: any;
   public services?: Map<string, string[]>;
   public photo?: string;
   public outOfOfficeDays?: any[];

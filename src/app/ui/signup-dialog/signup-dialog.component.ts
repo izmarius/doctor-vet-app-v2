@@ -1,6 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {MatDialogRef} from '@angular/material/dialog';
-import {AUTH_SIGNUP_FORM_TEXT, COUNTIES, INPUT_LABELS_TXT, INPUT_REGEX_TEXTS} from '../../shared-data/Constants';
+import {
+  AUTH_SIGNUP_FORM_TEXT,
+  COUNTIES,
+  DOCTOR_DEFAULT_SCHEDULE,
+  INPUT_LABELS_TXT,
+  INPUT_REGEX_TEXTS,
+} from '../../shared-data/Constants';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {FirebaseUtilsService} from "../../services/firebase-utils-service/firebase-utils.service";
 import {SignUpService} from "../../services/signup/sign-up.service";
@@ -106,6 +112,8 @@ export class SignupDialogComponent implements OnInit {
     // todo add also photo ulpad at sign up?
     doctor.photo = '';
     doctor.outOfOfficeDays = [];
+    // set default schedule when creating account
+    doctor.schedule = DOCTOR_DEFAULT_SCHEDULE;
     return doctor;
   }
 
