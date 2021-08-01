@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 export default interface IPhotoTitle {
   title?: string;
   subtitle?: string;
@@ -12,12 +12,16 @@ export default interface IPhotoTitle {
   styleUrls: ['./photo-text.component.css']
 })
 export class PhotoTextComponent implements OnInit {
-  // @ts-ignore
-  @Input() data: IPhotoTitle;
-
+  @Input() data!: IPhotoTitle;
+  @Output() photoEmitter = new EventEmitter<string>();
   constructor() { }
 
   ngOnInit(): void {
+  }
+  // todo create cancel upload functionality
+  getUploadedPhoto(photo: string): void {
+    this.data.photo = photo;
+    this.photoEmitter.emit(photo);
   }
 
 }

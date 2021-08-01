@@ -103,6 +103,8 @@ export class SignupDialogComponent implements OnInit {
     doctor.phoneNumber = this.authFormGroup.controls.phoneNumber.value;
     doctor.email = this.authFormGroup.controls.email.value;
     doctor.services = this.selectedServices;
+    // todo add also photo ulpad at sign up?
+    doctor.photo = '';
     return doctor;
   }
 

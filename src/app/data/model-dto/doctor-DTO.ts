@@ -8,6 +8,7 @@ export class DoctorDTO {
   public photoCertificate?: string;
   public schedule?: Map<string, IDaySchedule>;
   public services?: Map<string, string[]>;
+  public photo?: string;
 }
 
 export interface IDaySchedule {

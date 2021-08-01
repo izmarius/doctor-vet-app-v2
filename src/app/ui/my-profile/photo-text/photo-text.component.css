@@ -4,6 +4,7 @@
   min-width: 8rem;
   min-height: 8rem;
   margin-right: 5rem;
+  border-radius: 50%;
 }
 
 .profile-photo {

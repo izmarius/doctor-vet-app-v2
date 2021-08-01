@@ -1,5 +1,5 @@
 <div class="vet-content my-profile-container">
-  <app-photo-text [data]="profileHeaderData"></app-photo-text>
+  <app-photo-text [data]="profileHeaderData" (photoEmitter)="setDoctorPhoto($event)"></app-photo-text>
   <form class="mg-bottom" [formGroup]="userForm" (ngSubmit)="onFormSubmit()">
     <label>{{userDataText?.labels.emailLabel}}</label>
     <input formControlName="email" type="email"
@@ -13,17 +13,6 @@
     <label>{{userDataText?.labels.locationLabel}}</label>
     <input formControlName="location" type="text"
            class="m-btn-dialog-row form-control" [placeholder]="userDataText?.locationPlaceholder">
-
-    <!--    my services-->
-    <div class="vet-border-top-bottom services-container mt-4 mb-4 pt-1 pb-1">
-      <h2 class="mt-4">Serviciile mele</h2>
-      <div class="mb-4" *ngFor="let serviceObj of userData.services | keyvalue">
-        <h4>{{serviceObj.key}}</h4>
-        <div class="row" *ngFor="let serviceDesc of serviceObj.value">
-          <span class="service-name col-10">{{serviceDesc}}</span>
-        </div>
-      </div>
-    </div>
 
     <!--    ALL SERVICES -->
     <div class="services-container mt-4 mb-4 pt-1 pb-1">
@@ -43,8 +32,7 @@
     <li class="error-msg list-style-type-none mt-2 mb-4" *ngIf="isFormValid">{{formErrorMessage}}</li>
     <li class="list-style-type-none success-msg mt-2 mb-4" *ngIf="!isFormValid">{{formSuccessMessage}}</li>
     <div class="d-flex justify-content-center">
-      <button type="submit" class="btn button--active"
-              [disabled]="!userForm.dirty || isDataChanged()">{{userDataText?.editBtn}}</button>
+      <button type="submit" class="btn button--active">{{userDataText?.editBtn}}</button>
     </div>
   </form>
 </div>
