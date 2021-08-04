@@ -1,3 +1,4 @@
+import { AdjustableHeaderComponent } from './ui/shared/adjustable-header/adjustable-header.component';
 import { FeaturesArticleComponent } from './ui/features-article/features-article.component';
 import { ArticleSectionStepsComponent } from './ui/shared/article-section-steps/article-section-steps.component';
 import { NgModule } from '@angular/core';
@@ -60,7 +61,8 @@ import { ArticleSectionTextComponent } from './ui/shared/article-section-text/ar
     ArticleSectionTextComponent,
     ArticleSectionStepsComponent,
     FeaturesArticleComponent,
-    FeaturesSectionComponent
+    FeaturesSectionComponent,
+    AdjustableHeaderComponent
   ],
   imports: [
     BrowserModule,
