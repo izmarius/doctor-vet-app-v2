@@ -1,3 +1,4 @@
+import { FeaturesArticleComponent } from './ui/features-article/features-article.component';
 import { ArticleSectionStepsComponent } from './ui/shared/article-section-steps/article-section-steps.component';
 import { NgModule } from '@angular/core';
 import { AngularFireModule } from '@angular/fire';
@@ -57,7 +58,9 @@ import { ArticleSectionTextComponent } from './ui/shared/article-section-text/ar
     FeaturesComponent,
     FeaturesSectionComponent,
     ArticleSectionTextComponent,
-    ArticleSectionStepsComponent
+    ArticleSectionStepsComponent,
+    FeaturesArticleComponent,
+    FeaturesSectionComponent
   ],
   imports: [
     BrowserModule,

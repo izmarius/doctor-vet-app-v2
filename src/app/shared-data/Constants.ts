@@ -16,6 +16,22 @@ export const HOMEPAGE_SECTION_DATA = {
   subTitle: 'subtitle here in care s povesti be aburit'
 };
 
+export const HOMEPAGE_ARTICLE_DATA = {
+  title: 'Manage project communications efficiently',
+  subtitle: 'Shared Inbox',
+  text: 'Shared inbox helps you stay on top of every update, question, request, and compliment that comes your way. It\'s the single source of truth for all your client communications.'
+};
+
+export const HOMEPAGE_ARTICLE_STEPS_DATA = {
+  title: 'Why it\'s better than email:\n',
+  text: [
+    'Share or jump into any project conversation, without the CC/BCC dance.', 'Delegate communication to your team while keeping an eye on everything.',
+    'Follow just a single thread per project, not hundreds of email messages'
+  ],
+  icon: 'icon-magic-wand',
+  anchorText : 'Go to next page'
+};
+
 export const CALENDAR_DATA = {
   previousBtn: 'Luna anterioara',
   nextBtn: 'Luna urmatoare',
