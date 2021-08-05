@@ -20,7 +20,7 @@ import {UserService} from "../user-profile/services/user.service";
   styleUrls: ['./doctor-appointment-modal.component.css']
 })
 export class DoctorAppointmentModalComponent implements OnInit {
-  // add minutes and hours depending on the schedule
+  //todo add minutes and hours depending on the schedule
   stepMinutes: any = [0, 15, 30, 45];
   stepMinute: number = this.stepMinutes[0];
   stepHours: any = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
@@ -124,6 +124,8 @@ export class DoctorAppointmentModalComponent implements OnInit {
   }
 
   getDoctorAppointment(animalAppointmentId: string, newAnimalInfo: any) {
+    const timestamp = new Date(this.appointmentForm.value.startDate).getTime()
+    debugger;
     return new DoctorsAppointmentDTO()
       .setUserName(this.appointmentForm.value.patientName)
       .setUserId(this.selectedPatient?.id)
@@ -138,7 +140,8 @@ export class DoctorAppointmentModalComponent implements OnInit {
       .setPhone(this.selectedPatient.phone)
       .setIsAppointmentFinished(false)
       .setIsConfirmedByDoctor(true)
-      .setAnimalAppointmentId(animalAppointmentId);
+      .setAnimalAppointmentId(animalAppointmentId)
+      .setTimestamp(timestamp);
   }
 
   getAnimalAppointmentPayload(doctorAppointmentId: string): any {

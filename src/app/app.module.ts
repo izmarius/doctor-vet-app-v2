@@ -33,8 +33,10 @@ import { PhotoTextComponent } from './ui/my-profile/photo-text/photo-text.compon
 import { DoctorScheduleComponent } from './ui/doctor-schedule/doctor-schedule.component';
 import { ScheduleSetterComponent } from './ui/doctor-schedule/schedule-setter/schedule-setter.component';
 import { AdjustableHeaderComponent } from './ui/shared/adjustable-header/adjustable-header.component';
+import { AlertMessageComponent } from './ui/shared/alert-message/alert-message.component';
 
 @NgModule({
+  entryComponents: [AlertMessageComponent],
   declarations: [
     AppComponent,
     HomePageComponent,
@@ -58,6 +60,7 @@ import { AdjustableHeaderComponent } from './ui/shared/adjustable-header/adjusta
     DoctorScheduleComponent,
     ScheduleSetterComponent,
     AdjustableHeaderComponent,
+    AlertMessageComponent,
   ],
   imports: [
     BrowserModule,

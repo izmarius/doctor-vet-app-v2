@@ -6,6 +6,7 @@ import {SignupDialogComponent} from '../../ui/signup-dialog/signup-dialog.compon
 import {DoctorService} from '../doctor/doctor.service';
 import {DoctorDTO} from "../../data/model-dto/doctor-DTO";
 import {LogInService} from "../login/log-in.service";
+import {UiErrorInterceptorService} from "../../ui/shared/alert-message/services/ui-error-interceptor.service";
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,8 @@ export class SignUpService {
   constructor(
     private afAuth: AngularFireAuth,
     private doctorService: DoctorService,
-    private loginService: LogInService
+    private loginService: LogInService,
+    private uiErrorInterceptor: UiErrorInterceptorService
   ) {
   }
 
@@ -28,6 +30,7 @@ export class SignUpService {
         this.loginService.logIn(doctorDTO.email, password, dialogRef);
       })
       .catch((error) => {
+        this.uiErrorInterceptor.setUiError({message: 'error', class: 'snackbar-error'});
         console.log('Error', error);
       });
   }

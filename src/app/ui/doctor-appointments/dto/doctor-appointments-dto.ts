@@ -13,6 +13,7 @@ export interface IDoctorsAppointmentsDTO {
   isAppointmentFinished: boolean;
   isConfirmedByDoctor: boolean;
   animalAppointmentId: string;
+  timestamp: number;
 }
 
 export class DoctorsAppointmentDTO {
@@ -28,6 +29,7 @@ export class DoctorsAppointmentDTO {
   private isAppointmentFinished: boolean;
   private isConfirmedByDoctor: boolean;
   private animalAppointmentId: string;
+  private timestamp: number;
 // todo: getter and setter when to use in typescript
   getId(): string {
     return this.id;
@@ -56,6 +58,11 @@ export class DoctorsAppointmentDTO {
     return this;
   }
 
+
+  setTimestamp(value: number): DoctorsAppointmentDTO {
+    this.timestamp = value;
+    return this;
+  }
   getLocation(): string {
     return this.location;
   }
