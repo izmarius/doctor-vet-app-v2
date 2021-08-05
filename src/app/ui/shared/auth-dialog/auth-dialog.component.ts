@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {MatDialogRef} from '@angular/material/dialog';
+import {INPUT_REGEX_TEXTS} from "../../../shared-data/Constants";
 
 @Component({
   selector: 'app-auth-dialog',
@@ -33,9 +34,8 @@ export class AuthDialogComponent implements OnInit {
   }
 
   initAuthForm(): void {
-    const emailPattern = '^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$';
     this.authFormGroup = new FormGroup({
-      email: new FormControl('pausan.ionut.adrian@gmail.com', [Validators.required, Validators.pattern(emailPattern)]),
+      email: new FormControl('pausan.ionut.adrian@gmail.com', [Validators.required, Validators.pattern(INPUT_REGEX_TEXTS.email)]),
       password: new FormControl('Start123', [Validators.required, Validators.minLength(6)]),
     });
   }

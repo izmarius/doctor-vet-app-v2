@@ -12,6 +12,7 @@ import {MatDialogRef} from "@angular/material/dialog";
 import {Subscription} from "rxjs";
 import {AnimalAppointmentService} from "../../services/animal-appointment/animal-appointment.service";
 import {FirestoreService} from "../../data/http/firestore.service";
+import {UserService} from "../user-profile/services/user.service";
 
 @Component({
   selector: 'app-doctor-appointment-modal',
@@ -48,7 +49,8 @@ export class DoctorAppointmentModalComponent implements OnInit {
     private appointmentFormService: DoctorAppointmentFormService,
     private dateTimeUtils: DateUtilsService,
     private animalAppointment: AnimalAppointmentService,
-    private firestoreService: FirestoreService
+    private firestoreService: FirestoreService,
+    private userService: UserService
   ) {
   }
 
@@ -91,7 +93,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
       // todo get data directly from user service
       const animalDocUID = this.firestoreService.getNewFirestoreId();
       this.selectedAnimal.animalId = animalDocUID;
-      this.appointmentFormService.saveAnimal(this.selectedPatient, this.appointmentForm.value.animalName, animalDocUID);
+      this.userService.saveAnimal(this.selectedPatient, this.appointmentForm.value.animalName, animalDocUID);
       newAnimalInfo.setUid(animalDocUID);
     } else {
       newAnimalInfo.setUid(this.selectedAnimal.animalId)

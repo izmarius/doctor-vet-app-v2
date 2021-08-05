@@ -79,14 +79,12 @@ export class MyProfileComponent implements OnInit {
   }
 
   initEditUserForm(): void {
-    const emailPattern = INPUT_REGEX_TEXTS.email;
-    const phonePattern = INPUT_REGEX_TEXTS.phoneNumber;
 
     this.userForm = new FormGroup({
-      email: new FormControl(this.userData.email, [Validators.required, Validators.pattern(emailPattern)]),
+      email: new FormControl(this.userData.email, [Validators.required, Validators.pattern(INPUT_REGEX_TEXTS.email)]),
       doctorName: new FormControl(this.userData.doctorName, Validators.required),
       location: new FormControl(this.userData.location, Validators.required),
-      phoneNumber: new FormControl(this.userData.phoneNumber, [Validators.required, Validators.pattern(phonePattern)])
+      phoneNumber: new FormControl(this.userData.phoneNumber, [Validators.required, Validators.pattern(INPUT_REGEX_TEXTS.phoneNumber)])
     });
   }
 

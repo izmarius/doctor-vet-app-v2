@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {FOOTER_COMPONENT, FOOTER_ERROR_MSG, INPUT_LABELS_TXT} from "../../../shared-data/Constants";
+import {FOOTER_COMPONENT, FOOTER_ERROR_MSG, INPUT_LABELS_TXT, INPUT_REGEX_TEXTS} from "../../../shared-data/Constants";
 import {MessagesService} from "../../../services/messages/messages.service";
 
 @Component({
@@ -14,7 +14,6 @@ export class FooterComponent implements OnInit {
   formText: any;
 
   constructor(private messageService: MessagesService) {
-
   }
 
   ngOnInit(): void {
@@ -24,9 +23,8 @@ export class FooterComponent implements OnInit {
   }
 
   initContactForm(): void {
-    const emailPattern = '^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$';
     this.contactForm = new FormGroup({
-      email: new FormControl('', [Validators.required, Validators.pattern(emailPattern)]),
+      email: new FormControl('', [Validators.required, Validators.pattern(INPUT_REGEX_TEXTS.email)]),
       message: new FormControl('', [Validators.required, Validators.maxLength(250), Validators.minLength(5)]),
     });
   }
