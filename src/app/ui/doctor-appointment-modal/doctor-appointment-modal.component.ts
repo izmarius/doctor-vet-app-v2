@@ -106,6 +106,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
     const doctorAppointmentId = this.firestoreService.getNewFirestoreId();
     const animalAppointmentId = this.firestoreService.getNewFirestoreId();
 
+    this.appointmentForm.value.startDate.setHours(this.stepHour, this.stepMinute);
     const newDoctorAppointment = this.getDoctorAppointment(animalAppointmentId, newAnimalInfo);
     const newAnimalAppointment = this.getAnimalAppointmentPayload(doctorAppointmentId);
 
@@ -126,7 +127,6 @@ export class DoctorAppointmentModalComponent implements OnInit {
   }
 
   getDoctorAppointment(animalAppointmentId: string, newAnimalInfo: any) {
-    const timestamp = new Date(this.appointmentForm.value.startDate).getTime()
     return new DoctorsAppointmentDTO()
       .setUserName(this.appointmentForm.value.patientName)
       .setUserId(this.selectedPatient?.id)
@@ -142,7 +142,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
       .setIsAppointmentFinished(false)
       .setIsConfirmedByDoctor(true)
       .setAnimalAppointmentId(animalAppointmentId)
-      .setTimestamp(timestamp);
+      .setTimestamp(this.appointmentForm.value.startDate.getTime());
   }
 
   getAnimalAppointmentPayload(doctorAppointmentId: string): any {
@@ -155,6 +155,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
       location: this.doctor.location,
       service: this.appointmentForm.value.medService,
       doctorAppointmentId: doctorAppointmentId,
+      timestamp: this.appointmentForm.value.startDate.getTime()
     }
   }
 
