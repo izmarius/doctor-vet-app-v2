@@ -5,6 +5,8 @@ import {Observable} from "rxjs";
 import {first, map} from "rxjs/operators";
 import {convertSnapshots} from "../../../data/utils/firestore-utils.service";
 import {AnimalAppointmentService} from "../../../services/animal-appointment/animal-appointment.service";
+import {UiErrorInterceptorService} from "../../shared/alert-message/services/ui-error-interceptor.service";
+import {USER_CARD_TXT} from "../../../shared-data/Constants";
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +17,8 @@ export class DoctorAppointmentsService {
   private appointmentList: any[] = [];
 
   constructor(private firestoreService: FirestoreService,
-              private animalAppointment: AnimalAppointmentService) {
+              private animalAppointment: AnimalAppointmentService,
+              private uiAlertInterceptor: UiErrorInterceptorService) {
   }
 
   getAllAppointments(doctorId: string): Observable<IDoctorsAppointmentsDTO[]> {
@@ -48,16 +51,20 @@ export class DoctorAppointmentsService {
   cancelAppointment(selectedAppointment: any, doctor: any): void {
     //todo maybe update also doctor's appointment instead of deleting it?
     this.deleteAppointment(selectedAppointment.id, doctor.id).then((res) => {
-      // update animal appointment isCanceled
       this.animalAppointment.updateAnimalAppointment(
         {isCanceled: true},
         selectedAppointment.userId,
         selectedAppointment.animalData.uid,
         selectedAppointment.animalAppointmentId)
         .then(() => {
-          // todo alert message and notify user
+          this.uiAlertInterceptor.setUiError({
+            message: USER_CARD_TXT.cancelAppointmentSuccess,
+            class: 'snackbar-success'
+          });
+          // todo notify user
         });
     }).catch((error) => {
+      this.uiAlertInterceptor.setUiError({message: USER_CARD_TXT.cancelAppointmentError, class: 'snackbar-success'});
       console.log(error);
     })
   }

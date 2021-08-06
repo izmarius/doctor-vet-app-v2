@@ -18,7 +18,6 @@ export class AnimalService {
 
   private USER_COLLECTION = 'user/';
   private ANIMALS_COLLECTION = '/animals';
-  private ANIMAL_APPOINTMENTS_COLLECTION = '/appointments';
   private MEDICAL_HISTORY_COLLECTION = '/medical-history';
 
   getAnimalById(animalId: string | number, userId: string): Observable<AnimalDTO> {
@@ -63,48 +62,12 @@ export class AnimalService {
       }));
   }
 
-  getAnimalsAppointmentsDocs(animalId: string, userId: string): Observable<any> {
-    const animalAppointmentsPath = this.getAnimalUrl(userId) + '/' + animalId + this.ANIMAL_APPOINTMENTS_COLLECTION;
-    return this.fireStoreService.getAllDocumentsOfCollection(animalAppointmentsPath);
-  }
-
-  addAnimalToUser(animalDto: AnimalDTO, userId: string): Promise<void> {
-    // todo: add also animal Id to user - generate the id from here
-    return this.fireStoreService.saveDocumentByAutoId(this.getAnimalUrl(userId), animalDto)
-      .then(() => {
-        console.log('new animal addded');
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
-  }
-
-  updateUserAnimalInfo(animalDto: AnimalDTO, animalId: string, userId: string): Promise<void> {
-    return this.fireStoreService.updateDocumentById(this.getAnimalUrl(userId), animalId, animalDto)
-      .then(() => {
-        // todo: alert message
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
-  }
-
   updateAnimalsSubCollections(url: string, documentId: string, documentToUpdate: any): void {
     this.fireStoreService.updateDocumentById(url, documentId, documentToUpdate).then(() => {
       console.log('Update success');
     }).catch((error) => {
       console.log(error.message);
     });
-  }
-
-  deleteUserAnimal(animalId: string, userId: string): Promise<void> {
-    return this.fireStoreService.deleteDocById(this.getAnimalUrl(userId), animalId)
-      .then(() => {
-        console.log('animal deleted');;
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
   }
 
   getAnimalUrl(userId: string): string {

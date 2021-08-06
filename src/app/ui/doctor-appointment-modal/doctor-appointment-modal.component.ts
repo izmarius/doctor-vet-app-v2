@@ -5,7 +5,7 @@ import {DoctorsAppointmentDTO} from "../doctor-appointments/dto/doctor-appointme
 import {DoctorService} from "../../services/doctor/doctor.service";
 import {DoctorAppointmentsService} from "../doctor-appointments/services/doctor-appointments.service";
 import {DateUtilsService} from "../../data/utils/date-utils.service";
-import {APPOINTMENTFORM_DATA, INPUT_REGEX_TEXTS, USER_LOCALSTORAGE} from "../../shared-data/Constants";
+import {APPOINTMENTFORM_DATA, INPUT_REGEX_TEXTS, USER_LOCALSTORAGE, USER_STATE} from "../../shared-data/Constants";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {DoctorAppointmentFormService} from "./services/doctor-appointment-form.service";
 import {MatDialogRef} from "@angular/material/dialog";
@@ -13,6 +13,7 @@ import {Subscription} from "rxjs";
 import {AnimalAppointmentService} from "../../services/animal-appointment/animal-appointment.service";
 import {FirestoreService} from "../../data/http/firestore.service";
 import {UserService} from "../user-profile/services/user.service";
+import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-error-interceptor.service";
 
 @Component({
   selector: 'app-doctor-appointment-modal',
@@ -50,7 +51,8 @@ export class DoctorAppointmentModalComponent implements OnInit {
     private dateTimeUtils: DateUtilsService,
     private animalAppointment: AnimalAppointmentService,
     private firestoreService: FirestoreService,
-    private userService: UserService
+    private userService: UserService,
+    private uiAlertInterceptor: UiErrorInterceptorService
   ) {
   }
 
@@ -113,19 +115,18 @@ export class DoctorAppointmentModalComponent implements OnInit {
       doctorAppointmentId
     ).then(() => {
       this.animalAppointment.saveAnimalAppointment(newAnimalAppointment, this.selectedPatient?.id, this.selectedAnimal.animalId, animalAppointmentId)
-        .then((res: any) => {
-          // todo alert message
-          alert(APPOINTMENTFORM_DATA.successAppointment);
+        .then(() => {
+          this.uiAlertInterceptor.setUiError({message: APPOINTMENTFORM_DATA.successAppointment, class: 'snackbar-success'});
           this.onCancelForm(true);
         });
     }).catch((error: any) => {
+      this.uiAlertInterceptor.setUiError({message: error.message, class: 'snackbar-error'});
       console.log('Error: ',error);
     });
   }
 
   getDoctorAppointment(animalAppointmentId: string, newAnimalInfo: any) {
     const timestamp = new Date(this.appointmentForm.value.startDate).getTime()
-    debugger;
     return new DoctorsAppointmentDTO()
       .setUserName(this.appointmentForm.value.patientName)
       .setUserId(this.selectedPatient?.id)
@@ -178,8 +179,9 @@ export class DoctorAppointmentModalComponent implements OnInit {
     if (this.stepHour === null
       || this.stepMinute === null
       || !this.dateTimeUtils.isSelectedDateGreaterOrEqualComparedToCurrentDate(this.appointmentForm.value.startDate.toLocaleDateString())
-      || (this.stepHour < currentHours && this.dateTimeUtils.isCurrentDay(this.appointmentForm.value.startDate.toLocaleDateString()))
-      || (this.stepHour <= currentHours && this.stepMinute <= currentMinutes)) {
+      || (this.stepHour < currentHours && this.dateTimeUtils.isCurrentDay(this.appointmentForm.value.startDate.toLocaleDateString()))) {
+      // todo - refactor this - debugg
+    // || (this.stepHour <= currentHours && this.stepMinute <= currentMinutes)
       this.setErrorMessage(APPOINTMENTFORM_DATA.timeValidation);
       return;
     }

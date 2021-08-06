@@ -27,7 +27,9 @@ export const USER_CARD_TXT = {
   services: 'Servicii cerute',
   animalName: 'Nume animal',
   buttonValue: 'Vezi detalii programare',
-  buttonCancelValue: 'Anuleaza programarea'
+  buttonCancelValue: 'Anuleaza programarea',
+  cancelAppointmentSuccess: 'Programarea a fost stearsa si clientul notificat',
+  cancelAppointmentError: 'Programarea nu a putut ffi stearsa, te rugam sa incerci din nou',
 };
 
 export const CALENDAR_DATA = {
@@ -48,6 +50,14 @@ export const DOCTORAPPOINTMENTHEADER_DATA = {
   title: 'Creeaza o programare',
   subTitle: 'Rapid si eficient'
 };
+
+export const FIREBASE_ERRORS = {
+  'auth/user-not-found': 'Nu a fost gasit nici un user inregistrat cu acest cont sau acest cont a fost sters. Te rugam sa-ti creezi un cont nou sau sa ne contactezi'
+}
+
+export const UI_ALERT_MESSAGES = {
+  welcome: 'Bine ai venit:D'
+}
 
 export const APPOINTMENTFORM_DATA = {
   title: 'Programare noua',
@@ -95,6 +105,13 @@ export const USER_ANIMAL_DIALOG = {
   editInputPlaceholder: 'Max 250 caractere'
 };
 
+export const USER_SERVICE = {
+  addUserSuccess: 'Userul a fost creat cu succes',
+  addUserError: 'Userul nu a putut fi creat, te rugam sa incerci din nou',
+  deleteUserSuccess: 'Userul a fost sters cu succes',
+  deleteUserError: 'Userul nu a putut fi sters, te rugam sa incerci din nou',
+}
+
 export const DIALOG_UI_ERRORS = {
   noChangeDetected: 'Nu a fost detectata nici o modificare!'
 };
@@ -105,10 +122,12 @@ export const FOOTER_COMPONENT = {
   buttonText: 'Trimite mesajul!',
   placeholderMessage: 'Min 5 caractere, max 250 caractere',
   placeholderEmail: 'popescu1234@gmail.com',
+  messageSentSuccessfully: 'Mesajul tau a fost trimis cu succes. In minim 24 de ore vei fi contacta de unul dintre colegii echipei Doctor Vet',
 };
 
 export const USER_STATE = {
-  emailVerified: 'Verifica emailul pentru a putea folosi aplicatia',
+  emailVerified: 'Pentru a putea folosi aplicatia te rugam sa iti verifici emailul',
+  patientNotFound: APPOINTMENTFORM_DATA.patientDoesNotExist
 }
 
 export const USER_LOCALSTORAGE = 'user'
@@ -181,7 +200,13 @@ export const SCHEDULE_HEADER_TEXT = {
   outOfOfficeError: 'Selecteaza o data de start si o data de sfarsit a concediului SAU asigura-te ca data de start nu e mai mare decat data de sfarsit a concediului',
   cancelOutOfOfficeDaysBtnPlaceholder: 'Anuleaza concediul',
   startOutOfOfficePeriodPlaceholder: 'Concediul incepe in: ',
-  endOutOfOfficePeriodPlaceholder: ' si se termina in: '
+  endOutOfOfficePeriodPlaceholder: ' si se termina in: ',
+  saveScheduleSuccess: 'Programul de lucru a fost salvat cu succes',
+  saveScheduleError: 'Programul nu a putut fi salvat, te rugam sa incerci din nou',
+  cancelOutOfOfficeSuccess: 'Concediul a fost sters',
+  cancelOutOfOfficeError: 'Concediul nu a putut fi sters, te rugam sa incerci din nou',
+  addOutOfOfficeSuccess: 'Concediul a fost adaugat',
+  addOutOfOfficeError: 'Concediul nu a putut fi adaugat, te rugam sa incerci din nou',
 };
 
 export const DAYS_OF_WEEK = ['Luni', 'Marti', 'Miercuri', 'Joi', 'Vineri', 'Sambata', 'Duminica'];

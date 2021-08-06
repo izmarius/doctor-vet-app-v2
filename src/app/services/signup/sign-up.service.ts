@@ -30,8 +30,7 @@ export class SignUpService {
         this.loginService.logIn(doctorDTO.email, password, dialogRef);
       })
       .catch((error) => {
-        this.uiErrorInterceptor.setUiError({message: 'error', class: 'snackbar-error'});
-        console.log('Error', error);
+        this.uiErrorInterceptor.setUiError({message: error.message, class: 'snackbar-error'});
       });
   }
 }

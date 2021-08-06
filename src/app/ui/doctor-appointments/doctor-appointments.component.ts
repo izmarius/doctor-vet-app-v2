@@ -6,9 +6,9 @@ import {DoctorAppointmentsService} from "./services/doctor-appointments.service"
 import {AnimalService} from "./services/animal.service";
 import {ICardData} from "../shared/user-card/user-card.component";
 import {MatDialog} from "@angular/material/dialog";
-import {DoctorAppointmentModalComponent} from "../doctor-appointment-modal/doctor-appointment-modal.component";
 import {UserAnimalInfoComponent} from "../user-animal-info/user-animal-info.component";
 import {ConfirmDialogComponent} from "../shared/confirm-dialog/confirm-dialog.component";
+import {catchError} from "rxjs/operators";
 
 @Component({
   selector: 'app-doctor-appointments',
@@ -45,8 +45,7 @@ export class DoctorAppointmentsComponent implements OnInit, OnDestroy, AfterView
       this.APPOINTMENT_SUB = this.doctorAppointmentService
         .getAllAppointments(this.user.id)
         .subscribe((appointments) => {
-          // need to do this because we want to leave the card as a generic component
-          // refresh data if already exists - see if we can improve here
+          // todo refresh data if already exists - see if we can improve here
           this.appointmentList = [];
           this.appointmentMap = {};
           this.appointmentList = appointments;

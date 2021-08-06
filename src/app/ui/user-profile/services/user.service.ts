@@ -5,6 +5,8 @@ import {FirestoreService} from 'src/app/data/http/firestore.service';
 import {Observable} from 'rxjs';
 import {convertSnapshots} from 'src/app/data/utils/firestore-utils.service';
 import {UserDTO} from "../dto/user-dto";
+import {UiErrorInterceptorService} from "../../shared/alert-message/services/ui-error-interceptor.service";
+import {USER_CARD_TXT, USER_SERVICE} from "../../../shared-data/Constants";
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +17,8 @@ export class UserService {
 
   constructor(
     private angularFirestore: AngularFirestore,
-    private firestoreService: FirestoreService
+    private firestoreService: FirestoreService,
+    private uiAlertInterceptor: UiErrorInterceptorService
   ) {
   }
 
@@ -70,9 +73,10 @@ export class UserService {
   createUser(userDto: UserDTO): Promise<void> {
     return this.firestoreService.saveDocumentByAutoId(this.USER_COLLECTION, userDto)
       .then(() => {
-        // todo alert message
+        this.uiAlertInterceptor.setUiError({message: USER_SERVICE.addUserSuccess, class: 'snackbar-success'});
       })
       .catch((error) => {
+        this.uiAlertInterceptor.setUiError({message: USER_SERVICE.addUserError, class: 'snackbar-error'});
         console.log('Error:', error);
       });
   }
@@ -80,9 +84,9 @@ export class UserService {
   updateUserInfo(userDto: any, userId: string): Promise<void> {
     return this.firestoreService.updateDocumentById(this.USER_COLLECTION, userId, userDto)
       .then(() => {
-        // todo alert message
       })
       .catch((error) => {
+        this.uiAlertInterceptor.setUiError({message: error.message, class: 'snackbar-error'});
         console.log('Error:', error);
       });
   }
@@ -90,9 +94,10 @@ export class UserService {
   deleteUser(userId: string): Promise<void> {
     return this.firestoreService.deleteDocById(this.USER_COLLECTION, userId)
       .then(() => {
-        // todo alert message
+        this.uiAlertInterceptor.setUiError({message: USER_SERVICE.deleteUserSuccess, class: 'snackbar-success'});
       })
       .catch((error) => {
+        this.uiAlertInterceptor.setUiError({message: USER_SERVICE.deleteUserError, class: 'snackbar-error'});
         console.log('Error:', error);
       });
   }

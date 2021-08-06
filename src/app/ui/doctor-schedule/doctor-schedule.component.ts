@@ -3,11 +3,12 @@ import {DoctorDTO, IDaySchedule} from "../../data/model-dto/doctor-DTO";
 import {
   APPOINTMENTFORM_DATA,
   DAYS_OF_WEEK,
-  DAYS_OF_WEEK_MAP,
+  DAYS_OF_WEEK_MAP, FOOTER_COMPONENT,
   SCHEDULE_HEADER_TEXT,
   USER_LOCALSTORAGE
 } from "../../shared-data/Constants";
 import {DoctorService} from "../../services/doctor/doctor.service";
+import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-error-interceptor.service";
 
 @Component({
   selector: 'app-doctor-schedule',
@@ -28,7 +29,8 @@ export class DoctorScheduleComponent implements OnInit {
   endDate: any;
   isOutOfOfficeError = false;
 
-  constructor(private doctorService: DoctorService) {
+  constructor(private doctorService: DoctorService,
+              private uiAlertInterceptor: UiErrorInterceptorService) {
   }
 
   ngOnInit(): void {
@@ -76,27 +78,22 @@ export class DoctorScheduleComponent implements OnInit {
     this.doctorService.updateDoctorInfo({schedule: this.storedDoctor.schedule}, <string>this.storedDoctor.id)
       .then(() => {
         localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.storedDoctor));
-        console.log('service updated');
-        //   todo alert message
+        this.uiAlertInterceptor.setUiError({message: SCHEDULE_HEADER_TEXT.saveScheduleSuccess, class: 'snackbar-success'});
       }, (error) => {
-        //   todo alert message
-
+        this.uiAlertInterceptor.setUiError({message: SCHEDULE_HEADER_TEXT.saveScheduleError, class: 'snackbar-error'});
         console.log('Error updating service', error);
       });
   }
 
   cancelOutOfOffice(index: number): void {
-    this.storedDoctor.outOfOfficeDays?.splice(index, 1);
-    // todo - alert message?
     // @ts-ignore
     this.doctorService.updateDoctorInfo({outOfOfficeDays: this.storedDoctor.outOfOfficeDays}, this.storedDoctor.id)
       .then(() => {
-        // todo - alert message?
+        this.storedDoctor.outOfOfficeDays?.splice(index, 1);
         localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.storedDoctor));
-        console.log('concediu canceled');
+        this.uiAlertInterceptor.setUiError({message: SCHEDULE_HEADER_TEXT.cancelOutOfOfficeSuccess, class: 'snackbar-success'});
       }, (error) => {
-        // todo - alert message?
-
+        this.uiAlertInterceptor.setUiError({message: SCHEDULE_HEADER_TEXT.cancelOutOfOfficeError, class: 'snackbar-error'});
         console.log('Error updating service', error);
       });
   }
@@ -118,11 +115,11 @@ export class DoctorScheduleComponent implements OnInit {
       .then(() => {
         this.isOutOfOfficeError = false;
         // todo - alert message?
+        this.uiAlertInterceptor.setUiError({message: SCHEDULE_HEADER_TEXT.addOutOfOfficeSuccess, class: 'snackbar-success'});
         localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.storedDoctor));
-        console.log('concediu added');
       }, (error) => {
-        // todo - alert message?
-        console.log('Error updating service', error);
+        this.uiAlertInterceptor.setUiError({message: SCHEDULE_HEADER_TEXT.addOutOfOfficeError, class: 'snackbar-error'});
+        console.log('Error ', error);
       });
   }
 
