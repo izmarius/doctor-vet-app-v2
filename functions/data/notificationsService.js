@@ -4,7 +4,7 @@ const adminFirestore = admin.firestore();
 
 function setDateToFetch() {
   let tomorrow = new Date();
-  console.log('Current hour: ', tomorrow.getHours());
+  console.log('Current hour: '+  tomorrow.getHours() + 'current minutes: ' + tomorrow.getMinutes());
   let nextDayAfterTomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   console.log('tomorrow: ', tomorrow.toLocaleDateString());
@@ -23,9 +23,10 @@ function setDateToFetch() {
 
 exports.getTomorrowNotifications = function getTomorrowNotifications() {
   let collection = adminFirestore.collection('notifications');
+  const dates = setDateToFetch();
   collection = collection
-    .where('timestamp', '>=', setDateToFetch().tomorrow)
-    .where('timestamp', '<', setDateToFetch().nextDayAfterTomorrow);
+    .where('timestamp', '>=', dates.tomorrow)
+    .where('timestamp', '<', dates.nextDayAfterTomorrow);
   return collection.get().then((snaps) => {
     return snaps;
   }).catch((err) => {
