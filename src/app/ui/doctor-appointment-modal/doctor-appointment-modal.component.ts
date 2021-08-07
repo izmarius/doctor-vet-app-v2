@@ -117,12 +117,15 @@ export class DoctorAppointmentModalComponent implements OnInit {
     ).then(() => {
       this.animalAppointment.saveAnimalAppointment(newAnimalAppointment, this.selectedPatient?.id, this.selectedAnimal.animalId, animalAppointmentId)
         .then(() => {
-          this.uiAlertInterceptor.setUiError({message: APPOINTMENTFORM_DATA.successAppointment, class: 'snackbar-success'});
+          this.uiAlertInterceptor.setUiError({
+            message: APPOINTMENTFORM_DATA.successAppointment,
+            class: 'snackbar-success'
+          });
           this.onCancelForm(true);
         });
     }).catch((error: any) => {
       this.uiAlertInterceptor.setUiError({message: error.message, class: 'snackbar-error'});
-      console.log('Error: ',error);
+      console.log('Error: ', error);
     });
   }
 
@@ -182,7 +185,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
       || !this.dateTimeUtils.isSelectedDateGreaterOrEqualComparedToCurrentDate(this.appointmentForm.value.startDate.toLocaleDateString())
       || (this.stepHour < currentHours && this.dateTimeUtils.isCurrentDay(this.appointmentForm.value.startDate.toLocaleDateString()))) {
       // todo - refactor this - debugg
-    // || (this.stepHour <= currentHours && this.stepMinute <= currentMinutes)
+      // || (this.stepHour <= currentHours && this.stepMinute <= currentMinutes)
       this.setErrorMessage(APPOINTMENTFORM_DATA.timeValidation);
       return;
     }
@@ -211,7 +214,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
   }
 
   filterAnimals(searchText: string): void {
-    if (!this.animals  || this.animals.length === 0) {
+    if (!this.animals || this.animals.length === 0) {
       this.selectedAnimal.animalName = searchText;
       this.isErrorDisplayed = false;
       return;
