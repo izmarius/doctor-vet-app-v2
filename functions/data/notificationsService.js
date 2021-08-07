@@ -4,6 +4,7 @@ const adminFirestore = admin.firestore();
 
 function setDateToFetch() {
   let tomorrow = new Date();
+  console.log('Current hour: ', tomorrow.getHours());
   let nextDayAfterTomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   console.log('tomorrow: ', tomorrow.toLocaleDateString());
