@@ -43,7 +43,7 @@ export class DoctorAppointmentsComponent implements OnInit, OnDestroy, AfterView
       this.user = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
       this.userCardPlaceholder = USER_CARD_TXT;
       this.APPOINTMENT_SUB = this.doctorAppointmentService
-        .getAllAppointments(this.user.id)
+        .getAllCurrentAppointments(this.user.id)
         .subscribe((appointments) => {
           // todo refresh data if already exists - see if we can improve here
           this.appointmentList = [];
@@ -65,7 +65,6 @@ export class DoctorAppointmentsComponent implements OnInit, OnDestroy, AfterView
     // delete appointment from doctor - update animal appointment and set with status canceled
     this.openConfirmationModalModal(selectedAppointment);
   }
-
 
   mapToCardData(appointment: any): ICardData {
     return {

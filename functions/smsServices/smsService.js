@@ -4,6 +4,7 @@ const client = require('twilio')(accountSid, authToken);
 const TWILIO_NUMBER = '+16318304395';
 
 exports.sendSMSNotification = function sendSMSNotification(smsPayload) {
+  //  todo validate phone number & message
   return client.messages.create({body: smsPayload.message, from: TWILIO_NUMBER, to: smsPayload.phoneNumber});
 }
 

@@ -7,6 +7,7 @@ import {convertSnapshots} from "../../../data/utils/firestore-utils.service";
 import {AnimalAppointmentService} from "../../../services/animal-appointment/animal-appointment.service";
 import {UiErrorInterceptorService} from "../../shared/alert-message/services/ui-error-interceptor.service";
 import {USER_CARD_TXT} from "../../../shared-data/Constants";
+import {DateUtilsService} from "../../../data/utils/date-utils.service";
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,8 @@ export class DoctorAppointmentsService {
 
   constructor(private firestoreService: FirestoreService,
               private animalAppointment: AnimalAppointmentService,
-              private uiAlertInterceptor: UiErrorInterceptorService) {
+              private uiAlertInterceptor: UiErrorInterceptorService,
+              private dateUtils: DateUtilsService) {
   }
 
   getAllAppointments(doctorId: string): Observable<IDoctorsAppointmentsDTO[]> {
@@ -29,6 +31,18 @@ export class DoctorAppointmentsService {
     // firebase uses websocket to transfer data and first closes that connection after first value was transmited - for multiple tryes we will use take method
     // todo: subscribe in component
   }
+
+  getAllCurrentAppointments(doctorId: string): Observable<IDoctorsAppointmentsDTO[]> {
+    const timestamps = this.dateUtils.setAndGetDateToFetch();
+
+    return this.firestoreService.getCollectionByMultipleWhereClauses(this.getAppointmentUrl(doctorId), timestamps).pipe(
+      map(snaps => convertSnapshots<IDoctorsAppointmentsDTO[]>(snaps)
+      )
+    );
+    // firebase uses websocket to transfer data and first closes that connection after first value was transmited - for multiple tryes we will use take method
+    // todo: subscribe in component
+  }
+
 
   getAppointmentById(appointmentId: string, doctorId: string): Observable<DoctorsAppointmentDTO> {
     return this.firestoreService.getDocById(this.getAppointmentUrl(doctorId), appointmentId);

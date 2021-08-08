@@ -47,4 +47,17 @@ export class DateUtilsService {
     } else return this.selectedDate[2] >= this.currentDate[2];
   }
 
+  setAndGetDateToFetch(): any {
+    const today = new Date();
+    const tomorrow = new Date();
+    today.setHours(0, 0);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0);
+
+    return {
+      today: today.getTime(),
+      tomorrow: tomorrow.getTime()
+    }
+  }
+
 }

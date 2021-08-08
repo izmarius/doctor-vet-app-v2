@@ -2,6 +2,7 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const smsService = require('../smsServices/smsService');
 const notificationService = require('../data/notificationsService');
+const emailNotification = require('../notification/emailNotification');
 const adminFirestore = admin.firestore();
 
 
@@ -33,6 +34,8 @@ exports.addNotification = functions.firestore.document('user/{userId}/animals/{a
   .onCreate((snap, context) => {
     const collection = adminFirestore.collection('notifications');
     collection.add(snap.data());
+    // email notification
+    emailNotification.emailNotification(snap.data());
     console.log(`Added appointment with id: ${snap.id} and created notification for it`,);
     return null;
   });
