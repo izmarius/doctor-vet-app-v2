@@ -4,14 +4,13 @@ const adminFirestore = admin.firestore();
 
 function setDateToFetch() {
   let tomorrow = new Date();
-  console.log('Current hour: '+  tomorrow.getHours() + 'current minutes: ' + tomorrow.getMinutes());
   let nextDayAfterTomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
-  console.log('tomorrow: ', tomorrow.toLocaleDateString());
+  console.log('tomorrow time: ', tomorrow.getTime());
   tomorrow.setHours(0, 0);
   tomorrow = tomorrow.getTime();
   nextDayAfterTomorrow.setDate(nextDayAfterTomorrow.getDate() + 2);
-  console.log('Next day after tomorrow: ', nextDayAfterTomorrow.toLocaleDateString());
+  console.log('Next day after tomorrow time: ', nextDayAfterTomorrow.getTime());
   nextDayAfterTomorrow.setHours(0, 0);
   nextDayAfterTomorrow = nextDayAfterTomorrow.getTime();
 
@@ -29,8 +28,16 @@ exports.getTomorrowNotifications = function getTomorrowNotifications() {
     .where('timestamp', '<', dates.nextDayAfterTomorrow);
   return collection.get().then((snaps) => {
     return snaps;
-  }).catch((err) => {
-    console.error('Notification failed with: ', err);
+  }).catch((error) => {
+    console.error('ERROR - Notification failed with: ', error);
+  });
+}
+
+exports.deleteNotification = function deleteNotification(docId) {
+  adminFirestore.collection('notifications').doc(docId).delete().then(r => {
+    console.log(`Appointment with id ${docId} was deleted with success`);
+  }).catch((error) => {
+    console.error(`ERROR - Deletion of appointment ${docId} failed with error: `, error);
   });
 }
 
