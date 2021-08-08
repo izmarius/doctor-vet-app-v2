@@ -149,6 +149,11 @@ export class DoctorAppointmentModalComponent implements OnInit {
   }
 
   getAnimalAppointmentPayload(doctorAppointmentId: string): any {
+    let userPhoneNumber = '+4';
+    if(this.selectedPatient.phone.length === 10) {
+      // this change is made for sms notification!! - also validate on cloud functions to make sure that the phone respects this prefix
+      userPhoneNumber += this.selectedPatient.phone;
+    }
     return {
       isCanceled: false,
       dateTime: this.appointmentForm.value.startDate.toLocaleDateString() + ' - ' +
@@ -158,7 +163,9 @@ export class DoctorAppointmentModalComponent implements OnInit {
       location: this.doctor.location,
       service: this.appointmentForm.value.medService,
       doctorAppointmentId: doctorAppointmentId,
-      timestamp: this.appointmentForm.value.startDate.getTime()
+      timestamp: this.appointmentForm.value.startDate.getTime(),
+      email:this.selectedPatient.email,
+      phone: userPhoneNumber
     }
   }
 
