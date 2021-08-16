@@ -75,3 +75,11 @@ ul {
 .header-height {
   height: 300px;
 }
+
+
+@media screen and (min-width: 1201px) {
+  .vet-container {
+    //max-width: 80%;
+    //set max width
+  }
+}

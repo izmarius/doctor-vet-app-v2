@@ -59,6 +59,10 @@ export const UI_ALERT_MESSAGES = {
   welcome: 'Bine ai venit:D'
 }
 
+export const APPOINTMENT_PAGE = {
+  noAvailableAppointments: 'Nu aveti alte programari - Adauga o programare noua'
+}
+
 export const APPOINTMENTFORM_DATA = {
   title: 'Programare noua',
   medicLabel: 'Medic',
@@ -277,42 +281,49 @@ export const DOCTOR_DEFAULT_SCHEDULE = {
     day: 'Luni',
     startTime: '09:00',
     endTime: '17:00',
-    isChecked: true
+    isChecked: true,
+    dayNumber: 1
   },
   tuesday: {
     day: 'Marti',
     startTime: '09:00',
     endTime: '17:00',
-    isChecked: true
+    isChecked: true,
+    dayNumber: 2
   },
   wednesday: {
     day: 'Miercuri',
     startTime: '09:00',
     endTime: '17:00',
-    isChecked: true
+    isChecked: true,
+    dayNumber: 3
   },
   thursday: {
     day: 'Joi',
     startTime: '09:00',
     endTime: '17:00',
-    isChecked: true
+    isChecked: true,
+    dayNumber: 4
   },
   friday: {
     day: 'Vineri',
     startTime: '09:00',
     endTime: '17:00',
-    isChecked: true
+    isChecked: true,
+    dayNumber: 5
   },
   saturday: {
     day: 'Sambata',
     startTime: '09:00',
     endTime: '17:00',
-    isChecked: false
+    isChecked: false,
+    dayNumber: 6
   },
   sunday: {
     day: 'Duminica',
     startTime: '09:00',
     endTime: '17:00',
-    isChecked: false
+    isChecked: false,
+    dayNumber: 0
   }
 }

@@ -93,3 +93,10 @@ $p-left-right: 0 1rem;
 //card images
 $card-img-dimmensions: 3.75rem;
 //card images
+
+
+@media (min-width: 1200px) {
+  h4 {
+    font-size: 1.35rem;
+  }
+}

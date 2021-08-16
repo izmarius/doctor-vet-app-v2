@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Subscription} from "rxjs";
 import {IDoctorsAppointmentsDTO} from "./dto/doctor-appointments-dto";
-import {INPUT_LABELS_TXT, USER_CARD_TXT, USER_LOCALSTORAGE} from "../../shared-data/Constants";
+import {APPOINTMENT_PAGE, INPUT_LABELS_TXT, USER_CARD_TXT, USER_LOCALSTORAGE} from "../../shared-data/Constants";
 import {DoctorAppointmentsService} from "./services/doctor-appointments.service";
 import {AnimalService} from "./services/animal.service";
 import {ICardData} from "../shared/user-card/user-card.component";
@@ -26,6 +26,8 @@ export class DoctorAppointmentsComponent implements OnInit, OnDestroy, AfterView
   private user: any;
   userAnimalData: any;
   cardParentStats: any;
+  areAppointmentAvailable = false;
+  noAvailableAppointments!: string;
 
   constructor(private doctorAppointmentService: DoctorAppointmentsService,
               private animalService: AnimalService,
@@ -39,6 +41,7 @@ export class DoctorAppointmentsComponent implements OnInit, OnDestroy, AfterView
   ngOnInit(): void {
     // this is needed because the af auth subscription sets the localstorage after auth is done;
     // so when we enter this component the localstorage is not set and we need to wait for the af auth answer
+    this.noAvailableAppointments = APPOINTMENT_PAGE.noAvailableAppointments
     setTimeout(() => {
       this.user = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
       this.userCardPlaceholder = USER_CARD_TXT;
@@ -46,9 +49,13 @@ export class DoctorAppointmentsComponent implements OnInit, OnDestroy, AfterView
         .getAllCurrentAppointments(this.user.id)
         .subscribe((appointments) => {
           // todo refresh data if already exists - see if we can improve here
+          this.areAppointmentAvailable = false;
           this.appointmentList = [];
           this.appointmentMap = {};
           this.appointmentList = appointments;
+          if(appointments.length === 0) {
+            this.areAppointmentAvailable = true;
+          }
           this.setAppointmentMap();
         });
     }, 300)

@@ -1,5 +1,6 @@
 <div class="vet-container">
   <div #cardRow class="vet-content">
+    <p *ngIf="areAppointmentAvailable"><strong>{{noAvailableAppointments}}</strong></p>
     <div *ngFor="let appObj of appointmentMap | keyvalue">
       <h4 class="m-title-bottom">{{appObj.key}}</h4>
       <!--    todo -set indexes to all ngFor-->
