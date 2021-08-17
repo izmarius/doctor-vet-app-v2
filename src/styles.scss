@@ -1,6 +1,7 @@
 @import "src/app/scss/constants";
 @import "src/app/scss/skin.scss";
 @import "src/app/scss/structure";
+@import "src/app/scss/media-mobile";
 
 html, body {
   height: $full-size;
@@ -48,4 +49,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   color: #fff;
   background-color: #1db954;
   border-color: #c3e6cb;
+}
+
+@media (min-width: 1200px) {
+  h4 {
+    font-size: 1.35rem;
+  }
 }
