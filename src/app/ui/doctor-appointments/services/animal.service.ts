@@ -62,10 +62,20 @@ export class AnimalService {
       }));
   }
 
+  createAnimalHistory(url: string, documentId: string, documentToUpdate: any): void {
+    this.fireStoreService.saveDocumentWithGeneratedFirestoreId(url, documentId, documentToUpdate)
+      .then(() => {
+        console.log('Created animal history with success');
+      }).catch((error: any) => {
+      console.log(error.message);
+    });
+  }
+
   updateAnimalsSubCollections(url: string, documentId: string, documentToUpdate: any): void {
-    this.fireStoreService.updateDocumentById(url, documentId, documentToUpdate).then(() => {
-      console.log('Update success');
-    }).catch((error) => {
+    this.fireStoreService.updateDocumentById(url, documentId, documentToUpdate)
+      .then(() => {
+        console.log('Update success');
+      }).catch((error) => {
       console.log(error.message);
     });
   }

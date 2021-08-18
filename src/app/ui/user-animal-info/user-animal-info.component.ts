@@ -5,6 +5,7 @@ import {DIALOG_UI_ERRORS, USER_ANIMAL_DIALOG} from "../../shared-data/Constants"
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {DoctorAppointmentModalComponent} from "../doctor-appointment-modal/doctor-appointment-modal.component";
 import {take} from "rxjs/operators";
+import {FirestoreService} from "../../data/http/firestore.service";
 
 @Component({
   selector: 'app-user-animal-info',
@@ -28,7 +29,8 @@ export class UserAnimalInfoComponent implements OnInit {
   constructor(private animalService: AnimalService,
               private dialog: MatDialog,
               public dialogRef: MatDialogRef<UserAnimalInfoComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: any
+              @Inject(MAT_DIALOG_DATA) public data: any,
+              private firestoreService: FirestoreService
   ) {
   }
 
@@ -52,8 +54,14 @@ export class UserAnimalInfoComponent implements OnInit {
     if (!this.newDisease) {
       return;
     }
+    debugger;
     this.userAnimalData.animalMedicalHistory.diseases.push(this.newDisease);
-    this.updateMedicalHistory(this.data.userId, this.selectedLink.id, {diseases: this.userAnimalData.animalMedicalHistory.diseases});
+    if (!this.userAnimalData.medicalHistoryDocId) {
+      this.userAnimalData.medicalHistoryDocId = this.firestoreService.getNewFirestoreId();
+      this.createMedicalHistory(this.data.userId, this.selectedLink.id, {diseases: this.userAnimalData.animalMedicalHistory.diseases});
+    } else {
+      this.updateMedicalHistory(this.data.userId, this.selectedLink.id, {diseases: this.userAnimalData.animalMedicalHistory.diseases});
+    }
     this.hideDiseaseInput();
   }
 
@@ -63,8 +71,8 @@ export class UserAnimalInfoComponent implements OnInit {
 
   addNewAppointment(): void {
     const dialogRef = this.dialog.open(DoctorAppointmentModalComponent, {
-      width: '25%',
       height: '37.5rem',
+      panelClass: 'doctor-appointment-dialog',
       data: null
     });
 
@@ -78,7 +86,12 @@ export class UserAnimalInfoComponent implements OnInit {
       return;
     }
     this.userAnimalData.animalMedicalHistory.recommendations.push(this.newRecommendation);
-    this.updateMedicalHistory(this.data.userId, this.selectedLink.id, {recommendations: this.userAnimalData.animalMedicalHistory.recommendations});
+    if (!this.userAnimalData.medicalHistoryDocId) {
+      this.userAnimalData.medicalHistoryDocId = this.firestoreService.getNewFirestoreId();
+      this.createMedicalHistory(this.data.userId, this.selectedLink.id, {recommendations: this.userAnimalData.animalMedicalHistory.recommendations})
+    } else {
+      this.updateMedicalHistory(this.data.userId, this.selectedLink.id, {recommendations: this.userAnimalData.animalMedicalHistory.recommendations});
+    }
     this.hideRecommendationInput();
   }
 
@@ -198,6 +211,14 @@ export class UserAnimalInfoComponent implements OnInit {
       editInput.classList.add('hide');
       closeInputIcon.classList.add('hide');
     }
+  }
+
+  createMedicalHistory(userId: string, animalId: string, payload: any): void {
+    const ANIMALS_COLLECTION = '/animals';
+    const MEDICAL_HISTORY_COLLECTION = '/medical-history';
+    const USER_COLLECTION = 'user/';
+    const url = USER_COLLECTION + userId + ANIMALS_COLLECTION + '/' + animalId + MEDICAL_HISTORY_COLLECTION;
+    this.animalService.createAnimalHistory(url, this.userAnimalData.medicalHistoryDocId, payload);
   }
 
   updateMedicalHistory(userId: string, animalId: string, payload: any): void {

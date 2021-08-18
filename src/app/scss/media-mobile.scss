@@ -16,10 +16,18 @@
   }
 
   //appointment dialog
-  #cdk-overlay-1 {
+  .doctor-appointment-dialog {
     width: $full-size !important;
   }
 
+  .modal-footer {
+    padding: 0!important;
+    width: $full-size!important;
+  }
+
+  .modal-footer button {
+    width: $full-size!important;
+  }
   //  footer
   .footer-content {
     flex-direction: column-reverse;
@@ -27,6 +35,53 @@
   .footer__form__container {
     width: $full-size !important;
     padding-bottom: $p-card;
+  }
+
+  .user-card-component {
+    min-width: 17.5rem;
+  }
+
+  // user animal data info
+  .dialog-container {
+    display: flex;
+    flex-direction: column-reverse;
+    padding: 0;
+  }
+  .user-animal-data-container {
+    flex-direction: column;
+  }
+
+  .animal-medical-data-container{
+    width: $full-size!important;
+    margin-top: 1rem!important;
+  }
+
+  .animal-med-history-content {
+    display: block!important;
+  }
+
+  .animal-data-container {
+    width: $full-size!important;
+    border-right: none!important;
+    border-bottom: $border;
+  }
+
+  .schedule-button {
+    width: $full-size!important;
+    flex-direction: column;
+  }
+
+  .schedule-button button {
+    width: $full-size!important
+  }
+
+  .add-history-container {
+    display: block!important;
+  }
+
+  .add-history-container input {
+    width: $full-size!important;
+    margin-bottom: 0.5rem!important;
   }
 }
 

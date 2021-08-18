@@ -6,4 +6,5 @@ app-user-card {
   max-width: 24%;
   width: 22%;
   margin-right: 1rem;
+  min-width: 18.75rem;
 }

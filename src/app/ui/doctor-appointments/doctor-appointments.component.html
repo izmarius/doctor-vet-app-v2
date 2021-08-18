@@ -6,7 +6,7 @@
       <!--    todo -set indexes to all ngFor-->
       <div class="m-btn-card-row row">
         <!--      todo: flex or col? - see with one element or after testing with real user-->
-        <app-user-card class="col-4 user-card-component m-btn-card-row" *ngFor="let appointment of appObj.value"
+        <app-user-card class="col-sm-12 col-md-3 col-xs-4 user-card-component m-btn-card-row" *ngFor="let appointment of appObj.value"
                        [cardData]="mapToCardData(appointment)"
                        (cardButtonEmitter)="openSectionWithAnimalDetails($event)"
                        (cardButtonCancelEmitter)="cancelAppointment($event)"

@@ -115,7 +115,7 @@ export class DoctorAppointmentsComponent implements OnInit, OnDestroy, AfterView
   openUserAnimalAppointmentModal(): void {
     const dialogRef = this.dialogRef.open(UserAnimalInfoComponent, {
       width: '80%',
-      panelClass: 'panelClass',
+      panelClass: 'user-animal-details-dialog',
       data: this.userAnimalData
     });
 
