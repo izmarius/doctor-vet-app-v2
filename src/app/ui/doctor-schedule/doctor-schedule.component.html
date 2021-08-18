@@ -1,6 +1,6 @@
 <div>
   <app-adjustable-header [headerContent]="headerContent"></app-adjustable-header>
-  <div class="vet-content test">
+  <div class="vet-content schedule-container">
 <!--    // todo move out of office section after schedule component-->
     <h2 class="out-of-office-container">Seteaza-ti concediul</h2>
     <div class="out-of-office-container justify-content-center border-bottom p-bottom">
@@ -25,13 +25,13 @@
         <mat-datepicker #picker color="accent"></mat-datepicker>
       </div>
       <p class="error-msg" *ngIf="isOutOfOfficeError">{{schedulePlaceholder.outOfOfficeError}}</p>
-      <div class="d-flex justify-content-end">
+      <div class="save-out-of-office d-flex justify-content-end">
         <button class="btn button--active"
                 (click)="saveOutOfOfficeDate()">{{schedulePlaceholder.buttonOutOfOfficePlaceholder}}</button>
       </div>
 
       <!--DISPLAY OUT OF OFFICE DAYS-->
-      <div class="d-flex justify-content-between m-bottom-top" *ngFor="let outOfOfficePeriod of storedDoctor?.outOfOfficeDays;  let i = index">
+      <div class="out-of-office-content d-flex justify-content-between m-bottom-top" *ngFor="let outOfOfficePeriod of storedDoctor?.outOfOfficeDays;  let i = index">
         <p>{{schedulePlaceholder.startOutOfOfficePeriodPlaceholder + outOfOfficePeriod.startDate + schedulePlaceholder.endOutOfOfficePeriodPlaceholder + outOfOfficePeriod.endDate}}</p>
         <button class="btn button--incative" (click)="cancelOutOfOffice(i)">{{schedulePlaceholder.cancelOutOfOfficeDaysBtnPlaceholder}}</button>
       </div>

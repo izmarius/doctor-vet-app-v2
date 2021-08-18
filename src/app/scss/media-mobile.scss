@@ -83,6 +83,64 @@
     width: $full-size!important;
     margin-bottom: 0.5rem!important;
   }
+
+//  confirmation modal
+  .button-container {
+    flex-direction: column;
+    width: $full-size!important;
+  }
+
+  .button-container button{
+    width: $full-size!important;
+  }
+  // todo refactor css?
+  // schedule
+  .schedule-container {
+    padding-right: 5px!important;
+    padding-left: 5px!important;
+  }
+
+  .out-of-office-container {
+    width: $m-full-size!important;
+    margin: 0 auto;
+  }
+
+  .out-of-office-content {
+    flex-direction: column;
+  }
+
+  .save-out-of-office {
+    justify-content: center!important;
+  }
+
+  .save-out-of-office button, .schedule-day, .time-inputs {
+    width: $full-size!important;
+  }
+  .schedule-day {
+    padding-right: 5px!important;
+    padding-left: 5px!important;
+  }
+
+  .schedule-day-row {
+    flex-direction: column;
+  }
+
+  .time-inputs {
+    display: block!important;
+  }
+
+  .time-inputs input {
+    width: 15% !important;
+  }
+
+  .schedule-btn-container {
+    width: $m-full-size !important;
+  }
+
+  .schedule-btn{
+    width: $full-size !important;
+    left: 0!important;
+  }
 }
 
 

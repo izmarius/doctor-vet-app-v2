@@ -125,8 +125,7 @@ export class DoctorAppointmentsComponent implements OnInit, OnDestroy, AfterView
 
   openConfirmationModalModal(selectedAppointment: any): void {
     const dialogRef = this.dialogRef.open(ConfirmDialogComponent, {
-      width: '25%',
-      height: '150px'
+      panelClass: 'confirmation-modal'
     });
 
     dialogRef.afterClosed().subscribe(result => {
