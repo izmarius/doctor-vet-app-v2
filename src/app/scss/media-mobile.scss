@@ -1,3 +1,8 @@
+//appointment dialog
+#cdk-overlay-1 {
+  width: 25%;
+}
+
 @media (min-width: 1200px) {
   h4 {
     font-size: 1.35rem;
@@ -5,30 +10,37 @@
 }
 
 /* smartphones, iPhone, portrait 480x320 phones */
-@media (min-width: 320px) {
+@media only screen and (max-width: 641px) {
   .vet-content {
     width: $m-full-size;
   }
+
+  //appointment dialog
+  #cdk-overlay-1 {
+    width: $full-size !important;
+  }
+
   //  footer
   .footer-content {
     flex-direction: column-reverse;
   }
   .footer__form__container {
-    width: $full-size!important;
+    width: $full-size !important;
     padding-bottom: $p-card;
   }
 }
 
-/* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. */
-@media (min-width: 481px) {
 
-}
-
-@media (min-width: 641px) { /* portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones */
-}
-
-@media (min-width: 961px) { /* tablet, landscape iPad, lo-res laptops ands desktops */
-}
+///* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. */
+//@media (min-width: 481px) {
+//
+//}
+//
+//@media (min-width: 641px) { /* portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones */
+//}
+//
+//@media (min-width: 961px) { /* tablet, landscape iPad, lo-res laptops ands desktops */
+//}
 
 @media (min-width: 1025px) { /* big landscape tablets, laptops, and desktops */
 }

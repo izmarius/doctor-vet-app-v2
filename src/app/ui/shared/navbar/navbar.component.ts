@@ -28,7 +28,6 @@ export class NavbarComponent implements OnInit {
 
   openAppointmentsModal(): void {
     const dialogRef = this.dialog.open(DoctorAppointmentModalComponent, {
-      width: '25%',
       height: '40rem',
       data: null
     });
