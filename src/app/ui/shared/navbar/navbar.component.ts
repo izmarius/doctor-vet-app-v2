@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {MatDialog} from "@angular/material/dialog";
 import {LogInService} from "../../../services/login/log-in.service";
 import {NAVBAR_TEXT, USER_LOCALSTORAGE} from "../../../shared-data/Constants";
-import {SignupDialogComponent} from "../../signup-dialog/signup-dialog.component";
 import {DoctorAppointmentModalComponent} from "../../doctor-appointment-modal/doctor-appointment-modal.component";
 
 @Component({
@@ -36,16 +35,6 @@ export class NavbarComponent implements OnInit {
       if(result) {
 
       }
-    });
-  }
-
-  openSignupDialog(): void {
-    const dialogRef = this.dialog.open(SignupDialogComponent, {
-      width: '26%',
-      minHeight: '28.125rem',
-      data: null
-    });
-    dialogRef.afterClosed().subscribe(result => {
     });
   }
 

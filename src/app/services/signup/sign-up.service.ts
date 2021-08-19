@@ -1,8 +1,6 @@
 import {Injectable} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import 'firebase/auth';
-import {MatDialogRef} from '@angular/material/dialog';
-import {SignupDialogComponent} from '../../ui/signup-dialog/signup-dialog.component';
 import {DoctorService} from '../doctor/doctor.service';
 import {DoctorDTO} from "../../data/model-dto/doctor-DTO";
 import {LogInService} from "../login/log-in.service";
@@ -21,7 +19,7 @@ export class SignUpService {
   ) {
   }
 
-  signUpDoctor(password: string, dialogRef: MatDialogRef<SignupDialogComponent>, doctorDTO: DoctorDTO): Promise<void> {
+  signUpDoctor(password: string, doctorDTO: DoctorDTO): Promise<void> {
     return this.afAuth.createUserWithEmailAndPassword(doctorDTO.email, password)
       .then((userCredentials) => {
         userCredentials?.user?.sendEmailVerification();

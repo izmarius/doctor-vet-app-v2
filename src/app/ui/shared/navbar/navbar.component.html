@@ -32,7 +32,7 @@
         <li class="nav-item" routerLink="/login-doctor" *ngIf="!isUserLoggedIn">
           <a class="nav-link"><span class="icon-login px-2"></span>{{navbarText.signIn}}</a>
         </li>
-        <li class="nav-item" (click)="openSignupDialog()" *ngIf="!isUserLoggedIn">
+        <li class="nav-item" routerLink="/signup-doctor" *ngIf="!isUserLoggedIn">
           <a class="nav-link"><span class="icon-user px-2"></span>{{navbarText.signUp}}</a>
         </li>
         <li class="nav-item" *ngIf="isUserLoggedIn" (click)="signOut()">

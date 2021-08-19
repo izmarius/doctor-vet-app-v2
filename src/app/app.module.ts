@@ -16,7 +16,6 @@ import {AppRoutingModule} from "./app-routing.module";
 import MaterialModule from "./material-module";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {SignupDialogComponent} from "./ui/signup-dialog/signup-dialog.component";
 import {AppComponent} from "./app.component";
 import { UploadPhotoComponent } from './ui/shared/upload-photo/upload-photo.component';
 import { DoctorAppointmentsComponent } from './ui/doctor-appointments/doctor-appointments.component';
@@ -42,7 +41,6 @@ import { AlertMessageComponent } from './ui/shared/alert-message/alert-message.c
     SignupComponent,
     FooterComponent,
     NavbarComponent,
-    SignupDialogComponent,
     UploadPhotoComponent,
     DoctorAppointmentsComponent,
     UserCardComponent,

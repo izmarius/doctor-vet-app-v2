@@ -1,15 +1,13 @@
 <div id="container" class="auth__dialog vet-container">
-  <div class="d-flex justify-content-end"><span class="icon-close modal-close-icon" (click)="emitCloseEvent()"></span>
-  </div>
   <p class="section-subtitle text-center m-btn-dialog-row"><strong>{{authText?.title}}</strong></p>
   <p class="card-text text-center" *ngIf="!!authText?.subtitle">{{authText?.subtitle}}</p>
   <div class="m-btn-dialog-row">
-<!--    <button *ngIf="isGoogleAuth" class="btn btn-light m-btn-dialog-row" (click)="authWithGoogle()">-->
-<!--          <span aria-hidden="true" class="mr-2">-->
-<!--            <img src="../../assets/photos/google-icon.png" alt="Google auth">-->
-<!--          </span>-->
-<!--      {{authText?.googleBtnTxt}}-->
-<!--    </button>-->
+    <!--    <button *ngIf="isGoogleAuth" class="btn btn-light m-btn-dialog-row" (click)="authWithGoogle()">-->
+    <!--          <span aria-hidden="true" class="mr-2">-->
+    <!--            <img src="../../assets/photos/google-icon.png" alt="Google auth">-->
+    <!--          </span>-->
+    <!--      {{authText?.googleBtnTxt}}-->
+    <!--    </button>-->
     <form class="login-form mg-bottom" [formGroup]="authFormGroup" (ngSubmit)="onFormSubmit()">
       <label>{{authText?.labels.emailLabel}}</label>
       <input formControlName="email" type="email"
@@ -22,7 +20,7 @@
         <a *ngIf="!authText?.isLogin" class="txt--underline"
            (click)="resendValidationEmail()">{{authText?.emailValidationTxt}}</a>
       </div>
-      <div class="d-flex justify-content-center">
+      <div class="d-flex justify-content-end">
         <button type="submit" class="btn button--active">{{authText?.btnText}}</button>
       </div>
     </form>
