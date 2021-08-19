@@ -162,6 +162,33 @@ export const HEADER_TEXT = {
   buttonText: 'See projects'
 };
 
+export const HOMEPAGE_CARD_TEXT = {
+  photo: '../../../assets/photos/svg.svg',
+  title: 'Notifications',
+  text: 'Assign owners to conversations, and delegate to team members to follow every update.'
+};
+
+export const HOMEPAGE_SECTION_DATA = {
+  title: 'Aici vin feature urile aplicatiei doctor vet',
+  subTitle: 'subtitle here in care s povesti be aburit'
+};
+
+export const HOMEPAGE_ARTICLE_DATA = {
+  title: 'Manage project communications efficiently',
+  subtitle: 'Shared Inbox',
+  text: 'Shared inbox helps you stay on top of every update, question, request, and compliment that comes your way. It\'s the single source of truth for all your client communications.'
+};
+
+export const HOMEPAGE_ARTICLE_STEPS_DATA = {
+  title: 'Why it\'s better than email:\n',
+  text: [
+    'Share or jump into any project conversation, without the CC/BCC dance.', 'Delegate communication to your team while keeping an eye on everything.',
+    'Follow just a single thread per project, not hundreds of email messages'
+  ],
+  icon: 'icon-magic-wand',
+  anchorText : 'Go to next page'
+};
+
 export const AUTH_LOGIN_FORM_TEXT = {
   googleBtnTxt: 'Logheaza-te cu Google',
   title: 'Intra in aplicatie',

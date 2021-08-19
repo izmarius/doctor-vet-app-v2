@@ -31,6 +31,13 @@ import { DoctorScheduleComponent } from './ui/doctor-schedule/doctor-schedule.co
 import { ScheduleSetterComponent } from './ui/doctor-schedule/schedule-setter/schedule-setter.component';
 import { AdjustableHeaderComponent } from './ui/shared/adjustable-header/adjustable-header.component';
 import { AlertMessageComponent } from './ui/shared/alert-message/alert-message.component';
+import { FeatureArticlesComponent } from './ui/feature-articles/feature-articles.component';
+import { FeaturesSectionComponent } from './ui/features-section/features-section.component';
+import { FeaturesComponent } from './ui/features/features.component';
+import { ArticleSectionStepsComponent } from './ui/shared/article-section-steps/article-section-steps.component';
+import { ArticleSectionTextComponent } from './ui/shared/article-section-text/article-section-text.component';
+import { HeaderComponent } from './ui/shared/header/header.component';
+import { TextCardComponent } from './ui/shared/text-card/text-card.component';
 
 @NgModule({
   entryComponents: [AlertMessageComponent],
@@ -55,6 +62,13 @@ import { AlertMessageComponent } from './ui/shared/alert-message/alert-message.c
     ScheduleSetterComponent,
     AdjustableHeaderComponent,
     AlertMessageComponent,
+    FeatureArticlesComponent,
+    FeaturesSectionComponent,
+    FeaturesComponent,
+    ArticleSectionStepsComponent,
+    ArticleSectionTextComponent,
+    HeaderComponent,
+    TextCardComponent,
   ],
   imports: [
     BrowserModule,
