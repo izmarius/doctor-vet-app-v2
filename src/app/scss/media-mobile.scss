@@ -144,14 +144,25 @@
 
   //   my profile
   .my-profile-container {
-    width: $full-size!important;
+    width: $full-size !important;
   }
 
   .photo-container {
-    width: 7rem!important;
-    height: 7rem!important;
-    margin-right: 1rem!important;
+    width: 7rem !important;
+    height: 7rem !important;
+    margin-right: 1rem !important;
   }
+
+  //login signup
+  .login-form, .signup-content,
+  .sign-up-form input, .col-element {
+    width: $full-size !important;
+  }
+
+  .input-container {
+    flex-direction: column;
+  }
+
 }
 
 
