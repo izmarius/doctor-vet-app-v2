@@ -12,7 +12,7 @@
 /* smartphones, iPhone, portrait 480x320 phones */
 @media only screen and (max-width: 641px) {
   .vet-content {
-    width: $m-full-size;
+    //width: $m-full-size;
   }
 
   //appointment dialog
@@ -21,12 +21,12 @@
   }
 
   .modal-footer {
-    padding: 0!important;
-    width: $full-size!important;
+    padding: 0 !important;
+    width: $full-size !important;
   }
 
   .modal-footer button {
-    width: $full-size!important;
+    width: $full-size !important;
   }
   //  footer
   .footer-content {
@@ -51,57 +51,57 @@
     flex-direction: column;
   }
 
-  .animal-medical-data-container{
-    width: $full-size!important;
-    margin-top: 1rem!important;
+  .animal-medical-data-container {
+    width: $full-size !important;
+    margin-top: 1rem !important;
   }
 
   .animal-med-history-content {
-    display: block!important;
+    display: block !important;
   }
 
   .animal-data-container {
-    width: $full-size!important;
-    border-right: none!important;
+    width: $full-size !important;
+    border-right: none !important;
     border-bottom: $border;
   }
 
   .schedule-button {
-    width: $full-size!important;
+    width: $full-size !important;
     flex-direction: column;
   }
 
   .schedule-button button {
-    width: $full-size!important
+    width: $full-size !important
   }
 
   .add-history-container {
-    display: block!important;
+    display: block !important;
   }
 
   .add-history-container input {
-    width: $full-size!important;
-    margin-bottom: 0.5rem!important;
+    width: $full-size !important;
+    margin-bottom: 0.5rem !important;
   }
 
-//  confirmation modal
+  //  confirmation modal
   .button-container {
     flex-direction: column;
-    width: $full-size!important;
+    width: $full-size !important;
   }
 
-  .button-container button{
-    width: $full-size!important;
+  .button-container button {
+    width: $full-size !important;
   }
   // todo refactor css?
   // schedule
   .schedule-container {
-    padding-right: 5px!important;
-    padding-left: 5px!important;
+    padding-right: 5px !important;
+    padding-left: 5px !important;
   }
 
   .out-of-office-container {
-    width: $m-full-size!important;
+    width: $m-full-size !important;
     margin: 0 auto;
   }
 
@@ -110,15 +110,15 @@
   }
 
   .save-out-of-office {
-    justify-content: center!important;
+    justify-content: center !important;
   }
 
   .save-out-of-office button, .schedule-day, .time-inputs {
-    width: $full-size!important;
+    width: $full-size !important;
   }
   .schedule-day {
-    padding-right: 5px!important;
-    padding-left: 5px!important;
+    padding-right: 5px !important;
+    padding-left: 5px !important;
   }
 
   .schedule-day-row {
@@ -126,7 +126,7 @@
   }
 
   .time-inputs {
-    display: block!important;
+    display: block !important;
   }
 
   .time-inputs input {
@@ -137,9 +137,20 @@
     width: $m-full-size !important;
   }
 
-  .schedule-btn{
+  .schedule-btn {
     width: $full-size !important;
-    left: 0!important;
+    left: 0 !important;
+  }
+
+  //   my profile
+  .my-profile-container {
+    width: $full-size!important;
+  }
+
+  .photo-container {
+    width: 7rem!important;
+    height: 7rem!important;
+    margin-right: 1rem!important;
   }
 }
 
