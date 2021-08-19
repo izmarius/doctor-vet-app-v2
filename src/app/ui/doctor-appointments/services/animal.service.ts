@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {FirestoreService} from "../../../data/http/firestore.service";
 import {Observable} from "rxjs";
 import {map, mergeMap, take} from "rxjs/operators";
@@ -18,7 +18,6 @@ export class AnimalService {
 
   private USER_COLLECTION = 'user/';
   private ANIMALS_COLLECTION = '/animals';
-  private ANIMAL_APPOINTMENTS_COLLECTION = '/appointments';
   private MEDICAL_HISTORY_COLLECTION = '/medical-history';
 
   getAnimalById(animalId: string | number, userId: string): Observable<AnimalDTO> {
@@ -55,56 +54,30 @@ export class AnimalService {
             map((medicalHistoryCollection: any) => {
               return {
                 animalData,
-                animalMedicalHistory: medicalHistoryCollection.docs[0].data(),
-                medicalHistoryDocId: medicalHistoryCollection.docs[0].id
+                animalMedicalHistory: medicalHistoryCollection.docs.length === 0 ? [] : medicalHistoryCollection.docs[0].data(),
+                medicalHistoryDocId: medicalHistoryCollection.docs.length === 0 ? '' : medicalHistoryCollection.docs[0].id
               };
             })
           );
       }));
   }
 
-  getAnimalsAppointmentsDocs(animalId: string, userId: string): Observable<any> {
-    const animalAppointmentsPath = this.getAnimalUrl(userId) + '/' + animalId + this.ANIMAL_APPOINTMENTS_COLLECTION;
-    return this.fireStoreService.getAllDocumentsOfCollection(animalAppointmentsPath);
-  }
-
-  addAnimalToUser(animalDto: AnimalDTO, userId: string): Promise<void> {
-    // todo: add also animal Id to user - generate the id from here
-    return this.fireStoreService.saveDocumentByAutoId(this.getAnimalUrl(userId), animalDto)
+  createAnimalHistory(url: string, documentId: string, documentToUpdate: any): void {
+    this.fireStoreService.saveDocumentWithGeneratedFirestoreId(url, documentId, documentToUpdate)
       .then(() => {
-        window.alert('new animal addded');
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
-  }
-
-  updateUserAnimalInfo(animalDto: AnimalDTO, animalId: string, userId: string): Promise<void> {
-    return this.fireStoreService.updateDocumentById(this.getAnimalUrl(userId), animalId, animalDto)
-      .then(() => {
-        window.alert('animal updated');
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
-  }
-
-  updateAnimalsSubCollections(url: string, documentId: string, documentToUpdate: any): void {
-    this.fireStoreService.updateDocumentById(url, documentId, documentToUpdate).then(() => {
-      window.alert('Update success');
-    }).catch((error) => {
+        console.log('Created animal history with success');
+      }).catch((error: any) => {
       console.log(error.message);
     });
   }
 
-  deleteUserAnimal(animalId: string, userId: string): Promise<void> {
-    return this.fireStoreService.deleteDocById(this.getAnimalUrl(userId), animalId)
+  updateAnimalsSubCollections(url: string, documentId: string, documentToUpdate: any): void {
+    this.fireStoreService.updateDocumentById(url, documentId, documentToUpdate)
       .then(() => {
-        window.alert('animal deleted');
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
+        console.log('Update success');
+      }).catch((error) => {
+      console.log(error.message);
+    });
   }
 
   getAnimalUrl(userId: string): string {

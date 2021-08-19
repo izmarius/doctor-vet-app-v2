@@ -1,116 +1,97 @@
-<div class="container" class="modal-body">
-  <div class="modal-header">
-    <app-section-title-subtitle [title]="formTitle">
-    </app-section-title-subtitle>
-  </div>
-  <form [formGroup]="sampleForm" (ngSubmit)="onSubmit()">
-    <div class="form-group">
-      <label for="medic">{{ appointmentFormPlaceHolder.medicLabel }}</label>
-      <input
-        type="text"
-        id="medic"
-        class="form-control"
-        formControlName="medicName"
-        [placeholder]="appointmentFormPlaceHolder.medicInputPlaceholder"
-        readonly
-      />
+<div class="container">
+  <div class="d-flex justify-content-end"><span class="icon-close modal-close-icon"
+                                                (click)="onCancelForm(false)"></span></div>
+  <h4 class="text-center">{{appointmentFormPlaceHolder.title}}</h4>
+  <form [formGroup]="appointmentForm" (ngSubmit)="onSubmitAppointment()">
+    <div class="m-btn-small">
+      <label>{{ appointmentFormPlaceHolder.dateLabel }}</label>
+      <div class="d-flex">
+        <input matInput class="form-control" [min]="minDate" [matDatepicker]="picker" formControlName="startDate"
+               [placeholder]="appointmentFormPlaceHolder.dateFormat">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      </div>
+      <mat-datepicker #picker color="accent"></mat-datepicker>
     </div>
-    <div class="form-group">
-      <label for="date">{{ appointmentFormPlaceHolder.dateLabel }}</label>
-      <input
-        formControlName="startDate"
-        placeholder="yyyy-mm-dd"
-        id="date"
-        class="form-control"
-      />
+    <div class="m-btn-small d-flex">
+      <div>
+        <label>{{ appointmentFormPlaceHolder.hourLabel }}</label>
+        <mat-select class="form-control" [(ngModel)]="stepHour" [ngModelOptions]="{standalone: true}">
+          <mat-option *ngFor="let step of stepHours" [value]="step">
+            {{step}}
+          </mat-option>
+        </mat-select>
+      </div>
+      <div>
+        <label>{{ appointmentFormPlaceHolder.minuteLabel }}</label>
+        <mat-select class="form-control" [(ngModel)]="stepMinute" [ngModelOptions]="{standalone: true}">
+          <mat-option *ngFor="let step of stepMinutes" [value]="step">
+            {{step}}
+          </mat-option>
+        </mat-select>
+      </div>
     </div>
-    <div class="form-group">
-      <label>{{ appointmentFormPlaceHolder.startTimeLabel }}</label>
-<!--      <ngb-timepicker-->
-<!--        formControlName="startTime"-->
-<!--        [spinners]="true"-->
-<!--        id="time"-->
-<!--        [minuteStep]="15"-->
-<!--      ></ngb-timepicker>-->
-    </div>
-    <div class="form-group">
-      <label for="pacient">{{ appointmentFormPlaceHolder.pacientLabel }}</label>
-      <input
-        [(ngModel)]="patientName"
-        type="text"
-        id="pacient"
-        class="form-control"
-        formControlName="patientName"
-        [placeholder]="appointmentFormPlaceHolder.userNameInputPlaceholder"
-        (ngModelChange)="filterPatients($event)"
-        #inputpatientName
-        (focus)="onFocusPatient()"
-      />
-      <ul class="list-group" #pacientList>
-        <li
-          class="list-group-item list-group-item-action"
-          *ngFor="let user of users | async"
-          (click)="onSelectPatient(user)"
-        >
+    <div class="m-btn-small">
+      <label for="patient">{{ appointmentFormPlaceHolder.patientLabel }}</label>
+      <input type="text" id="patient" class="form-control" autocomplete="off"
+             formControlName="patientName"
+             [placeholder]="appointmentFormPlaceHolder.userNameInputPlaceholder"
+             (ngModelChange)="filterClients($event)"
+             (focus)="onFocusPatient()"/>
+      <ul class="list-group" #patientList>
+        <li class=" list-group-item list-group-item-action pointer dropdown-elem"
+            *ngFor="let user of users"
+            (click)="onSelectPatient(user)">
           {{ user.name }}
         </li>
       </ul>
-      <div class="help-block" *ngIf="focusedPatient">
-        {{ appointmentFormPlaceHolder.pacientOnFocusMessage }}
-      </div>
     </div>
-    <div class="form-group" #animalList>
-      <label for="animal">{{ appointmentFormPlaceHolder.animalLabel }}</label>
-      <select
-        name="animal"
-        id="animal"
-        class="form-control"
-        formControlName="pacientAnimal"
-        ngModel
-      >
-        <option value="" disabled="true" [selected]="true">
-          {{ appointmentFormPlaceHolder.animalSelectDefaultOption }}
-        </option>
-        <option
-          *ngFor="let pacientAnimal of animals"
-          [value]="pacientAnimal"
-          [ngValue]="pacientAnimal"
-        >
-          {{ pacientAnimal.animalName }}
-        </option>
-      </select>
+    <div class="m-btn-small">
+      <label for="animal">{{ appointmentFormPlaceHolder.animalSelectDefaultOption }}</label>
+      <input type="text" id="animal" class="form-control" autocomplete="off"
+             formControlName="animalName"
+             [placeholder]="appointmentFormPlaceHolder.animalSelectDefaultOption"
+             (ngModelChange)="filterAnimals($event)"
+             (focus)="onFocusAnimal()"/>
+      <ul class="list-group hide" #animalList>
+        <li class="list-group-item list-group-item-action pointer dropdown-elem"
+            *ngFor="let animal of filteredAnimals"
+            (click)="onSelectAnimal(animal)">
+          {{ animal.animalName }}
+        </li>
+      </ul>
     </div>
-    <div class="form-group">
-      <label for="services">{{
-        appointmentFormPlaceHolder.servicesLabel
-        }}</label>
-      <select
-        name="services"
-        id="services"
-        class="form-control"
-        formControlName="medService"
-      >
-        <option value="null" disabled="true" [selected]="true">
+    <div class="m-btn-small">
+      <label for="phone">{{ appointmentFormPlaceHolder.patientPhoneLabel }}</label>
+      <input type="text" id="phone" class="form-control"
+             formControlName="patientPhone" maxlength="10"
+             [placeholder]="appointmentFormPlaceHolder.patientPhonePlaceholder"/>
+    </div>
+    <div class="m-btn-small">
+      <label for="email">{{ appointmentFormPlaceHolder.patientEmailLabel }}</label>
+      <input type="text" id="email" class="form-control"
+             formControlName="patientEmail"
+             [placeholder]="appointmentFormPlaceHolder.patientEmailPlaceholder"/>
+    </div>
+    <div class="m-btn-small">
+      <label for="services">{{appointmentFormPlaceHolder.servicesLabel}}</label>
+      <select name="services" id="services" class="form-control pointer" formControlName="medService">
+        <option class="dropdown-elem" value="null" disabled="true" [selected]="true">
           {{ appointmentFormPlaceHolder.servicesSelectDefaultOption }}
         </option>
-        <option
-          *ngFor="let medicService of medicServices | async"
-          [value]="medicService"
-          [ngValue]="medicService"
-        >
-          {{ medicService }}
+        <option class="dropdown-elem pointer" *ngFor="let service of doctorServiceList" [value]="service">
+          {{ service }}
         </option>
       </select>
-      <div class="help-block" *ngIf="!sampleForm.valid">
-        <hr>
-        {{ appointmentFormPlaceHolder.formValidationMessage }}
-      </div>
+      <p class="error-msg m-top-small" *ngIf="isErrorDisplayed">
+        {{ errorMessage }}
+      </p>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-light" type="button" (click)="onCancelForm()">
+      <button class="btn btn-light" type="button" (click)="onCancelForm(false)">
         {{ appointmentFormPlaceHolder.cancelBtn }}
       </button>
-      <button class="btn btn-dark" type="submit" [disabled]="!sampleForm.valid">
+      <!--      <button class="btn button&#45;&#45;active" type="submit" [disabled]="!appointmentForm.valid">-->
+      <button class="btn button--active" type="submit">
         {{ appointmentFormPlaceHolder.submitBtn }}
       </button>
     </div>

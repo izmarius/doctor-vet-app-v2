@@ -1,0 +1,38 @@
+<div class="vet-content my-profile-container">
+  <app-photo-text [data]="profileHeaderData" (photoEmitter)="setDoctorPhoto($event)"></app-photo-text>
+  <form class="mg-bottom" [formGroup]="userForm" (ngSubmit)="onFormSubmit()">
+    <label>{{userDataText?.labels.emailLabel}}</label>
+    <input formControlName="email" type="email"
+           class="m-btn-dialog-row form-control" [placeholder]="userDataText?.emailPlaceholder">
+    <label>{{userDataText?.labels.doctorNameLabel}}</label>
+    <input formControlName="doctorName" type="text"
+           class="m-btn-dialog-row form-control" [placeholder]="userDataText?.doctorName">
+    <label>{{userDataText?.labels.phoneLabel}}</label>
+    <input formControlName="phoneNumber" type="text" maxlength="10"
+           class="m-btn-dialog-row form-control" [placeholder]="userDataText?.phonePlaceholder">
+    <label>{{userDataText?.labels.locationLabel}}</label>
+    <input formControlName="location" type="text"
+           class="m-btn-dialog-row form-control" [placeholder]="userDataText?.locationPlaceholder">
+
+    <!--    ALL SERVICES -->
+    <div class="services-container mt-4 mb-4 pt-1 pb-1">
+      <h2>Adauga servicii de mai jos</h2>
+      <div class="mb-4" *ngFor="let serviceObj of servicesUI | keyvalue">
+        <h4>{{serviceObj.value.serviceName}}</h4>
+        <div class="row" *ngFor="let serviceDesc of serviceObj.value.services">
+          <span class="service-name col-10">{{serviceDesc[0]}}</span>
+          <div class="col-2 service-checkbox">
+            <input type="checkbox" [checked]="serviceDesc[1]" (click)="addOrRemoveServices(serviceDesc[0], serviceObj.value.serviceName)"/>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--    ERROR-->
+    <li class="error-msg list-style-type-none mt-2 mb-4" *ngIf="isFormValid">{{formErrorMessage}}</li>
+    <li class="list-style-type-none success-msg mt-2 mb-4" *ngIf="!isFormValid">{{formSuccessMessage}}</li>
+    <div class="d-flex justify-content-center">
+      <button type="submit" class="btn button--active">{{userDataText?.editBtn}}</button>
+    </div>
+  </form>
+</div>

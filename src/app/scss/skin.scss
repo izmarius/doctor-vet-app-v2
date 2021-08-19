@@ -26,15 +26,26 @@
   color: $bg-main-color;
 }
 
+.button--active:hover {
+  background: $first-color;
+  font-size: 1.1rem;
+  color: $bg-main-color;
+}
+
+.button--incative {
+  background: $bg-main-color;
+  border: $border;
+}
+
+.button--incative:hover {
+  font-size: 1.1rem;
+}
+
 .modal-close-icon {
   color: $first-color;
 }
 
-.button--active:hover {
-  background: $first-color;
-  font-size: calc(1rem + 0.1rem);
-  color: $bg-main-color;
-}
+
 //end colors
 
 //start input
@@ -61,6 +72,10 @@ a:hover {
 
 .highlighted-link:hover {
   text-decoration: underline $border-color;
+}
+
+.pointer:hover {
+  cursor: pointer
 }
 
 //end anchor
@@ -132,10 +147,6 @@ span[class^="icon"]:hover {
 }
 
 //end display
-
-.link-pointer {
-  cursor: pointer;
-}
 
 .hover-button-active-state:hover {
   color: $error-color;

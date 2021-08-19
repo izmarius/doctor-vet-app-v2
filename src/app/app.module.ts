@@ -13,12 +13,9 @@ import { SignupComponent } from './ui/signup/signup.component';
 import { FooterComponent } from './ui/shared/footer/footer.component';
 import { NavbarComponent } from './ui/shared/navbar/navbar.component';
 import {AppRoutingModule} from "./app-routing.module";
-import {LoginDialogComponent} from "./ui/login-dialog/login-dialog.component";
 import MaterialModule from "./material-module";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {AuthDialogComponent} from "./ui/shared/auth-dialog/auth-dialog.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {SignupDialogComponent} from "./ui/signup-dialog/signup-dialog.component";
 import {AppComponent} from "./app.component";
 import { UploadPhotoComponent } from './ui/shared/upload-photo/upload-photo.component';
 import { DoctorAppointmentsComponent } from './ui/doctor-appointments/doctor-appointments.component';
@@ -27,8 +24,16 @@ import { UserAnimalInfoComponent } from './ui/user-animal-info/user-animal-info.
 import { UserProfileComponent } from './ui/user-profile/user-profile.component';
 import { DoctorAppointmentModalComponent } from './ui/doctor-appointment-modal/doctor-appointment-modal.component';
 import { SectionTitleSubtitleComponent } from './ui/shared/section-title-subtitle/section-title-subtitle.component';
+import { ConfirmDialogComponent } from './ui/shared/confirm-dialog/confirm-dialog.component';
+import { MyProfileComponent } from './ui/my-profile/my-profile.component';
+import { PhotoTextComponent } from './ui/my-profile/photo-text/photo-text.component';
+import { DoctorScheduleComponent } from './ui/doctor-schedule/doctor-schedule.component';
+import { ScheduleSetterComponent } from './ui/doctor-schedule/schedule-setter/schedule-setter.component';
+import { AdjustableHeaderComponent } from './ui/shared/adjustable-header/adjustable-header.component';
+import { AlertMessageComponent } from './ui/shared/alert-message/alert-message.component';
 
 @NgModule({
+  entryComponents: [AlertMessageComponent],
   declarations: [
     AppComponent,
     HomePageComponent,
@@ -36,16 +41,20 @@ import { SectionTitleSubtitleComponent } from './ui/shared/section-title-subtitl
     SignupComponent,
     FooterComponent,
     NavbarComponent,
-    LoginDialogComponent,
-    AuthDialogComponent,
-    SignupDialogComponent,
     UploadPhotoComponent,
     DoctorAppointmentsComponent,
     UserCardComponent,
     UserAnimalInfoComponent,
     UserProfileComponent,
     DoctorAppointmentModalComponent,
-    SectionTitleSubtitleComponent
+    SectionTitleSubtitleComponent,
+    ConfirmDialogComponent,
+    MyProfileComponent,
+    PhotoTextComponent,
+    DoctorScheduleComponent,
+    ScheduleSetterComponent,
+    AdjustableHeaderComponent,
+    AlertMessageComponent,
   ],
   imports: [
     BrowserModule,

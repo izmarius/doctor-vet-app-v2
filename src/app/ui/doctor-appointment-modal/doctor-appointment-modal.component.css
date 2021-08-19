@@ -1,7 +1,8 @@
-.hidden {
-  display: none;
+.dropdown-elem {
+  background: #EAE9F2;
 }
 
-.active {
-  display: block;
+.dropdown-elem:hover {
+  cursor: pointer;
 }
+

@@ -27,9 +27,9 @@ $font-family: "Noto Sans", sans-serif;
 //start font size
 $fs-title: 4rem;
 $fs-section-title: 3rem;
-$fs-small-subtitle: 1.313rem;
+$fs-small-subtitle: 1.2rem;
 $fs-card-title: 1.21875rem;
-$fs-text: 1.313rem;
+$fs-text: 1.2rem;
 $fs-btn: 1.01562rem;
 $fs-link: 1rem;
 //end font size
@@ -75,6 +75,10 @@ $border-radius: 0.625rem;
 //end border
 
 //start mobile
+//sizes
+$m-full-size: 98%;
+
+
 //start mobile font-size
 $fs-m-title: 2.4rem;
 $fs-m-subtitle: 2rem;
@@ -84,7 +88,7 @@ $fs-m-link: 0.7rem;
 //start mobile padding
 $p-m-btn: 0.5rem 1rem;
 $p-m-link: 0.5rem 0.125rem;
-$p-m-section-subtitle: 1.313rem;
+$p-m-section-subtitle: 1.2rem;
 $p-m-text: 1rem;
 $p-left-right: 0 1rem;
 //end mobile padding
@@ -93,3 +97,10 @@ $p-left-right: 0 1rem;
 //card images
 $card-img-dimmensions: 3.75rem;
 //card images
+
+
+@media (min-width: 1200px) {
+  h4 {
+    font-size: 1.35rem;
+  }
+}

@@ -1,3 +1,7 @@
+export interface IAnimalUserInfo {
+  animalName: string;
+  animalId: string;
+}
 export class AnimalUtilInfo {
   name: string;
   uid: string;

@@ -1,8 +1,35 @@
+export const INPUT_LABELS_TXT = {
+  doctorNameLabel: 'Nume',
+  locationLabel: 'Location',
+  locationURLLabel: 'Google Maps URL',
+  clinicLabel: 'Clinica',
+  emailLabel: 'Email',
+  phoneLabel: 'Telefon',
+  passwordLabel: 'Parola',
+  countyLabel: 'Judet',
+  messageLabel: 'Scrie-ne un mesaj:',
+};
+
+export const MY_PROFILE = {
+  editBtn: 'Editeaza profilul',
+  namePlaceholder: 'Ion Popescu',
+  emailPlaceholder: 'pausan@gmail.com',
+  locationPlaceholder: 'Cluj-Napoca, nr 5, sc 5 app 33',
+  locationURLPlaceholder: 'URL se poate copia de pe google maps',
+  phonePlaceholder: '0743922xxx',
+  clinicPlaceholder: 'Regina Maria',
+  errorMessage: ['Campul', 'lipseste sau este incorect'],
+  formSuccessMessage: 'Editarea profilului a fost facuta cu succes'
+};
+
 export const USER_CARD_TXT = {
   datePlaceholder: 'Data si ora procesarii',
   services: 'Servicii cerute',
   animalName: 'Nume animal',
-  buttonValue: 'Vezi detalii pacient'
+  buttonValue: 'Vezi detalii programare',
+  buttonCancelValue: 'Anuleaza programarea',
+  cancelAppointmentSuccess: 'Programarea a fost stearsa si clientul notificat',
+  cancelAppointmentError: 'Programarea nu a putut ffi stearsa, te rugam sa incerci din nou',
 };
 
 export const CALENDAR_DATA = {
@@ -24,22 +51,44 @@ export const DOCTORAPPOINTMENTHEADER_DATA = {
   subTitle: 'Rapid si eficient'
 };
 
+export const FIREBASE_ERRORS = {
+  'auth/user-not-found': 'Nu a fost gasit nici un user inregistrat cu acest cont sau acest cont a fost sters. Te rugam sa-ti creezi un cont nou sau sa ne contactezi'
+}
+
+export const UI_ALERT_MESSAGES = {
+  welcome: 'Bine ai venit:D'
+}
+
+export const APPOINTMENT_PAGE = {
+  noAvailableAppointments: 'Nu aveti alte programari - Adauga o programare noua'
+}
+
 export const APPOINTMENTFORM_DATA = {
   title: 'Programare noua',
   medicLabel: 'Medic',
-  dateLabel: 'Data',
-  startTimeLabel: 'Ora',
-  pacientLabel: 'Pacient',
+  dateLabel: 'Selecteaza data',
+  dateFormat: 'dd/mm/yyyy',
+  hourLabel: 'Ora',
+  minuteLabel: 'Minut',
+  patientLabel: 'Nume client',
   animalLabel: 'Animal',
-  servicesLabel: 'Sericii',
+  servicesLabel: 'Servicii',
   cancelBtn: 'Anuleaza',
   submitBtn: 'Salveaza',
   medicInputPlaceholder: 'Nume doctor veterinar',
   userNameInputPlaceholder: 'Cauta in lista de pacienti',
-  servicesSelectDefaultOption: 'Alege un serviciu',
-  animalSelectDefaultOption: 'Alege un animal',
-  formValidationMessage: 'Toate campurile trebuie completate!',
-  pacientOnFocusMessage: 'Selecteaza un client din lista'
+  servicesSelectDefaultOption: 'Selecteaza un serviciu',
+  animalSelectDefaultOption: 'Cauta un animal sau adauga unul nou',
+  formAllFieldsValidMessage: 'Toate campurile trebuie completate!',
+  patientOnFocusMessage: 'Selecteaza un client din lista',
+  patientPhoneLabel: INPUT_LABELS_TXT.phoneLabel,
+  patientPhonePlaceholder: MY_PROFILE.phonePlaceholder,
+  patientEmailLabel: INPUT_LABELS_TXT.emailLabel,
+  patientEmailPlaceholder: MY_PROFILE.emailPlaceholder,
+  timeValidation: 'Ora programarii nu poate fi setata in trecut',
+  patientDoesNotExist: 'Nu am gasit nici un user cu acest email, te rugam sa incerci din nou sau sa creezi un user clientului in sectiunea "Creeaza client nou"',
+  userDoesNotHaveAnimal: 'Acest user nu are nici un animal inregistrat, insereaza in casuta numele animalului pentru a-l adauga clientului',
+  successAppointment: 'Programarea a fost facut cu succes'
 };
 
 export const DOCTORAPPOINTMENTSECTION_DATA = {
@@ -60,6 +109,13 @@ export const USER_ANIMAL_DIALOG = {
   editInputPlaceholder: 'Max 250 caractere'
 };
 
+export const USER_SERVICE = {
+  addUserSuccess: 'Userul a fost creat cu succes',
+  addUserError: 'Userul nu a putut fi creat, te rugam sa incerci din nou',
+  deleteUserSuccess: 'Userul a fost sters cu succes',
+  deleteUserError: 'Userul nu a putut fi sters, te rugam sa incerci din nou',
+}
+
 export const DIALOG_UI_ERRORS = {
   noChangeDetected: 'Nu a fost detectata nici o modificare!'
 };
@@ -70,34 +126,12 @@ export const FOOTER_COMPONENT = {
   buttonText: 'Trimite mesajul!',
   placeholderMessage: 'Min 5 caractere, max 250 caractere',
   placeholderEmail: 'popescu1234@gmail.com',
-};
-
-export const MY_PROFILE = {
-  editBtn: 'Editeaza profilul',
-  namePlaceholder: 'Ion Popescu',
-  emailPlaceholder: 'pausan@gmail.com',
-  locationPlaceholder: 'Cluj-Napoca, nr 5, sc 5 app 33',
-  locationURLPlaceholder: 'URL se poate copia de pe google maps',
-  phonePlaceholder: '0743922xxx',
-  clinicPlaceholder: 'Regina Maria',
-  errorMessage: ['Campul', 'lipseste sau este incorect'],
-  formSuccessMessage: 'Editarea profilului a fost facuta cu succes'
-};
-
-export const INPUT_LABELS_TXT = {
-  doctorNameLabel: 'Nume',
-  locationLabel: 'Location',
-  locationURLLabel: 'Google Maps URL',
-  clinicLabel: 'Clinica',
-  emailLabel: 'Email',
-  phoneLabel: 'Telefon',
-  passwordLabel: 'Parola',
-  countyLabel: 'Judet',
-  messageLabel: 'Scrie-ne un mesaj:',
+  messageSentSuccessfully: 'Mesajul tau a fost trimis cu succes. In minim 24 de ore vei fi contacta de unul dintre colegii echipei Doctor Vet',
 };
 
 export const USER_STATE = {
-  emailVerified: 'Verifica emailul pentru a putea folosi aplicatia',
+  emailVerified: 'Pentru a putea folosi aplicatia te rugam sa iti verifici emailul',
+  patientNotFound: APPOINTMENTFORM_DATA.patientDoesNotExist
 }
 
 export const USER_LOCALSTORAGE = 'user'
@@ -118,7 +152,8 @@ export const NAVBAR_TEXT = {
   signIn: 'Intra in cont',
   signUp: 'Creeaza cont',
   myProfile: 'Profilul meu',
-  home: 'Acasa'
+  home: 'Acasa',
+  newAccount: 'Creeaza client nou'
 };
 
 export const HEADER_TEXT = {
@@ -136,7 +171,6 @@ export const AUTH_LOGIN_FORM_TEXT = {
   isLogin: true,
   forgotPasswordMsg: 'Ai uitat parola?'
 };
-
 
 export const AUTH_SIGNUP_FORM_TEXT = {
   address: 'Adresa clinicii - Oras, Strada, Numar',
@@ -162,7 +196,21 @@ export const AUTH_SIGNUP_FORM_TEXT = {
 export const SCHEDULE_HEADER_TEXT = {
   title: 'Seteaza orele de munca pentru aceasta saptamana',
   subtitle: 'Orele se vor propaga in calendarul dumneavoastra timp de o luna',
-  scheduleButtonText: 'Salveaza programul'
+  scheduleButtonText: 'Salveaza programul',
+  startDateLabel: 'Selecteaza data de start a concediului',
+  endDateLabel: 'Selecteaza data de sfarsit a concediului',
+  dateFormat: APPOINTMENTFORM_DATA.dateFormat,
+  buttonOutOfOfficePlaceholder: 'Salveaza concediul',
+  outOfOfficeError: 'Selecteaza o data de start si o data de sfarsit a concediului SAU asigura-te ca data de start nu e mai mare decat data de sfarsit a concediului',
+  cancelOutOfOfficeDaysBtnPlaceholder: 'Anuleaza concediul',
+  startOutOfOfficePeriodPlaceholder: 'Concediul incepe in: ',
+  endOutOfOfficePeriodPlaceholder: ' si se termina in: ',
+  saveScheduleSuccess: 'Programul de lucru a fost salvat cu succes',
+  saveScheduleError: 'Programul nu a putut fi salvat, te rugam sa incerci din nou',
+  cancelOutOfOfficeSuccess: 'Concediul a fost sters',
+  cancelOutOfOfficeError: 'Concediul nu a putut fi sters, te rugam sa incerci din nou',
+  addOutOfOfficeSuccess: 'Concediul a fost adaugat',
+  addOutOfOfficeError: 'Concediul nu a putut fi adaugat, te rugam sa incerci din nou',
 };
 
 export const DAYS_OF_WEEK = ['Luni', 'Marti', 'Miercuri', 'Joi', 'Vineri', 'Sambata', 'Duminica'];
@@ -182,6 +230,7 @@ export const SCHEDULE_COMPONENT = {
   ERROR_MSG: 'Asigura-te ca orele de inceput si de sfarsit ale zilei sunt completate corect.',
   DAY_OFF: 'Zi libera'
 };
+
 export const COUNTIES = [
   'Bucuresti',
   'Iasi',
@@ -226,3 +275,55 @@ export const COUNTIES = [
   'Tulcea',
   'Covasna'
 ];
+
+export const DOCTOR_DEFAULT_SCHEDULE = {
+  monday: {
+    day: 'Luni',
+    startTime: '09:00',
+    endTime: '17:00',
+    isChecked: true,
+    dayNumber: 1
+  },
+  tuesday: {
+    day: 'Marti',
+    startTime: '09:00',
+    endTime: '17:00',
+    isChecked: true,
+    dayNumber: 2
+  },
+  wednesday: {
+    day: 'Miercuri',
+    startTime: '09:00',
+    endTime: '17:00',
+    isChecked: true,
+    dayNumber: 3
+  },
+  thursday: {
+    day: 'Joi',
+    startTime: '09:00',
+    endTime: '17:00',
+    isChecked: true,
+    dayNumber: 4
+  },
+  friday: {
+    day: 'Vineri',
+    startTime: '09:00',
+    endTime: '17:00',
+    isChecked: true,
+    dayNumber: 5
+  },
+  saturday: {
+    day: 'Sambata',
+    startTime: '09:00',
+    endTime: '17:00',
+    isChecked: false,
+    dayNumber: 6
+  },
+  sunday: {
+    day: 'Duminica',
+    startTime: '09:00',
+    endTime: '17:00',
+    isChecked: false,
+    dayNumber: 0
+  }
+}

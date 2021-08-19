@@ -5,6 +5,7 @@ import {first, map, mergeMap, take} from 'rxjs/operators';
 import {convertSnapshots} from '../../data/utils/firestore-utils.service';
 import {LogInService} from "../login/log-in.service";
 import {DoctorDTO} from "../../data/model-dto/doctor-DTO";
+import {USER_LOCALSTORAGE} from "../../shared-data/Constants";
 
 @Injectable({
   providedIn: 'root'
@@ -50,9 +51,9 @@ export class DoctorService {
   }
 
   // @ts-ignore
-  getLoggedInDoctorId(): string {
+  getLoggedInDoctorId(): any {
     if (this.logInService.isLoggedIn()) {
-      return JSON.parse(<string>localStorage.getItem('user')).id;
+      return JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
     }
   }
 

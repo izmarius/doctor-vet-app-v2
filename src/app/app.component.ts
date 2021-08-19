@@ -7,12 +7,13 @@ import {Router} from "@angular/router";
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
   title = 'doctor-vet-appv2';
+
   constructor(private authStateChange: AuthStateChangeService,
               private router: Router) {
   }
-
+  
   ngOnInit(): void {
     if (!localStorage.getItem('user')) {
       this.router.navigate(['']);

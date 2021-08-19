@@ -1,0 +1,13 @@
+<div>
+  <div [ngStyle]="data.style">
+    <div class="photo-container vet-border">
+      <img class="profile-photo" [src]="data?.photo" alt="Profile photo doctor vet">
+    </div>
+    <div>
+      <p class="profile-title">{{data?.title}}</p>
+      <p *ngIf="data?.subtitle">{{data.subtitle}}</p>
+    </div>
+  </div>
+  <app-upload-photo class="d-flex" (fileEmitter)="getUploadedPhoto($event)"></app-upload-photo>
+</div>
+

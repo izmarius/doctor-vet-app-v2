@@ -1,0 +1,25 @@
+<div class="schedule-day vet-content">
+  <div class="schedule-day-row d-flex p-bottom-top-small justify-content-center">
+    <div class="d-flex me-5 checkbox-day">
+      <input class="input-checkbox me-2" type="checkbox" [(ngModel)]="isChecked" (click)="setAndEmitDayInfo()">
+      <p>{{day}}</p>
+    </div>
+    <div class="d-flex justify-content-center time-inputs">
+      <input class="form-control me-2" type="text" maxlength="2" placeholder="00"
+             (focusout)="changeDate()"
+             [(ngModel)]="startHour">
+      <input class="form-control me-2" type="text" maxlength="2" placeholder="00"
+             (focusout)="changeDate()"
+             [(ngModel)]="startMinute">
+      <span class="me-2">to</span>
+      <input class="form-control me-2" type="text" maxlength="2" placeholder="23"
+             (focusout)="changeDate()"
+             [(ngModel)]="endHour">
+      <input class="form-control me-2" type="text" maxlength="2" placeholder="45"
+             (focusout)="changeDate()"
+             [(ngModel)]="endMinute">
+    </div>
+  </div>
+  <li class="list-style-type-none error-msg m-btn-dialog-row" *ngIf="isErrorMessageShown">{{errorMessage}}</li>
+</div>
+

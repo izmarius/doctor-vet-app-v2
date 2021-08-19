@@ -21,6 +21,19 @@ export class FirestoreService {
   }
 
   /**
+   * Gets all snapshots of a collection that validates where clauses
+   */
+  getCollectionByMultipleWhereClauses(collection: string, timestamp: any): Observable<any> {
+    return this.firestore.collection(collection,
+      ref => ref.where('timestamp', '>=', timestamp.today))
+      .snapshotChanges()
+    //todo add pagination
+    // .where('timestamp', '>=', dates.tomorrow)
+    // .where('timestamp', '<', dates.nextDayAfterTomorrow);
+
+  }
+
+  /**
    * Gets all documents of a collection
    */
   getAllDocumentsOfCollection(collection: string): Observable<any> {
@@ -56,6 +69,13 @@ export class FirestoreService {
   }
 
   /**
+   * Gets value of a document by document id from a collection
+   */
+  getNewFirestoreId(): string {
+    return this.firestore.createId();
+  }
+
+  /**
    * Gets value of a collection where a match is found
    */
   getCollectionByWhereClause(collection: string, key: string, operator: any, value: string): Observable<any> {
@@ -68,6 +88,20 @@ export class FirestoreService {
    */
   saveDocumentByAutoId(collection: string, data: any): Promise<any> {
     return this.firestore.collection(collection).add(JSON.parse(JSON.stringify(data)));
+  }
+
+  /**
+   * Saves a new empty document into a collection
+   */
+  saveDocumentWithEmptyDoc(collection: string, documentId: string): any {
+    return this.firestore.collection(collection).doc(documentId);
+  }
+
+  /**
+   * Saves a new document into a collection with an id generated from application
+   */
+  saveDocumentWithGeneratedFirestoreId(collection: string, documentId: string, payload: any): any {
+    return this.firestore.collection(collection).doc(documentId).set(payload);
   }
 
   /**

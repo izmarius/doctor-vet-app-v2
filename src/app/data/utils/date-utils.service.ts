@@ -1,32 +1,63 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DateUtilsService {
+  private currentDate: number[] = [];
+  private selectedDate: number[] = [];
 
-constructor() { }
+  constructor() {
+  }
 
-formatDateAndTime(date: any, time: any): string {
-  let minute = time.minute;
-  let hour = time.hour;
-  let month = date.month;
-  let day = date.day;
-  if (minute <= 9) {
-    minute = '0'.concat(minute);
+  formatTime(hour: number | string, minute: number | string): string {
+    if (minute <= 9) {
+      minute = '0' + minute;
+    }
+    if (hour <= 9) {
+      hour = '0' + hour;
+    }
+    return hour + ':' + minute;
   }
-  if (hour <= 9) {
-    hour = '0'.concat(hour);
+
+  isCurrentDay(date: string): boolean {
+    this.setCurrentDateAndSelectedDate(date);
+    return this.currentDate[0] === this.selectedDate[0] && this.currentDate[1] === this.selectedDate[1] && this.currentDate[2] === this.selectedDate[2];
   }
-  if (month <= 9) {
-    month = '0'.concat(month);
+
+  setCurrentDateAndSelectedDate(selectedDate: string): void {
+    this.currentDate = new Date()
+      .toLocaleDateString()
+      .split('/')
+      .map((elem) => {
+        return parseInt(elem);
+      });
+
+    this.selectedDate = selectedDate.split('/').map((elem) => {
+      return parseInt(elem);
+    });
   }
-  if (day <= 9) {
-    day = '0'.concat(day);
+
+  isSelectedDateGreaterOrEqualComparedToCurrentDate(date: string): boolean {
+    this.setCurrentDateAndSelectedDate(date);
+    if (this.selectedDate[2] === this.currentDate[2] && this.selectedDate[0] === this.currentDate[0] && this.selectedDate[1] >= this.currentDate[1]) {
+      return true;
+    } else if (this.selectedDate[2] === this.currentDate[2] && this.selectedDate[0] >= this.currentDate[0]) {
+      return true;
+    } else return this.selectedDate[2] >= this.currentDate[2];
   }
-  return (
-    date.year + '-' + month + '-' + day + 'T' + hour + ':' + minute + ':' + '0' + time.second
-  );
-}
+
+  setAndGetDateToFetch(): any {
+    const today = new Date();
+    const tomorrow = new Date();
+    today.setHours(0, 0);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0);
+
+    return {
+      today: today.getTime(),
+      tomorrow: tomorrow.getTime()
+    }
+  }
 
 }

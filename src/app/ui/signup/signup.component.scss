@@ -1,0 +1,32 @@
+@import './src/app/scss/constants';
+
+.auth__dialog {
+  background: $bg-alternate-color;
+}
+
+.col-element {
+  width: 48%;
+}
+
+.services-container {
+  overflow-y: scroll;
+  max-height: 25rem;
+  overflow-x: hidden;
+}
+
+.service-name {
+  width: 70%;
+  align-self: center;
+}
+
+.service-checkbox {
+  width: 10%;
+}
+
+//todo: see why we set height of input 2rem! important
+input[type="checkbox"] {
+  height: auto !important;
+}
+
+//width: '26%',
+//minHeight: '28.125rem',

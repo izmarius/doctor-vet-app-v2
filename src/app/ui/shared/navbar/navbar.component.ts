@@ -2,8 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {MatDialog} from "@angular/material/dialog";
 import {LogInService} from "../../../services/login/log-in.service";
 import {NAVBAR_TEXT, USER_LOCALSTORAGE} from "../../../shared-data/Constants";
-import {LoginDialogComponent} from "../../login-dialog/login-dialog.component";
-import {SignupDialogComponent} from "../../signup-dialog/signup-dialog.component";
 import {DoctorAppointmentModalComponent} from "../../doctor-appointment-modal/doctor-appointment-modal.component";
 
 @Component({
@@ -28,36 +26,15 @@ export class NavbarComponent implements OnInit {
 
   openAppointmentsModal(): void {
     const dialogRef = this.dialog.open(DoctorAppointmentModalComponent, {
-      width: '25%',
-      height: '37.5rem',
+      height: '40rem',
+      panelClass: 'doctor-appointment-dialog',
       data: null
     });
 
     dialogRef.afterClosed().subscribe(result => {
-    });
-  }
+      if(result) {
 
-  openLoginDialog(): void {
-    const dialogRef = this.dialog.open(LoginDialogComponent, {
-      width: '22%',
-      height: '27.5rem',
-      data: null
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.isUserLoggedIn = true;
       }
-    });
-  }
-
-  openSignupDialog(): void {
-    const dialogRef = this.dialog.open(SignupDialogComponent, {
-      width: '26%',
-      minHeight: '28.125rem',
-      data: null
-    });
-    dialogRef.afterClosed().subscribe(result => {
     });
   }
 

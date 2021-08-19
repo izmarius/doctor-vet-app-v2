@@ -11,6 +11,10 @@
   margin-bottom: $mb-section-small-subtitle;
 }
 
+.m-bottom-top {
+  margin: $mb-section-title-subtitle 0;
+}
+
 .m-btn-card-row {
   margin-bottom: $mb-section-header;
 }
@@ -43,6 +47,10 @@
   padding: 1rem;
 }
 
+.p-bottom {
+  padding-bottom: 3rem;
+}
+
 //todo - see where to use boostrap and clean this paddings
 
 input {
@@ -66,4 +74,12 @@ ul {
 
 .header-height {
   height: 300px;
+}
+
+
+@media screen and (min-width: 1201px) {
+  .vet-container {
+    //max-width: 80%;
+    //set max width
+  }
 }

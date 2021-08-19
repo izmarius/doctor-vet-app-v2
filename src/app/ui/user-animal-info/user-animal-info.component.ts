@@ -1,10 +1,11 @@
 import {Component, ElementRef, EventEmitter, Inject, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {Subscription} from "rxjs";
 import {AnimalService} from "../doctor-appointments/services/animal.service";
 import {IUserAnimalAndMedicalHistory} from "./dto/user-animal-medical-history-dto";
 import {DIALOG_UI_ERRORS, USER_ANIMAL_DIALOG} from "../../shared-data/Constants";
-import {MatDialog} from "@angular/material/dialog";
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {DoctorAppointmentModalComponent} from "../doctor-appointment-modal/doctor-appointment-modal.component";
+import {take} from "rxjs/operators";
+import {FirestoreService} from "../../data/http/firestore.service";
 
 @Component({
   selector: 'app-user-animal-info',
@@ -14,7 +15,6 @@ import {DoctorAppointmentModalComponent} from "../doctor-appointment-modal/docto
 export class UserAnimalInfoComponent implements OnInit {
 
   @ViewChild('animalsParent') private ANIMAL_PARENT_ELEM!: ElementRef;
-  private USER_ANIMAL_SUB!: Subscription;
 
   public isActiveLink!: boolean;
   public isAddDiseaseEnabled!: boolean;
@@ -25,32 +25,43 @@ export class UserAnimalInfoComponent implements OnInit {
   public userAnimalData!: IUserAnimalAndMedicalHistory;
   public userAnimalDialog: any;
   public userAnimalDialogErrorTxt: any;
-  @Input() data: any;
-  @Output() closeAppointmentSectionEmitter: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(private animalService: AnimalService,
-              private dialog: MatDialog) {
+              private dialog: MatDialog,
+              public dialogRef: MatDialogRef<UserAnimalInfoComponent>,
+              @Inject(MAT_DIALOG_DATA) public data: any,
+              private firestoreService: FirestoreService
+  ) {
   }
 
   ngOnInit(): void {
     this.userAnimalDialog = USER_ANIMAL_DIALOG;
     this.userAnimalDialogErrorTxt = DIALOG_UI_ERRORS;
-    this.USER_ANIMAL_SUB = this.data.userAnimalDataObs.subscribe((userAnimalData: any) => {
-      this.userAnimalData = userAnimalData;
-      setTimeout(() => this.setSelectedAnimalActive(userAnimalData.animalData.id), 0);
-    });
-  }
-
-  ngOnDestroy(): void {
-    this.USER_ANIMAL_SUB?.unsubscribe();
+    this.data?.userAnimalDataObs
+      .pipe(take(1))
+      .subscribe((userAnimalData: any) => {
+        this.userAnimalData = userAnimalData;
+        setTimeout(() => this.setSelectedAnimalActive(userAnimalData.animalData.id), 0);
+        if (userAnimalData && userAnimalData.animalMedicalHistory.length === 0) {
+          this.userAnimalData.animalMedicalHistory.diseases = [];
+          this.userAnimalData.animalMedicalHistory.recommendations = [];
+          return;
+        }
+      });
   }
 
   addDisease(): void {
-    if (!!!this.newDisease) {
+    if (!this.newDisease) {
       return;
     }
+    debugger;
     this.userAnimalData.animalMedicalHistory.diseases.push(this.newDisease);
-    this.updateMedicalHistory(this.data.userId, this.selectedLink.id, {diseases: this.userAnimalData.animalMedicalHistory.diseases});
+    if (!this.userAnimalData.medicalHistoryDocId) {
+      this.userAnimalData.medicalHistoryDocId = this.firestoreService.getNewFirestoreId();
+      this.createMedicalHistory(this.data.userId, this.selectedLink.id, {diseases: this.userAnimalData.animalMedicalHistory.diseases});
+    } else {
+      this.updateMedicalHistory(this.data.userId, this.selectedLink.id, {diseases: this.userAnimalData.animalMedicalHistory.diseases});
+    }
     this.hideDiseaseInput();
   }
 
@@ -59,28 +70,33 @@ export class UserAnimalInfoComponent implements OnInit {
   }
 
   addNewAppointment(): void {
-    // todo send selected data?
     const dialogRef = this.dialog.open(DoctorAppointmentModalComponent, {
-      width: '25%',
       height: '37.5rem',
+      panelClass: 'doctor-appointment-dialog',
       data: null
     });
+
 
     dialogRef.afterClosed().subscribe(result => {
     });
   }
 
   addRecommendation(): void {
-    if (!!!this.newRecommendation) {
+    if (!this.newRecommendation) {
       return;
     }
     this.userAnimalData.animalMedicalHistory.recommendations.push(this.newRecommendation);
-    this.updateMedicalHistory(this.data.userId, this.selectedLink.id, {recommendations: this.userAnimalData.animalMedicalHistory.recommendations});
+    if (!this.userAnimalData.medicalHistoryDocId) {
+      this.userAnimalData.medicalHistoryDocId = this.firestoreService.getNewFirestoreId();
+      this.createMedicalHistory(this.data.userId, this.selectedLink.id, {recommendations: this.userAnimalData.animalMedicalHistory.recommendations})
+    } else {
+      this.updateMedicalHistory(this.data.userId, this.selectedLink.id, {recommendations: this.userAnimalData.animalMedicalHistory.recommendations});
+    }
     this.hideRecommendationInput();
   }
 
   closeAppointmentDetails(): void {
-    this.closeAppointmentSectionEmitter.emit();
+    this.dialogRef.close()
   }
 
   showRecommendationInput(): void {
@@ -116,7 +132,7 @@ export class UserAnimalInfoComponent implements OnInit {
     }
     this.resetErrorMessage(errorElem);
     const indexOfDisease = this.userAnimalData.animalMedicalHistory.diseases.indexOf(diseaseItem.innerText);
-    if(indexOfDisease === -1) {
+    if (indexOfDisease === -1) {
       return;
     }
     this.userAnimalData.animalMedicalHistory.diseases[indexOfDisease] = this.newDisease.trim();
@@ -137,7 +153,7 @@ export class UserAnimalInfoComponent implements OnInit {
     }
     this.resetErrorMessage(errorElem);
     const indexOfRecommendation = this.userAnimalData.animalMedicalHistory.recommendations.indexOf(recItem.innerText);
-    if(indexOfRecommendation === -1) {
+    if (indexOfRecommendation === -1) {
       return;
     }
     this.userAnimalData.animalMedicalHistory.recommendations[indexOfRecommendation] = this.newRecommendation.trim();
@@ -195,6 +211,14 @@ export class UserAnimalInfoComponent implements OnInit {
       editInput.classList.add('hide');
       closeInputIcon.classList.add('hide');
     }
+  }
+
+  createMedicalHistory(userId: string, animalId: string, payload: any): void {
+    const ANIMALS_COLLECTION = '/animals';
+    const MEDICAL_HISTORY_COLLECTION = '/medical-history';
+    const USER_COLLECTION = 'user/';
+    const url = USER_COLLECTION + userId + ANIMALS_COLLECTION + '/' + animalId + MEDICAL_HISTORY_COLLECTION;
+    this.animalService.createAnimalHistory(url, this.userAnimalData.medicalHistoryDocId, payload);
   }
 
   updateMedicalHistory(userId: string, animalId: string, payload: any): void {

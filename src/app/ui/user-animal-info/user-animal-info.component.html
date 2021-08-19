@@ -1,17 +1,18 @@
-<div class="dialog-container mt-4 bg-alternative p-around">
-    <div class="schedule-button d-flex justify-content-end m-btn-dialog-row">
-      <button class="btn button--active me-2" (click)="addNewAppointment()">Adauga programare noua</button>
-      <button class="btn btn-light close-btn" (click)="closeAppointmentDetails()">Close</button>
-    </div>
-  <div class="d-flex justify-content-between">
+<div class="dialog-container bg-alternative p-around">
+  <div class="schedule-button d-flex justify-content-end m-btn-dialog-row">
+    <button class="btn button--active me-2" (click)="addNewAppointment()">Adauga programare noua</button>
+    <button class="btn btn-light close-btn" (click)="closeAppointmentDetails()">Close</button>
+  </div>
+  <div class="user-animal-data-container d-flex justify-content-between">
     <!--  ANIMAL GENERAL DATA -->
     <div class="animal-data-container vet-border-right">
       <div class="vet-border-bottom">
         <p>{{userAnimalData?.userData.name}}</p>
-        <div class="d-flex">
+        <div class="animal-info d-flex">
           <p class="bold-text me-2">{{userAnimalDialog.ownersPets}}</p>
-          <div class="d-flex" #animalsParent>
-            <p class="me-2 link-pointer hover-button-active-state" [class.link--active]="selectedLink?.id == animal.animalId && isActiveLink"
+          <div class="d-flex flex-wrap" #animalsParent>
+            <p class="me-2 pointer hover-button-active-state"
+               [class.link--active]="selectedLink?.id == animal.animalId && isActiveLink"
                *ngFor="let animal of userAnimalData?.userData.animals"
                id="{{animal.animalId}}" (click)="getAndSetAnimalData($event, animal.animalId)">{{animal.animalName}}</p>
           </div>
@@ -43,7 +44,7 @@
     <!--  ANIMAL RECOMMENDATION AND MEDICAL HISTORY -->
     <div class="animal-medical-data-container">
       <div class="m-btn-dialog-row">
-        <div class="d-flex justify-content-between">
+        <div class="animal-med-history-content d-flex justify-content-between">
           <p class="bold-text">{{userAnimalDialog.animalDiseases}}</p>
           <div class="d-flex add-btn hover-button-active-state" (click)="showDiseaseInput()">
             <p>{{userAnimalDialog.addDisease}}</p>
@@ -52,12 +53,14 @@
         </div>
         <div>
           <ul>
-            <div *ngIf="isAddDiseaseEnabled" class="m-btn-small d-flex justify-content-between">
+            <div *ngIf="isAddDiseaseEnabled" class="add-history-container m-btn-small d-flex justify-content-between">
               <input [(ngModel)]="newDisease" class="form-control action-input" type="text"
                      [placeholder]="userAnimalDialog.editInputPlaceholder">
               <div>
-                <span class="icon-check px-2 action-icon mr-2" (click)="addDisease()"></span>
-                <span class="icon-close px-2 action-icon" (click)="hideDiseaseInput()"></span>
+                <span class="px-2 action-icon mr-2 pointer">Salveaza <span class="icon-check"
+                                                                           (click)="addDisease()"></span></span>
+                <span class="px-2 action-icon pointer">Cancel <span class="icon-close"
+                                                                    (click)="hideDiseaseInput()"></span></span>
               </div>
             </div>
             <div>
@@ -86,7 +89,7 @@
         </div>
       </div>
       <div class="m-btn-dialog-row">
-        <div class="d-flex justify-content-between">
+        <div class="animal-med-history-content d-flex justify-content-between">
           <p class="bold-text">{{userAnimalDialog.medicalHistory}}</p>
           <div class="d-flex add-btn m-btn-small hover-button-active-state" (click)="showRecommendationInput()">
             <p>{{userAnimalDialog.addRecommendation}}</p>
@@ -94,12 +97,17 @@
           </div>
         </div>
         <ul>
-          <div *ngIf="isAddRecEnabled" class="m-btn-small d-flex justify-content-between">
+          <div *ngIf="isAddRecEnabled" class="add-history-container m-btn-small d-flex justify-content-between">
             <input [(ngModel)]="newRecommendation" class="form-control action-input" type="text"
                    [placeholder]="userAnimalDialog.editInputPlaceholder">
             <div>
-              <span class="icon-check px-2 action-icon mr-2" (click)="addRecommendation()"></span>
-              <span class="icon-close px-2 action-icon" (click)="hideRecommendationInput()"></span>
+              <span class="px-2 action-icon mr-2 pointer"> Salveza
+                    <span class="icon-check" (click)="addRecommendation()"></span>
+              </span>
+              <span class="px-2 action-icon pointer">
+                Cancel
+              <span class="icon-close" (click)="hideRecommendationInput()"></span>
+              </span>
             </div>
           </div>
           <div>
@@ -120,7 +128,8 @@
                       (click)="editRecommendations(editIcon, editInput, errorElem, checkIcon, closeInputIcon, diseaseItem)"></span>
                 <span class="icon-close px-2 action-icon hide" #closeInputIcon
                       (click)="toggleEditInputAndListItem(false, editIcon, editInput, errorElem, checkIcon, closeInputIcon, diseaseItem)"></span>
-                <span class="icon-trash hover-button-active-state" (click)="deleteFromRecommendation(recommendation)"></span>
+                <span class="icon-trash hover-button-active-state"
+                      (click)="deleteFromRecommendation(recommendation)"></span>
               </div>
             </div>
           </div>
@@ -129,6 +138,4 @@
       </div>
     </div>
   </div>
-
-
 </div>

@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import {AngularFireAuth} from "@angular/fire/auth";
+import {UiErrorInterceptorService} from "../../ui/shared/alert-message/services/ui-error-interceptor.service";
 
 @Injectable({
   providedIn: 'root'
@@ -12,9 +13,7 @@ export class FirebaseUtilsService {
   resendValidationEmail(): void {
     this.afAuth.user.subscribe((user) => {
       if (!user) {
-        // this.uiAlert.setUiAlertMessage(new AlertDTO(AUTH_DATA.resendValidationEmail, ALERT_STYLE_CLASS.success));
       } else {
-        // this.uiAlert.setUiAlertMessage(new AlertDTO(AUTH_DATA.resendValidationEmail, ALERT_STYLE_CLASS.success));
         user.sendEmailVerification();
       }
     });
