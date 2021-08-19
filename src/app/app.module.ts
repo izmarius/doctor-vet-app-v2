@@ -13,10 +13,8 @@ import { SignupComponent } from './ui/signup/signup.component';
 import { FooterComponent } from './ui/shared/footer/footer.component';
 import { NavbarComponent } from './ui/shared/navbar/navbar.component';
 import {AppRoutingModule} from "./app-routing.module";
-import {LoginDialogComponent} from "./ui/login-dialog/login-dialog.component";
 import MaterialModule from "./material-module";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {AuthDialogComponent} from "./ui/shared/auth-dialog/auth-dialog.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {SignupDialogComponent} from "./ui/signup-dialog/signup-dialog.component";
 import {AppComponent} from "./app.component";
@@ -44,8 +42,6 @@ import { AlertMessageComponent } from './ui/shared/alert-message/alert-message.c
     SignupComponent,
     FooterComponent,
     NavbarComponent,
-    LoginDialogComponent,
-    AuthDialogComponent,
     SignupDialogComponent,
     UploadPhotoComponent,
     DoctorAppointmentsComponent,

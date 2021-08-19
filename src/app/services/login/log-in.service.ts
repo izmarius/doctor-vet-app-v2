@@ -15,10 +15,9 @@ export class LogInService {
               private uiAlertInterceptor: UiErrorInterceptorService) {
   }
 
-  logIn(email: string, password: string, dialogRef: MatDialogRef<any>): Promise<void> {
+  logIn(email: string, password: string): Promise<void> {
     return this.afAuth.signInWithEmailAndPassword(email, password)
       .then(() => {
-        dialogRef.close(true);
         this.uiAlertInterceptor.setUiError({message: UI_ALERT_MESSAGES.welcome, class: 'snackbar-success'});
         this.router.navigate(['/appointments'])
       })

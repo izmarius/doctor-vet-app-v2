@@ -27,7 +27,7 @@ export class SignUpService {
         userCredentials?.user?.sendEmailVerification();
         doctorDTO.id = userCredentials?.user?.uid;
         this.doctorService.createDoctor(doctorDTO);
-        this.loginService.logIn(doctorDTO.email, password, dialogRef);
+        this.loginService.logIn(doctorDTO.email, password);
       })
       .catch((error) => {
         this.uiErrorInterceptor.setUiError({message: error.message, class: 'snackbar-error'});
