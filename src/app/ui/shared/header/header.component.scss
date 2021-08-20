@@ -1,0 +1,28 @@
+.p-container {
+  position: relative;
+  height: 800px;
+}
+
+.particle-header {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.header-container {
+  position: absolute;
+  width: 100%;
+  z-index: 2;
+  background: transparent;
+  height: 100%;
+}
+
+.header-btn-container {
+  margin: 0 auto;
+}
+
+.header-content {
+  height: 150px;
+  margin: auto;
+}

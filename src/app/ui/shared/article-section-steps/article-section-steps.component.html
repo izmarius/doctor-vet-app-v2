@@ -1,0 +1,13 @@
+<div>
+  <h4 class="article-title">{{ articleStepsData?.title }}</h4>
+  <ul>
+    <li
+      class="list-style-type-none article-list-item"
+      *ngFor="let text of articleStepsData?.text"
+    >
+      <span class="article-icon" [ngClass]="articleStepsData?.icon"></span>
+      <p class="article-text">{{ text }}</p>
+    </li>
+  </ul>
+  <a class="article-link">{{ articleStepsData?.anchorText }}</a>
+</div>

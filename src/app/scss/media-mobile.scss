@@ -163,6 +163,32 @@
     flex-direction: column;
   }
 
+  // home page
+  .features-container {
+    flex-direction: column !important;
+  }
+  .text-card-container, .article-container,
+  .article-section-img-container {
+    width: $full-size !important;
+  }
+
+  .article-section-container {
+    flex-direction: column;
+  }
+
+  .article-section-img-container {
+    min-height: 18rem;
+    margin-bottom: 1rem;
+  }
+
+  .header-content {
+    margin: 0!important;
+  }
+
+  .p-container {
+    height: 500px!important;
+  }
+
 }
 
 
