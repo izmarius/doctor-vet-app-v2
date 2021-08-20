@@ -3,6 +3,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {LogInService} from "../../../services/login/log-in.service";
 import {NAVBAR_TEXT, USER_LOCALSTORAGE} from "../../../shared-data/Constants";
 import {DoctorAppointmentModalComponent} from "../../doctor-appointment-modal/doctor-appointment-modal.component";
+import {CreateUserDialogComponent} from "../../create-user-dialog/create-user-dialog.component";
 
 @Component({
   selector: 'app-navbar',
@@ -29,6 +30,20 @@ export class NavbarComponent implements OnInit {
       height: '40rem',
       panelClass: 'doctor-appointment-dialog',
       data: null
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result) {
+
+      }
+    });
+  }
+
+  openCreateUserDialog(): void {
+    const dialogRef = this.dialog.open(CreateUserDialogComponent, {
+      minWidth: '20%',
+      minHeight: '10rem',
+      panelClass: 'doctor-appointment-dialog',
     });
 
     dialogRef.afterClosed().subscribe(result => {

@@ -1,0 +1,36 @@
+<div class="create-user-dialog-container">
+  <div class="d-flex justify-content-end"><span class="icon-close modal-close-icon"
+                                                (click)="onCancelForm()"></span></div>
+  <h4 class="text-center">{{doctorCreatesUserText.titleDialog}}</h4>
+  <form [formGroup]="doctorCreatesUserForm" (ngSubmit)="onSubmitCreateUser()">
+    <div class="m-btn-small">
+      <label>{{doctorCreatesUserText.patientLabel}}</label>
+      <input type="text" id="patient" class="form-control"
+             formControlName="patientName"
+             [placeholder]="doctorCreatesUserText.patientNamePlaceholder"/>
+    </div>
+    <div class="m-btn-small">
+      <label>{{doctorCreatesUserText.emailLabel}}</label>
+      <input type="text" id="email" class="form-control"
+             formControlName="patientEmail"
+             [placeholder]="doctorCreatesUserText.emailPlaceholder"/>
+    </div>
+    <div class="m-btn-small">
+      <label>{{doctorCreatesUserText.phoneLabel}}</label>
+      <input type="text" id="phone" class="form-control"
+             formControlName="patientPhone"
+             [placeholder]="doctorCreatesUserText.phonePlaceholder"/>
+    </div>
+    <div class="m-btn-small">
+      <label>{{doctorCreatesUserText.animalNameLabel}}</label>
+      <input type="text" id="animalName" class="form-control"
+             formControlName="animalName"
+             [placeholder]="doctorCreatesUserText.animalNamePlaceholder"/>
+    </div>
+    <div class="modal-footer">
+      <button class="btn button--active" type="submit" [disabled]="!doctorCreatesUserForm.valid">
+       {{doctorCreatesUserText.buttonDialog}}
+      </button>
+    </div>
+  </form>
+</div>

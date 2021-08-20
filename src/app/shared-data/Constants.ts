@@ -189,6 +189,19 @@ export const HOMEPAGE_ARTICLE_STEPS_DATA = {
   anchorText : 'Go to next page'
 };
 
+export const DOCTOR_CREATES_NEW_USER = {
+  emailLabel: INPUT_LABELS_TXT.emailLabel,
+  phoneLabel: INPUT_LABELS_TXT.phoneLabel,
+  animalNameLabel: 'Adauga animal - doar daca animalul nu este inregistrat!',
+  patientLabel: APPOINTMENTFORM_DATA.patientLabel,
+  emailPlaceholder: MY_PROFILE.emailPlaceholder,
+  phonePlaceholder: MY_PROFILE.phonePlaceholder,
+  patientNamePlaceholder: APPOINTMENTFORM_DATA.patientLabel,
+  animalNamePlaceholder: 'Nume animal',
+  titleDialog: 'Adauga user nou',
+  buttonDialog: 'Salveaza user'
+}
+
 export const AUTH_LOGIN_FORM_TEXT = {
   googleBtnTxt: 'Logheaza-te cu Google',
   title: 'Intra in aplicatie',
