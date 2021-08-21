@@ -83,6 +83,11 @@ export class UserService {
                     class: 'snackbar-success'
                   });
                 });
+              } else {
+                this.uiAlertInterceptor.setUiError({
+                  message: 'Userul a fost adaugat cu succes',
+                  class: 'snackbar-success'
+                });
               }
             }).catch((error: any) => {
             console.error('Error: ', error);

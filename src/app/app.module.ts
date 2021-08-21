@@ -39,6 +39,8 @@ import { ArticleSectionTextComponent } from './ui/shared/article-section-text/ar
 import { HeaderComponent } from './ui/shared/header/header.component';
 import { TextCardComponent } from './ui/shared/text-card/text-card.component';
 import { CreateUserDialogComponent } from './ui/create-user-dialog/create-user-dialog.component';
+import { SignUpChoiceComponent } from './ui/sign-up-choice/sign-up-choice.component';
+import { SignUpUserComponent } from './ui/sign-up-user/sign-up-user.component';
 
 @NgModule({
   entryComponents: [AlertMessageComponent],
@@ -71,6 +73,8 @@ import { CreateUserDialogComponent } from './ui/create-user-dialog/create-user-d
     HeaderComponent,
     TextCardComponent,
     CreateUserDialogComponent,
+    SignUpChoiceComponent,
+    SignUpUserComponent,
   ],
   imports: [
     BrowserModule,

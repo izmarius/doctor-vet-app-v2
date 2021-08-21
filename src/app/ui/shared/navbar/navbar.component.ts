@@ -14,7 +14,8 @@ export class NavbarComponent implements OnInit {
 
   navbarText: any;
   user: any;
-  isUserLoggedIn!: boolean;
+  isUserLoggedIn = false;
+  isDoctorLoggedIn = false;
 
   constructor(private dialog: MatDialog,
               private loginService: LogInService) {
@@ -33,28 +34,25 @@ export class NavbarComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if(result) {
+      if (result) {
 
       }
     });
   }
 
   openCreateUserDialog(): void {
-    const dialogRef = this.dialog.open(CreateUserDialogComponent, {
+    this.dialog.open(CreateUserDialogComponent, {
       minWidth: '20%',
       minHeight: '10rem',
       panelClass: 'doctor-appointment-dialog',
     });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if(result) {
-
-      }
-    });
   }
 
   setHiddenNavLinks(): void {
-    if (localStorage.getItem(USER_LOCALSTORAGE)) {
+    const user: any = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
+    if (user && user.doctorName) {
+      this.isDoctorLoggedIn = true;
+    } else if (user && user.name) {
       this.isUserLoggedIn = true;
     }
   }
@@ -62,5 +60,6 @@ export class NavbarComponent implements OnInit {
   signOut(): void {
     this.loginService.signOut();
     this.isUserLoggedIn = false;
+    this.isDoctorLoggedIn = false;
   }
 }
