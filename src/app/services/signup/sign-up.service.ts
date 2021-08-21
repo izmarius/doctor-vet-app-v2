@@ -19,6 +19,10 @@ export class SignUpService {
   ) {
   }
 
+  signUpWithEmailAndPassword(email: string, password: string): Promise<any> {
+    return this.afAuth.createUserWithEmailAndPassword(email, password);
+  }
+
   signUpDoctor(password: string, doctorDTO: DoctorDTO): Promise<void> {
     return this.afAuth.createUserWithEmailAndPassword(doctorDTO.email, password)
       .then((userCredentials) => {

@@ -16,8 +16,8 @@ function getTomorrowNotificationsAndSendSMS() {
         }).then(message => {
           console.log(`Notification sent to ${snap.data().phone}  with data: `, JSON.stringify(snap.data()));
           notificationService.deleteNotification(snap.id);
-        }).catch((erorr) => {
-          console.error(`ERROR - SMS notifications failed to ${smsPayload.phoneNumber}`, erorr);
+        }).catch((error) => {
+          console.error(`ERROR - SMS notifications failed to ${smsPayload.phoneNumber}`, ererrororr);
         });
       });
     }).catch((error) => {
@@ -39,6 +39,8 @@ exports.addNotification = functions.firestore.document('user/{userId}/animals/{a
     console.log(`Added appointment with id: ${snap.id} and created notification for it`,);
     return null;
   });
+
+
 
 exports.scheduledSMSNotification = functions.pubsub.schedule('0 7 * * *').onRun((context) => {
   getTomorrowNotificationsAndSendSMS();

@@ -17,7 +17,7 @@
     </div>
     <div class="m-btn-small">
       <label>{{doctorCreatesUserText.phoneLabel}}</label>
-      <input type="text" id="phone" class="form-control"
+      <input type="text" id="phone" class="form-control" maxlength="10"
              formControlName="patientPhone"
              [placeholder]="doctorCreatesUserText.phonePlaceholder"/>
     </div>
@@ -27,6 +27,9 @@
              formControlName="animalName"
              [placeholder]="doctorCreatesUserText.animalNamePlaceholder"/>
     </div>
+    <p class="error-msg m-top-small" *ngIf="isErrorDisplayed">
+      {{ errorMessage }}
+    </p>
     <div class="modal-footer">
       <button class="btn button--active" type="submit" [disabled]="!doctorCreatesUserForm.valid">
        {{doctorCreatesUserText.buttonDialog}}

@@ -70,7 +70,7 @@ export const APPOINTMENTFORM_DATA = {
   dateFormat: 'dd/mm/yyyy',
   hourLabel: 'Ora',
   minuteLabel: 'Minut',
-  patientLabel: 'Nume client',
+  patientLabel: 'Nume si prenume client',
   animalLabel: 'Animal',
   servicesLabel: 'Servicii',
   cancelBtn: 'Anuleaza',
@@ -199,7 +199,8 @@ export const DOCTOR_CREATES_NEW_USER = {
   patientNamePlaceholder: APPOINTMENTFORM_DATA.patientLabel,
   animalNamePlaceholder: 'Nume animal',
   titleDialog: 'Adauga user nou',
-  buttonDialog: 'Salveaza user'
+  buttonDialog: 'Salveaza user',
+  errorMessage: 'Unul din campurile de mai sus nu este completat sau este completat gresit.'
 }
 
 export const AUTH_LOGIN_FORM_TEXT = {

@@ -18,6 +18,7 @@
   //appointment dialog
   .doctor-appointment-dialog {
     width: $full-size !important;
+    max-width: $full-size !important;
   }
 
   .modal-footer {
@@ -182,11 +183,11 @@
   }
 
   .header-content {
-    margin: 0!important;
+    margin: 0 !important;
   }
 
   .p-container {
-    height: 500px!important;
+    height: 500px !important;
   }
 
 }
