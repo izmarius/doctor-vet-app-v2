@@ -210,7 +210,7 @@ export const AUTH_LOGIN_FORM_TEXT = {
   passwordPlaceholder: 'Parola - minim 6 caractere',
   btnText: 'Intra in cont',
   isLogin: true,
-  forgotPasswordMsg: 'Ai uitat parola?'
+  forgotPasswordMsg: 'Ai uitat parola?',
 };
 
 export const AUTH_SIGNUP_FORM_TEXT = {
@@ -227,11 +227,13 @@ export const AUTH_SIGNUP_FORM_TEXT = {
   isLogin: false,
   emailValidationTxt: 'Retrimite emailul de validare',
   phonePlaceholder: '0743934XXX',
-  namePlaceholder: 'Nume si prenume',
+  namePlaceholder: 'Popescu Ion',
+  nameLabel: 'Nume si prenume',
   county: 'Alege judetul',
   formErrorMessage: 'Te rugam sa verifici ca toate inputurile sunt completate si ca datele sunt corecte.',
   thirdStepTitle: 'Selecteaza serviciile pe care le prestezi',
   selectAtLeastOneService: 'Selecteaza cel putin un serviciu',
+  createAccountBtn: 'Creeaza cont'
 };
 
 export const SCHEDULE_HEADER_TEXT = {

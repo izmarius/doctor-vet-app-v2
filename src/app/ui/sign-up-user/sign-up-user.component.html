@@ -1,1 +1,40 @@
-<p>sign-up-user works!</p>
+<div id="container"
+     class="auth__dialog vet-container d-flex align-content-center justify-content-center bg-alternative">
+  <div class="signup-content">
+    <p class="section-subtitle text-center m-btn-dialog-row"><strong>{{'Creeaza cont'}}</strong></p>
+    <form [formGroup]="userFormGroup" (ngSubmit)="onSubmitCreateUser()">
+      <div class="m-btn-small">
+        <label>{{userFormText.labels.nameLabel}}</label>
+        <input type="text" id="patient" class="form-control"
+               formControlName="name"
+               [placeholder]="userFormText.namePlaceholder"/>
+      </div>
+      <div class="m-btn-small">
+        <label>{{userFormText.labels.emailLabel}}</label>
+        <input type="text" id="email" class="form-control"
+               formControlName="email"
+               [placeholder]="userFormText.emailPlaceholder"/>
+      </div>
+      <div class="m-btn-small">
+        <label>{{userFormText.labels.passwordLabel}}</label>
+        <input type="password" id="animalName" class="form-control"
+               formControlName="password"
+               [placeholder]="userFormText.passwordPlaceholder"/>
+      </div>
+      <div class="m-btn-small">
+        <label>{{userFormText.labels.phoneLabel}}</label>
+        <input type="text" id="phone" class="form-control" maxlength="10"
+               formControlName="phone"
+               [placeholder]="userFormText.phonePlaceholder"/>
+      </div>
+      <p class="error-msg m-top-small" *ngIf="isErrorDisplayed">
+        {{ errorMessage }}
+      </p>
+      <div class="modal-footer">
+        <button class="btn button--active" type="submit" [disabled]="!userFormGroup.valid">
+          {{userFormText.createAccountBtn}}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

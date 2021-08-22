@@ -5,27 +5,29 @@ import {DoctorService} from "../doctor/doctor.service";
 import {Subscription} from "rxjs";
 import {take} from "rxjs/operators";
 import {UiErrorInterceptorService} from "../../ui/shared/alert-message/services/ui-error-interceptor.service";
+import {UserService} from "../../ui/user-profile/services/user.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthStateChangeService {
-  private doctorServiceSubscription!: Subscription;
 
   constructor(private afAuth: AngularFireAuth,
-              private doctorService: DoctorService,
+              private userService: UserService,
               private uiAlertInterceptor: UiErrorInterceptorService) {
     this.afAuth.authState.subscribe((user) => {
-      if (user && !user.emailVerified) {
-        this.uiAlertInterceptor.setUiError({message: USER_STATE.emailVerified, class: 'snackbar-error'});
-      } else if (user && user.emailVerified) {
-        this.doctorServiceSubscription = this.doctorService.getDoctorById(user.uid)
+      if (user) {
+        if(!user.emailVerified) {
+          this.uiAlertInterceptor.setUiError({message: USER_STATE.emailVerified, class: 'snackbar-error'});
+        }
+        this.userService.getUserByEmail(<string>user.email)
           .pipe(take(1))
-          .subscribe((doctor) => {
-            if (!doctor) {
+          .subscribe((userOrDoctor) => {
+            if (!userOrDoctor) {
               this.uiAlertInterceptor.setUiError({message: USER_STATE.patientNotFound, class: 'snackbar-error'});
             }
-            localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(doctor));
+            localStorage.removeItem(USER_LOCALSTORAGE);
+            localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(userOrDoctor));
           });
       } else {
         localStorage.removeItem(USER_LOCALSTORAGE);

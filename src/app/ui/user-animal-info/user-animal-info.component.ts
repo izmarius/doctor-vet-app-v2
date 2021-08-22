@@ -54,7 +54,6 @@ export class UserAnimalInfoComponent implements OnInit {
     if (!this.newDisease) {
       return;
     }
-    debugger;
     this.userAnimalData.animalMedicalHistory.diseases.push(this.newDisease);
     if (!this.userAnimalData.medicalHistoryDocId) {
       this.userAnimalData.medicalHistoryDocId = this.firestoreService.getNewFirestoreId();

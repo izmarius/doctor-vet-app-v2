@@ -1,8 +1,8 @@
-import {map, first, take} from 'rxjs/operators';
+import {map, first, take, mergeMap} from 'rxjs/operators';
 import {Injectable} from '@angular/core';
 import {AngularFirestore, AngularFirestoreDocument} from '@angular/fire/firestore';
 import {FirestoreService} from 'src/app/data/http/firestore.service';
-import {Observable} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {convertSnapshots} from 'src/app/data/utils/firestore-utils.service';
 import {UserDTO} from "../dto/user-dto";
 import {UiErrorInterceptorService} from "../../shared/alert-message/services/ui-error-interceptor.service";
@@ -14,6 +14,7 @@ import {IUserData} from "../../../shared-data/iuser-data";
 })
 export class UserService {
   private USER_COLLECTION = 'user/';
+  private DOCTORS_COLLECTION = 'doctors';
   private ANIMAL_COLLECTION = '/animals';
 
   // todo : move from here
@@ -35,6 +36,26 @@ export class UserService {
     return userRef.set(JSON.parse(JSON.stringify(userData)), { // firestore does not accept custom objects
       merge: true
     });
+  }
+
+  getUserByEmail(email: string): Observable<any> {
+    return this.firestoreService.getCollectionByWhereClause(this.USER_COLLECTION, 'email', '==', email)
+      .pipe(
+        take(1),
+        mergeMap(users => {
+          if (users && users.length > 0) {
+            return of(users[0]);
+          } else {
+            return this.firestoreService.getCollectionByWhereClause(this.DOCTORS_COLLECTION, 'email', '==', email)
+              .pipe(
+                take(1),
+                map(doctors => {
+                  return doctors[0];
+                })
+              );
+          }
+        })
+      );
   }
 
   saveAnimalToUser(userData: any, userDocId: string): Promise<any> {
@@ -137,7 +158,7 @@ export class UserService {
       );
   }
 
-  createUser(userDto: UserDTO): Promise<void> {
+  createUser(userDto: any): Promise<void> {
     return this.firestoreService.saveDocumentByAutoId(this.USER_COLLECTION, userDto)
       .then(() => {
         this.uiAlertInterceptor.setUiError({message: USER_SERVICE.addUserSuccess, class: 'snackbar-success'});

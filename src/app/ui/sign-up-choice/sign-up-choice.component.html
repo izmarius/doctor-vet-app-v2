@@ -1,11 +1,18 @@
-<div>
-  <div>
-    <p>Inregistreaza-te ca stapan de animale</p>
-    <button (click)="redirectTo(false)">Stapan de animale</button>
-  </div>
+<div id="container" class="auth__dialog vet-container d-flex align-content-center justify-content-center bg-alternative">
+  <div class="signup-content">
+    <p class="section-subtitle text-center m-btn-dialog-row"><strong>{{'Bun venit!'}}</strong></p>
+    <div>
+      <p>Inregistreaza-te ca stapan de animale</p>
+      <div class="d-flex justify-content-end m-btn-small">
+        <button class="btn button--active" (click)="redirectTo(false)">Stapan de animale</button>
+      </div>
+    </div>
 
-  <div>
-    <p>Inregistreaza-te ca doctor veterinar</p>
-    <button (click)="redirectTo(true)">Doctor veterinar</button>
+    <div>
+      <p>Inregistreaza-te ca doctor veterinar</p>
+      <div class="d-flex justify-content-end m-btn-small">
+        <button class="btn button--incative" (click)="redirectTo(true)">Doctor veterinar</button>
+      </div>
+    </div>
   </div>
 </div>

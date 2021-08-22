@@ -9,6 +9,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {UserAnimalInfoComponent} from "../user-animal-info/user-animal-info.component";
 import {ConfirmDialogComponent} from "../shared/confirm-dialog/confirm-dialog.component";
 import {catchError} from "rxjs/operators";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-doctor-appointments',
@@ -31,7 +32,8 @@ export class DoctorAppointmentsComponent implements OnInit, OnDestroy, AfterView
 
   constructor(private doctorAppointmentService: DoctorAppointmentsService,
               private animalService: AnimalService,
-              private dialogRef: MatDialog) {
+              private dialogRef: MatDialog,
+              private router: Router) {
   }
 
   ngAfterViewInit(): void {
@@ -44,6 +46,10 @@ export class DoctorAppointmentsComponent implements OnInit, OnDestroy, AfterView
     this.noAvailableAppointments = APPOINTMENT_PAGE.noAvailableAppointments
     setTimeout(() => {
       this.user = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
+      if(this.user.name){
+        this.router.navigate(['my-animals'])
+        return;
+      }
       this.userCardPlaceholder = USER_CARD_TXT;
       this.APPOINTMENT_SUB = this.doctorAppointmentService
         .getAllCurrentAppointments(this.user.id)
