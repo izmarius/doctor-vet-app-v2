@@ -18,6 +18,10 @@
         <li class="nav-item">
           <a class="nav-link" routerLink="/"><span class="icon-home px-1"></span>{{navbarText.home}}</a>
         </li>
+
+        <li class="nav-item" *ngIf="isUserLoggedIn">
+          <a class="nav-link" routerLink="/my-animals"><span class="icon-emotsmile px-1"></span>{{'Animalele mele'}}</a>
+        </li>
         <li class="nav-item" *ngIf="isDoctorLoggedIn">
           <a class="nav-link" routerLink="/appointments"><span
             class="icon-people px-2"></span>{{navbarText.appointments}}</a>

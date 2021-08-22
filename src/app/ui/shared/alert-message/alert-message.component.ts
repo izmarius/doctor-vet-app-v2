@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from "@angular/material/snack-bar";
 import {UiErrorInterceptorService} from "./services/ui-error-interceptor.service";
 
@@ -26,7 +26,7 @@ export class AlertMessageComponent implements OnInit {
 
   openSnackBar(errorMessage: string, styleClass: string): void {
     this.snackBar.open(errorMessage, '', {
-      duration: 4000,
+      duration: 5000,
       horizontalPosition: this.horizontalPosition,
       verticalPosition: this.verticalPosition,
       panelClass: styleClass

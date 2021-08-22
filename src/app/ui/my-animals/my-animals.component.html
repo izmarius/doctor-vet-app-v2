@@ -1,1 +1,10 @@
-<p>my-animals works!</p>
+<div class="vet-container">
+  <div class="vet-content">
+      <div class="d-flex border-bottom">
+        <p class="pe-4 border-end" (click)="toggleShowAnimalForm()"><span class="icon-plus px-1"></span><a>Adauga animale</a></p>
+      </div>
+    <div class="add-animal-form-container" *ngIf="isAnimalFormShown">
+        <app-animal-form (animalPayloadEmitter)="saveNewAnimal($event)"></app-animal-form>
+    </div>
+  </div>
+</div>

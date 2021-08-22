@@ -40,6 +40,7 @@ export class SignUpService {
           .then((userCredentials) => {
             // todo - add default photo to user?
             const userDto = {
+              id: userCredentials.user?.uid,
               animals: [],
               email: userPayload.email,
               phone: userPayload.phone,

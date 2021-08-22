@@ -17,9 +17,10 @@ export class AuthStateChangeService {
               private uiAlertInterceptor: UiErrorInterceptorService) {
     this.afAuth.authState.subscribe((user) => {
       if (user) {
-        if(!user.emailVerified) {
-          this.uiAlertInterceptor.setUiError({message: USER_STATE.emailVerified, class: 'snackbar-error'});
-        }
+        // todo: fix in cloud functions
+        // if(!user.emailVerified) {
+        //   this.uiAlertInterceptor.setUiError({message: USER_STATE.emailVerified, class: 'snackbar-error'});
+        // }
         this.userService.getUserByEmail(<string>user.email)
           .pipe(take(1))
           .subscribe((userOrDoctor) => {

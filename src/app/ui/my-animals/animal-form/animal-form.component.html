@@ -1,0 +1,20 @@
+<div class="p-bottom-top-small">
+  <form [formGroup]="animalFormGroup" (ngSubmit)="onAnimalFormSubmit()">
+    <label>{{animalFormText?.labels.nameLabel}}</label>
+    <input formControlName="name" type="text"
+           class="m-btn-dialog-row form-control" [placeholder]="animalFormText?.placeholders.namePlaceholder">
+    <label>{{animalFormText?.labels.birthDayLabel}}</label>
+    <input formControlName="birthDay" type="text"
+           class="m-btn-dialog-row form-control" [placeholder]="animalFormText?.placeholders.birthDayPlaceholder">
+    <label>{{animalFormText?.labels.ageLabel}}</label>
+    <input formControlName="age" type="number" [max]="99"
+           class="m-btn-dialog-row form-control" [placeholder]="animalFormText?.placeholders.agePlaceholder">
+    <label>{{animalFormText?.labels.weightLabel}}</label>
+    <input formControlName="weight" type="number" [max]="999"
+           class="m-btn-dialog-row form-control" [placeholder]="animalFormText?.placeholders.weightPlaceholder">
+    <p class="error-msg m-top-small" *ngIf="isErrorDisplayed">{{errorMessage}}</p>
+    <div class="d-flex justify-content-end">
+      <button class="btn button--active" type="submit">{{animalFormText.buttonText}}</button>
+    </div>
+  </form>
+</div>

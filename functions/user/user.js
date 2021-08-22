@@ -8,21 +8,23 @@ exports.doctorCreatesUser = functions.firestore.document('user/{userId}')
     let isUserAlreadyRegistered = false;
     admin.auth().getUserByEmail(userSnap.data().email).then((snap) => {
       isUserAlreadyRegistered = true;
-      throw "User already exists";
 
     }).catch((err) => {
-      console.error("Error fetching user data: ", err);
+      console.error("No user found - saving new user");
+      if(!isUserAlreadyRegistered) {
+        admin.auth().createUser({
+          email: userSnap.data().email,
+          emailVerified: false,
+          password: newUserDefaultPass,
+          uid: userSnap.id
+        }).then((res) => {
+          // todo send email validation
+          console.log("User Created");
+        }).catch((err) => {
+          console.error("Error creating new user by doctor - error: ", err)
+        });
+      }
     });
 
-    if(!isUserAlreadyRegistered) {
-      admin.auth().createUser({
-        email: userSnap.data().email,
-        emailVerified: false,
-        password: newUserDefaultPass
-      }).then((res) => {
-        console.log("User Created")
-      }).catch((err) => {
-        console.error("Error creating new user by doctor - error: ", err)
-      });
-    }
+
   });

@@ -236,6 +236,23 @@ export const AUTH_SIGNUP_FORM_TEXT = {
   createAccountBtn: 'Creeaza cont'
 };
 
+export const ANIMAL_FORM_TEXT = {
+  labels: {
+    nameLabel: 'Numele animalului',
+    weightLabel: 'Greutatea animalului',
+    ageLabel: 'Varsta animalului',
+    birthDayLabel: 'Zi de nastere'
+  },
+  placeholders: {
+    namePlaceholder: 'Azorel',
+    weightPlaceholder: 'EX: 30 kg',
+    agePlaceholder: 'Ex: 10',
+    birthDayPlaceholder: '10/03/2018',
+  },
+  buttonText: 'Adauga animal',
+  errorFromValidation: AUTH_SIGNUP_FORM_TEXT.formErrorMessage
+}
+
 export const SCHEDULE_HEADER_TEXT = {
   title: 'Seteaza orele de munca pentru aceasta saptamana',
   subtitle: 'Orele se vor propaga in calendarul dumneavoastra timp de o luna',

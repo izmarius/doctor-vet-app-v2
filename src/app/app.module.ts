@@ -42,6 +42,7 @@ import { CreateUserDialogComponent } from './ui/create-user-dialog/create-user-d
 import { SignUpChoiceComponent } from './ui/sign-up-choice/sign-up-choice.component';
 import { SignUpUserComponent } from './ui/sign-up-user/sign-up-user.component';
 import { MyAnimalsComponent } from './ui/my-animals/my-animals.component';
+import { AnimalFormComponent } from './ui/my-animals/animal-form/animal-form.component';
 
 @NgModule({
   entryComponents: [AlertMessageComponent],
@@ -77,6 +78,7 @@ import { MyAnimalsComponent } from './ui/my-animals/my-animals.component';
     SignUpChoiceComponent,
     SignUpUserComponent,
     MyAnimalsComponent,
+    AnimalFormComponent,
   ],
   imports: [
     BrowserModule,

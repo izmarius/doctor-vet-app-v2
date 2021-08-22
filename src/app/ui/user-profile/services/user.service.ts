@@ -8,6 +8,7 @@ import {UserDTO} from "../dto/user-dto";
 import {UiErrorInterceptorService} from "../../shared/alert-message/services/ui-error-interceptor.service";
 import {USER_SERVICE} from "../../../shared-data/Constants";
 import {IUserData} from "../../../shared-data/iuser-data";
+import {FirebaseUtilsService} from "../../../services/firebase-utils-service/firebase-utils.service";
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +22,8 @@ export class UserService {
   constructor(
     private angularFirestore: AngularFirestore,
     private firestoreService: FirestoreService,
-    private uiAlertInterceptor: UiErrorInterceptorService
+    private uiAlertInterceptor: UiErrorInterceptorService,
+    private firebaseUtils: FirebaseUtilsService
   ) {
   }
 
@@ -71,14 +73,15 @@ export class UserService {
       userData.animals[0].animalId, animalPayload);
   }
 
-  createUserByDoctorAuthAndSaveAnimal(userData: IUserData): void {
+  createUserByDoctorAuthAndSaveAnimal(userData: IUserData, dialog: any): void {
     const userPayload = {
       city: '-',
       email: userData.email,
       phone: userData.phone,
       photo: '',
       name: userData.name,
-      animals: []
+      animals: [],
+      id: ''
     }
     if (userData.animalName) {
       // @ts-ignore
@@ -93,12 +96,13 @@ export class UserService {
       .pipe(take(1))
       .subscribe((res) => {
         if (res && res.length === 0) {
-          const userDocId = this.firestoreService.getNewFirestoreId();
-          this.firestoreService.saveDocumentWithGeneratedFirestoreId(this.USER_COLLECTION, userDocId, JSON.parse(JSON.stringify(userPayload)))
+          userPayload.id = this.firestoreService.getNewFirestoreId();
+          this.firestoreService.saveDocumentWithGeneratedFirestoreId(this.USER_COLLECTION, userPayload.id, JSON.parse(JSON.stringify(userPayload)))
             .then(() => {
               // todo make it as a transaction!
               if (userData.animalName) {
-                this.saveAnimalToUser(userPayload, userDocId).then(() => {
+                this.saveAnimalToUser(userPayload, userPayload.id).then(() => {
+                  this.firebaseUtils.resendValidationEmail();
                   this.uiAlertInterceptor.setUiError({
                     message: 'Userul a fost adaugat cu succes',
                     class: 'snackbar-success'
@@ -110,6 +114,7 @@ export class UserService {
                   class: 'snackbar-success'
                 });
               }
+              dialog.close();
             }).catch((error: any) => {
             console.error('Error: ', error);
             this.uiAlertInterceptor.setUiError({
@@ -159,11 +164,10 @@ export class UserService {
   }
 
   createUser(userDto: any): Promise<void> {
-    return this.firestoreService.saveDocumentByAutoId(this.USER_COLLECTION, userDto)
+    return this.firestoreService.saveDocumentWithGeneratedFirestoreId(this.USER_COLLECTION, userDto.id, userDto)
       .then(() => {
         this.uiAlertInterceptor.setUiError({message: USER_SERVICE.addUserSuccess, class: 'snackbar-success'});
-      })
-      .catch((error) => {
+      }).catch((error: any) => {
         this.uiAlertInterceptor.setUiError({message: USER_SERVICE.addUserError, class: 'snackbar-error'});
         console.log('Error:', error);
       });
@@ -177,6 +181,15 @@ export class UserService {
         this.uiAlertInterceptor.setUiError({message: error.message, class: 'snackbar-error'});
         console.log('Error:', error);
       });
+  }
+
+  updateUserWithAnimalData(userData: any): void {
+    // this.updateUserInfo(userData).then(() => {
+    //
+    // }).catch((error: any) => {
+    //   this.uiAlertInterceptor.setUiError({message: error.message, class: 'snackbar-error'});
+    //   console.log('Error:', error);
+    // })
   }
 
   deleteUser(userId: string): Promise<void> {

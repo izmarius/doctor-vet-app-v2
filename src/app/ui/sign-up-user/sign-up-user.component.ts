@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {AUTH_SIGNUP_FORM_TEXT, INPUT_LABELS_TXT, INPUT_REGEX_TEXTS} from "../../shared-data/Constants";
 import {SignUpService} from "../../services/signup/sign-up.service";
@@ -13,7 +13,9 @@ export class SignUpUserComponent implements OnInit {
   userFormText: any;
   errorMessage = '';
   isErrorDisplayed = false;
-  constructor(private signUpService: SignUpService) { }
+
+  constructor(private signUpService: SignUpService) {
+  }
 
   ngOnInit(): void {
     this.userFormText = AUTH_SIGNUP_FORM_TEXT;
@@ -30,25 +32,23 @@ export class SignUpUserComponent implements OnInit {
     });
   }
 
-  onSubmitCreateUser():void {
-      if(this.userFormGroup.invalid) {
-        this.isErrorDisplayed = true;
-        this.errorMessage = this.userFormText.formErrorMessage;
-        return;
-      }
+  onSubmitCreateUser(): void {
+    if (this.userFormGroup.invalid) {
+      this.isErrorDisplayed = true;
+      this.errorMessage = this.userFormText.formErrorMessage;
+      return;
+    }
 
-      const userPayload = {
-        name: this.userFormGroup.controls.name.value,
-        email: this.userFormGroup.controls.email.value,
-        password: this.userFormGroup.controls.password.value,
-        phone: this.userFormGroup.controls.phone.value,
-      }
+    const userPayload = {
+      name: this.userFormGroup.controls.name.value,
+      email: this.userFormGroup.controls.email.value,
+      password: this.userFormGroup.controls.password.value,
+      phone: this.userFormGroup.controls.phone.value,
+    }
 
-      this.errorMessage = '';
-      this.signUpService.signUpNewUser(userPayload);
+    this.errorMessage = '';
+    this.isErrorDisplayed = false;
 
-
-      // create user in and user table
-
+    this.signUpService.signUpNewUser(userPayload);
   }
 }
