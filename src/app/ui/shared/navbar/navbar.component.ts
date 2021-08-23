@@ -4,6 +4,7 @@ import {LogInService} from "../../../services/login/log-in.service";
 import {NAVBAR_TEXT, USER_LOCALSTORAGE} from "../../../shared-data/Constants";
 import {DoctorAppointmentModalComponent} from "../../doctor-appointment-modal/doctor-appointment-modal.component";
 import {CreateUserDialogComponent} from "../../create-user-dialog/create-user-dialog.component";
+import {UserAppointmentDialogComponent} from "../../user-appointment/user-appointment.component";
 
 @Component({
   selector: 'app-navbar',
@@ -44,6 +45,14 @@ export class NavbarComponent implements OnInit {
     this.dialog.open(CreateUserDialogComponent, {
       minWidth: '20%',
       minHeight: '10rem',
+      panelClass: 'doctor-appointment-dialog',
+    });
+  }
+
+  openUserAppointmentsModal(): void {
+    this.dialog.open(UserAppointmentDialogComponent, {
+      minWidth: '20%',
+      minHeight: '15rem',
       panelClass: 'doctor-appointment-dialog',
     });
   }

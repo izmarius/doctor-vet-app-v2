@@ -9,11 +9,13 @@ import {SignupComponent} from "./ui/signup/signup.component";
 import {SignUpChoiceComponent} from "./ui/sign-up-choice/sign-up-choice.component";
 import {SignUpUserComponent} from "./ui/sign-up-user/sign-up-user.component";
 import {MyAnimalsComponent} from "./ui/my-animals/my-animals.component";
+import {UserAppointmentsComponent} from "./ui/user-appointments/user-appointments.component";
 
 const routes: Routes = [
   {path: '', redirectTo: '/home', pathMatch: 'full'},
   {path: 'schedule', component: DoctorScheduleComponent},
   {path: 'my-animals', component: MyAnimalsComponent},
+  {path: 'my-appointments', component: UserAppointmentsComponent},
   {path: 'login', component: LoginComponent},
   {path: 'signup', component: SignUpChoiceComponent},
   {path: 'signup-doctor', component: SignupComponent},

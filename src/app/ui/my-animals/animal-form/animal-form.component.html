@@ -4,8 +4,12 @@
     <input formControlName="name" type="text"
            class="m-btn-dialog-row form-control" [placeholder]="animalFormText?.placeholders.namePlaceholder">
     <label>{{animalFormText?.labels.birthDayLabel}}</label>
-    <input formControlName="birthDay" type="text"
-           class="m-btn-dialog-row form-control" [placeholder]="animalFormText?.placeholders.birthDayPlaceholder">
+    <div class="d-flex justify-content-between">
+      <input matInput class="form-control" [matDatepicker]="birthDayPicker" [max]="maxDate" formControlName="birthDay"
+             [placeholder]="animalFormText?.placeholders.birthDayPlaceholder">
+      <mat-datepicker-toggle matSuffix [for]="birthDayPicker"></mat-datepicker-toggle>
+      <mat-datepicker #birthDayPicker color="accent"></mat-datepicker>
+    </div>
     <label>{{animalFormText?.labels.ageLabel}}</label>
     <input formControlName="age" type="number" [max]="99"
            class="m-btn-dialog-row form-control" [placeholder]="animalFormText?.placeholders.agePlaceholder">
@@ -14,7 +18,7 @@
            class="m-btn-dialog-row form-control" [placeholder]="animalFormText?.placeholders.weightPlaceholder">
     <p class="error-msg m-top-small" *ngIf="isErrorDisplayed">{{errorMessage}}</p>
     <div class="d-flex justify-content-end">
-      <button class="btn button--active" type="submit">{{animalFormText.buttonText}}</button>
+      <button [disabled]="!animalFormGroup.valid" class="btn button--active" type="submit">{{animalFormText.buttonText}}</button>
     </div>
   </form>
 </div>

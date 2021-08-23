@@ -108,14 +108,14 @@ export class DoctorAppointmentModalComponent implements OnInit {
 
     this.appointmentForm.value.startDate.setHours(this.stepHour, this.stepMinute);
     const newDoctorAppointment = this.getDoctorAppointment(animalAppointmentId, newAnimalInfo);
-    const newAnimalAppointment = this.getAnimalAppointmentPayload(doctorAppointmentId);
+    const newAnimalAppointment = this.getAnimalAppointmentPayload(doctorAppointmentId, animalAppointmentId);
 
     this.doctorAppointmentService.createAppointment(
       newDoctorAppointment,
       this.doctor.id,
       doctorAppointmentId
     ).then(() => {
-      this.animalAppointment.saveAnimalAppointment(newAnimalAppointment, this.selectedPatient?.id, this.selectedAnimal.animalId, animalAppointmentId)
+      this.animalAppointment.saveAnimalAppointment(newAnimalAppointment, this.selectedPatient?.id, animalAppointmentId)
         .then(() => {
           this.uiAlertInterceptor.setUiError({
             message: APPOINTMENTFORM_DATA.successAppointment,
@@ -148,7 +148,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
       .setTimestamp(this.appointmentForm.value.startDate.getTime());
   }
 
-  getAnimalAppointmentPayload(doctorAppointmentId: string): any {
+  getAnimalAppointmentPayload(doctorAppointmentId: string, animalAppointmentId: string): any {
     let userPhoneNumber = '+4';
     if (this.selectedPatient.phone.length === 10) {
       // this change is made for sms notification!! - also validate on cloud functions to make sure that the phone respects this prefix
@@ -165,7 +165,9 @@ export class DoctorAppointmentModalComponent implements OnInit {
       doctorAppointmentId: doctorAppointmentId,
       timestamp: this.appointmentForm.value.startDate.getTime(),
       email: this.selectedPatient.email,
-      phone: userPhoneNumber
+      phone: userPhoneNumber,
+      userId: this.selectedPatient?.id,
+      id: animalAppointmentId
     }
   }
 

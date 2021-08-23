@@ -1,0 +1,19 @@
+<div class="p-around bg-alternative border-with-radius">
+  <div class="m-btn-small">
+    <label><strong>Nume doctor</strong></label>
+    <p>{{appointment.doctorName}}</p>
+  </div>
+  <div class="m-btn-small">
+    <label><strong>Data programarii</strong></label>
+    <p>{{appointment.dateTime}}</p>
+  </div>
+  <div class="m-btn-small">
+    <label><strong>Locatia</strong></label>
+    <p>{{appointment.location}}</p>
+  </div>
+  <div class="m-btn-small">
+    <label><strong>Serviciu</strong></label>
+    <p>{{appointment.service}}</p>
+  </div>
+  <button class="btn button--incative" (click)="cancelAppointmentByUser(appointment)">Anuleaza programarea</button>
+</div>

@@ -34,6 +34,19 @@ export class FirestoreService {
   }
 
   /**
+   * Gets all snapshots of a collection that validates where clauses
+   */
+  getCollectionByTimestampAndUserId(collection: string, timestamp: any, field: string, value: string): Observable<any> {
+    return this.firestore.collection(collection,
+      ref => ref.where('timestamp', '>=', timestamp.today).where(field, '==', value))
+      .get()
+    //todo add pagination
+    // .where('timestamp', '>=', dates.tomorrow)
+    // .where('timestamp', '<', dates.nextDayAfterTomorrow);
+
+  }
+
+  /**
    * Gets all documents of a collection
    */
   getAllDocumentsOfCollection(collection: string): Observable<any> {

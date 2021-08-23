@@ -8,9 +8,9 @@ exports.doctorCreatesUser = functions.firestore.document('user/{userId}')
     let isUserAlreadyRegistered = false;
     admin.auth().getUserByEmail(userSnap.data().email).then((snap) => {
       isUserAlreadyRegistered = true;
-
     }).catch((err) => {
       console.error("No user found - saving new user");
+      // todo extract to another function
       if(!isUserAlreadyRegistered) {
         admin.auth().createUser({
           email: userSnap.data().email,

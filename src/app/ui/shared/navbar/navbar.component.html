@@ -18,9 +18,14 @@
         <li class="nav-item">
           <a class="nav-link" routerLink="/"><span class="icon-home px-1"></span>{{navbarText.home}}</a>
         </li>
-
+        <li class="nav-item" *ngIf="isUserLoggedIn">
+          <a class="nav-link" (click)="openUserAppointmentsModal()"><span class="icon-plus px-1"></span>{{'Programare noua'}}</a>
+        </li>
         <li class="nav-item" *ngIf="isUserLoggedIn">
           <a class="nav-link" routerLink="/my-animals"><span class="icon-emotsmile px-1"></span>{{'Animalele mele'}}</a>
+        </li>
+        <li class="nav-item" *ngIf="isUserLoggedIn">
+          <a class="nav-link" routerLink="/my-appointments"><span class="icon-calendar px-1"></span>{{'Programarile mele'}}</a>
         </li>
         <li class="nav-item" *ngIf="isDoctorLoggedIn">
           <a class="nav-link" routerLink="/appointments"><span

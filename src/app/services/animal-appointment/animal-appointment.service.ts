@@ -12,14 +12,12 @@ export class AnimalAppointmentService {
   constructor(private firestoreService: FirestoreService) {
   }
 
-  saveAnimalAppointment(animalAppointment: any, userId: string, animalId: string, animalAppointmentId: string): Promise<any> {
-    const url = this.getAnimalAppointmentCollectionURL(userId, animalId);
-    return this.firestoreService.saveDocumentWithGeneratedFirestoreId(url, animalAppointmentId, JSON.parse(JSON.stringify(animalAppointment)));
+  saveAnimalAppointment(animalAppointment: any, userId: string, animalId: string): Promise<any> {
+    return this.firestoreService.saveDocumentWithGeneratedFirestoreId('animal-appointments', animalId, JSON.parse(JSON.stringify(animalAppointment)));
   }
 
-  updateAnimalAppointment(animalAppointment: any, userId: string, animalId: string, animalAppointmentId: string): Promise<any> {
-    const url = this.getAnimalAppointmentCollectionURL(userId, animalId);
-    return this.firestoreService.updateDocumentById(url, animalAppointmentId, JSON.parse(JSON.stringify(animalAppointment)));
+  updateAnimalAppointment(animalAppointment: any, userId: string, animalId: string): Promise<any> {
+    return this.firestoreService.updateDocumentById('animal-appointments', animalId, JSON.parse(JSON.stringify(animalAppointment)));
   }
 
   getAnimalAppointmentCollectionURL(userId: string, animalId: string): string {

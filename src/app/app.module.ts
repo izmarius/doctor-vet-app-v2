@@ -43,6 +43,9 @@ import { SignUpChoiceComponent } from './ui/sign-up-choice/sign-up-choice.compon
 import { SignUpUserComponent } from './ui/sign-up-user/sign-up-user.component';
 import { MyAnimalsComponent } from './ui/my-animals/my-animals.component';
 import { AnimalFormComponent } from './ui/my-animals/animal-form/animal-form.component';
+import { UserAppointmentsComponent } from './ui/user-appointments/user-appointments.component';
+import { UserAppointmentCardComponent } from './ui/shared/user-appointment-card/user-appointment-card.component';
+import { UserAppointmentDialogComponent } from './ui/user-appointment/user-appointment.component';
 
 @NgModule({
   entryComponents: [AlertMessageComponent],
@@ -79,6 +82,9 @@ import { AnimalFormComponent } from './ui/my-animals/animal-form/animal-form.com
     SignUpUserComponent,
     MyAnimalsComponent,
     AnimalFormComponent,
+    UserAppointmentsComponent,
+    UserAppointmentCardComponent,
+    UserAppointmentDialogComponent,
   ],
   imports: [
     BrowserModule,
