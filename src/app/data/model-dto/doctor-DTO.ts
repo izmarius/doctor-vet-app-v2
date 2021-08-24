@@ -4,6 +4,8 @@ export class DoctorDTO {
   public email!: string;
   public doctorName!: string;
   public location!: string;
+  public locality!: string;
+  public county!: string;
   public phoneNumber!: string;
   public photoCertificate?: string;
   public schedule?: any;

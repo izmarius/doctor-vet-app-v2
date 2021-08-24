@@ -79,7 +79,7 @@ export class MyProfileComponent implements OnInit {
   }
 
   initEditUserForm(): void {
-
+    // todo: add locality  + county
     this.userForm = new FormGroup({
       email: new FormControl(this.userData.email, [Validators.required, Validators.pattern(INPUT_REGEX_TEXTS.email)]),
       doctorName: new FormControl(this.userData.doctorName, Validators.required),
@@ -107,7 +107,9 @@ export class MyProfileComponent implements OnInit {
       doctorName: this.userForm.controls.doctorName.value,
       location: this.userForm.controls.location.value,
       photo: this.uploadedPhoto,
-      services: this.userData.services
+      services: this.userData.services,
+      county: this.userData.county,
+      locality: this.userData.locality
     };
   }
 

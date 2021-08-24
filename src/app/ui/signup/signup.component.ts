@@ -4,13 +4,14 @@ import {FirebaseUtilsService} from "../../services/firebase-utils-service/fireba
 import {SignUpService} from "../../services/signup/sign-up.service";
 import {
   AUTH_SIGNUP_FORM_TEXT,
-  COUNTIES,
+  COUNTIES, COUNTIES_ABBR,
   DOCTOR_DEFAULT_SCHEDULE,
   INPUT_LABELS_TXT,
   INPUT_REGEX_TEXTS
 } from "../../shared-data/Constants";
 import {DoctorDTO} from "../../data/model-dto/doctor-DTO";
 import {DOCTOR_SERVICES} from "../../shared-data/DoctorServicesConstants";
+import {LocationService} from "../../services/location-service/location.service";
 
 @Component({
   selector: 'app-signup',
@@ -19,7 +20,10 @@ import {DOCTOR_SERVICES} from "../../shared-data/DoctorServicesConstants";
 })
 export class SignupComponent implements OnInit {
   authFormGroup!: FormGroup;
-  counties!: string[];
+  counties!: any[];
+  countiesAbbr!: any;
+  localities!: string[];
+  locality!: string;
   errorMessage: string = '';
   isAllowedToGoToFirstStep = true;
   isAllowedToGoToSecondStep = false;
@@ -34,18 +38,31 @@ export class SignupComponent implements OnInit {
   signupText: any;
 
   constructor(private firebaseUtils: FirebaseUtilsService,
-              private signUpService: SignUpService) {
+              private signUpService: SignUpService,
+              private locationService: LocationService) {
   }
 
   ngOnInit(): void {
     this.counties = COUNTIES;
+    this.countiesAbbr = COUNTIES_ABBR;
+
     this.signupText = AUTH_SIGNUP_FORM_TEXT;
     this.signupText.labels = INPUT_LABELS_TXT;
     this.initAuthForm();
   }
 
-  setCounty(value: any): void {
+  setCountyAndSetLocalities(value: any): void {
     this.selectedCounty = value;
+    this.locationService.getCitiesByCountyCode(this.countiesAbbr[value])
+      .subscribe((response: any) => {
+        this.localities = response
+    }, error => {
+      console.log(error);
+    });
+  }
+
+  setLocality(locality: string): void {
+    this.locality = locality;
   }
 
   getUploadedImage(base64Image: any): void {
@@ -99,6 +116,8 @@ export class SignupComponent implements OnInit {
     const doctor = new DoctorDTO();
     doctor.photoCertificate = this.photo;
     doctor.location = this.authFormGroup.controls.address.value;
+    doctor.county = this.selectedCounty;
+    doctor.locality = this.locality;
     doctor.doctorName = this.authFormGroup.controls.name.value;
     doctor.phoneNumber = this.authFormGroup.controls.phoneNumber.value;
     doctor.email = this.authFormGroup.controls.email.value;
@@ -130,6 +149,7 @@ export class SignupComponent implements OnInit {
   }
 
   isFormCompleted(): boolean {
+    // todo add validation on locality and county
     return !this.authFormGroup.valid;
   }
 

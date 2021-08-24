@@ -46,6 +46,8 @@ import { AnimalFormComponent } from './ui/my-animals/animal-form/animal-form.com
 import { UserAppointmentsComponent } from './ui/user-appointments/user-appointments.component';
 import { UserAppointmentCardComponent } from './ui/shared/user-appointment-card/user-appointment-card.component';
 import { UserAppointmentDialogComponent } from './ui/user-appointment/user-appointment.component';
+import { DropdownComponent } from './ui/shared/dropdown/dropdown.component';
+import {HttpClientModule} from "@angular/common/http";
 
 @NgModule({
   entryComponents: [AlertMessageComponent],
@@ -85,6 +87,7 @@ import { UserAppointmentDialogComponent } from './ui/user-appointment/user-appoi
     UserAppointmentsComponent,
     UserAppointmentCardComponent,
     UserAppointmentDialogComponent,
+    DropdownComponent,
   ],
   imports: [
     BrowserModule,
@@ -98,6 +101,7 @@ import { UserAppointmentDialogComponent } from './ui/user-appointment/user-appoi
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
+    HttpClientModule
   ],
   providers: [AngularFirestore],
   bootstrap: [AppComponent]

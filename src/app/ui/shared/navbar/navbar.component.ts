@@ -49,14 +49,6 @@ export class NavbarComponent implements OnInit {
     });
   }
 
-  openUserAppointmentsModal(): void {
-    this.dialog.open(UserAppointmentDialogComponent, {
-      minWidth: '20%',
-      minHeight: '15rem',
-      panelClass: 'doctor-appointment-dialog',
-    });
-  }
-
   setHiddenNavLinks(): void {
     const user: any = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
     if (user && user.doctorName) {

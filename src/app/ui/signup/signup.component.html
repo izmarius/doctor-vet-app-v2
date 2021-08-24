@@ -29,8 +29,11 @@
           </div>
         </div>
         <label>{{signupText?.labels.countyLabel}}</label>
-        <app-dropdown (valueEmitter)="setCounty($event)" [placeholder]="signupText?.county"
+        <app-dropdown (valueEmitter)="setCountyAndSetLocalities($event)" [placeholder]="signupText?.county"
                       [seriesList]="counties"></app-dropdown>
+        <label>{{signupText?.labels.localityLabel}}</label>
+        <app-dropdown (valueEmitter)="setLocality($event)" [placeholder]="signupText?.locality"
+                      [seriesList]="localities"></app-dropdown>
         <label>{{signupText?.labels.locationLabel}}</label>
         <input formControlName="address" type="text"
                class="m-btn-dialog-row form-control" [placeholder]="signupText?.address">

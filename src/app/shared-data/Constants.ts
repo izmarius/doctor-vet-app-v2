@@ -7,6 +7,7 @@ export const INPUT_LABELS_TXT = {
   phoneLabel: 'Telefon',
   passwordLabel: 'Parola',
   countyLabel: 'Judet',
+  localityLabel: 'Localitate',
   messageLabel: 'Scrie-ne un mesaj:',
 };
 
@@ -230,6 +231,7 @@ export const AUTH_SIGNUP_FORM_TEXT = {
   namePlaceholder: 'Popescu Ion',
   nameLabel: 'Nume si prenume',
   county: 'Alege judetul',
+  locality: 'Alege localitatea',
   formErrorMessage: 'Te rugam sa verifici ca toate inputurile sunt completate si ca datele sunt corecte.',
   thirdStepTitle: 'Selecteaza serviciile pe care le prestezi',
   selectAtLeastOneService: 'Selecteaza cel putin un serviciu',
@@ -290,6 +292,51 @@ export const SCHEDULE_COMPONENT = {
   ERROR_MSG: 'Asigura-te ca orele de inceput si de sfarsit ale zilei sunt completate corect.',
   DAY_OFF: 'Zi libera'
 };
+
+export const COUNTIES_ABBR = {
+ 'Bucuresti': 'B',
+ 'Iasi':'IS',
+ 'Prahova': 'PH',
+ 'Cluj': 'CJ',
+ 'Constanta': 'CT',
+ 'Timis': 'TM',
+ 'Dolj':'DJ',
+ 'Suceava':'SV',
+ 'Bacau':'BC',
+ 'Arges':'AG',
+ 'Bihor':'BH',
+ 'Mures':'MS',
+ 'Brasov':'BV',
+ 'Galati':'GL',
+ 'Dambovita':'DB',
+ 'Maramures':'MM',
+ 'Neamt':'NT',
+ 'Buzau':'BZ',
+ 'Olt':'OT',
+ 'Arad': 'AR',
+ 'Hunedoara':'HD',
+ 'Botosani':'BT',
+ 'Sibiu':'SB',
+ 'Vaslui':'VS',
+ 'Ilfov':'IF',
+ 'Teleorman':'TL',
+ 'Valcea':'VL',
+ 'Satu Mare':'SM',
+ 'Alba':'AB',
+ 'Gorj':'GJ',
+ 'Vrancea':'VR',
+ 'Braila':'BR',
+ 'Harghita':'HG',
+ 'Calarasi':'CL',
+ 'Caras-Severin':'CS',
+ 'Bistrita-Nasaud':'BN',
+ 'Giurgiu':'GU',
+ 'Ialomita':'IL',
+ 'Mehedinti':'MH',
+ 'Salaj':'SJ',
+ 'Tulcea':'TL',
+ 'Covasna':'CV'
+}
 
 export const COUNTIES = [
   'Bucuresti',

@@ -1,0 +1,12 @@
+<div class="searchbar m-btn-dialog-row">
+  <div class="search-container" (click)="openDropdown()">
+    <input type="text" class="form-control search-input" (keyup)="fetchSeries()" [(ngModel)]="inputText"
+           autocomplete="off" [placeholder]="placeholder" (focusout)="closeDropdown()"/>
+    <span class="icon-arrow-down arrow-down"></span>
+  </div>
+  <ul *ngIf="isSearchResult" class="dropdown-container">
+    <li class="dropdown__element" *ngFor="let show of searchResult" (click)="emitSelectedValue(show)">
+      {{ show }}
+    </li>
+  </ul>
+</div>
