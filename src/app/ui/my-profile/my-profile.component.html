@@ -10,9 +10,15 @@
     <label>{{userDataText?.labels.phoneLabel}}</label>
     <input formControlName="phoneNumber" type="text" maxlength="10"
            class="m-btn-dialog-row form-control" [placeholder]="userDataText?.phonePlaceholder">
-    <label>{{userDataText?.labels.locationLabel}}</label>
+    <label>Judet</label>
+    <app-dropdown (valueEmitter)="setCountyAndSetLocalities($event)" [placeholder]="'Alege judetul'"
+                  [seriesList]="counties"></app-dropdown>
+    <label>Localitate</label>
+    <app-dropdown (valueEmitter)="setLocality($event)" [placeholder]="'Alege localitatea'"
+                  [seriesList]="localities"></app-dropdown>
+    <label>Locatia</label>
     <input formControlName="location" type="text"
-           class="m-btn-dialog-row form-control" [placeholder]="userDataText?.locationPlaceholder">
+           class="m-btn-dialog-row form-control" [placeholder]="'Strada, sc., nr.'">
 
     <!--    ALL SERVICES -->
     <div class="services-container mt-4 mb-4 pt-1 pb-1">

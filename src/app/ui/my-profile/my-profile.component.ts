@@ -3,9 +3,16 @@ import {DoctorDTO} from "../../data/model-dto/doctor-DTO";
 import IPhotoTitle from "./photo-text/photo-text.component";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {DoctorService} from "../../services/doctor/doctor.service";
-import {INPUT_LABELS_TXT, INPUT_REGEX_TEXTS, MY_PROFILE, USER_LOCALSTORAGE} from "../../shared-data/Constants";
+import {
+  COUNTIES, COUNTIES_ABBR,
+  INPUT_LABELS_TXT,
+  INPUT_REGEX_TEXTS,
+  MY_PROFILE,
+  USER_LOCALSTORAGE
+} from "../../shared-data/Constants";
 import {DOCTOR_SERVICES} from "../../shared-data/DoctorServicesConstants";
 import {newArray} from "@angular/compiler/src/util";
+import {LocationService} from "../../services/location-service/location.service";
 
 @Component({
   selector: 'app-my-profile',
@@ -13,7 +20,11 @@ import {newArray} from "@angular/compiler/src/util";
   styleUrls: ['./my-profile.component.css']
 })
 export class MyProfileComponent implements OnInit {
-
+  counties!: string[];
+  county!: string;
+  countiesAbbr: any;
+  localities!: string[];
+  locality!: string;
   profileHeaderData!: IPhotoTitle;
   userData!: DoctorDTO;
   userForm!: FormGroup;
@@ -25,10 +36,13 @@ export class MyProfileComponent implements OnInit {
   dbDoctorServices: any;
   uploadedPhoto = '';
 
-  constructor(private doctorService: DoctorService) {
+  constructor(private doctorService: DoctorService,
+              private locationService: LocationService) {
   }
 
   ngOnInit(): void {
+    this.counties = COUNTIES;
+    this.countiesAbbr = COUNTIES_ABBR;
     this.userDataText = MY_PROFILE;
     this.userDataText.labels = INPUT_LABELS_TXT;
     this.userData = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
@@ -37,6 +51,20 @@ export class MyProfileComponent implements OnInit {
     this.setProfileData();
     this.initEditUserForm();
     this.setDoctorServices();
+  }
+
+  setCountyAndSetLocalities(county: string): void {
+    this.county = county;
+    this.locationService.getCitiesByCountyCode(this.countiesAbbr[county])
+      .subscribe((response: any) => {
+        this.localities = response
+      }, error => {
+        console.log(error);
+      });
+  }
+
+  setLocality(locality: string): void {
+    this.locality = locality;
   }
 
   setDoctorServices(): void {
@@ -79,7 +107,7 @@ export class MyProfileComponent implements OnInit {
   }
 
   initEditUserForm(): void {
-    // todo: add locality  + county
+    // todo: add locality  + county and change placeholder for location to address(street + number)
     this.userForm = new FormGroup({
       email: new FormControl(this.userData.email, [Validators.required, Validators.pattern(INPUT_REGEX_TEXTS.email)]),
       doctorName: new FormControl(this.userData.doctorName, Validators.required),
@@ -139,6 +167,7 @@ export class MyProfileComponent implements OnInit {
     // @ts-ignore
     return this.uploadedPhoto.length !== this.userData.photo.length || this.userData.doctorName !== formData.doctorName
       || this.userData.email !== formData.email || this.userData.phoneNumber !== formData.phoneNumber
+      || this.userData.locality !== formData.locality || this.userData.county !== formData.county
       || this.userData.location !== formData.location || this.isServiceChanged();
   }
 
