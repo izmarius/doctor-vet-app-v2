@@ -1,7 +1,33 @@
 <div>
   <app-adjustable-header [headerContent]="headerContent"></app-adjustable-header>
   <div class="vet-content schedule-container">
-<!--    // todo move out of office section after schedule component-->
+    <!--    START BLOCK HOURS IN A DAY -->
+    <div class="out-of-office-container">
+      <h2>Blocheaza ore in ziua selectata</h2>
+      <p class="m-btn-small">Folosit pentru blocarea unui interval orar pentru: interventii chirurgicale, plecare de la cabinetul veterinar pentru cateva ore etc.</p >
+      <div class="m-auto-h">
+        <label>Selecteaza data</label>
+        <div class="m-btn-small d-flex">
+          <input matInput class="form-control" [min]="minDate" [matDatepicker]="blockDatePicker" [(ngModel)]="blockedDate"
+                 [placeholder]="schedulePlaceholder.dateFormat">
+          <mat-datepicker-toggle matSuffix [for]="blockDatePicker"></mat-datepicker-toggle>
+        </div>
+        <mat-datepicker #blockDatePicker color="accent"></mat-datepicker>
+
+        <div class="m-btn-small d-flex justify-content-between">
+          <span class="blockIntervalItem">de la ora:</span>
+          <input matInput class="form-control blockIntervalItem" type="number" [placeholder]="'10'" (change)="setBlockedHours()" [(ngModel)]="blockedStartHour">
+          <span class="blockIntervalItem">pana la ora:</span>
+          <input matInput class="form-control blockIntervalItem" type="number" [placeholder]="'12'" (change)="setBlockedHours()" [(ngModel)]="blockedEndHour">
+        </div>
+        <div class="m-btn-small save-out-of-office d-flex justify-content-end">
+          <button class="btn button--active" [disabled]="isBlockedHoursDisabled()"
+                  (click)="saveBlockedDay()">Blocheaza intervalul orar</button>
+        </div>
+      </div>
+
+    </div>
+    <!--    START OUT OF OFFICE -->
     <h2 class="out-of-office-container">Seteaza-ti concediul</h2>
     <div class="out-of-office-container justify-content-center border-bottom p-bottom">
       <!--START DATE-->
@@ -26,7 +52,7 @@
       </div>
       <p class="error-msg" *ngIf="isOutOfOfficeError">{{schedulePlaceholder.outOfOfficeError}}</p>
       <div class="save-out-of-office d-flex justify-content-end">
-        <button class="btn button--active"
+        <button class="btn button--active" [disabled]="isOutOfOfficeDisabled()"
                 (click)="saveOutOfOfficeDate()">{{schedulePlaceholder.buttonOutOfOfficePlaceholder}}</button>
       </div>
 
@@ -37,6 +63,12 @@
       </div>
     </div>
     <h2 class="out-of-office-container">Seteaza-ti programul de lucru</h2>
+    <div class="half-width m-auto-h">
+      <p>Frecventa programarilor - Din cate in cate minute se pot face programari?</p>
+      <app-dropdown (valueEmitter)="setAppointmentInterval($event)" [placeholder]="'10 / 15 / 20 / 25 / 30 / 35 / 40 / 45'"
+                    [seriesList]="minuteIntervals"></app-dropdown>
+
+    </div>
     <app-schedule-setter *ngFor="let day of weekDaysList" [day]="day" (checkEmitter)="getAndSetDay($event)"
                          [doctorSchedule]="storedDoctor.schedule"></app-schedule-setter>
     <div class="schedule-btn-container">

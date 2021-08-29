@@ -3,6 +3,9 @@
   margin: $m-h-center;
 }
 
+.half-width {
+  width: 50%;
+}
 .vet-container {
   padding: $p-section
 }
@@ -37,6 +40,10 @@
 
 .p-bottom-top-small {
   padding: $p-card 0;
+}
+
+.m-auto-h {
+ margin: 0 auto;
 }
 
 .p-left-right {

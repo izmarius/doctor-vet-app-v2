@@ -1,9 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {DoctorDTO, IDaySchedule} from "../../data/model-dto/doctor-DTO";
 import {
-  APPOINTMENTFORM_DATA,
   DAYS_OF_WEEK,
-  DAYS_OF_WEEK_MAP, FOOTER_COMPONENT,
+  DAYS_OF_WEEK_MAP,
   SCHEDULE_HEADER_TEXT,
   USER_LOCALSTORAGE
 } from "../../shared-data/Constants";
@@ -16,7 +15,8 @@ import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-err
   styleUrls: ['./doctor-schedule.component.css']
 })
 export class DoctorScheduleComponent implements OnInit {
-
+  minuteIntervals = [10, 15, 20, 25, 30, 35, 40, 45];
+  selectedInterval!: number;
   storedDoctor!: DoctorDTO;
   headerContent: any;
   daysOfWeekMap: any = DAYS_OF_WEEK_MAP;
@@ -26,8 +26,12 @@ export class DoctorScheduleComponent implements OnInit {
   public minDate = new Date();
   public schedulePlaceholder: any;
   startDate: any;
+  blockedDate: any;
   endDate: any;
   isOutOfOfficeError = false;
+  isSaveBlockedDayBtnDisabled = false;
+  blockedStartHour!: number;
+  blockedEndHour!: number;
 
   constructor(private doctorService: DoctorService,
               private uiAlertInterceptor: UiErrorInterceptorService) {
@@ -68,17 +72,79 @@ export class DoctorScheduleComponent implements OnInit {
     };
   }
 
-  saveSchedule(): void {
-    // @ts-ignore
-    if (!this.storedDoctor.schedule || Object.keys(this.storedDoctor.schedule).length === 0) {
-      // todo : display error
+  setBlockedHours() {
+    if ((this.blockedStartHour && this.blockedStartHour > 24) || (this.blockedEndHour && this.blockedEndHour > 24)) {
+      this.blockedStartHour = 24;
+      this.blockedEndHour = 24;
+    }
+  }
+
+  isBlockedHoursDisabled(): boolean {
+    return !this.blockedDate || !this.blockedEndHour || !this.blockedStartHour || this.blockedStartHour > this.blockedEndHour;
+  }
+
+  saveBlockedDay(): void {
+    if (this.isBlockedHoursDisabled()) {
+      this.uiAlertInterceptor.setUiError({message: 'Toate campurile trebuie sa fie valide', class: 'snackbar-error'});
       return;
     }
+    const localDate = this.blockedDate.toLocaleString().split(',')[0];
+    if (!this.storedDoctor.unavailableTime) {
+      this.storedDoctor.unavailableTime = {};
+      this.storedDoctor.unavailableTime[localDate] = {
+        startHour: this.blockedStartHour,
+        endHour: this.blockedEndHour
+      };
+    } else if (!this.storedDoctor.unavailableTime[localDate]) {
+      this.storedDoctor.unavailableTime[localDate] = {
+        startHour: this.blockedStartHour,
+        endHour: this.blockedEndHour
+      };
+    } else {
+      this.storedDoctor.unavailableTime[localDate].startHour = this.blockedStartHour;
+      this.storedDoctor.unavailableTime[localDate].endHour = this.blockedEndHour;
+    }
+
+    this.doctorService.updateDoctorInfo({unavailableTime: this.storedDoctor.unavailableTime}, <string>this.storedDoctor.id).then(() => {
+      localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.storedDoctor));
+      this.uiAlertInterceptor.setUiError({
+        message: SCHEDULE_HEADER_TEXT.saveScheduleSuccess,
+        class: 'snackbar-success'
+      });
+    }, (error) => {
+      this.uiAlertInterceptor.setUiError({message: SCHEDULE_HEADER_TEXT.saveScheduleError, class: 'snackbar-error'});
+      console.log('Error updating service', error);
+    });
+  }
+
+  isSaveScheduleDisabled(): boolean {
     // todo - cover also if the schedule is not changed
-    this.doctorService.updateDoctorInfo({schedule: this.storedDoctor.schedule}, <string>this.storedDoctor.id)
+    return !this.storedDoctor.schedule || Object.keys(this.storedDoctor.schedule).length === 0;
+  }
+
+  saveSchedule(): void {
+    // @ts-ignore
+    if (this.isSaveScheduleDisabled()) {
+      return;
+    }
+    this.storedDoctor.unavailableTime.notWorkingDays = [];
+
+    for (let key in this.storedDoctor.schedule) {
+      if (!this.storedDoctor.schedule[key].isChecked) {
+        this.storedDoctor.unavailableTime.notWorkingDays.push(this.storedDoctor.schedule[key].dayNumber);
+      }
+    }
+
+    this.doctorService.updateDoctorInfo({
+      schedule: this.storedDoctor.schedule,
+      unavailableTime: this.storedDoctor.unavailableTime
+    }, <string>this.storedDoctor.id)
       .then(() => {
         localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.storedDoctor));
-        this.uiAlertInterceptor.setUiError({message: SCHEDULE_HEADER_TEXT.saveScheduleSuccess, class: 'snackbar-success'});
+        this.uiAlertInterceptor.setUiError({
+          message: SCHEDULE_HEADER_TEXT.saveScheduleSuccess,
+          class: 'snackbar-success'
+        });
       }, (error) => {
         this.uiAlertInterceptor.setUiError({message: SCHEDULE_HEADER_TEXT.saveScheduleError, class: 'snackbar-error'});
         console.log('Error updating service', error);
@@ -87,38 +153,74 @@ export class DoctorScheduleComponent implements OnInit {
 
   cancelOutOfOffice(index: number): void {
     // @ts-ignore
+    this.storedDoctor.outOfOfficeDays.splice(index, 1);
+    // @ts-ignore
     this.doctorService.updateDoctorInfo({outOfOfficeDays: this.storedDoctor.outOfOfficeDays}, this.storedDoctor.id)
       .then(() => {
         this.storedDoctor.outOfOfficeDays?.splice(index, 1);
         localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.storedDoctor));
-        this.uiAlertInterceptor.setUiError({message: SCHEDULE_HEADER_TEXT.cancelOutOfOfficeSuccess, class: 'snackbar-success'});
+        this.uiAlertInterceptor.setUiError({
+          message: SCHEDULE_HEADER_TEXT.cancelOutOfOfficeSuccess,
+          class: 'snackbar-success'
+        });
       }, (error) => {
-        this.uiAlertInterceptor.setUiError({message: SCHEDULE_HEADER_TEXT.cancelOutOfOfficeError, class: 'snackbar-error'});
+        this.uiAlertInterceptor.setUiError({
+          message: SCHEDULE_HEADER_TEXT.cancelOutOfOfficeError,
+          class: 'snackbar-error'
+        });
         console.log('Error updating service', error);
       });
   }
 
+  setAppointmentInterval(interval: number): void {
+    this.selectedInterval = interval
+  }
+
+  isOutOfOfficeDisabled(): boolean {
+    return !this.startDate || !this.endDate || this.endDate.getTime() < this.startDate.getTime();
+  }
+
   saveOutOfOfficeDate(): void {
-    if (!this.startDate && !this.endDate || this.endDate.getTime() < this.startDate.getTime()) {
+    if (this.isOutOfOfficeDisabled()) {
       // todo display error
       this.isOutOfOfficeError = true;
       return;
     }
     // @ts-ignore
     this.storedDoctor.outOfOfficeDays.push({
+      startTimestamp: this.startDate.getTime(),
+      endTimestamp: this.endDate.getTime(),
       startDate: this.startDate.toLocaleDateString(),
       endDate: this.endDate.toLocaleDateString()
     });
 
+    if (!this.storedDoctor.unavailableTime.outOfOfficeTimestamp) {
+      this.storedDoctor.unavailableTime.outOfOfficeTimestamp = [];
+    }
+
+    // todo see if timestamps overlaps!
+    // this.storedDoctor.unavailableTime.outOfOfficeTimestamp.push({
+    //   startTimestamp: this.startDate.getTime(),
+    //   endTimestamp: this.endDate.getTime()
+    // });
+
     // @ts-ignore
-    this.doctorService.updateDoctorInfo({outOfOfficeDays: this.storedDoctor.outOfOfficeDays}, this.storedDoctor.id)
+    this.doctorService.updateDoctorInfo({
+      outOfOfficeDays: this.storedDoctor.outOfOfficeDays,
+    }, <string>this.storedDoctor.id)
       .then(() => {
         this.isOutOfOfficeError = false;
         // todo - alert message?
-        this.uiAlertInterceptor.setUiError({message: SCHEDULE_HEADER_TEXT.addOutOfOfficeSuccess, class: 'snackbar-success'});
+        this.uiAlertInterceptor.setUiError({
+          message: SCHEDULE_HEADER_TEXT.addOutOfOfficeSuccess,
+          class: 'snackbar-success'
+        });
         localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.storedDoctor));
       }, (error) => {
-        this.uiAlertInterceptor.setUiError({message: SCHEDULE_HEADER_TEXT.addOutOfOfficeError, class: 'snackbar-error'});
+        this.uiAlertInterceptor.setUiError({
+          message: SCHEDULE_HEADER_TEXT.addOutOfOfficeError,
+          class: 'snackbar-error'
+        });
         console.log('Error ', error);
       });
   }

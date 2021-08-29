@@ -19,3 +19,7 @@
   overflow: hidden;
   margin-bottom: 3rem;
 }
+
+.blockIntervalItem {
+  width: 15% !important;
+}

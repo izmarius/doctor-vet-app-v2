@@ -12,6 +12,7 @@ export class DoctorDTO {
   public services?: Map<string, string[]>;
   public photo?: string;
   public outOfOfficeDays?: any[];
+  public unavailableTime?: any;
 }
 
 export interface IDaySchedule {
@@ -19,5 +20,6 @@ export interface IDaySchedule {
   endTime: string;
   isChecked: boolean;
   startTime: string;
+  dayNumber: number;
 }
 

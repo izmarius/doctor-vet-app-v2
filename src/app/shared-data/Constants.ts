@@ -275,14 +275,10 @@ export const SCHEDULE_HEADER_TEXT = {
   addOutOfOfficeError: 'Concediul nu a putut fi adaugat, te rugam sa incerci din nou',
 };
 
-export const DAYS_OF_WEEK = ['Luni', 'Marti', 'Miercuri', 'Joi', 'Vineri', 'Sambata', 'Duminica'];
+export const DAYS_OF_WEEK = ['Luni-Vineri', 'Sambata', 'Duminica'];
 
 export const DAYS_OF_WEEK_MAP = {
-  monday: 'Luni',
-  tuesday: 'Marti',
-  wednesday: 'Miercuri',
-  thursday: 'Joi',
-  friday: 'Vineri',
+  'monday-friday': 'Luni-Vineri',
   saturday: 'Sambata',
   sunday: 'Duminica'
 };
@@ -384,40 +380,12 @@ export const COUNTIES = [
 ];
 
 export const DOCTOR_DEFAULT_SCHEDULE = {
-  monday: {
+  'monday-firday': {
     day: 'Luni',
     startTime: '09:00',
     endTime: '17:00',
     isChecked: true,
     dayNumber: 1
-  },
-  tuesday: {
-    day: 'Marti',
-    startTime: '09:00',
-    endTime: '17:00',
-    isChecked: true,
-    dayNumber: 2
-  },
-  wednesday: {
-    day: 'Miercuri',
-    startTime: '09:00',
-    endTime: '17:00',
-    isChecked: true,
-    dayNumber: 3
-  },
-  thursday: {
-    day: 'Joi',
-    startTime: '09:00',
-    endTime: '17:00',
-    isChecked: true,
-    dayNumber: 4
-  },
-  friday: {
-    day: 'Vineri',
-    startTime: '09:00',
-    endTime: '17:00',
-    isChecked: true,
-    dayNumber: 5
   },
   saturday: {
     day: 'Sambata',

@@ -19,10 +19,12 @@ export class ScheduleSetterComponent implements OnInit {
   isErrorMessageShown: boolean;
   startHour: string;
   startMinute: string;
+  dayNumber: number;
 
   constructor() {
   }
 
+  // todo use the localStorage object and delete the duplicate code - if the validation fails then wee will set the data again to data from localstorage
   ngOnInit(): void {
     this.errorMessage = SCHEDULE_COMPONENT.ERROR_MSG;
     this.dayOffMsg = SCHEDULE_COMPONENT.DAY_OFF;
@@ -35,6 +37,7 @@ export class ScheduleSetterComponent implements OnInit {
         this.startMinute = startTime[1];
         this.endHour = endTime[0];
         this.endMinute = endTime[1];
+        this.dayNumber = this.doctorSchedule[dayKey].dayNumber;
         return;
       }
     }
@@ -55,6 +58,7 @@ export class ScheduleSetterComponent implements OnInit {
       startTime: this.startHour + ':' + this.startMinute,
       endTime: this.endHour + ':' + this.endMinute,
       day: this.day,
+      dayNumber: this.dayNumber,
     };
   }
 

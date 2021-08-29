@@ -16,7 +16,7 @@
           <textarea id="message" type="text" name="message" class="form-control m-btn-small"
                     [placeholder]="formText.placeholderMessage" formControlName="message"></textarea>
           <li class="hide error-msg m-btn-small" #errorElement>{{errorMessage}}</li>
-          <button class="btn button--active">{{formText.buttonText}}</button>
+          <button class="btn button--active" [disabled]="!this.contactForm.valid">{{formText.buttonText}}</button>
         </form>
       </div>
     </div>

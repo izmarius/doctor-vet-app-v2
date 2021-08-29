@@ -125,6 +125,7 @@ export class SignupComponent implements OnInit {
     // todo add also photo ulpad at sign up?
     doctor.photo = '';
     doctor.outOfOfficeDays = [];
+    doctor.unavailableTime = {};
     // set default schedule when creating account
     doctor.schedule = DOCTOR_DEFAULT_SCHEDULE;
     return doctor;
