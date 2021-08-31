@@ -5,7 +5,7 @@ import {SignUpService} from "../../services/signup/sign-up.service";
 import {
   AUTH_SIGNUP_FORM_TEXT,
   COUNTIES, COUNTIES_ABBR,
-  DOCTOR_DEFAULT_SCHEDULE,
+  DOCTOR_DEFAULT_SCHEDULE, FREQUENCY_MINUTES_INTERVALS,
   INPUT_LABELS_TXT,
   INPUT_REGEX_TEXTS
 } from "../../shared-data/Constants";
@@ -128,6 +128,11 @@ export class SignupComponent implements OnInit {
     doctor.unavailableTime = {};
     // set default schedule when creating account
     doctor.schedule = DOCTOR_DEFAULT_SCHEDULE;
+    doctor.appointmentFrequency = {
+      minuteIntervals: FREQUENCY_MINUTES_INTERVALS['15'],
+      hourIntervals: [9, 10, 11, 12, 13, 14, 15, 16, 17]
+    }
+    doctor.appointmentInterval = 15;
     return doctor;
   }
 

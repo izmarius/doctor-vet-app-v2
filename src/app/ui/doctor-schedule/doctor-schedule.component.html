@@ -66,13 +66,13 @@
     <div class="half-width m-auto-h">
       <p>Frecventa programarilor - Din cate in cate minute se pot face programari?</p>
       <app-dropdown (valueEmitter)="setAppointmentInterval($event)" [placeholder]="'10 / 15 / 20 / 25 / 30 / 35 / 40 / 45'"
-                    [seriesList]="minuteIntervals"></app-dropdown>
+                    [seriesList]="minuteIntervals" [defaultValue]="selectedInterval"></app-dropdown>
 
     </div>
     <app-schedule-setter *ngFor="let day of weekDaysList" [day]="day" (checkEmitter)="getAndSetDay($event)"
                          [doctorSchedule]="storedDoctor.schedule"></app-schedule-setter>
     <div class="schedule-btn-container">
-      <button class="schedule-btn btn button--active" [disabled]="isSaveButtonDisabled"
+      <button class="schedule-btn btn button--active" [disabled]="isSaveScheduleDisabled()"
               (click)="saveSchedule()">{{scheduleBtnText}}</button>
     </div>
   </div>

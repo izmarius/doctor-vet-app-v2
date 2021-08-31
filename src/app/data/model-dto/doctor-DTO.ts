@@ -13,6 +13,8 @@ export class DoctorDTO {
   public photo?: string;
   public outOfOfficeDays?: any[];
   public unavailableTime?: any;
+  public appointmentFrequency?: any;
+  public appointmentInterval?: number;
 }
 
 export interface IDaySchedule {

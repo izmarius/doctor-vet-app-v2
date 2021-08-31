@@ -22,10 +22,10 @@ import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-err
 })
 export class DoctorAppointmentModalComponent implements OnInit {
   //todo add minutes and hours depending on the schedule
-  stepMinutes: any = [0, 15, 30, 45];
-  stepMinute: number = this.stepMinutes[0];
-  stepHours: any = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
-  stepHour: number = this.stepHours[0];
+  stepMinutes: any
+  stepMinute!: number;
+  stepHours: any;
+  stepHour!: number;
   public appointmentForm!: FormGroup;
   public users!: IUserDTO[];
   public animals: IAnimalUserInfo[] = [];
@@ -61,6 +61,10 @@ export class DoctorAppointmentModalComponent implements OnInit {
     // if no hours available display message to user that today is out of work hours
     this.appointmentFormPlaceHolder = APPOINTMENTFORM_DATA;
     this.doctor = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
+    this.stepHours = this.doctor.appointmentFrequency.hourIntervals;
+    this.stepHour = this.stepHours[0]
+    this.stepMinutes = this.doctor.appointmentFrequency.minuteIntervals;
+    this.stepMinute = this.stepMinutes[0]
     for (let service in this.doctor.services) {
       this.doctorServiceList = this.doctorServiceList.concat(this.doctor.services[service]);
     }

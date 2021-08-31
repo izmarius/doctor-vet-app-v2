@@ -5,6 +5,8 @@ import {NAVBAR_TEXT, USER_LOCALSTORAGE} from "../../../shared-data/Constants";
 import {DoctorAppointmentModalComponent} from "../../doctor-appointment-modal/doctor-appointment-modal.component";
 import {CreateUserDialogComponent} from "../../create-user-dialog/create-user-dialog.component";
 import {UserAppointmentDialogComponent} from "../../user-appointment/user-appointment.component";
+import {AuthLoggedInServiceService} from "../../../services/auth-logged-in/auth-logged-in";
+import {take} from "rxjs/operators";
 
 @Component({
   selector: 'app-navbar',
@@ -19,12 +21,17 @@ export class NavbarComponent implements OnInit {
   isDoctorLoggedIn = false;
 
   constructor(private dialog: MatDialog,
-              private loginService: LogInService) {
+              private loginService: LogInService,
+              private userLoggedInService: AuthLoggedInServiceService) {
   }
 
   ngOnInit(): void {
     this.setHiddenNavLinks();
     this.navbarText = NAVBAR_TEXT;
+    // todo - see an alternative to this
+    this.userLoggedInService.userLoggedInObs.subscribe(() => {
+      this.setHiddenNavLinks();
+    });
   }
 
   openAppointmentsModal(): void {
@@ -51,6 +58,9 @@ export class NavbarComponent implements OnInit {
 
   setHiddenNavLinks(): void {
     const user: any = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
+    if (!user) {
+      return;
+    }
     if (user && user.doctorName) {
       this.isDoctorLoggedIn = true;
     } else if (user && user.name) {

@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {DoctorDTO, IDaySchedule} from "../../data/model-dto/doctor-DTO";
 import {
   DAYS_OF_WEEK,
-  DAYS_OF_WEEK_MAP,
+  DAYS_OF_WEEK_MAP, FREQUENCY_MINUTES_INTERVALS,
   SCHEDULE_HEADER_TEXT,
   USER_LOCALSTORAGE
 } from "../../shared-data/Constants";
@@ -22,7 +22,6 @@ export class DoctorScheduleComponent implements OnInit {
   daysOfWeekMap: any = DAYS_OF_WEEK_MAP;
   weekDaysList: any[] = [];
   scheduleBtnText: string = '';
-  isSaveButtonDisabled = false;
   public minDate = new Date();
   public schedulePlaceholder: any;
   startDate: any;
@@ -38,11 +37,12 @@ export class DoctorScheduleComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
     this.schedulePlaceholder = SCHEDULE_HEADER_TEXT;
     this.storedDoctor = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
     this.scheduleBtnText = SCHEDULE_HEADER_TEXT.scheduleButtonText;
     this.weekDaysList = DAYS_OF_WEEK;
+    debugger
+    this.selectedInterval = <number>this.storedDoctor.appointmentInterval;
     this.headerContent = {
       title: SCHEDULE_HEADER_TEXT.title,
       subtitle: SCHEDULE_HEADER_TEXT.subtitle,
@@ -119,7 +119,7 @@ export class DoctorScheduleComponent implements OnInit {
 
   isSaveScheduleDisabled(): boolean {
     // todo - cover also if the schedule is not changed
-    return !this.storedDoctor.schedule || Object.keys(this.storedDoctor.schedule).length === 0;
+    return !this.storedDoctor.schedule || Object.keys(this.storedDoctor.schedule).length === 0 || !this.selectedInterval;
   }
 
   saveSchedule(): void {
@@ -135,9 +135,23 @@ export class DoctorScheduleComponent implements OnInit {
       }
     }
 
+    const startHour = parseInt(this.storedDoctor.schedule['monday-friday'].startTime.split(':')[0], 10);
+    const endHour = parseInt(this.storedDoctor.schedule['monday-friday'].endTime.split(':')[0], 10);
+    this.storedDoctor.appointmentFrequency.hourIntervals = [];
+    this.storedDoctor.appointmentInterval = this.selectedInterval;
+
+    for (let i = startHour; i <= endHour; i++) {
+      this.storedDoctor.appointmentFrequency.hourIntervals.push(i);
+    }
+    // @ts-ignore
+    this.storedDoctor.appointmentFrequency.minuteIntervals = FREQUENCY_MINUTES_INTERVALS[this.selectedInterval.toString()];
+    debugger;
+    // this.storedDoctor.appointmentFrequency.hourIntervals = FREQUENCY_INTERVALS[this.selectedInterval.toString()];
     this.doctorService.updateDoctorInfo({
       schedule: this.storedDoctor.schedule,
-      unavailableTime: this.storedDoctor.unavailableTime
+      unavailableTime: this.storedDoctor.unavailableTime,
+      appointmentFrequency: this.storedDoctor.appointmentFrequency,
+      appointmentInterval: this.selectedInterval
     }, <string>this.storedDoctor.id)
       .then(() => {
         localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.storedDoctor));
@@ -180,6 +194,7 @@ export class DoctorScheduleComponent implements OnInit {
     return !this.startDate || !this.endDate || this.endDate.getTime() < this.startDate.getTime();
   }
 
+  // todo ADD MATDATEPICKER RANGE!!!!!
   saveOutOfOfficeDate(): void {
     if (this.isOutOfOfficeDisabled()) {
       // todo display error

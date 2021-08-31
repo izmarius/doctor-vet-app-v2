@@ -48,6 +48,7 @@ import { UserAppointmentCardComponent } from './ui/shared/user-appointment-card/
 import { UserAppointmentDialogComponent } from './ui/user-appointment/user-appointment.component';
 import { DropdownComponent } from './ui/shared/dropdown/dropdown.component';
 import {HttpClientModule} from "@angular/common/http";
+import { UserCreateAppCardComponent } from './ui/shared/user-create-app-card/user-create-app-card.component';
 
 @NgModule({
   entryComponents: [AlertMessageComponent],
@@ -88,6 +89,7 @@ import {HttpClientModule} from "@angular/common/http";
     UserAppointmentCardComponent,
     UserAppointmentDialogComponent,
     DropdownComponent,
+    UserCreateAppCardComponent,
   ],
   imports: [
     BrowserModule,

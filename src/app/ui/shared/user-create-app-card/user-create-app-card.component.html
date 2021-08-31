@@ -1,0 +1,45 @@
+<div class="p-around bg-alternative border-with-radius">
+  <div class="m-btn-small">
+    <label><strong>Nume doctor</strong></label>
+    <p>{{doctor.doctorName}}</p>
+  </div>
+  <div class="m-btn-small">
+    <label><strong>Locatia</strong></label>
+    <p>{{doctor.location}}</p>
+  </div>
+  <div class="m-btn-small">
+    <label><strong>Selecteaza data</strong></label>
+    <div class="d-flex">
+      <input matInput class="form-control" [min]="minDate" [matDatepickerFilter]="filterUnavailableDays.bind(this)"
+             [matDatepicker]="picker" [(ngModel)]="selectedDate"
+             [placeholder]="'mm/dd/yyyy'">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    </div>
+    <mat-datepicker #picker color="accent"></mat-datepicker>
+  </div>
+  <div class="m-btn-small d-flex">
+    <div>
+      <label><strong>Ora</strong></label>
+      <mat-select class="form-control" [(ngModel)]="stepHour" [ngModelOptions]="{standalone: true}">
+        <mat-option *ngFor="let step of stepHours" [value]="step">
+          {{step}}
+        </mat-option>
+      </mat-select>
+    </div>
+    <div class="p-left">
+      <label><strong>Minut</strong></label>
+      <mat-select class="form-control" [(ngModel)]="stepMinute" [ngModelOptions]="{standalone: true}">
+        <mat-option *ngFor="let step of stepMinutes" [value]="step">
+          {{step}}
+        </mat-option>
+      </mat-select>
+    </div>
+  </div>
+  <div class="m-btn-small">
+    <label><strong>Serviciu</strong></label>
+    <app-dropdown [placeholder]="'Servicii'" [seriesList]="services" (valueEmitter)="setService($event)"></app-dropdown>
+  </div>
+  <div class="d-flex justify-content-end">
+    <button class="btn button--active" (click)="createAppointmentByUser(doctor)">Adauga programare</button>
+  </div>
+</div>

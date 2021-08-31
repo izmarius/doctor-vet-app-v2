@@ -1,3 +1,7 @@
 .search-appointment-sidebar {
   width: 20%;
 }
+
+.doctor-card {
+  min-width: 25%;
+}

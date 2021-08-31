@@ -283,6 +283,14 @@ export const DAYS_OF_WEEK_MAP = {
   sunday: 'Duminica'
 };
 
+export const FREQUENCY_MINUTES_INTERVALS = {
+  10: [0, 10, 20 ,30, 40, 50],
+  15: [0, 15, 30 ,45],
+  20: [0, 20, 40],
+  25: [0, 25, 50],
+  30: [0, 30],
+  45: [0, 45],
+}
 
 export const SCHEDULE_COMPONENT = {
   ERROR_MSG: 'Asigura-te ca orele de inceput si de sfarsit ale zilei sunt completate corect.',

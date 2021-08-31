@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
-import {MatDialogRef} from '@angular/material/dialog';
 import {Router} from '@angular/router';
 import {FIREBASE_ERRORS, UI_ALERT_MESSAGES, USER_LOCALSTORAGE} from "../../shared-data/Constants";
 import {UiErrorInterceptorService} from "../../ui/shared/alert-message/services/ui-error-interceptor.service";

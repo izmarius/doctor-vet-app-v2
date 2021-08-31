@@ -46,7 +46,7 @@ export class DoctorAppointmentsComponent implements OnInit, OnDestroy, AfterView
     this.noAvailableAppointments = APPOINTMENT_PAGE.noAvailableAppointments
     setTimeout(() => {
       this.user = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
-      if(this.user.name){
+      if(this.user && this.user.name){
         this.router.navigate(['my-animals'])
         return;
       }
