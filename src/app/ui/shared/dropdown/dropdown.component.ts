@@ -12,6 +12,7 @@ export class DropdownComponent implements OnInit {
   public isSearchResult = false
   @Output() valueEmitter = new EventEmitter();
   @Input() placeholder!: string;
+  @Input() autocomplete = false;
   @Input() seriesList!: string[];
   @Input() defaultValue!: any;
 
@@ -26,13 +27,16 @@ export class DropdownComponent implements OnInit {
     setTimeout(() => {
       this.isSearchResult = false;
       this.searchResult = [];
-    }, 100);
+    }, 150);
   }
 
   fetchSeries(): void {
     if (!this.inputText) {
       this.isSearchResult = false;
       this.searchResult = [];
+      return;
+    }
+    if(!this.seriesList) {
       return;
     }
     // @ts-ignore

@@ -64,7 +64,7 @@ export class DoctorAppointmentsComponent implements OnInit, OnDestroy, AfterView
           }
           this.setAppointmentMap();
         });
-    }, 300)
+    }, 400)
   }
 
   ngOnDestroy(): void {

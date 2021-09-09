@@ -45,7 +45,6 @@ export class SignupComponent implements OnInit {
   ngOnInit(): void {
     this.counties = COUNTIES;
     this.countiesAbbr = COUNTIES_ABBR;
-
     this.signupText = AUTH_SIGNUP_FORM_TEXT;
     this.signupText.labels = INPUT_LABELS_TXT;
     this.initAuthForm();
@@ -81,7 +80,7 @@ export class SignupComponent implements OnInit {
   }
 
   firstStepOnFormSubmit(): void {
-    if (!this.authFormGroup.valid) {
+    if (!this.authFormGroup.valid && this.selectedCounty && this.locality) {
       this.isErrorMessage = true;
     } else {
       this.isAllowedToGoToFirstStep = false;
@@ -156,7 +155,7 @@ export class SignupComponent implements OnInit {
 
   isFormCompleted(): boolean {
     // todo add validation on locality and county
-    return !this.authFormGroup.valid;
+    return this.authFormGroup.valid && !this.selectedCounty && !this.locality;
   }
 
   isSignUpButtonDisabled(): boolean {

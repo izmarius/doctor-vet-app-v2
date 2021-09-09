@@ -41,7 +41,6 @@ export class DoctorScheduleComponent implements OnInit {
     this.storedDoctor = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
     this.scheduleBtnText = SCHEDULE_HEADER_TEXT.scheduleButtonText;
     this.weekDaysList = DAYS_OF_WEEK;
-    debugger
     this.selectedInterval = <number>this.storedDoctor.appointmentInterval;
     this.headerContent = {
       title: SCHEDULE_HEADER_TEXT.title,
@@ -145,7 +144,6 @@ export class DoctorScheduleComponent implements OnInit {
     }
     // @ts-ignore
     this.storedDoctor.appointmentFrequency.minuteIntervals = FREQUENCY_MINUTES_INTERVALS[this.selectedInterval.toString()];
-    debugger;
     // this.storedDoctor.appointmentFrequency.hourIntervals = FREQUENCY_INTERVALS[this.selectedInterval.toString()];
     this.doctorService.updateDoctorInfo({
       schedule: this.storedDoctor.schedule,

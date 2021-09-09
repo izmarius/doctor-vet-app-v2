@@ -389,7 +389,7 @@ export const COUNTIES = [
 
 export const DOCTOR_DEFAULT_SCHEDULE = {
   'monday-firday': {
-    day: 'Luni',
+    day: 'Luni-Vineri',
     startTime: '09:00',
     endTime: '17:00',
     isChecked: true,

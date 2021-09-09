@@ -3,7 +3,7 @@
     <p class="section-subtitle text-center m-btn-dialog-row"><strong>{{signupText?.title}}</strong></p>
     <p class="card-text text-center" *ngIf="!!signupText?.subtitle">{{signupText?.subtitle}}</p>
     <div class="m-btn-dialog-row">
-      <form class="sign-up-form mg-bottom" [formGroup]="authFormGroup" (ngSubmit)="firstStepOnFormSubmit()">
+      <form autocomplete="off" class="sign-up-form mg-bottom" [formGroup]="authFormGroup" (ngSubmit)="firstStepOnFormSubmit()">
         <div class="input-container d-flex justify-content-between">
           <div class="col-element">
             <label>{{signupText?.labels.emailLabel}}</label>
@@ -34,7 +34,7 @@
         <label>{{signupText?.labels.localityLabel}}</label>
         <app-dropdown (valueEmitter)="setLocality($event)" [placeholder]="signupText?.locality"
                       [seriesList]="localities"></app-dropdown>
-        <label>{{signupText?.labels.locationLabel}}</label>
+        <label>Adresa - strada si numarul</label>
         <input formControlName="address" type="text"
                class="m-btn-dialog-row form-control" [placeholder]="signupText?.address">
 
