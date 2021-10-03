@@ -4,7 +4,7 @@ import {IUserAnimalAndMedicalHistory} from "./dto/user-animal-medical-history-dt
 import {DIALOG_UI_ERRORS, USER_ANIMAL_DIALOG} from "../../shared-data/Constants";
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {DoctorAppointmentModalComponent} from "../doctor-appointment-modal/doctor-appointment-modal.component";
-import {take} from "rxjs/operators";
+import {retry, take} from "rxjs/operators";
 import {FirestoreService} from "../../data/http/firestore.service";
 
 @Component({
@@ -22,7 +22,7 @@ export class UserAnimalInfoComponent implements OnInit {
   public newDisease: string = '';
   public newRecommendation: string = '';
   public selectedLink: any;
-  public userAnimalData!: IUserAnimalAndMedicalHistory;
+  public userAnimalData!: any;
   public userAnimalDialog: any;
   public userAnimalDialogErrorTxt: any;
 
@@ -40,7 +40,10 @@ export class UserAnimalInfoComponent implements OnInit {
     this.data?.userAnimalDataObs
       .pipe(take(1))
       .subscribe((userAnimalData: any) => {
+        // todo refactor and get initial data only from one place!!!! -spaghetti
         this.userAnimalData = userAnimalData;
+        this.userAnimalData.appointment = this.data.appointment;
+        this.userAnimalData.appointmentId = this.data.appointmentId;
         setTimeout(() => this.setSelectedAnimalActive(userAnimalData.animalData.id), 0);
         if (userAnimalData && userAnimalData.animalMedicalHistory.length === 0) {
           this.userAnimalData.animalMedicalHistory.diseases = [];
@@ -48,6 +51,30 @@ export class UserAnimalInfoComponent implements OnInit {
           return;
         }
       });
+  }
+
+  addRecurrentAppointment(period: string) {
+    let appointmentDate = new Date(this.userAnimalData.appointment.timestamp);
+    if (period === 'day') {
+      appointmentDate.setDate(appointmentDate.getDate() + 1);
+
+    } else if (period === 'week') {
+      appointmentDate.setDate(appointmentDate.getDate() + 7);
+    } else if (period === 'month') {
+      appointmentDate.setMonth(appointmentDate.getMonth() + 1);
+    } else if (period === 'year') {
+      appointmentDate.setFullYear(appointmentDate.getFullYear() + 1);
+    } else {
+      // todo display error message
+      return;
+    }
+    let appointment = Object.create(this.userAnimalData.appointment);
+    appointment.timestamp = appointmentDate.getTime();
+    const localeDate = appointmentDate.toLocaleDateString();
+    const dateTime = appointment.dateTime.split(' ');
+    appointment.dateTime = localeDate + ' ' + dateTime[1]+ ' ' + dateTime[2];
+
+    // save new appointment
   }
 
   addDisease(): void {

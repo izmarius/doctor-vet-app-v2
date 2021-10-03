@@ -43,7 +43,7 @@
             {{calendarPlaceHolder.monthBtn}}
           </div>
           <div
-            class="btn btn-dark"
+            class="btn btn-light"
             (click)="setView(CalendarView.Week)"
             [class.active]="view === CalendarView.Week"
           >
@@ -65,7 +65,7 @@
         (dayClicked)="dayClicked($event.day)"
         *ngSwitchCase="CalendarView.Month"
         [viewDate]="viewDate"
-        [events]="events"
+        [events]="appointments"
         [activeDayIsOpen]="activeDayIsOpen"
         (eventClicked)="handleEvent('Clicked', $event.event)"
       >
@@ -74,20 +74,24 @@
       <mwl-calendar-week-view
         *ngSwitchCase="CalendarView.Week"
         [viewDate]="viewDate"
-        [events]="events"
+        [events]="appointments"
         [activeDayIsOpen]="activeDayIsOpen"
         (eventClicked)="handleEvent('Clicked', $event.event)"
         (hourSegmentClicked)="addAppointment($event.date)"
+        [dayStartHour]="hourToStartTheDay"
+        [dayEndHour]="hourToEndTheDay"
       >
       </mwl-calendar-week-view>
 
       <mwl-calendar-day-view
         *ngSwitchCase="CalendarView.Day"
         [viewDate]="viewDate"
-        [events]="events"
+        [events]="appointments"
         [activeDayIsOpen]="activeDayIsOpen"
         (eventClicked)="handleEvent('Clicked', $event.event)"
         (hourSegmentClicked)="addAppointment($event.date)"
+        [dayStartHour]="hourToStartTheDay"
+        [dayEndHour]="hourToEndTheDay"
       >
       </mwl-calendar-day-view>
     </div>

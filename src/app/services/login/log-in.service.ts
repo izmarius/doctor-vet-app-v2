@@ -18,7 +18,7 @@ export class LogInService {
     return this.afAuth.signInWithEmailAndPassword(email, password)
       .then(() => {
         this.uiAlertInterceptor.setUiError({message: UI_ALERT_MESSAGES.welcome, class: 'snackbar-success'});
-        this.router.navigate(['/appointments']);
+        this.router.navigate(['/calendar']);
       })
       .catch((error) => {
         this.uiAlertInterceptor.setUiError({message: FIREBASE_ERRORS["auth/user-not-found"], class: 'snackbar-error'});

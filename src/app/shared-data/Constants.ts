@@ -34,9 +34,9 @@ export const USER_CARD_TXT = {
 };
 
 export const CALENDAR_DATA = {
-  previousBtn: 'Luna anterioara',
-  nextBtn: 'Luna urmatoare',
-  todayBtn: 'Luna curenta',
+  previousBtn: 'Inapoi',
+  nextBtn: 'Inainte',
+  todayBtn: 'Prezent',
   monthBtn: 'Luna',
   weekBtn: 'Saptamana',
   dayBtn: 'Zi'
@@ -388,7 +388,7 @@ export const COUNTIES = [
 ];
 
 export const DOCTOR_DEFAULT_SCHEDULE = {
-  'monday-firday': {
+  'monday-friday': {
     day: 'Luni-Vineri',
     startTime: '09:00',
     endTime: '17:00',

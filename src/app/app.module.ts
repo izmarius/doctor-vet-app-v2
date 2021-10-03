@@ -18,7 +18,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {AppComponent} from "./app.component";
 import { UploadPhotoComponent } from './ui/shared/upload-photo/upload-photo.component';
-import { DoctorAppointmentsComponent } from './ui/doctor-appointments/doctor-appointments.component';
+// import { DoctorAppointmentsComponent } from './ui/doctor-appointments/doctor-appointments.component';
 import { UserCardComponent } from './ui/shared/user-card/user-card.component';
 import { UserAnimalInfoComponent } from './ui/user-animal-info/user-animal-info.component';
 import { UserProfileComponent } from './ui/user-profile/user-profile.component';
@@ -61,7 +61,7 @@ import {AppCalendarModule} from "./ui/calendar/app-calendar-module";
     FooterComponent,
     NavbarComponent,
     UploadPhotoComponent,
-    DoctorAppointmentsComponent,
+    // DoctorAppointmentsComponent,
     UserCardComponent,
     UserAnimalInfoComponent,
     UserProfileComponent,

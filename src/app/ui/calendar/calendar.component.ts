@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {CalendarEvent, CalendarView} from 'angular-calendar';
 import {isSameDay, isSameMonth} from 'date-fns';
 import {CALENDAR_DATA, USER_LOCALSTORAGE} from "../../shared-data/Constants";
@@ -13,37 +13,54 @@ import {DoctorAppointmentModalComponent} from "../doctor-appointment-modal/docto
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss']
 })
-export class CalendarComponent implements OnInit, AfterViewInit {
+export class CalendarComponent implements OnInit {
+  doctor: any;
+  viewDate: Date = new Date();
+  view: CalendarView = CalendarView.Week;
+  CalendarView = CalendarView;
+  activeDayIsOpen = true;
+  appointments: any[] = [];
+  calendarPlaceHolder: any;
+  userAnimalData: any;
+  hourToStartTheDay: number = 0;
+  hourToEndTheDay: number = 23;
 
   constructor(private doctorService: DoctorAppointmentsService,
               private animalService: AnimalService,
               private dialogRef: MatDialog) {
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.calendarPlaceHolder = CALENDAR_DATA;
-    // todo move to a service
-    this.doctor = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
-    this.doctorService.getDoctorAppointments(this.doctor.id).subscribe((res) => {
-      this.events = res;
-    })
+    setTimeout(() => {
+      this.doctor = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
+      this.setHourDayStartAndDayEnd();
+      this.doctorService.getDoctorAppointments(this.doctor.id).subscribe((res) => {
+        this.appointments = res;
+      });
+    }, 500);
   }
-
-  ngAfterViewInit() {
-
-  }
-
-  doctor: any;
-  viewDate: Date = new Date();
-  view: CalendarView = CalendarView.Month;
-  CalendarView = CalendarView;
-  activeDayIsOpen = true;
-  events: any[] = [];
-  calendarPlaceHolder: any;
-  userAnimalData: any;
 
   setView(view: CalendarView): void {
     this.view = view;
+  }
+
+  setHourDayStartAndDayEnd() {
+    const day = new Date().getDay();
+    if (day > 0 || day < 6) {
+      this.hourToStartTheDay = parseInt(this.doctor.schedule["monday-friday"].startTime.slice(0,2));
+      this.hourToEndTheDay = parseInt(this.doctor.schedule["monday-friday"].endTime.slice(0,2));
+    } else if (day === 0 && !this.doctor.schedule.sunday) {
+      return;
+    } else if (day === 6 && !this.doctor.schedule.saturday) {
+      return;
+    } else if (day === 0 && this.doctor.schedule.sunday) {
+      this.hourToStartTheDay = parseInt(this.doctor.schedule.sunday.startTime[1]);
+      this.hourToEndTheDay = parseInt(this.doctor.schedule.sunday.endTime[1]);
+    } else if (day === 6 && this.doctor.schedule.saturday) {
+      this.hourToStartTheDay = parseInt(this.doctor.schedule.saturday.startTime[1]);
+      this.hourToEndTheDay = parseInt(this.doctor.schedule.saturday.endTime[1]);
+    }
   }
 
   dayClicked({date, events}: { date: Date; events: CalendarEvent[] }): void {
@@ -61,7 +78,9 @@ export class CalendarComponent implements OnInit, AfterViewInit {
     const userAnimalObs$ = this.animalService.getAnimalDataAndMedicalHistoryByAnimalId(event.animalId, event.userId);
     this.userAnimalData = {
       userAnimalDataObs: userAnimalObs$,
-      userId: event.userId
+      userId: event.userId,
+      appointment: event.appointment,
+      appointmentId: event.appointmentId
     }
     this.openUserAnimalAppointmentModal();
   }
