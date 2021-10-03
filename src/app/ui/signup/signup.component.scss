@@ -1,4 +1,4 @@
-@import './src/app/scss/constants';
+@import 'src/app/scss/constants';
 
 .auth__dialog {
   background: $bg-alternate-color;
@@ -23,10 +23,7 @@
   width: 10%;
 }
 
-//todo: see why we set height of input 2rem! important
+// todo: see why we set height of input 2rem! important
 input[type="checkbox"] {
   height: auto !important;
 }
-
-//width: '26%',
-//minHeight: '28.125rem',

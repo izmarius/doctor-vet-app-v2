@@ -1,4 +1,4 @@
-@import './src/app/scss/constants';
+@import 'src/app/scss/constants';
 
 .auth__dialog::-webkit-scrollbar {
   display: none;
@@ -13,14 +13,3 @@
   width: 27%;
   margin: 0 auto;
 }
-/*//.image_container {*/
-/*  //  width: 90px;*/
-/*  //  height: 30px;*/
-/*  //  position: absolute;*/
-/*  //  bottom: 0;*/
-/*  //  right: 0;*/
-/*  //}*/
-/*//*/
-/*//.image_container img {*/
-/*  //  width: 100%;*/
-/*  //}*/
