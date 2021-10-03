@@ -9,3 +9,7 @@ init emulators:
 firebase init emulators
 stat emulators:
 firebase emulators:start
+
+WRITE/READ ENV VARS
+firebase functins: set env_var=""
+firebase functions:config:get

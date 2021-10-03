@@ -31,6 +31,10 @@
           <a class="nav-link" routerLink="/appointments"><span
             class="icon-people px-2"></span>{{navbarText.appointments}}</a>
         </li>
+        <li class="nav-item dropdown" *ngIf="isDoctorLoggedIn">
+          <a class="nav-link" routerLink="/calendar">
+            <span class="icon-calendar px-2"></span>{{navbarText.calendar}}</a>
+        </li>
         <li class="nav-item" *ngIf="isDoctorLoggedIn">
           <a class="nav-link" routerLink="/schedule"><span class="icon-clock px-2"></span>{{navbarText.schedule}}</a>
         </li>

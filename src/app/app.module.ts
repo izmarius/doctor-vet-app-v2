@@ -49,6 +49,7 @@ import { UserAppointmentDialogComponent } from './ui/user-appointment/user-appoi
 import { DropdownComponent } from './ui/shared/dropdown/dropdown.component';
 import {HttpClientModule} from "@angular/common/http";
 import { UserCreateAppCardComponent } from './ui/shared/user-create-app-card/user-create-app-card.component';
+import {AppCalendarModule} from "./ui/calendar/app-calendar-module";
 
 @NgModule({
   entryComponents: [AlertMessageComponent],
@@ -103,7 +104,8 @@ import { UserCreateAppCardComponent } from './ui/shared/user-create-app-card/use
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    AppCalendarModule
   ],
   providers: [AngularFirestore],
   bootstrap: [AppComponent]

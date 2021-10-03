@@ -11,6 +11,7 @@ import {SignUpUserComponent} from "./ui/sign-up-user/sign-up-user.component";
 import {MyAnimalsComponent} from "./ui/my-animals/my-animals.component";
 import {UserAppointmentsComponent} from "./ui/user-appointments/user-appointments.component";
 import {UserAppointmentDialogComponent} from "./ui/user-appointment/user-appointment.component";
+import {CalendarComponent} from "./ui/calendar/calendar.component";
 
 const routes: Routes = [
   {path: '', redirectTo: '/home', pathMatch: 'full'},
@@ -24,6 +25,7 @@ const routes: Routes = [
   {path: 'signup-user', component: SignUpUserComponent},
   {path: 'profile', component: MyProfileComponent},
   {path: 'appointments', component: DoctorAppointmentsComponent},
+  {path: 'calendar', component: CalendarComponent},
   {path: 'home', component: HomePageComponent},
 ];
 

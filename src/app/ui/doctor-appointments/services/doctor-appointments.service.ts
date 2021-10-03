@@ -93,19 +93,29 @@ export class DoctorAppointmentsService {
   getDoctorAppointments(doctorId: string): Observable<any> {
     return this.getAllAppointments(doctorId).pipe(
       map((appointments) => {
+        this.appointmentList = [];
         appointments.forEach((appointment) => {
+          let appointmentDate = new Date(new Date(appointment['dateTime'].split('-')[0].trim()));
+          const hour = parseInt(appointment['dateTime'].split('-')[1].trim().split(':')[0], 10)
+          const minute = parseInt(appointment['dateTime'].split('-')[1].trim().split(':')[1], 10)
+          appointmentDate.setHours(hour, minute);
           this.appointmentList = [...this.appointmentList,
             {
-              start: new Date(appointment['dateTime']), // cant use DTO methods, why??
-              title: appointment['services']
+              // todo add phone number + animal info view
+              start: new Date(appointmentDate), // cant use DTO methods, why??
+              title:
+                'Ora: ' + appointment['dateTime'].split('-')[1].trim()
                 + ', '
-                + new Date(appointment['dateTime']).toLocaleTimeString('ro')
-                + ', '
-                + 'Pacient: '
+                +'Client: '
                 + appointment['userName']
                 + ', '
                 + 'Animal: '
                 + appointment['animalData']['name']
+                + ', '
+                + appointment['services'],
+
+              animalId: appointment.animalData.uid,
+              userId: appointment.userId
             }
           ];
         });
