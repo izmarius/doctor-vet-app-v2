@@ -3,7 +3,7 @@ import {AfterViewInit, Component, EventEmitter, Input, OnInit, Output} from '@an
 @Component({
   selector: 'app-user-create-app-card',
   templateUrl: './user-create-app-card.component.html',
-  styleUrls: ['./user-create-app-card.component.css']
+  styleUrls: ['./user-create-app-card.component.scss']
 })
 export class UserCreateAppCardComponent implements OnInit, AfterViewInit {
   @Input() doctor: any;

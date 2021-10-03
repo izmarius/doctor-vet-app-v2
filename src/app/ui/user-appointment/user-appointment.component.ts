@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {APPOINTMENTFORM_DATA, COUNTIES, COUNTIES_ABBR, INPUT_REGEX_TEXTS} from "../../shared-data/Constants";
+import {APPOINTMENTFORM_DATA, COUNTIES, COUNTIES_ABBR} from "../../shared-data/Constants";
 import {DateUtilsService} from "../../data/utils/date-utils.service";
 import {DoctorService} from "../../services/doctor/doctor.service";
 import {LocationService} from "../../services/location-service/location.service";
@@ -8,7 +7,7 @@ import {LocationService} from "../../services/location-service/location.service"
 @Component({
   selector: 'app-user-appointment',
   templateUrl: './user-appointment.component.html',
-  styleUrls: ['./user-appointment.component.css']
+  styleUrls: ['./user-appointment.component.scss']
 })
 export class UserAppointmentDialogComponent implements OnInit {
   userAppointmentFormText: any;
@@ -58,7 +57,6 @@ export class UserAppointmentDialogComponent implements OnInit {
   }
 
   isSearchByLocationDisabled(): boolean {
-    return false;
     return !this.county || !this.locality;
   }
 

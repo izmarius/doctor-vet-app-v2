@@ -11,13 +11,12 @@ import {
   USER_LOCALSTORAGE
 } from "../../shared-data/Constants";
 import {DOCTOR_SERVICES} from "../../shared-data/DoctorServicesConstants";
-import {newArray} from "@angular/compiler/src/util";
 import {LocationService} from "../../services/location-service/location.service";
 
 @Component({
   selector: 'app-my-profile',
   templateUrl: './my-profile.component.html',
-  styleUrls: ['./my-profile.component.css']
+  styleUrls: ['./my-profile.component.scss']
 })
 export class MyProfileComponent implements OnInit {
   counties!: string[];

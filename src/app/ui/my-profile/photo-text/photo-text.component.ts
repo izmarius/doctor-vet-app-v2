@@ -9,7 +9,7 @@ export default interface IPhotoTitle {
 @Component({
   selector: 'app-photo-text',
   templateUrl: './photo-text.component.html',
-  styleUrls: ['./photo-text.component.css']
+  styleUrls: ['./photo-text.component.scss']
 })
 export class PhotoTextComponent implements OnInit {
   @Input() data!: IPhotoTitle;

@@ -4,14 +4,12 @@ import {LogInService} from "../../../services/login/log-in.service";
 import {NAVBAR_TEXT, USER_LOCALSTORAGE} from "../../../shared-data/Constants";
 import {DoctorAppointmentModalComponent} from "../../doctor-appointment-modal/doctor-appointment-modal.component";
 import {CreateUserDialogComponent} from "../../create-user-dialog/create-user-dialog.component";
-import {UserAppointmentDialogComponent} from "../../user-appointment/user-appointment.component";
 import {AuthLoggedInServiceService} from "../../../services/auth-logged-in/auth-logged-in";
-import {take} from "rxjs/operators";
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.css']
+  styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnInit {
 

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {CalendarEvent, CalendarView} from 'angular-calendar';
 import {isSameDay, isSameMonth} from 'date-fns';
 import {CALENDAR_DATA, USER_LOCALSTORAGE} from "../../shared-data/Constants";
@@ -11,7 +11,7 @@ import {DoctorAppointmentModalComponent} from "../doctor-appointment-modal/docto
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
-  styleUrls: ['./calendar.component.css']
+  styleUrls: ['./calendar.component.scss']
 })
 export class CalendarComponent implements OnInit, AfterViewInit {
 
@@ -48,7 +48,7 @@ export class CalendarComponent implements OnInit, AfterViewInit {
 
   dayClicked({date, events}: { date: Date; events: CalendarEvent[] }): void {
     if (isSameMonth(date, this.viewDate)) {
-      if ((isSameDay(this.viewDate, date) && this.activeDayIsOpen === true) || events.length === 0) {
+      if ((isSameDay(this.viewDate, date) && this.activeDayIsOpen) || events.length === 0) {
         this.activeDayIsOpen = false;
       } else {
         this.activeDayIsOpen = true;
@@ -78,7 +78,7 @@ export class CalendarComponent implements OnInit, AfterViewInit {
       data: this.userAnimalData
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe(() => {
     });
   }
 

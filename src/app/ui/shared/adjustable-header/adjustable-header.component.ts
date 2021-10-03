@@ -3,7 +3,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 @Component({
   selector: 'app-adjustable-header',
   templateUrl: './adjustable-header.component.html',
-  styleUrls: ['./adjustable-header.component.css']
+  styleUrls: ['./adjustable-header.component.scss']
 })
 export class AdjustableHeaderComponent implements OnInit {
   @Input() headerContent: any;

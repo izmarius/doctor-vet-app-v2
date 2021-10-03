@@ -1,15 +1,14 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {UserService} from "../user-profile/services/user.service";
 import {USER_LOCALSTORAGE} from "../../shared-data/Constants";
-import {pipe, Subscription} from "rxjs";
 import {take} from "rxjs/operators";
-import {MatDialog, MatDialogRef} from "@angular/material/dialog";
+import {MatDialog} from "@angular/material/dialog";
 import {ConfirmDialogComponent} from "../shared/confirm-dialog/confirm-dialog.component";
 
 @Component({
   selector: 'app-user-appointments',
   templateUrl: './user-appointments.component.html',
-  styleUrls: ['./user-appointments.component.css']
+  styleUrls: ['./user-appointments.component.scss']
 })
 export class UserAppointmentsComponent implements OnInit {
   user: any;

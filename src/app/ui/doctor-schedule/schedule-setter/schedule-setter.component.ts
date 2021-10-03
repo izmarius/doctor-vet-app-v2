@@ -5,7 +5,7 @@ import {IDaySchedule} from "../../../data/model-dto/doctor-DTO";
 @Component({
   selector: 'app-schedule-setter',
   templateUrl: './schedule-setter.component.html',
-  styleUrls: ['./schedule-setter.component.css']
+  styleUrls: ['./schedule-setter.component.scss']
 })
 export class ScheduleSetterComponent implements OnInit {
   @Output() checkEmitter = new EventEmitter<IDaySchedule>();

@@ -4,7 +4,7 @@ import {HOMEPAGE_CARD_TEXT} from "../../shared-data/Constants";
 @Component({
   selector: 'app-features',
   templateUrl: './features.component.html',
-  styleUrls: ['./features.component.css']
+  styleUrls: ['./features.component.scss']
 })
 export class FeaturesComponent implements OnInit {
 

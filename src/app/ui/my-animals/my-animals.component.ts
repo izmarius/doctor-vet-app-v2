@@ -6,7 +6,7 @@ import {AnimalService} from "../doctor-appointments/services/animal.service";
 @Component({
   selector: 'app-my-animals',
   templateUrl: './my-animals.component.html',
-  styleUrls: ['./my-animals.component.css']
+  styleUrls: ['./my-animals.component.scss']
 })
 export class MyAnimalsComponent implements OnInit {
   isAnimalFormShown = false;

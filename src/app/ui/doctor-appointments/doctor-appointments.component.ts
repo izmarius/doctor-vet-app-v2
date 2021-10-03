@@ -8,13 +8,12 @@ import {ICardData} from "../shared/user-card/user-card.component";
 import {MatDialog} from "@angular/material/dialog";
 import {UserAnimalInfoComponent} from "../user-animal-info/user-animal-info.component";
 import {ConfirmDialogComponent} from "../shared/confirm-dialog/confirm-dialog.component";
-import {catchError} from "rxjs/operators";
 import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-doctor-appointments',
   templateUrl: './doctor-appointments.component.html',
-  styleUrls: ['./doctor-appointments.component.css']
+  styleUrls: ['./doctor-appointments.component.scss']
 })
 export class DoctorAppointmentsComponent implements OnInit, OnDestroy, AfterViewInit {
 
@@ -125,7 +124,7 @@ export class DoctorAppointmentsComponent implements OnInit, OnDestroy, AfterView
       data: this.userAnimalData
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe(() => {
     });
   }
 

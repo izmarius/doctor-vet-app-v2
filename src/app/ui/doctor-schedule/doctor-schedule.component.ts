@@ -12,7 +12,7 @@ import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-err
 @Component({
   selector: 'app-doctor-schedule',
   templateUrl: './doctor-schedule.component.html',
-  styleUrls: ['./doctor-schedule.component.css']
+  styleUrls: ['./doctor-schedule.component.scss']
 })
 export class DoctorScheduleComponent implements OnInit {
   minuteIntervals = [10, 15, 20, 25, 30, 35, 40, 45];

@@ -5,7 +5,7 @@ import {DoctorsAppointmentDTO} from "../doctor-appointments/dto/doctor-appointme
 import {DoctorService} from "../../services/doctor/doctor.service";
 import {DoctorAppointmentsService} from "../doctor-appointments/services/doctor-appointments.service";
 import {DateUtilsService} from "../../data/utils/date-utils.service";
-import {APPOINTMENTFORM_DATA, INPUT_REGEX_TEXTS, USER_LOCALSTORAGE, USER_STATE} from "../../shared-data/Constants";
+import {APPOINTMENTFORM_DATA, INPUT_REGEX_TEXTS, USER_LOCALSTORAGE} from "../../shared-data/Constants";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {DoctorAppointmentFormService} from "./services/doctor-appointment-form.service";
 import {MatDialogRef} from "@angular/material/dialog";
@@ -18,7 +18,7 @@ import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-err
 @Component({
   selector: 'app-doctor-appointment-modal',
   templateUrl: './doctor-appointment-modal.component.html',
-  styleUrls: ['./doctor-appointment-modal.component.css']
+  styleUrls: ['./doctor-appointment-modal.component.scss']
 })
 export class DoctorAppointmentModalComponent implements OnInit {
   //todo add minutes and hours depending on the schedule

@@ -3,7 +3,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 @Component({
   selector: 'app-user-appointment-card',
   templateUrl: './user-appointment-card.component.html',
-  styleUrls: ['./user-appointment-card.component.css']
+  styleUrls: ['./user-appointment-card.component.scss']
 })
 export class UserAppointmentCardComponent implements OnInit {
   @Input() appointment: any;

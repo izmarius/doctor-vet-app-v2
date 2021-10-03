@@ -24,7 +24,7 @@
     }
   },
   "hosting": {
-    "public": "public",
+    "public": "dist\\doctor-vet-appv2",
     "ignore": [
       "firebase.json",
       "**/.*",

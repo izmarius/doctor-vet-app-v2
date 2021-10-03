@@ -1,11 +1,11 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {ANIMAL_FORM_TEXT, INPUT_REGEX_TEXTS} from "../../../shared-data/Constants";
+import {ANIMAL_FORM_TEXT} from "../../../shared-data/Constants";
 
 @Component({
   selector: 'app-animal-form',
   templateUrl: './animal-form.component.html',
-  styleUrls: ['./animal-form.component.css']
+  styleUrls: ['./animal-form.component.scss']
 })
 export class AnimalFormComponent implements OnInit {
   animalFormGroup!: FormGroup;
