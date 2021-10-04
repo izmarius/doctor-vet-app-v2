@@ -1,18 +1,29 @@
-import {Component, ElementRef, EventEmitter, Inject, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Inject, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {AnimalService} from "../doctor-appointments/services/animal.service";
-import {IUserAnimalAndMedicalHistory} from "./dto/user-animal-medical-history-dto";
-import {DIALOG_UI_ERRORS, USER_ANIMAL_DIALOG} from "../../shared-data/Constants";
+import {
+  APPOINTMENTFORM_DATA,
+  DIALOG_UI_ERRORS,
+  USER_ANIMAL_DIALOG,
+  USER_LOCALSTORAGE
+} from "../../shared-data/Constants";
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {DoctorAppointmentModalComponent} from "../doctor-appointment-modal/doctor-appointment-modal.component";
-import {retry, take} from "rxjs/operators";
+import {take} from "rxjs/operators";
 import {FirestoreService} from "../../data/http/firestore.service";
+import {DoctorsAppointmentDTO} from "../doctor-appointments/dto/doctor-appointments-dto";
+import {AnimalUtilInfo} from "../doctor-appointments/dto/animal-util-info";
+import {Subscription} from "rxjs";
+import {DoctorService} from "../../services/doctor/doctor.service";
+import {DoctorAppointmentsService} from "../doctor-appointments/services/doctor-appointments.service";
+import {AnimalAppointmentService} from "../../services/animal-appointment/animal-appointment.service";
+import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-error-interceptor.service";
 
 @Component({
   selector: 'app-user-animal-info',
   templateUrl: './user-animal-info.component.html',
   styleUrls: ['./user-animal-info.component.scss']
 })
-export class UserAnimalInfoComponent implements OnInit {
+export class UserAnimalInfoComponent implements OnInit, OnDestroy {
 
   @ViewChild('animalsParent') private ANIMAL_PARENT_ELEM!: ElementRef;
 
@@ -23,21 +34,27 @@ export class UserAnimalInfoComponent implements OnInit {
   public newRecommendation: string = '';
   public selectedLink: any;
   public userAnimalData!: any;
+  public doctor: any;
   public userAnimalDialog: any;
   public userAnimalDialogErrorTxt: any;
+  public userAnimalDataSub!: Subscription;
 
   constructor(private animalService: AnimalService,
               private dialog: MatDialog,
               public dialogRef: MatDialogRef<UserAnimalInfoComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any,
-              private firestoreService: FirestoreService
+              private firestoreService: FirestoreService,
+              private doctorAppointmentsService: DoctorAppointmentsService,
+              private animalAppointment: AnimalAppointmentService,
+              private uiAlertService: UiErrorInterceptorService
   ) {
   }
 
   ngOnInit(): void {
     this.userAnimalDialog = USER_ANIMAL_DIALOG;
     this.userAnimalDialogErrorTxt = DIALOG_UI_ERRORS;
-    this.data?.userAnimalDataObs
+    this.doctor = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
+    this.userAnimalDataSub = this.data?.userAnimalDataObs
       .pipe(take(1))
       .subscribe((userAnimalData: any) => {
         // todo refactor and get initial data only from one place!!!! -spaghetti
@@ -51,6 +68,10 @@ export class UserAnimalInfoComponent implements OnInit {
           return;
         }
       });
+  }
+
+  ngOnDestroy() {
+    this.userAnimalDataSub.unsubscribe();
   }
 
   addRecurrentAppointment(period: string) {
@@ -74,7 +95,69 @@ export class UserAnimalInfoComponent implements OnInit {
     const dateTime = appointment.dateTime.split(' ');
     appointment.dateTime = localeDate + ' ' + dateTime[1]+ ' ' + dateTime[2];
 
-    // save new appointment
+    // save new appointment to animal and to doctor
+    const doctorAppointmentId = this.firestoreService.getNewFirestoreId();
+    const animalAppointmentId = this.firestoreService.getNewFirestoreId();
+    debugger
+    const newDoctorAppointment = this.getDoctorAppointment(animalAppointmentId, appointment);
+    const newAnimalAppointment = this.getAnimalAppointmentPayload(doctorAppointmentId, animalAppointmentId, appointment);
+
+    this.doctorAppointmentsService.createAppointment(
+      newDoctorAppointment,
+      this.doctor.id,
+      doctorAppointmentId
+    ).then(() => {
+      this.animalAppointment.saveAnimalAppointment(newAnimalAppointment, appointment.userId, animalAppointmentId)
+        .then(() => {
+          this.uiAlertService.setUiError({
+            message: APPOINTMENTFORM_DATA.successAppointment,
+            class: 'snackbar-success'
+          });
+        });
+    }).catch((error: any) => {
+      this.uiAlertService.setUiError({message: error.message, class: 'snackbar-error'});
+      console.log('Error: ', error);
+    });
+  }
+
+  getDoctorAppointment(animalAppointmentId: string, appointmentInfo: any) {
+    return new DoctorsAppointmentDTO()
+      .setUserName(appointmentInfo.userName)
+      .setUserId(appointmentInfo.userId)
+      .setServices(appointmentInfo.services)
+      .setDateTime(
+        appointmentInfo.dateTime
+      )
+      .setAnimal(appointmentInfo.animalData)
+      .setLocation(appointmentInfo.location)
+      .setUserEmail(appointmentInfo.userEmail)
+      .setPhone(appointmentInfo.phone)
+      .setIsAppointmentFinished(false)
+      .setIsConfirmedByDoctor(true)
+      .setAnimalAppointmentId(animalAppointmentId)
+      .setTimestamp(appointmentInfo.timestamp);
+  }
+
+  getAnimalAppointmentPayload(doctorAppointmentId: string, animalAppointmentId: string, appointmentInfo: any): any {
+    let userPhoneNumber = '+4';
+    if (appointmentInfo.phone.length === 10) {
+    //   // this change is made for sms notification!! - also validate on cloud functions to make sure that the phone respects this prefix
+      userPhoneNumber += appointmentInfo.phone;
+    }
+    return {
+      isCanceled: false,
+      dateTime: appointmentInfo.dateTime,
+      doctorId: this.doctor.id,
+      doctorName: this.doctor.doctorName,
+      location: this.doctor.location,
+      service: appointmentInfo.services,
+      doctorAppointmentId: doctorAppointmentId,
+      timestamp: appointmentInfo.timestamp,
+      email: appointmentInfo.userEmail,
+      phone: userPhoneNumber,
+      userId: appointmentInfo.userId,
+      id: animalAppointmentId
+    }
   }
 
   addDisease(): void {

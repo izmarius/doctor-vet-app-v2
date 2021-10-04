@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {IUserDTO} from "../user-profile/dto/user-dto";
 import {AnimalUtilInfo, IAnimalUserInfo} from "../doctor-appointments/dto/animal-util-info";
 import {DoctorsAppointmentDTO} from "../doctor-appointments/dto/doctor-appointments-dto";
@@ -8,7 +8,7 @@ import {DateUtilsService} from "../../data/utils/date-utils.service";
 import {APPOINTMENTFORM_DATA, INPUT_REGEX_TEXTS, USER_LOCALSTORAGE} from "../../shared-data/Constants";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {DoctorAppointmentFormService} from "./services/doctor-appointment-form.service";
-import {MatDialogRef} from "@angular/material/dialog";
+import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {Subscription} from "rxjs";
 import {AnimalAppointmentService} from "../../services/animal-appointment/animal-appointment.service";
 import {FirestoreService} from "../../data/http/firestore.service";
@@ -39,6 +39,8 @@ export class DoctorAppointmentModalComponent implements OnInit {
   public selectedPatient!: IUserDTO;
   public selectedAnimal: any = {};
   public errorMessage: string = '';
+  planModel: any = {start_time: new Date()};
+
 
   @ViewChild('patientList') patientListElem: any;
   @ViewChild('animalList') animalListElem: any;
@@ -52,7 +54,8 @@ export class DoctorAppointmentModalComponent implements OnInit {
     private animalAppointment: AnimalAppointmentService,
     private firestoreService: FirestoreService,
     private userService: UserService,
-    private uiAlertInterceptor: UiErrorInterceptorService
+    private uiAlertInterceptor: UiErrorInterceptorService,
+    @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
   }
 
@@ -62,9 +65,8 @@ export class DoctorAppointmentModalComponent implements OnInit {
     this.appointmentFormPlaceHolder = APPOINTMENTFORM_DATA;
     this.doctor = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
     this.stepHours = this.doctor.appointmentFrequency.hourIntervals;
-    this.stepHour = this.stepHours[0]
     this.stepMinutes = this.doctor.appointmentFrequency.minuteIntervals;
-    this.stepMinute = this.stepMinutes[0]
+    this.setDateAndHoursToForm();
     for (let service in this.doctor.services) {
       this.doctorServiceList = this.doctorServiceList.concat(this.doctor.services[service]);
     }
@@ -81,6 +83,17 @@ export class DoctorAppointmentModalComponent implements OnInit {
       patientPhone: new FormControl(null, [Validators.required, Validators.minLength(10), Validators.pattern(INPUT_REGEX_TEXTS.phoneNumber)]),
       patientEmail: new FormControl(null, [Validators.required, Validators.pattern(INPUT_REGEX_TEXTS.email)]),
     });
+  }
+
+  setDateAndHoursToForm() {
+    this.stepHour = this.stepHours[0];
+    this.stepMinute = this.stepMinutes[0];
+
+    if (this.data) {
+      this.stepHour = this.data.getHours();
+      this.stepMinute = this.data.getMinutes();
+      this.planModel.start_time = new Date(this.data);
+    }
   }
 
   onSubmitAppointment(): void {
@@ -134,6 +147,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
   }
 
   getDoctorAppointment(animalAppointmentId: string, newAnimalInfo: any) {
+    debugger;
     return new DoctorsAppointmentDTO()
       .setUserName(this.appointmentForm.value.patientName)
       .setUserId(this.selectedPatient?.id)
@@ -144,7 +158,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
       )
       .setAnimal(newAnimalInfo)
       .setLocation(this.doctor.location)
-      .setUserEmail(this.selectedPatient.name)
+      .setUserEmail(this.selectedPatient.email)
       .setPhone(this.selectedPatient.phone)
       .setIsAppointmentFinished(false)
       .setIsConfirmedByDoctor(true)

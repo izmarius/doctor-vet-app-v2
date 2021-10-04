@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CalendarEvent, CalendarView} from 'angular-calendar';
 import {isSameDay, isSameMonth} from 'date-fns';
 import {CALENDAR_DATA, USER_LOCALSTORAGE} from "../../shared-data/Constants";
@@ -7,13 +7,15 @@ import {AnimalService} from "../doctor-appointments/services/animal.service";
 import {UserAnimalInfoComponent} from "../user-animal-info/user-animal-info.component";
 import {MatDialog} from "@angular/material/dialog";
 import {DoctorAppointmentModalComponent} from "../doctor-appointment-modal/doctor-appointment-modal.component";
+import {Subscription} from "rxjs";
+import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-error-interceptor.service";
 
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss']
 })
-export class CalendarComponent implements OnInit {
+export class CalendarComponent implements OnInit, OnDestroy {
   doctor: any;
   viewDate: Date = new Date();
   view: CalendarView = CalendarView.Week;
@@ -24,10 +26,12 @@ export class CalendarComponent implements OnInit {
   userAnimalData: any;
   hourToStartTheDay: number = 0;
   hourToEndTheDay: number = 23;
+  doctorAppointmentsSub!: Subscription;
 
   constructor(private doctorService: DoctorAppointmentsService,
               private animalService: AnimalService,
-              private dialogRef: MatDialog) {
+              private dialogRef: MatDialog,
+              private alertInterceptor: UiErrorInterceptorService) {
   }
 
   ngOnInit() {
@@ -35,10 +39,14 @@ export class CalendarComponent implements OnInit {
     setTimeout(() => {
       this.doctor = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
       this.setHourDayStartAndDayEnd();
-      this.doctorService.getDoctorAppointments(this.doctor.id).subscribe((res) => {
+      this.doctorAppointmentsSub = this.doctorService.getDoctorAppointments(this.doctor.id).subscribe((res) => {
         this.appointments = res;
       });
     }, 500);
+  }
+
+  ngOnDestroy() {
+    this.doctorAppointmentsSub.unsubscribe();
   }
 
   setView(view: CalendarView): void {
@@ -48,8 +56,8 @@ export class CalendarComponent implements OnInit {
   setHourDayStartAndDayEnd() {
     const day = new Date().getDay();
     if (day > 0 || day < 6) {
-      this.hourToStartTheDay = parseInt(this.doctor.schedule["monday-friday"].startTime.slice(0,2));
-      this.hourToEndTheDay = parseInt(this.doctor.schedule["monday-friday"].endTime.slice(0,2));
+      this.hourToStartTheDay = parseInt(this.doctor.schedule["monday-friday"].startTime.slice(0, 2));
+      this.hourToEndTheDay = parseInt(this.doctor.schedule["monday-friday"].endTime.slice(0, 2));
     } else if (day === 0 && !this.doctor.schedule.sunday) {
       return;
     } else if (day === 6 && !this.doctor.schedule.saturday) {
@@ -86,8 +94,19 @@ export class CalendarComponent implements OnInit {
   }
 
   addAppointment(date: any) {
+    const estDate = new Date(date);
+    const now = new Date();
+
+    if (estDate.getTime() < now.getTime()) {
+      // alert that the date shouldn't be in the past
+      this.alertInterceptor.setUiError({
+        message: 'Programarea nu poate fi setata in trecut',
+        class: 'snackbar-error'
+      });
+      return;
+    }
     // transform from gmt to eest and inject date into dialog
-    this.openAppointmentsModal();
+    this.openAppointmentsModal(estDate);
   }
 
   openUserAnimalAppointmentModal(): void {
@@ -101,11 +120,11 @@ export class CalendarComponent implements OnInit {
     });
   }
 
-  openAppointmentsModal(): void {
+  openAppointmentsModal(date: Date): void {
     const dialogRef = this.dialogRef.open(DoctorAppointmentModalComponent, {
       height: '40rem',
       panelClass: 'doctor-appointment-dialog',
-      data: null
+      data: date
     });
 
     dialogRef.afterClosed().subscribe(result => {
