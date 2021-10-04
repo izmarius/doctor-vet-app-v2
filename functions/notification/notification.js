@@ -30,7 +30,7 @@ exports.getNotifications = functions.https.onRequest(async (req, res) => {
   res.send("Success");
 })
 
-exports.addNotification = functions.firestore.document('user/{userId}/animals/{animalId}/appointments/{appId}')
+exports.addNotification = functions.firestore.document('animal-appointments/{appointmentId}')
   .onCreate((snap, context) => {
     const collection = adminFirestore.collection('notifications');
     collection.add(snap.data());
