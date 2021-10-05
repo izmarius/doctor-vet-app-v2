@@ -16,7 +16,7 @@
             <span class="icon-user-follow px-2"></span>{{navbarText.newAccount}}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/"><span class="icon-home px-1"></span>{{navbarText.home}}</a>
+          <a class="nav-link" routerLink="/" *ngIf="!isUserLoggedIn && !isDoctorLoggedIn"><span class="icon-home px-1"></span>{{navbarText.home}}</a>
         </li>
         <li class="nav-item" *ngIf="isUserLoggedIn">
           <a class="nav-link" routerLink="/new-appointment"><span class="icon-plus px-1"></span>{{'Programare noua'}}</a>

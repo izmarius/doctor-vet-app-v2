@@ -32,7 +32,7 @@
     </div>
     <div class="m-btn-small">
       <label for="patient">{{ appointmentFormPlaceHolder.patientLabel }}</label>
-      <input type="text" id="patient" class="form-control" autocomplete="off"
+      <input type="text" id="patient" class="form-control" autocomplete="none"
              formControlName="patientName"
              [placeholder]="appointmentFormPlaceHolder.userNameInputPlaceholder"
              (ngModelChange)="filterClients($event)"

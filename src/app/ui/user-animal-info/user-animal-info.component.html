@@ -1,26 +1,27 @@
 <div class="dialog-container bg-alternative p-around">
   <div class="schedule-button d-flex justify-content-end m-btn-dialog-row">
     <p class="my-auto mx-2 text-center">Reprogrameaza in :</p>
-    <button class="btn btn-light close-btn me-2" (click)="addRecurrentAppointment('day')">1 zi</button>
-    <button class="btn btn-light close-btn me-2" (click)="addRecurrentAppointment('week')">1 saptamana</button>
-    <button class="btn btn-light close-btn me-2" (click)="addRecurrentAppointment('month')">1 luna</button>
-    <button class="btn btn-light close-btn me-2" (click)="addRecurrentAppointment('year')">1 an</button>
+    <button class="btn btn-light close-btn small-button me-2" (click)="addRecurrentAppointment('day')">1 zi</button>
+    <button class="btn btn-light close-btn small-button me-2" (click)="addRecurrentAppointment('week')">1 saptamana</button>
+    <button class="btn btn-light close-btn small-button me-2" (click)="addRecurrentAppointment('month')">1 luna</button>
+    <button class="btn btn-light close-btn small-button me-2" (click)="addRecurrentAppointment('year')">1 an</button>
 
-    <button class="btn button--active me-2" (click)="addNewAppointment()">Adauga programare noua</button>
-    <button class="btn btn-light close-btn" (click)="closeAppointmentDetails()">Close</button>
+    <button class="btn button--active me-2" (click)="addNewAppointment()">Programare noua</button>
+    <button class="btn btn-light close-btn me-2" (click)="openConfirmationModalModal()">Anuleaza programarea</button>
+    <button class="btn button--active small-button" (click)="closeAppointmentDetails()">X</button>
   </div>
   <div class="user-animal-data-container d-flex justify-content-between">
     <!--  ANIMAL GENERAL DATA -->
     <div class="animal-data-container vet-border-right">
       <div class="vet-border-bottom">
-        <p>{{userAnimalData?.userData.name}}</p>
-        <p>{{userAnimalData?.appointment.phone}}</p>
+        <p>{{userAnimalData?.userData?.name}}</p>
+        <p>{{userAnimalData?.appointment?.phone}}</p>
         <div class="animal-info d-flex">
           <p class="bold-text me-2">{{userAnimalDialog.ownersPets}}</p>
           <div class="d-flex flex-wrap" #animalsParent>
             <p class="me-2 pointer hover-button-active-state"
                [class.link--active]="selectedLink?.id == animal.animalId && isActiveLink"
-               *ngFor="let animal of userAnimalData?.userData.animals"
+               *ngFor="let animal of userAnimalData?.userData?.animals"
                id="{{animal.animalId}}" (click)="getAndSetAnimalData($event, animal.animalId)">{{animal.animalName}}</p>
           </div>
         </div>
@@ -28,23 +29,23 @@
       <div class="m-top-small">
         <div class="animal-data">
           <p class="me-2">{{userAnimalDialog.name}}</p>
-          <p>{{userAnimalData?.animalData.name}}</p>
+          <p>{{userAnimalData?.animalData?.name}}</p>
         </div>
         <div class="animal-data">
           <p class="me-2">{{userAnimalDialog.age}}</p>
-          <p>{{userAnimalData?.animalData.age}}</p>
+          <p>{{userAnimalData?.animalData?.age}}</p>
         </div>
         <div class="animal-data">
           <p class="me-2">{{userAnimalDialog.weight}}</p>
-          <p>{{userAnimalData?.animalData.weight}}</p>
+          <p>{{userAnimalData?.animalData?.weight}}</p>
         </div>
         <div class="animal-data">
           <p class="me-2">{{userAnimalDialog.bloodType}}</p>
-          <p>{{userAnimalData?.animalData.bloodType}}</p>
+          <p>{{userAnimalData?.animalData?.bloodType}}</p>
         </div>
         <div class="animal-data">
           <p class="me-2">{{userAnimalDialog.birthDay}}</p>
-          <p>{{userAnimalData?.animalData.birthDay}}</p>
+          <p>{{userAnimalData?.animalData?.birthDay}}</p>
         </div>
       </div>
     </div>

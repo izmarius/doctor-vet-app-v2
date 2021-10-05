@@ -42,7 +42,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
       this.doctorAppointmentsSub = this.doctorService.getDoctorAppointments(this.doctor.id).subscribe((res) => {
         this.appointments = res;
       });
-    }, 500);
+    }, 600);
   }
 
   ngOnDestroy() {

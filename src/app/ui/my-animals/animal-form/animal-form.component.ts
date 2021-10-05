@@ -14,12 +14,14 @@ export class AnimalFormComponent implements OnInit {
   errorMessage = '';
   animalFormText: any;
   maxDate = new Date();
+
   constructor() {
   }
 
   ngOnInit(): void {
     this.initAnimalForm();
     this.animalFormText = ANIMAL_FORM_TEXT;
+    this.setAnimalAge();
   }
 
   initAnimalForm(): void {
@@ -46,5 +48,13 @@ export class AnimalFormComponent implements OnInit {
       weight: this.animalFormGroup.controls.weight.value,
     }
     this.animalPayloadEmitter.emit(animalPayload);
+  }
+
+  setAnimalAge() {
+    this.animalFormGroup.get('birthDay')?.valueChanges.subscribe((date) => {
+      const currentYear = new Date().getFullYear();
+      const ageOfAnimal = currentYear - date.getFullYear();
+      this.animalFormGroup.get('age')?.setValue(ageOfAnimal);
+    })
   }
 }

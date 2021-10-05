@@ -22,8 +22,10 @@ export class MyAnimalsComponent implements OnInit {
   ngOnInit(): void {
     setTimeout(() => {
       this.user = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
-      this.getAnimalDetails(this.user.animals[0].animalId);
-    }, 300)
+      if(this.user && this.user.animals && this.user.animals.length > 0) {
+        this.getAnimalDetails(this.user.animals[0].animalId);
+      }
+    }, 600)
   }
 
   getAnimalDetails(animalId: string) {

@@ -72,6 +72,10 @@ button {
   min-width: 8rem;
 }
 
+.small-button {
+  min-width: 0px;
+}
+
 //for header particles
 .particle-header #tsparticles {
   height: 100% !important;

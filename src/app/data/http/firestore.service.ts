@@ -25,7 +25,7 @@ export class FirestoreService {
    */
   getCollectionByMultipleWhereClauses(collection: string, timestamp: any): Observable<any> {
     return this.firestore.collection(collection,
-      ref => ref.where('timestamp', '>=', timestamp.today))
+      ref => ref.where('timestamp', '>=', timestamp))
       .snapshotChanges()
     //todo add pagination
     // .where('timestamp', '>=', dates.tomorrow)

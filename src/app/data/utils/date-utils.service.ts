@@ -47,6 +47,13 @@ export class DateUtilsService {
     } else return this.selectedDate[2] >= this.currentDate[2];
   }
 
+  getDateFromOneMonthAgo(): any {
+    const date = new Date();
+    date.setHours(0, 0);
+    date.setMonth(date.getMonth() - 1);
+    return date.getTime();
+  }
+
   setAndGetDateToFetch(): any {
     const today = new Date();
     const tomorrow = new Date();

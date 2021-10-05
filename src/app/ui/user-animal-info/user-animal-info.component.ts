@@ -17,6 +17,7 @@ import {DoctorService} from "../../services/doctor/doctor.service";
 import {DoctorAppointmentsService} from "../doctor-appointments/services/doctor-appointments.service";
 import {AnimalAppointmentService} from "../../services/animal-appointment/animal-appointment.service";
 import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-error-interceptor.service";
+import {ConfirmDialogComponent} from "../shared/confirm-dialog/confirm-dialog.component";
 
 @Component({
   selector: 'app-user-animal-info',
@@ -46,7 +47,7 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
               private firestoreService: FirestoreService,
               private doctorAppointmentsService: DoctorAppointmentsService,
               private animalAppointment: AnimalAppointmentService,
-              private uiAlertService: UiErrorInterceptorService
+              private uiAlertService: UiErrorInterceptorService,
   ) {
   }
 
@@ -57,7 +58,7 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
     this.userAnimalDataSub = this.data?.userAnimalDataObs
       .pipe(take(1))
       .subscribe((userAnimalData: any) => {
-        // todo refactor and get initial data only from one place!!!! -spaghetti
+        // todo refactor and get initial data only from one place!!!! - spaghetti
         this.userAnimalData = userAnimalData;
         this.userAnimalData.appointment = this.data.appointment;
         this.userAnimalData.appointmentId = this.data.appointmentId;
@@ -74,11 +75,23 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
     this.userAnimalDataSub.unsubscribe();
   }
 
+  // todo : daca au depasit orele de munca? sau programarea a expirat?
+  openConfirmationModalModal(): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      panelClass: 'confirmation-modal'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.doctorAppointmentsService.cancelAppointment(this.userAnimalData.appointmentId, this.doctor);
+      }
+    });
+  }
+
   addRecurrentAppointment(period: string) {
     let appointmentDate = new Date(this.userAnimalData.appointment.timestamp);
     if (period === 'day') {
       appointmentDate.setDate(appointmentDate.getDate() + 1);
-
     } else if (period === 'week') {
       appointmentDate.setDate(appointmentDate.getDate() + 7);
     } else if (period === 'month') {
@@ -98,7 +111,6 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
     // save new appointment to animal and to doctor
     const doctorAppointmentId = this.firestoreService.getNewFirestoreId();
     const animalAppointmentId = this.firestoreService.getNewFirestoreId();
-    debugger
     const newDoctorAppointment = this.getDoctorAppointment(animalAppointmentId, appointment);
     const newAnimalAppointment = this.getAnimalAppointmentPayload(doctorAppointmentId, animalAppointmentId, appointment);
 
@@ -141,7 +153,7 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
   getAnimalAppointmentPayload(doctorAppointmentId: string, animalAppointmentId: string, appointmentInfo: any): any {
     let userPhoneNumber = '+4';
     if (appointmentInfo.phone.length === 10) {
-    //   // this change is made for sms notification!! - also validate on cloud functions to make sure that the phone respects this prefix
+    // this change is made for sms notification!! - also validate on cloud functions to make sure that the phone respects this prefix
       userPhoneNumber += appointmentInfo.phone;
     }
     return {

@@ -248,7 +248,7 @@ export const ANIMAL_FORM_TEXT = {
   placeholders: {
     namePlaceholder: 'Azorel',
     weightPlaceholder: 'EX: 30 kg',
-    agePlaceholder: 'Ex: 10',
+    agePlaceholder: 'Ex: 10 ani',
     birthDayPlaceholder: '10/03/2018',
   },
   buttonText: 'Adauga animal',

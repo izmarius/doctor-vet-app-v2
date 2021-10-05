@@ -147,7 +147,6 @@ export class DoctorAppointmentModalComponent implements OnInit {
   }
 
   getDoctorAppointment(animalAppointmentId: string, newAnimalInfo: any) {
-    debugger;
     return new DoctorsAppointmentDTO()
       .setUserName(this.appointmentForm.value.patientName)
       .setUserId(this.selectedPatient?.id)

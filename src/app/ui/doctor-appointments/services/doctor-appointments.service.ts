@@ -91,8 +91,8 @@ export class DoctorAppointmentsService {
   }
 
   getDoctorAppointments(doctorId: string): Observable<any> {
-    const timestamps = this.dateUtils.setAndGetDateToFetch();
-
+    const timestamps = this.dateUtils.getDateFromOneMonthAgo();
+    // todo - get appointments from 1 month ago
     return this.firestoreService.getCollectionByMultipleWhereClauses(this.getAppointmentUrl(doctorId), timestamps)
       .pipe(
         map((appointmentsSnaps) => {
