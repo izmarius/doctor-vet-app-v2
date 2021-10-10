@@ -22,7 +22,7 @@ export class AuthStateChangeService {
     this.afAuth.authState.subscribe((user) => {
       const userFromLocalStorage = localStorage.getItem(USER_LOCALSTORAGE);
       this.loaderService.show();
-      if (user) {
+      if (user && !userFromLocalStorage) {
         // todo: fix in cloud functions
         // if(!user.emailVerified) {
         //   this.uiAlertInterceptor.setUiError({message: USER_STATE.emailVerified, class: 'snackbar-error'});
@@ -42,18 +42,21 @@ export class AuthStateChangeService {
             localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(userOrDoctor));
             this.userLoggedInService.setLoggedInUser(JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE)));
           });
-      } else {
+      } else if (!user) {
         this.loaderService.hide();
         localStorage.removeItem(USER_LOCALSTORAGE);
+      } else {
+        this.loaderService.hide();
       }
     });
 
   }
+
   redirectToPageBasedOnUser(user: any) {
-      if(user && user.doctorName) {
-        this.routerService.navigate(['/calendar']);
-      } else if(user && !user.doctorName) {
-        this.routerService.navigate(['/my-animals']);
-      }
+    if (user && user.doctorName) {
+      this.routerService.navigate(['/calendar']);
+    } else if (user && !user.doctorName) {
+      this.routerService.navigate(['/my-animals']);
+    }
   }
 }
