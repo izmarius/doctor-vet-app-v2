@@ -45,7 +45,7 @@
         <li *ngIf="isErrorMessage"
             class="m-btn-dialog-row error-msg list-style-type-none">{{signupText?.formErrorMessage}}</li>
         <div class="sign-up-btn-first-step d-flex justify-content-center">
-          <button type="submit" class="btn button--active"
+          <button type="submit" class="btn button--active" (click)="goToServicesStep()"
                   [disabled]="isFormCompleted()">{{signupText?.step1}}</button>
         </div>
       </form>
@@ -53,17 +53,17 @@
   </div>
 
   <!--  STEP 2-->
-  <div *ngIf="isAllowedToGoToSecondStep">
-   <p class="section-subtitle m-btn-dialog-row"><strong>{{signupText?.secondStepTitle}}</strong></p>
-    <p class="card-text m-btn-dialog-row" *ngFor="let step of secondStepGuide">{{step}}</p>
-    <app-upload-photo (fileEmitter)="getUploadedImage($event)"></app-upload-photo>
-    <div class="d-flex justify-content-around">
-      <button class="btn button--active mr-2"
-              (click)="goBackToPreviousStep(1)">Pasul anterior</button>
-      <button [disabled]="isPhotoUploaded" class="btn button--active"
-              (click)="goToServicesStep()">{{signupText?.step2}}</button>
-    </div>
-  </div>
+<!--  <div *ngIf="isAllowedToGoToSecondStep">-->
+<!--   <p class="section-subtitle m-btn-dialog-row"><strong>{{signupText?.secondStepTitle}}</strong></p>-->
+<!--    <p class="card-text m-btn-dialog-row" *ngFor="let step of secondStepGuide">{{step}}</p>-->
+<!--    <app-upload-photo (fileEmitter)="getUploadedImage($event)"></app-upload-photo>-->
+<!--    <div class="d-flex justify-content-around">-->
+<!--      <button class="btn button&#45;&#45;active mr-2"-->
+<!--              (click)="goBackToPreviousStep(1)">Pasul anterior</button>-->
+<!--      <button [disabled]="isPhotoUploaded" class="btn button&#45;&#45;active"-->
+<!--              (click)="goToServicesStep()">{{signupText?.step2}}</button>-->
+<!--    </div>-->
+<!--  </div>-->
 
   <!--  STEP 3-->
 
@@ -83,7 +83,7 @@
     <p class="error-msg text-center" *ngIf="isErrorMessage">{{errorMessage}}</p>
     <div class="d-flex justify-content-around">
       <button class="btn button--active mr-2"
-              (click)="goBackToPreviousStep(2)">Pasul anterior</button>
+              (click)="goBackToPreviousStep(1)">Pasul anterior</button>
       <button class="btn button--active"
               (click)="signupWithEmailAndPassword()"
               [disabled]="isSignUpButtonDisabled()">{{signupText?.step3}}</button>

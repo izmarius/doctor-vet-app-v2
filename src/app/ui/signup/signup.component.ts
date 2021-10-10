@@ -23,7 +23,7 @@ export class SignupComponent implements OnInit {
   counties!: any[];
   countiesAbbr!: any;
   localities!: string[];
-  locality!: string;
+  locality: string = '';
   errorMessage: string = '';
   isAllowedToGoToFirstStep = true;
   isAllowedToGoToSecondStep = false;
@@ -32,7 +32,7 @@ export class SignupComponent implements OnInit {
   isPhotoUploaded = true;
   photo!: string;
   secondStepGuide!: string[];
-  selectedCounty!: string;
+  selectedCounty: string = '';
   private selectedServices: any = {};
   servicesUI: any;
   signupText: any;
@@ -64,23 +64,23 @@ export class SignupComponent implements OnInit {
     this.locality = locality;
   }
 
-  getUploadedImage(base64Image: any): void {
-    this.photo = base64Image;
-    this.isPhotoUploaded = false;
-  }
+  // getUploadedImage(base64Image: any): void {
+  //   this.photo = base64Image; //- limita de 1 mb - skip second step for the moment
+  //   this.isPhotoUploaded = false;
+  // }
 
   initAuthForm(): void {
     this.authFormGroup = new FormGroup({
-      email: new FormControl('pausan.ionut.adrian@gmail.com', [Validators.required, Validators.pattern(INPUT_REGEX_TEXTS.email)]),
-      password: new FormControl('Start123', [Validators.required, Validators.minLength(6)]),
-      phoneNumber: new FormControl('0743922689', [Validators.required, Validators.minLength(10), Validators.pattern(INPUT_REGEX_TEXTS.phoneNumber)]),
-      name: new FormControl('ionu', Validators.required),
-      address: new FormControl('Cluj-Napoca, 5', Validators.required),
+      email: new FormControl('', [Validators.required, Validators.pattern(INPUT_REGEX_TEXTS.email)]),
+      password: new FormControl('', [Validators.required, Validators.minLength(6)]),
+      phoneNumber: new FormControl('', [Validators.required, Validators.minLength(10), Validators.pattern(INPUT_REGEX_TEXTS.phoneNumber)]),
+      name: new FormControl('', Validators.required),
+      address: new FormControl('', Validators.required),
     });
   }
 
   firstStepOnFormSubmit(): void {
-    if (!this.authFormGroup.valid && this.selectedCounty && this.locality) {
+    if (!this.authFormGroup.valid && !this.selectedCounty && !this.locality) {
       this.isErrorMessage = true;
     } else {
       this.isAllowedToGoToFirstStep = false;
@@ -103,17 +103,14 @@ export class SignupComponent implements OnInit {
 
   goBackToPreviousStep(stepToGo: number) {
     if (stepToGo === 1) {
-      this.isAllowedToGoToSecondStep = false;
-      this.isAllowedToGoToFirstStep = true;
-    } else if (stepToGo === 2) {
       this.isAllowedToGoToThirdStep = false;
-      this.isAllowedToGoToSecondStep = true;
+      this.isAllowedToGoToFirstStep = true;
     }
   }
 
   getDoctorDto(): any {
     const doctor = new DoctorDTO();
-    doctor.photoCertificate = this.photo;
+    // doctor.photoCertificate = this.photo;
     doctor.location = this.authFormGroup.controls.address.value;
     doctor.county = this.selectedCounty;
     doctor.locality = this.locality;
@@ -121,10 +118,9 @@ export class SignupComponent implements OnInit {
     doctor.phoneNumber = this.authFormGroup.controls.phoneNumber.value;
     doctor.email = this.authFormGroup.controls.email.value;
     doctor.services = this.selectedServices;
-    // todo add also photo ulpad at sign up?
     doctor.photo = '';
-    doctor.outOfOfficeDays = [];
-    doctor.unavailableTime = {};
+    // doctor.outOfOfficeDays = [];
+    // doctor.unavailableTime = {};
     // set default schedule when creating account
     doctor.schedule = DOCTOR_DEFAULT_SCHEDULE;
     doctor.appointmentFrequency = {
@@ -154,7 +150,6 @@ export class SignupComponent implements OnInit {
   }
 
   isFormCompleted(): boolean {
-    // todo add validation on locality and county
     return this.authFormGroup.valid && !this.selectedCounty && !this.locality;
   }
 
