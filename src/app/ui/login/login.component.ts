@@ -35,8 +35,8 @@ export class LoginComponent implements OnInit {
 
   initAuthForm(): void {
     this.authFormGroup = new FormGroup({
-      email: new FormControl('pausan.ionut.adrian@gmail.com', [Validators.required, Validators.pattern(INPUT_REGEX_TEXTS.email)]),
-      password: new FormControl('Start123', [Validators.required, Validators.minLength(6)]),
+      email: new FormControl('', [Validators.required, Validators.pattern(INPUT_REGEX_TEXTS.email)]),
+      password: new FormControl('', [Validators.required, Validators.minLength(6)]),
     });
   }
 

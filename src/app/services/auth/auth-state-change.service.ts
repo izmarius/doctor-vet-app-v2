@@ -5,6 +5,8 @@ import {take} from "rxjs/operators";
 import {UiErrorInterceptorService} from "../../ui/shared/alert-message/services/ui-error-interceptor.service";
 import {UserService} from "../../ui/user-profile/services/user.service";
 import {AuthLoggedInServiceService} from "../auth-logged-in/auth-logged-in";
+import {LoaderService} from "../loader/loader.service";
+import {Router} from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +16,12 @@ export class AuthStateChangeService {
   constructor(private afAuth: AngularFireAuth,
               private userService: UserService,
               private uiAlertInterceptor: UiErrorInterceptorService,
-              private userLoggedInService: AuthLoggedInServiceService) {
+              private userLoggedInService: AuthLoggedInServiceService,
+              private loaderService: LoaderService,
+              private routerService: Router) {
     this.afAuth.authState.subscribe((user) => {
+      const userFromLocalStorage = localStorage.getItem(USER_LOCALSTORAGE);
+      this.loaderService.show();
       if (user) {
         // todo: fix in cloud functions
         // if(!user.emailVerified) {
@@ -27,13 +33,27 @@ export class AuthStateChangeService {
             if (!userOrDoctor) {
               this.uiAlertInterceptor.setUiError({message: USER_STATE.patientNotFound, class: 'snackbar-error'});
             }
+            const userFromLocalStorage = localStorage.getItem(USER_LOCALSTORAGE);
+            if (!userFromLocalStorage && userOrDoctor) {
+              this.redirectToPageBasedOnUser(userOrDoctor);
+            }
+            this.loaderService.hide();
             localStorage.removeItem(USER_LOCALSTORAGE);
             localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(userOrDoctor));
             this.userLoggedInService.setLoggedInUser(JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE)));
           });
       } else {
+        this.loaderService.hide();
         localStorage.removeItem(USER_LOCALSTORAGE);
       }
     });
+
+  }
+  redirectToPageBasedOnUser(user: any) {
+      if(user && user.doctorName) {
+        this.routerService.navigate(['/calendar']);
+      } else if(user && !user.doctorName) {
+        this.routerService.navigate(['/my-animals']);
+      }
   }
 }

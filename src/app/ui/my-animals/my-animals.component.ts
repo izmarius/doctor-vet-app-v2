@@ -20,19 +20,17 @@ export class MyAnimalsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    setTimeout(() => {
-      this.user = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
-      if(this.user && this.user.animals && this.user.animals.length > 0) {
-        this.getAnimalDetails(this.user.animals[0].animalId);
-      }
-    }, 600)
+    this.user = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
+    if (this.user && this.user.animals && this.user.animals.length > 0) {
+      this.getAnimalDetails(this.user.animals[0].animalId);
+    }
   }
 
   getAnimalDetails(animalId: string) {
     this.isAnimalFormShown = false;
     this.animalsService.getAnimalsMedicalHistoryDocs(animalId, this.user.id)
       .subscribe((medicalHistoryCollection) => {
-        if(medicalHistoryCollection.docs && medicalHistoryCollection.docs.length === 0) {
+        if (medicalHistoryCollection.docs && medicalHistoryCollection.docs.length === 0) {
           this.isNoMedicalHistoryDisplayed = true;
           this.isMedicalHistoryShown = false;
           return;
@@ -47,7 +45,7 @@ export class MyAnimalsComponent implements OnInit {
 
   toggleShowAnimalForm() {
     this.isAnimalFormShown = !this.isAnimalFormShown;
-    if(this.isAnimalFormShown) {
+    if (this.isAnimalFormShown) {
       this.isMedicalHistoryShown = false;
     }
   }

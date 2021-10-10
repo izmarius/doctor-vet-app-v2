@@ -27,7 +27,7 @@ export class DropdownComponent implements OnInit {
     setTimeout(() => {
       this.isSearchResult = false;
       this.searchResult = [];
-    }, 150);
+    }, 250);
   }
 
   fetchSeries(): void {

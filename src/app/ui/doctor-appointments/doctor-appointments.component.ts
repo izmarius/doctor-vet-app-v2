@@ -43,27 +43,25 @@ export class DoctorAppointmentsComponent implements OnInit, OnDestroy, AfterView
     // this is needed because the af auth subscription sets the localstorage after auth is done;
     // so when we enter this component the localstorage is not set and we need to wait for the af auth answer
     this.noAvailableAppointments = APPOINTMENT_PAGE.noAvailableAppointments
-    setTimeout(() => {
-      this.user = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
-      if(this.user && this.user.name){
-        this.router.navigate(['my-animals'])
-        return;
-      }
-      this.userCardPlaceholder = USER_CARD_TXT;
-      this.APPOINTMENT_SUB = this.doctorAppointmentService
-        .getAllCurrentAppointments(this.user.id)
-        .subscribe((appointments) => {
-          // todo refresh data if already exists - see if we can improve here
-          this.areAppointmentAvailable = false;
-          this.appointmentList = [];
-          this.appointmentMap = {};
-          this.appointmentList = appointments;
-          if(appointments.length === 0) {
-            this.areAppointmentAvailable = true;
-          }
-          this.setAppointmentMap();
-        });
-    }, 400)
+    this.user = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
+    if (this.user && this.user.name) {
+      this.router.navigate(['my-animals'])
+      return;
+    }
+    this.userCardPlaceholder = USER_CARD_TXT;
+    this.APPOINTMENT_SUB = this.doctorAppointmentService
+      .getAllCurrentAppointments(this.user.id)
+      .subscribe((appointments) => {
+        // todo refresh data if already exists - see if we can improve here
+        this.areAppointmentAvailable = false;
+        this.appointmentList = [];
+        this.appointmentMap = {};
+        this.appointmentList = appointments;
+        if (appointments.length === 0) {
+          this.areAppointmentAvailable = true;
+        }
+        this.setAppointmentMap();
+      });
   }
 
   ngOnDestroy(): void {

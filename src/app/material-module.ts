@@ -4,6 +4,7 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatNativeDateModule, MatRippleModule} from "@angular/material/core";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 
 @NgModule({
   exports: [
@@ -12,7 +13,8 @@ import {MatSnackBarModule} from "@angular/material/snack-bar";
     MatDatepickerModule,
     MatNativeDateModule,
     MatRippleModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatProgressSpinnerModule
   ]
 })
 

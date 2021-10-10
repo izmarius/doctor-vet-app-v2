@@ -19,11 +19,8 @@ export class UserAppointmentsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    setTimeout(() => {
-      this.user = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
-      this.getAllAppointments(this.user);
-    }, 300)
-
+    this.user = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
+    this.getAllAppointments(this.user);
   }
 
   getAllAppointments(userData: any): void {

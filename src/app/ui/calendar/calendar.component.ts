@@ -36,13 +36,11 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.calendarPlaceHolder = CALENDAR_DATA;
-    setTimeout(() => {
-      this.doctor = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
-      this.setHourDayStartAndDayEnd();
-      this.doctorAppointmentsSub = this.doctorService.getDoctorAppointments(this.doctor.id).subscribe((res) => {
-        this.appointments = res;
-      });
-    }, 600);
+    this.doctor = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
+    this.setHourDayStartAndDayEnd();
+    this.doctorAppointmentsSub = this.doctorService.getDoctorAppointments(this.doctor.id).subscribe((res) => {
+      this.appointments = res;
+    });
   }
 
   ngOnDestroy() {
