@@ -1,6 +1,6 @@
 <div class="vet-content my-profile-container">
   <app-photo-text [data]="profileHeaderData" (photoEmitter)="setDoctorPhoto($event)"></app-photo-text>
-  <form class="mg-bottom" [formGroup]="userForm" (ngSubmit)="onFormSubmit()">
+  <form class="mg-bottom" [formGroup]="userForm" (ngSubmit)="onEditDoctorFormSubmit()">
     <label>{{userDataText?.labels.emailLabel}}</label>
     <input formControlName="email" type="email"
            class="m-btn-dialog-row form-control" [placeholder]="userDataText?.emailPlaceholder">
@@ -12,10 +12,10 @@
            class="m-btn-dialog-row form-control" [placeholder]="userDataText?.phonePlaceholder">
     <label>Judet</label>
     <app-dropdown (valueEmitter)="setCountyAndSetLocalities($event)" [placeholder]="'Alege judetul'"
-                  [seriesList]="counties"></app-dropdown>
+                  [seriesList]="counties" [defaultValue]="county"></app-dropdown>
     <label>Localitate</label>
     <app-dropdown (valueEmitter)="setLocality($event)" [placeholder]="'Alege localitatea'"
-                  [seriesList]="localities"></app-dropdown>
+                  [seriesList]="localities" [defaultValue]="locality"></app-dropdown>
     <label>Locatia</label>
     <input formControlName="location" type="text"
            class="m-btn-dialog-row form-control" [placeholder]="'Strada, sc., nr.'">

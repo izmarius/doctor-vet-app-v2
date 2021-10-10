@@ -72,7 +72,7 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.userAnimalDataSub.unsubscribe();
+    this.userAnimalDataSub?.unsubscribe();
   }
 
   // todo : daca au depasit orele de munca? sau programarea a expirat?
@@ -83,7 +83,8 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.doctorAppointmentsService.cancelAppointment(this.userAnimalData.appointmentId, this.doctor);
+        this.userAnimalData.appointment.id = this.userAnimalData.appointmentId;
+        this.doctorAppointmentsService.cancelAppointment(this.userAnimalData.appointment, this.doctor);
       }
     });
   }

@@ -124,7 +124,7 @@ export class SignupComponent implements OnInit {
     // set default schedule when creating account
     doctor.schedule = DOCTOR_DEFAULT_SCHEDULE;
     doctor.appointmentFrequency = {
-      minuteIntervals: FREQUENCY_MINUTES_INTERVALS['15'],
+      minuteIntervals: FREQUENCY_MINUTES_INTERVALS['30'],
       hourIntervals: [9, 10, 11, 12, 13, 14, 15, 16, 17]
     }
     doctor.appointmentInterval = 15;
@@ -149,8 +149,9 @@ export class SignupComponent implements OnInit {
     }
   }
 
-  isFormCompleted(): boolean {
-    return this.authFormGroup.valid && !this.selectedCounty && !this.locality;
+  isSignUpFormBtnDisabled(): boolean {
+    // @ts-ignore
+    return !this.authFormGroup.valid || !this.selectedCounty || !this.locality;
   }
 
   isSignUpButtonDisabled(): boolean {

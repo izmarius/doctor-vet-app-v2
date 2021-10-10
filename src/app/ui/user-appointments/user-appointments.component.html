@@ -1,5 +1,8 @@
 <div class="vet-container">
   <div class="vet-content row">
-      <app-user-appointment-card class="user-appointment" *ngFor="let appointment of appointmentList" [appointment]="appointment" (cancelAppointmentEmitter)="cancelAppointment($event)"></app-user-appointment-card>
+      <app-user-appointment-card class="user-appointment" *ngFor="let appointment of appointmentList"
+                                 [appointment]="appointment"
+                                 (cancelAppointmentEmitter)="cancelAppointment($event)">
+      </app-user-appointment-card>
   </div>
 </div>

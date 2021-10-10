@@ -30,10 +30,10 @@
         </div>
         <label>{{signupText?.labels.countyLabel}}</label>
         <app-dropdown (valueEmitter)="setCountyAndSetLocalities($event)" [placeholder]="signupText?.county"
-                      [seriesList]="counties"></app-dropdown>
+                      [seriesList]="counties" [defaultValue]="selectedCounty"></app-dropdown>
         <label>{{signupText?.labels.localityLabel}}</label>
         <app-dropdown (valueEmitter)="setLocality($event)" [placeholder]="signupText?.locality"
-                      [seriesList]="localities"></app-dropdown>
+                      [seriesList]="localities" [defaultValue]="locality"></app-dropdown>
         <label>Adresa - strada si numarul</label>
         <input formControlName="address" type="text"
                class="m-btn-dialog-row form-control" [placeholder]="signupText?.address">
@@ -46,7 +46,7 @@
             class="m-btn-dialog-row error-msg list-style-type-none">{{signupText?.formErrorMessage}}</li>
         <div class="sign-up-btn-first-step d-flex justify-content-center">
           <button type="submit" class="btn button--active" (click)="goToServicesStep()"
-                  [disabled]="isFormCompleted()">{{signupText?.step1}}</button>
+                  [disabled]="isSignUpFormBtnDisabled()">{{signupText?.step1}}</button>
         </div>
       </form>
     </div>

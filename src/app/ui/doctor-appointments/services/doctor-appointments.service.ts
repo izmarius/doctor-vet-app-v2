@@ -68,7 +68,7 @@ export class DoctorAppointmentsService {
       this.animalAppointment.updateAnimalAppointment(
         {isCanceled: true},
         selectedAppointment.userId,
-        selectedAppointment.id)
+        selectedAppointment.animalAppointmentId)
         .then(() => {
           this.uiAlertInterceptor.setUiError({
             message: USER_CARD_TXT.cancelAppointmentSuccess,

@@ -44,7 +44,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.doctorAppointmentsSub.unsubscribe();
+    this.doctorAppointmentsSub?.unsubscribe();
   }
 
   setView(view: CalendarView): void {

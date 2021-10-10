@@ -231,7 +231,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
         if (searchText.length > 2 && users.length === 0) {
           this.setErrorMessage(APPOINTMENTFORM_DATA.patientDoesNotExist);
         } else {
-          subscription.unsubscribe();
+          subscription?.unsubscribe();
           this.setErrorMessage('');
         }
         this.users = users;

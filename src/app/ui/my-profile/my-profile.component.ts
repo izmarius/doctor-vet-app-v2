@@ -54,6 +54,7 @@ export class MyProfileComponent implements OnInit {
 
   setCountyAndSetLocalities(county: string): void {
     this.county = county;
+    this.locality = '';
     this.locationService.getCitiesByCountyCode(this.countiesAbbr[county])
       .subscribe((response: any) => {
         this.localities = response
@@ -103,9 +104,13 @@ export class MyProfileComponent implements OnInit {
         services.push(serviceDesc);
       }
     }
+    // @ts-ignore
+    this.userData.services[serviceKey] = services;
   }
 
   initEditUserForm(): void {
+    this.locality = this.userData.locality;
+    this.county = this.userData.county;
     this.userForm = new FormGroup({
       email: new FormControl(this.userData.email, [Validators.required, Validators.pattern(INPUT_REGEX_TEXTS.email)]),
       doctorName: new FormControl(this.userData.doctorName, Validators.required),
@@ -134,8 +139,12 @@ export class MyProfileComponent implements OnInit {
       location: this.userForm.controls.location.value,
       photo: this.uploadedPhoto,
       services: this.userData.services,
-      county: this.userData.county,
-      locality: this.userData.locality
+      county: this.county,
+      locality: this.locality,
+      appointmentFrequency: this.userData.appointmentFrequency,
+      appointmentInterval: this.userData.appointmentInterval,
+      schedule: this.userData.schedule,
+      unavailableTime: this.userData.unavailableTime
     };
   }
 
@@ -169,13 +178,15 @@ export class MyProfileComponent implements OnInit {
       || this.userData.location !== formData.location || this.isServiceChanged();
   }
 
-  onFormSubmit(): void {
+  onEditDoctorFormSubmit(): void {
     if (!this.isDataChanged()) {
-      console.log('data not changed');
+      console.log('datele nu s au modificat');
       return;
-    } else {
-      console.log('data changed');
+    } else if (!this.locality) {
+      console.log('Trebuie selectata o localitate');
+      return;
     }
+
     for (const field in this.userForm.controls) {
       if (this.userForm.controls[field].status === 'INVALID') {
         this.formErrorMessage = MY_PROFILE.errorMessage[0] + ' "' + this.getFormControlLabelName(field) + '" ' + ' ' + MY_PROFILE.errorMessage[1];

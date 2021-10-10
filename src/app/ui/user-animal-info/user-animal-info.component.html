@@ -65,10 +65,8 @@
               <input [(ngModel)]="newDisease" class="form-control action-input" type="text"
                      [placeholder]="userAnimalDialog.editInputPlaceholder">
               <div>
-                <span class="px-2 action-icon mr-2 pointer">Salveaza <span class="icon-check"
-                                                                           (click)="addDisease()"></span></span>
-                <span class="px-2 action-icon pointer">Cancel <span class="icon-close"
-                                                                    (click)="hideDiseaseInput()"></span></span>
+                <span class="px-2 action-icon mr-2 pointer" (click)="addDisease()">Salveaza<span class="icon-check"></span></span>
+                <span class="px-2 action-icon pointer" (click)="hideDiseaseInput()">Cancel <span class="icon-close"></span></span>
               </div>
             </div>
             <div>
