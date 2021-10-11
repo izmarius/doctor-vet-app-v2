@@ -193,7 +193,7 @@ export const HOMEPAGE_ARTICLE_STEPS_DATA = {
 export const DOCTOR_CREATES_NEW_USER = {
   emailLabel: INPUT_LABELS_TXT.emailLabel,
   phoneLabel: INPUT_LABELS_TXT.phoneLabel,
-  animalNameLabel: 'Adauga animal - doar daca animalul nu este inregistrat!',
+  animalNameLabel: '(OPTIONAL) Adauga animal - doar daca animalul nu este inregistrat!',
   patientLabel: APPOINTMENTFORM_DATA.patientLabel,
   emailPlaceholder: MY_PROFILE.emailPlaceholder,
   phonePlaceholder: MY_PROFILE.phonePlaceholder,

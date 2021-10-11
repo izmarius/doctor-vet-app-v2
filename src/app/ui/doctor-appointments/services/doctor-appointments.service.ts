@@ -8,6 +8,7 @@ import {AnimalAppointmentService} from "../../../services/animal-appointment/ani
 import {UiErrorInterceptorService} from "../../shared/alert-message/services/ui-error-interceptor.service";
 import {USER_CARD_TXT} from "../../../shared-data/Constants";
 import {DateUtilsService} from "../../../data/utils/date-utils.service";
+import {MatDialog} from "@angular/material/dialog";
 
 @Injectable({
   providedIn: 'root'
@@ -62,7 +63,7 @@ export class DoctorAppointmentsService {
       });
   }
 
-  cancelAppointment(selectedAppointment: any, doctor: any): void {
+  cancelAppointment(selectedAppointment: any, doctor: any, dialogRef: MatDialog): void {
     //todo maybe update also doctor's appointment instead of deleting it?
     this.deleteAppointment(selectedAppointment.id, doctor.id).then((res) => {
       this.animalAppointment.updateAnimalAppointment(
@@ -70,6 +71,7 @@ export class DoctorAppointmentsService {
         selectedAppointment.userId,
         selectedAppointment.animalAppointmentId)
         .then(() => {
+          dialogRef.closeAll();
           this.uiAlertInterceptor.setUiError({
             message: USER_CARD_TXT.cancelAppointmentSuccess,
             class: 'snackbar-success'

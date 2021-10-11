@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, Inject, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, Inject,  OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {AnimalService} from "../doctor-appointments/services/animal.service";
 import {
   APPOINTMENTFORM_DATA,
@@ -11,9 +11,7 @@ import {DoctorAppointmentModalComponent} from "../doctor-appointment-modal/docto
 import {take} from "rxjs/operators";
 import {FirestoreService} from "../../data/http/firestore.service";
 import {DoctorsAppointmentDTO} from "../doctor-appointments/dto/doctor-appointments-dto";
-import {AnimalUtilInfo} from "../doctor-appointments/dto/animal-util-info";
 import {Subscription} from "rxjs";
-import {DoctorService} from "../../services/doctor/doctor.service";
 import {DoctorAppointmentsService} from "../doctor-appointments/services/doctor-appointments.service";
 import {AnimalAppointmentService} from "../../services/animal-appointment/animal-appointment.service";
 import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-error-interceptor.service";
@@ -28,12 +26,10 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
 
   @ViewChild('animalsParent') private ANIMAL_PARENT_ELEM!: ElementRef;
 
-  public isActiveLink!: boolean;
   public isAddDiseaseEnabled!: boolean;
   public isAddRecEnabled!: boolean;
   public newDisease: string = '';
   public newRecommendation: string = '';
-  public selectedLink: any;
   public userAnimalData!: any;
   public doctor: any;
   public userAnimalDialog: any;
@@ -62,14 +58,16 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
         this.userAnimalData = userAnimalData;
         this.userAnimalData.appointment = this.data.appointment;
         this.userAnimalData.appointmentId = this.data.appointmentId;
-        debugger;
-        // setTimeout(() => this.setSelectedAnimalActive(userAnimalData.animalData.id), 0);
+        this.userAnimalData.animalMedicalHistory = userAnimalData.animalMedicalHistory;
+        this.userAnimalData.animalMedicalHistory.diseases = !userAnimalData.animalMedicalHistory.diseases ? [] : userAnimalData.animalMedicalHistory.diseases;
+        this.userAnimalData.animalMedicalHistory.recommendations = !userAnimalData.animalMedicalHistory.recommendations ? [] : userAnimalData.animalMedicalHistory.recommendations;
       });
   }
 
   ngOnDestroy() {
     this.userAnimalDataSub?.unsubscribe();
   }
+
   // todo : daca au depasit orele de munca? sau programarea a expirat?
   openConfirmationModalModal(): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
@@ -79,7 +77,7 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.userAnimalData.appointment.id = this.userAnimalData.appointmentId;
-        this.doctorAppointmentsService.cancelAppointment(this.userAnimalData.appointment, this.doctor);
+        this.doctorAppointmentsService.cancelAppointment(this.userAnimalData.appointment, this.doctor, this.dialog);
       }
     });
   }
@@ -102,7 +100,7 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
     appointment.timestamp = appointmentDate.getTime();
     const localeDate = appointmentDate.toLocaleDateString();
     const dateTime = appointment.dateTime.split(' ');
-    appointment.dateTime = localeDate + ' ' + dateTime[1]+ ' ' + dateTime[2];
+    appointment.dateTime = localeDate + ' ' + dateTime[1] + ' ' + dateTime[2];
 
     // save new appointment to animal and to doctor
     const doctorAppointmentId = this.firestoreService.getNewFirestoreId();
@@ -149,7 +147,7 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
   getAnimalAppointmentPayload(doctorAppointmentId: string, animalAppointmentId: string, appointmentInfo: any): any {
     let userPhoneNumber = '+4';
     if (appointmentInfo.phone.length === 10) {
-    // this change is made for sms notification!! - also validate on cloud functions to make sure that the phone respects this prefix
+      // this change is made for sms notification!! - also validate on cloud functions to make sure that the phone respects this prefix
       userPhoneNumber += appointmentInfo.phone;
     }
     return {
@@ -175,9 +173,9 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
     this.userAnimalData.animalMedicalHistory.diseases.push(this.newDisease);
     if (!this.userAnimalData.medicalHistoryDocId) {
       this.userAnimalData.medicalHistoryDocId = this.firestoreService.getNewFirestoreId();
-      this.createMedicalHistory(this.data.userId, this.selectedLink.id, {diseases: this.userAnimalData.animalMedicalHistory.diseases});
+      this.createMedicalHistory(this.data.userId, this.userAnimalData.animalData.id, {diseases: this.userAnimalData.animalMedicalHistory.diseases});
     } else {
-      this.updateMedicalHistory(this.data.userId, this.selectedLink.id, {diseases: this.userAnimalData.animalMedicalHistory.diseases});
+      this.updateMedicalHistory(this.data.userId, this.userAnimalData.animalData.id, {diseases: this.userAnimalData.animalMedicalHistory.diseases});
     }
     this.hideDiseaseInput();
   }
@@ -278,16 +276,6 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
     }
   }
 
-  toggleActiveClass(event: any): void {
-    for (const elem of this.ANIMAL_PARENT_ELEM.nativeElement.children) {
-      if (elem.id === event.target.id && this.selectedLink.id !== event.target.id) {
-        this.selectedLink = elem;
-        this.isActiveLink = true;
-        return;
-      }
-    }
-  }
-
   toggleEditInputAndListItem(isInputDisplayed: boolean,
                              editIcon: HTMLSpanElement,
                              editInput: HTMLInputElement,
@@ -333,13 +321,13 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
   deleteFromDiseases(data: string): void {
     const indexOfDisease = this.userAnimalData.animalMedicalHistory.diseases.indexOf(data);
     this.userAnimalData.animalMedicalHistory.diseases.splice(indexOfDisease, 1);
-    this.updateMedicalHistory(this.data.userId, this.selectedLink.id, {diseases: this.userAnimalData.animalMedicalHistory.diseases});
+    this.updateMedicalHistory(this.data.userId, this.userAnimalData.animalData.id, {diseases: this.userAnimalData.animalMedicalHistory.diseases});
   }
 
   deleteFromRecommendation(data: string): void {
     const indexOfRecommendation = this.userAnimalData.animalMedicalHistory.recommendations.indexOf(data);
     this.userAnimalData.animalMedicalHistory.recommendations.splice(indexOfRecommendation, 1);
-    this.updateMedicalHistory(this.data.userId, this.selectedLink.id, {recommendations: this.userAnimalData.animalMedicalHistory.recommendations});
+    this.updateMedicalHistory(this.data.userId, this.userAnimalData.animalData.id, {recommendations: this.userAnimalData.animalMedicalHistory.recommendations});
   }
 
   //FOR MULTIPLE ANIMALS
@@ -370,5 +358,16 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
   //     }
   //   }
   // }
+
+  // toggleActiveClass(event: any): void {
+  //   for (const elem of this.ANIMAL_PARENT_ELEM.nativeElement.children) {
+  //     if (elem.id === event.target.id && this.selectedLink.id !== event.target.id) {
+  //       this.selectedLink = elem;
+  //       this.isActiveLink = true;
+  //       return;
+  //     }
+  //   }
+  // }
+
 }
 

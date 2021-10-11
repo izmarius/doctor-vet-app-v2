@@ -133,7 +133,7 @@ export class DoctorAppointmentsComponent implements OnInit, OnDestroy, AfterView
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.doctorAppointmentService.cancelAppointment(selectedAppointment, this.user)
+        // this.doctorAppointmentService.cancelAppointment(selectedAppointment, this.user)
       }
     });
   }

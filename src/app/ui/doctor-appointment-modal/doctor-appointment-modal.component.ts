@@ -123,7 +123,6 @@ export class DoctorAppointmentModalComponent implements OnInit {
 
     const doctorAppointmentId = this.firestoreService.getNewFirestoreId();
     const animalAppointmentId = this.firestoreService.getNewFirestoreId();
-    debugger;
     this.appointmentForm.value.startDate.setHours(this.stepHour, this.stepMinute);
     const newDoctorAppointment = this.getDoctorAppointment(animalAppointmentId, newAnimalInfo);
     const newAnimalAppointment = this.getAnimalAppointmentPayload(doctorAppointmentId, animalAppointmentId);
