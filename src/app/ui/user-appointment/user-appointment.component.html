@@ -34,7 +34,7 @@
       <div class="p-left " *ngIf="isSearchByUserSuccessAndEmpty">
         <p><strong>Nu a fost gasit nici un user pentru aceasta localitate</strong></p>
       </div>
-      <div class="p-left d-flex justify-content-between" *ngIf="isSearchByUserSuccess">
+      <div class="p-left d-flex justify-content-between user-appoinment-card-container" *ngIf="isSearchByUserSuccess">
         <app-user-create-app-card class="doctor-card" *ngFor="let doctor of doctorList" [doctor]="doctor"
                                   (createAppointmentEmitter)="createAppointment($event)"></app-user-create-app-card>
       </div>

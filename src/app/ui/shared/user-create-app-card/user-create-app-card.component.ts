@@ -1,11 +1,11 @@
-import {AfterViewInit, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 
 @Component({
   selector: 'app-user-create-app-card',
   templateUrl: './user-create-app-card.component.html',
   styleUrls: ['./user-create-app-card.component.scss']
 })
-export class UserCreateAppCardComponent implements OnInit, AfterViewInit {
+export class UserCreateAppCardComponent implements OnInit {
   @Input() doctor: any;
   @Output() createAppointmentEmitter = new EventEmitter();
   services: string[] = [];
@@ -21,23 +21,19 @@ export class UserCreateAppCardComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-  }
-
-  ngAfterViewInit() {
     this.setDoctorSchedule();
     this.setDoctorServices();
     this.setDoctorUnavailableDays();
-    if(this.doctor.appointmentFrequency) {
+    if (this.doctor.appointmentFrequency) {
       this.stepHours = this.doctor.appointmentFrequency.hourIntervals;
       this.stepHour = this.stepHours[0]
       this.stepMinutes = this.doctor.appointmentFrequency.minuteIntervals;
       this.stepMinute = this.stepMinutes[0]
     }
-    console.log(this.doctor);
   }
 
   filterUnavailableDays(d: Date): boolean {
-    if(!d) {
+    if (!d) {
       return true;
     }
     const day = d.getDay();
@@ -69,7 +65,6 @@ export class UserCreateAppCardComponent implements OnInit, AfterViewInit {
 
   setDoctorSchedule(): void {
     for (let key in this.doctor.schedule) {
-      // this.services.push(...this.doctor.schedule[key]);
     }
   }
 

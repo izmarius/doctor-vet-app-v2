@@ -43,6 +43,7 @@ export class UserAppointmentDialogComponent implements OnInit {
   }
 
   createAppointment(doctorDetails: any): void {
+    debugger;
     console.log(doctorDetails);
   }
 
@@ -61,8 +62,6 @@ export class UserAppointmentDialogComponent implements OnInit {
   }
 
   searchDoctorsByCountyAndLocation(): void {
-    this.county = 'Cluj';
-    this.locality = 'Cluj-Napoca';
     // if (this.isSearchByLocationDisabled()) {
     //   this.isErrorDisplayed = true;
     //   this.errorMessage = 'Judetul si localitatea trebuie selectate';

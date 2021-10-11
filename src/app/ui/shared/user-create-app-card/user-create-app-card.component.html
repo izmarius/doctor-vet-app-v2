@@ -10,7 +10,7 @@
   <div class="m-btn-small">
     <label><strong>Selecteaza data</strong></label>
     <div class="d-flex">
-      <input matInput class="form-control" [min]="minDate" [matDatepickerFilter]="filterUnavailableDays.bind(this)"
+      <input matInput class="form-control" [min]="minDate"
              [matDatepicker]="picker" [(ngModel)]="selectedDate"
              [placeholder]="'mm/dd/yyyy'">
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
