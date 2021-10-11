@@ -54,7 +54,7 @@ export class AnimalService {
             map((medicalHistoryCollection: any) => {
               return {
                 animalData,
-                animalMedicalHistory: medicalHistoryCollection.docs.length === 0 ? [] : medicalHistoryCollection.docs[0].data(),
+                animalMedicalHistory: medicalHistoryCollection.docs.length === 0 ? {diseases:[], recommendations: []} : medicalHistoryCollection.docs[0].data(),
                 medicalHistoryDocId: medicalHistoryCollection.docs.length === 0 ? '' : medicalHistoryCollection.docs[0].id
               };
             })

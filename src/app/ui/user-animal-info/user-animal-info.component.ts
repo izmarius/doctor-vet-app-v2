@@ -62,19 +62,14 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
         this.userAnimalData = userAnimalData;
         this.userAnimalData.appointment = this.data.appointment;
         this.userAnimalData.appointmentId = this.data.appointmentId;
-        setTimeout(() => this.setSelectedAnimalActive(userAnimalData.animalData.id), 0);
-        if (userAnimalData && userAnimalData.animalMedicalHistory.length === 0) {
-          this.userAnimalData.animalMedicalHistory.diseases = [];
-          this.userAnimalData.animalMedicalHistory.recommendations = [];
-          return;
-        }
+        debugger;
+        // setTimeout(() => this.setSelectedAnimalActive(userAnimalData.animalData.id), 0);
       });
   }
 
   ngOnDestroy() {
     this.userAnimalDataSub?.unsubscribe();
   }
-
   // todo : daca au depasit orele de munca? sau programarea a expirat?
   openConfirmationModalModal(): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
@@ -210,9 +205,9 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
     this.userAnimalData.animalMedicalHistory.recommendations.push(this.newRecommendation);
     if (!this.userAnimalData.medicalHistoryDocId) {
       this.userAnimalData.medicalHistoryDocId = this.firestoreService.getNewFirestoreId();
-      this.createMedicalHistory(this.data.userId, this.selectedLink.id, {recommendations: this.userAnimalData.animalMedicalHistory.recommendations})
+      this.createMedicalHistory(this.data.userId, this.userAnimalData.animalData.id, {recommendations: this.userAnimalData.animalMedicalHistory.recommendations})
     } else {
-      this.updateMedicalHistory(this.data.userId, this.selectedLink.id, {recommendations: this.userAnimalData.animalMedicalHistory.recommendations});
+      this.updateMedicalHistory(this.data.userId, this.userAnimalData.animalData.id, {recommendations: this.userAnimalData.animalMedicalHistory.recommendations});
     }
     this.hideRecommendationInput();
   }
@@ -223,13 +218,6 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
 
   showRecommendationInput(): void {
     this.isAddRecEnabled = true;
-  }
-
-  getAndSetAnimalData(event: any, animalId: string): void {
-    this.animalService.getAnimalDataAndMedicalHistoryByAnimalId(animalId, this.data.userId).subscribe((res) => {
-      this.userAnimalData = res;
-      this.toggleActiveClass(event);
-    });
   }
 
   hideDiseaseInput(): void {
@@ -258,7 +246,7 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
       return;
     }
     this.userAnimalData.animalMedicalHistory.diseases[indexOfDisease] = this.newDisease.trim();
-    this.updateMedicalHistory(this.data.userId, this.selectedLink.id, {diseases: this.userAnimalData.animalMedicalHistory.diseases});
+    this.updateMedicalHistory(this.data.userId, this.userAnimalData.animalData.id, {diseases: this.userAnimalData.animalMedicalHistory.diseases});
     this.toggleEditInputAndListItem(false, editIcon, editInput, errorElem, checkIcon, closeInputIcon, diseaseItem);
   }
 
@@ -279,7 +267,7 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
       return;
     }
     this.userAnimalData.animalMedicalHistory.recommendations[indexOfRecommendation] = this.newRecommendation.trim();
-    this.updateMedicalHistory(this.data.userId, this.selectedLink.id, {recommendations: this.userAnimalData.animalMedicalHistory.recommendations});
+    this.updateMedicalHistory(this.data.userId, this.userAnimalData.animalData.id, {recommendations: this.userAnimalData.animalMedicalHistory.recommendations});
     this.toggleEditInputAndListItem(false, editIcon, editInput, errorElem, checkIcon, closeInputIcon, recItem);
   }
 
@@ -287,15 +275,6 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
     if (errorElem.innerText) {
       errorElem.classList.add('hide');
       errorElem.innerText = '';
-    }
-  }
-
-  setSelectedAnimalActive(animalId: string): void {
-    for (const elem of this.ANIMAL_PARENT_ELEM.nativeElement.children) {
-      if (elem.id === animalId) {
-        this.selectedLink = elem;
-        this.isActiveLink = true;
-      }
     }
   }
 
@@ -362,5 +341,34 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
     this.userAnimalData.animalMedicalHistory.recommendations.splice(indexOfRecommendation, 1);
     this.updateMedicalHistory(this.data.userId, this.selectedLink.id, {recommendations: this.userAnimalData.animalMedicalHistory.recommendations});
   }
+
+  //FOR MULTIPLE ANIMALS
+
+  // getAndSetAnimalData(event: any, animalId: string): void {
+  //   // todo validation here - if same id => don't go further
+  //   // if(animalId !== this.userAnimalData) {
+  //   //
+  //   // }
+  //   this.animalService.getAnimalDataAndMedicalHistoryByAnimalId(animalId, this.data.userId).subscribe((res) => {
+  //     this.userAnimalData = res;
+  //     this.userAnimalData.appointment = this.data.appointment;
+  //     this.userAnimalData.appointmentId = this.data.appointmentId;
+  //     this.userAnimalData.animalMedicalHistory = res.animalMedicalHistory;
+  //     this.userAnimalData.animalMedicalHistory.diseases = !res.animalMedicalHistory.diseases? [] : res.animalMedicalHistory.diseases;
+  //     this.userAnimalData.animalMedicalHistory.recommendations = !res.animalMedicalHistory.recommendations? [] : res.animalMedicalHistory.recommendations;
+  //     // this.toggleActiveClass(event);
+  //   });
+  // }
+
+  //
+  // setSelectedAnimalActive(animalId: string): void {
+  //   for (const elem of this.ANIMAL_PARENT_ELEM.nativeElement.children) {
+  //     if (elem.id === animalId) {
+  //       this.selectedLink = elem;
+  //       this.isActiveLink = true;
+  //       break;
+  //     }
+  //   }
+  // }
 }
 

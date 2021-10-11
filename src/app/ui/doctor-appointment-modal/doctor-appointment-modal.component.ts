@@ -114,6 +114,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
       this.selectedAnimal.animalId = animalDocUID;
       this.userService.saveAnimal(this.selectedPatient, this.appointmentForm.value.animalName, animalDocUID);
       newAnimalInfo.setUid(animalDocUID);
+      newAnimalInfo.setName(this.appointmentForm.value.animalName);
     } else {
       newAnimalInfo.setUid(this.selectedAnimal.animalId)
     }
@@ -122,7 +123,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
 
     const doctorAppointmentId = this.firestoreService.getNewFirestoreId();
     const animalAppointmentId = this.firestoreService.getNewFirestoreId();
-
+    debugger;
     this.appointmentForm.value.startDate.setHours(this.stepHour, this.stepMinute);
     const newDoctorAppointment = this.getDoctorAppointment(animalAppointmentId, newAnimalInfo);
     const newAnimalAppointment = this.getAnimalAppointmentPayload(doctorAppointmentId, animalAppointmentId);

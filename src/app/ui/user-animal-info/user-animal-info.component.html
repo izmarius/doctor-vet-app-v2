@@ -2,7 +2,8 @@
   <div class="schedule-button d-flex justify-content-end m-btn-dialog-row">
     <p class="my-auto mx-2 text-center">Reprogrameaza in :</p>
     <button class="btn btn-light close-btn small-button me-2" (click)="addRecurrentAppointment('day')">1 zi</button>
-    <button class="btn btn-light close-btn small-button me-2" (click)="addRecurrentAppointment('week')">1 saptamana</button>
+    <button class="btn btn-light close-btn small-button me-2" (click)="addRecurrentAppointment('week')">1 saptamana
+    </button>
     <button class="btn btn-light close-btn small-button me-2" (click)="addRecurrentAppointment('month')">1 luna</button>
     <button class="btn btn-light close-btn small-button me-2" (click)="addRecurrentAppointment('year')">1 an</button>
 
@@ -17,13 +18,12 @@
         <p>{{userAnimalData?.userData?.name}}</p>
         <p>{{userAnimalData?.appointment?.phone}}</p>
         <div class="animal-info d-flex">
-          <p class="bold-text me-2">{{userAnimalDialog.ownersPets}}</p>
-          <div class="d-flex flex-wrap" #animalsParent>
-            <p class="me-2 pointer hover-button-active-state"
-               [class.link--active]="selectedLink?.id == animal.animalId && isActiveLink"
-               *ngFor="let animal of userAnimalData?.userData?.animals"
-               id="{{animal.animalId}}" (click)="getAndSetAnimalData($event, animal.animalId)">{{animal.animalName}}</p>
-          </div>
+<!--          //FOR MULTIPLE ANIMALS-->
+<!--          <p class="bold-text me-2">{{userAnimalDialog.ownersPets}}</p>-->
+<!--          <div class="d-flex flex-wrap" #animalsParent>-->
+<!--            <p class="me-2 pointer hover-button-active-state"-->
+<!--               (click)="getAndSetAnimalData($event, userAnimalData.animalData.id)">{{userAnimalData.animalData.name}}</p>-->
+<!--          </div>-->
         </div>
       </div>
       <div class="m-top-small">
@@ -65,12 +65,14 @@
               <input [(ngModel)]="newDisease" class="form-control action-input" type="text"
                      [placeholder]="userAnimalDialog.editInputPlaceholder">
               <div>
-                <span class="px-2 action-icon mr-2 pointer" (click)="addDisease()">Salveaza<span class="icon-check"></span></span>
-                <span class="px-2 action-icon pointer" (click)="hideDiseaseInput()">Cancel <span class="icon-close"></span></span>
+                <span class="px-2 action-icon mr-2 pointer" (click)="addDisease()">Salveaza<span
+                  class="icon-check"></span></span>
+                <span class="px-2 action-icon pointer" (click)="hideDiseaseInput()">Cancel <span
+                  class="icon-close"></span></span>
               </div>
             </div>
             <div>
-              <div *ngFor="let disease of userAnimalData?.animalMedicalHistory.diseases"
+              <div *ngFor="let disease of userAnimalData?.animalMedicalHistory?.diseases"
                    class="d-flex justify-content-between recommendation-container">
                 <div class="dialog-list-container">
                   <li #diseaseItem class="dialog-list-item list-style-type-none">{{disease}}</li>
@@ -107,17 +109,18 @@
             <input [(ngModel)]="newRecommendation" class="form-control action-input" type="text"
                    [placeholder]="userAnimalDialog.editInputPlaceholder">
             <div>
-              <span class="px-2 action-icon mr-2 pointer"> Salveza
-                    <span class="icon-check" (click)="addRecommendation()"></span>
+              <span class="px-2 action-icon mr-2 pointer" (click)="addRecommendation()">
+                Salveza
+                <span class="icon-check"></span>
               </span>
-              <span class="px-2 action-icon pointer">
+              <span class="px-2 action-icon pointer" (click)="hideRecommendationInput()">
                 Cancel
-              <span class="icon-close" (click)="hideRecommendationInput()"></span>
+                <span class="icon-close"></span>
               </span>
             </div>
           </div>
           <div>
-            <div *ngFor="let recommendation of userAnimalData?.animalMedicalHistory.recommendations"
+            <div *ngFor="let recommendation of userAnimalData?.animalMedicalHistory?.recommendations"
                  class="d-flex justify-content-between recommendation-container">
               <div class="dialog-list-container">
                 <li #diseaseItem class="dialog-list-item list-style-type-none">{{recommendation}}</li>

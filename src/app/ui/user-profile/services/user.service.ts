@@ -66,6 +66,7 @@ export class UserService {
 
   saveAnimalToUser(userData: any, userDocId: string): Promise<any> {
     const animalPayload = {
+      id: userData.animals[0].animalId,
       birthDay: '-',
       bloodType: '-',
       age: 0,
@@ -201,12 +202,15 @@ export class UserService {
     });
     this.updateUserInfo(userData, userData.id).then(() => {
       this.firestoreService.saveDocumentWithGeneratedFirestoreId(this.USER_COLLECTION + userData.id + this.ANIMAL_COLLECTION, animalPayload.id, animalPayload)
-        .then(()=>{
+        .then(() => {
           localStorage.removeItem(USER_LOCALSTORAGE);
           localStorage.setItem(USER_LOCALSTORAGE, userData);
           this.uiAlertInterceptor.setUiError({message: 'Animalul a fost adaugat cu succes', class: 'snackbar-success'});
         }).catch((error: any) => {
-        this.uiAlertInterceptor.setUiError({message: 'A aparut o eroare, te rugam sa incerci din nou', class: 'snackbar-success'});
+        this.uiAlertInterceptor.setUiError({
+          message: 'A aparut o eroare, te rugam sa incerci din nou',
+          class: 'snackbar-success'
+        });
         console.error(error.message);
       });
     }).catch((error: any) => {
