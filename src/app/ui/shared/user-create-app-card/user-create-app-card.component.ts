@@ -79,6 +79,11 @@ export class UserCreateAppCardComponent implements OnInit {
   }
 
   createAppointmentByUser(doctor: any): void {
-    this.createAppointmentEmitter.emit(doctor);
+    const doctorAppointmentPayload = {
+      doctor: doctor,
+      date: this.selectedDate.toLocaleString() + " - " + this.stepHour + ":" + this.stepMinute,
+      time: this.stepHour + ":" + this.stepMinute
+    }
+    this.createAppointmentEmitter.emit(doctorAppointmentPayload);
   }
 }

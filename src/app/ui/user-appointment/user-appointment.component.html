@@ -2,6 +2,10 @@
   <div class="vet-content">
     <div class="p-around d-flex">
       <div class="search-appointment-sidebar">
+        <p><strong>Selecteaza un animal</strong></p>
+        <div class="m-btn-small" *ngFor="let animal of user.animals; let i=index; first as isFirst">
+          <p class="d-flex justify-content-start pointer" [class.link--active]="isAnimalSelected" (click)="setAnimalToDoAppointment(animal)">{{animal.animalName}}</p>
+        </div>
         <p><strong>Cauta doctor</strong></p>
         <form>
           <div class="m-btn-small">

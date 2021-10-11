@@ -163,15 +163,15 @@ export const HEADER_TEXT = {
   buttonText: 'See projects'
 };
 
-export const HOMEPAGE_CARD_TEXT = {
+export const HOMEPAGE_CARD_TEXT = [{
   photo: '../../../assets/photos/svg.svg',
-  title: 'Notifications',
-  text: 'Assign owners to conversations, and delegate to team members to follow every update.'
-};
+  title: 'Istoric medical',
+  text: 'Pentru mai bune tratamente ale animalului tau vei avea acces la istoricul lui medical.'
+}];
 
 export const HOMEPAGE_SECTION_DATA = {
-  title: 'Aici vin feature urile aplicatiei doctor vet',
-  subTitle: 'subtitle here in care s povesti be aburit'
+  title: 'Tot ce iti ofera aplicatia Doctor Vet',
+  subTitle: 'Managementul animalelor tale'
 };
 
 export const HOMEPAGE_ARTICLE_DATA = {
@@ -183,8 +183,8 @@ export const HOMEPAGE_ARTICLE_DATA = {
 export const HOMEPAGE_ARTICLE_STEPS_DATA = {
   title: 'Why it\'s better than email:\n',
   text: [
-    'Share or jump into any project conversation, without the CC/BCC dance.', 'Delegate communication to your team while keeping an eye on everything.',
-    'Follow just a single thread per project, not hundreds of email messages'
+    'Te asteptam in locul unde prietenii tai cei mai buni raman sanatosi',
+    'O singura aplicatie pentru datele animalului tau'
   ],
   icon: 'icon-magic-wand',
   anchorText : 'Go to next page'

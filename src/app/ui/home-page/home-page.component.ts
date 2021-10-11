@@ -9,7 +9,7 @@ export class HomePageComponent implements OnInit {
   constructor() { }
 
   headerContent = {
-    title: 'Share or jump into any project conversation, without the CC/BCC dance sation, without the CC/BCC dance conversation, without the CC/BCC dance sation, without the CC/BCC dance conversation, without the CC/BCC dance sation, without the CC/BCC dance',
+    title: 'Te asteptam in locul unde prietenii tai cei mai buni raman sanatosi. O singura aplicatie pentru datele animalului tau - Doctor Vet.',
     style: this.getHeaderStyle()
   };
 

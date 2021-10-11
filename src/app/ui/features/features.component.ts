@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {HOMEPAGE_CARD_TEXT} from "../../shared-data/Constants";
 
 @Component({
@@ -7,7 +7,7 @@ import {HOMEPAGE_CARD_TEXT} from "../../shared-data/Constants";
   styleUrls: ['./features.component.scss']
 })
 export class FeaturesComponent implements OnInit {
-
+  @Input() cardData: any
   cardText: any;
 
   constructor() { }

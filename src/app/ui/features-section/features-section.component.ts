@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {HOMEPAGE_SECTION_DATA} from "../../shared-data/Constants";
+import {HOMEPAGE_CARD_TEXT, HOMEPAGE_SECTION_DATA} from "../../shared-data/Constants";
 
 @Component({
   selector: 'app-features-section',
@@ -9,11 +9,13 @@ import {HOMEPAGE_SECTION_DATA} from "../../shared-data/Constants";
 export class FeaturesSectionComponent implements OnInit {
 
   sectionData: any;
+  cardTextList: any;
 
   constructor() { }
 
   ngOnInit() {
     this.sectionData = HOMEPAGE_SECTION_DATA;
+    this.cardTextList = HOMEPAGE_CARD_TEXT;
   }
 
 }
