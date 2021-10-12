@@ -10,7 +10,7 @@ import {USER_LOCALSTORAGE, USER_SERVICE} from "../../../shared-data/Constants";
 import {IUserData} from "../../../shared-data/iuser-data";
 import {FirebaseUtilsService} from "../../../services/firebase-utils-service/firebase-utils.service";
 import {DateUtilsService} from "../../../data/utils/date-utils.service";
-import {IDoctorsAppointmentsDTO} from "../../doctor-appointments/dto/doctor-appointments-dto";
+import {IDoctorsAppointmentsDTO} from "../../dto/doctor-appointments-dto";
 
 @Injectable({
   providedIn: 'root'

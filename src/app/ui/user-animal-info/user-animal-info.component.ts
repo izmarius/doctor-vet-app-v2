@@ -1,5 +1,5 @@
 import {Component, ElementRef, Inject,  OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {AnimalService} from "../doctor-appointments/services/animal.service";
+import {AnimalService} from "../services/animal.service";
 import {
   APPOINTMENTFORM_DATA,
   DIALOG_UI_ERRORS,
@@ -10,9 +10,9 @@ import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog
 import {DoctorAppointmentModalComponent} from "../doctor-appointment-modal/doctor-appointment-modal.component";
 import {take} from "rxjs/operators";
 import {FirestoreService} from "../../data/http/firestore.service";
-import {DoctorsAppointmentDTO} from "../doctor-appointments/dto/doctor-appointments-dto";
+import {DoctorsAppointmentDTO} from "../dto/doctor-appointments-dto";
 import {Subscription} from "rxjs";
-import {DoctorAppointmentsService} from "../doctor-appointments/services/doctor-appointments.service";
+import {DoctorAppointmentsService} from "../services/doctor-appointments.service";
 import {AnimalAppointmentService} from "../../services/animal-appointment/animal-appointment.service";
 import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-error-interceptor.service";
 import {ConfirmDialogComponent} from "../shared/confirm-dialog/confirm-dialog.component";

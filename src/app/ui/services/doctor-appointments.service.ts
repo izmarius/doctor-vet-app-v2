@@ -1,13 +1,13 @@
 import {Injectable} from '@angular/core';
-import {FirestoreService} from "../../../data/http/firestore.service";
+import {FirestoreService} from "../../data/http/firestore.service";
 import {DoctorsAppointmentDTO, IDoctorsAppointmentsDTO} from "../dto/doctor-appointments-dto";
 import {Observable} from "rxjs";
 import {first, map} from "rxjs/operators";
-import {convertSnapshots} from "../../../data/utils/firestore-utils.service";
-import {AnimalAppointmentService} from "../../../services/animal-appointment/animal-appointment.service";
-import {UiErrorInterceptorService} from "../../shared/alert-message/services/ui-error-interceptor.service";
-import {USER_CARD_TXT} from "../../../shared-data/Constants";
-import {DateUtilsService} from "../../../data/utils/date-utils.service";
+import {convertSnapshots} from "../../data/utils/firestore-utils.service";
+import {AnimalAppointmentService} from "../../services/animal-appointment/animal-appointment.service";
+import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-error-interceptor.service";
+import {USER_CARD_TXT} from "../../shared-data/Constants";
+import {DateUtilsService} from "../../data/utils/date-utils.service";
 import {MatDialog} from "@angular/material/dialog";
 
 @Injectable({

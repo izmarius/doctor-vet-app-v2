@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from "../user-profile/services/user.service";
 import {USER_LOCALSTORAGE} from "../../shared-data/Constants";
-import {AnimalService} from "../doctor-appointments/services/animal.service";
+import {AnimalService} from "../services/animal.service";
 
 @Component({
   selector: 'app-my-animals',

@@ -18,7 +18,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {AppComponent} from "./app.component";
 import { UploadPhotoComponent } from './ui/shared/upload-photo/upload-photo.component';
-// import { DoctorAppointmentsComponent } from './ui/doctor-appointments/doctor-appointments.component';
 import { UserCardComponent } from './ui/shared/user-card/user-card.component';
 import { UserAnimalInfoComponent } from './ui/user-animal-info/user-animal-info.component';
 import { UserProfileComponent } from './ui/user-profile/user-profile.component';
@@ -33,7 +32,6 @@ import { AdjustableHeaderComponent } from './ui/shared/adjustable-header/adjusta
 import { AlertMessageComponent } from './ui/shared/alert-message/alert-message.component';
 import { FeatureArticlesComponent } from './ui/feature-articles/feature-articles.component';
 import { FeaturesSectionComponent } from './ui/features-section/features-section.component';
-import { FeaturesComponent } from './ui/features/features.component';
 import { ArticleSectionStepsComponent } from './ui/shared/article-section-steps/article-section-steps.component';
 import { ArticleSectionTextComponent } from './ui/shared/article-section-text/article-section-text.component';
 import { HeaderComponent } from './ui/shared/header/header.component';
@@ -76,7 +74,6 @@ import {AppCalendarModule} from "./ui/calendar/app-calendar-module";
     AlertMessageComponent,
     FeatureArticlesComponent,
     FeaturesSectionComponent,
-    FeaturesComponent,
     ArticleSectionStepsComponent,
     ArticleSectionTextComponent,
     HeaderComponent,

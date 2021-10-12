@@ -1,9 +1,9 @@
 import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {IUserDTO} from "../user-profile/dto/user-dto";
-import {AnimalUtilInfo, IAnimalUserInfo} from "../doctor-appointments/dto/animal-util-info";
-import {DoctorsAppointmentDTO} from "../doctor-appointments/dto/doctor-appointments-dto";
+import {AnimalUtilInfo, IAnimalUserInfo} from "../dto/animal-util-info";
+import {DoctorsAppointmentDTO} from "../dto/doctor-appointments-dto";
 import {DoctorService} from "../../services/doctor/doctor.service";
-import {DoctorAppointmentsService} from "../doctor-appointments/services/doctor-appointments.service";
+import {DoctorAppointmentsService} from "../services/doctor-appointments.service";
 import {DateUtilsService} from "../../data/utils/date-utils.service";
 import {APPOINTMENTFORM_DATA, INPUT_REGEX_TEXTS, USER_LOCALSTORAGE} from "../../shared-data/Constants";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
