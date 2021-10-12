@@ -87,7 +87,7 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
     if (period === 'day') {
       appointmentDate.setDate(appointmentDate.getDate() + 1);
     } else if (period === 'week') {
-      appointmentDate.setDate(appointmentDate.getDate() + 7);
+      appointmentDate.setDate(appointmentDate.getDate() + 14);
     } else if (period === 'month') {
       appointmentDate.setMonth(appointmentDate.getMonth() + 1);
     } else if (period === 'year') {

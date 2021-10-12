@@ -1,5 +1,5 @@
 export const INPUT_LABELS_TXT = {
-  doctorNameLabel: 'Nume',
+  doctorNameLabel: 'Nume Prenume',
   locationLabel: 'Location',
   locationURLLabel: 'Google Maps URL',
   clinicLabel: 'Clinica',
