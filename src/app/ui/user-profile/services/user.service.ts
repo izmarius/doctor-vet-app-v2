@@ -204,7 +204,7 @@ export class UserService {
       this.firestoreService.saveDocumentWithGeneratedFirestoreId(this.USER_COLLECTION + userData.id + this.ANIMAL_COLLECTION, animalPayload.id, animalPayload)
         .then(() => {
           localStorage.removeItem(USER_LOCALSTORAGE);
-          localStorage.setItem(USER_LOCALSTORAGE, userData);
+          localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(userData));
           this.uiAlertInterceptor.setUiError({message: 'Animalul a fost adaugat cu succes', class: 'snackbar-success'});
         }).catch((error: any) => {
         this.uiAlertInterceptor.setUiError({
