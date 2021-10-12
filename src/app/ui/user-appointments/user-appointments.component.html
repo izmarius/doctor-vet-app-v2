@@ -2,7 +2,7 @@
   <div class="vet-content row">
       <app-user-appointment-card class="user-appointment" *ngFor="let appointment of appointmentList"
                                  [appointment]="appointment"
-                                 (cancelAppointmentEmitter)="cancelAppointment($event)">
+                                 (cancelAppointmentEmitter)="cancelAppointmentByUser($event)">
       </app-user-appointment-card>
   </div>
 </div>

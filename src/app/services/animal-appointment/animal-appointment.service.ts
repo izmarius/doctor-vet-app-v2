@@ -20,6 +20,10 @@ export class AnimalAppointmentService {
     return this.firestoreService.updateDocumentById('animal-appointments', animalId, JSON.parse(JSON.stringify(animalAppointment)));
   }
 
+  deleteAppointment(appointmentId: string): Promise<any> {
+    return this.firestoreService.deleteDocById('animal-appointments', appointmentId);
+  }
+
   getAnimalAppointmentCollectionURL(userId: string, animalId: string): string {
     return this.USER_COLLECTION + userId + this.ANIMAL_COLLECTION + animalId + this.ANIMAL_APPOINTMENTS_COLLECTION;
   }

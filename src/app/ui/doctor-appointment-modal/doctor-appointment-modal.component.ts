@@ -125,7 +125,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
     const animalAppointmentId = this.firestoreService.getNewFirestoreId();
     this.appointmentForm.value.startDate.setHours(this.stepHour, this.stepMinute);
     const newDoctorAppointment = this.getDoctorAppointment(animalAppointmentId, newAnimalInfo);
-    const newAnimalAppointment = this.getAnimalAppointmentPayload(doctorAppointmentId, animalAppointmentId);
+    const newAnimalAppointment = this.getAnimalAppointmentPayload(doctorAppointmentId, animalAppointmentId, newAnimalInfo);
 
     this.doctorAppointmentService.createAppointment(
       newDoctorAppointment,
@@ -161,12 +161,13 @@ export class DoctorAppointmentModalComponent implements OnInit {
       .setPhone(this.selectedPatient.phone)
       .setIsAppointmentFinished(false)
       .setIsUserCreated(false)
+      .setIsCanceledByUser(false)
       .setIsConfirmedByDoctor(true)
       .setAnimalAppointmentId(animalAppointmentId)
       .setTimestamp(this.appointmentForm.value.startDate.getTime());
   }
 
-  getAnimalAppointmentPayload(doctorAppointmentId: string, animalAppointmentId: string): any {
+  getAnimalAppointmentPayload(doctorAppointmentId: string, animalAppointmentId: string, animalInfo: any): any {
     let userPhoneNumber = '+4';
     if (this.selectedPatient.phone.length === 10) {
       // this change is made for sms notification!! - also validate on cloud functions to make sure that the phone respects this prefix
@@ -174,6 +175,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
     }
     return {
       isCanceled: false,
+      animalName: animalInfo.name,
       dateTime: this.appointmentForm.value.startDate.toLocaleDateString() + ' - ' +
         this.appointmentForm.value.startTime,
       doctorId: this.doctor.id,

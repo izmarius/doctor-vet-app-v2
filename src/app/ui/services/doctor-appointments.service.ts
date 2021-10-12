@@ -54,8 +54,8 @@ export class DoctorAppointmentsService {
     return this.firestoreService.saveDocumentWithGeneratedFirestoreId(this.getAppointmentUrl(doctorId), doctorAppointmentId, JSON.parse(JSON.stringify(doctorAppointmentDTO)));
   }
 
-  updateAppointment(app: DoctorsAppointmentDTO, appointmentId: string, doctorId: string): void {
-    this.firestoreService.updateDocumentById(this.getAppointmentUrl(doctorId), appointmentId, app)
+  updateAppointment(app: any, appointmentId: string, doctorId: string): Promise<any> {
+    return this.firestoreService.updateDocumentById(this.getAppointmentUrl(doctorId), appointmentId, app)
       .then(() => {
         // do something here
       }, (error) => {
@@ -72,6 +72,26 @@ export class DoctorAppointmentsService {
         selectedAppointment.animalAppointmentId)
         .then(() => {
           dialogRef.closeAll();
+          this.uiAlertInterceptor.setUiError({
+            message: USER_CARD_TXT.cancelAppointmentSuccess,
+            class: 'snackbar-success'
+          });
+          // todo notify user
+        });
+    }).catch((error) => {
+      this.uiAlertInterceptor.setUiError({message: USER_CARD_TXT.cancelAppointmentError, class: 'snackbar-success'});
+      console.log(error);
+    })
+  }
+
+  cancelAnimalAppointmentByUser(selectedAppointment: any, doctor: any): Promise<any> {
+    //todo maybe update also doctor's appointment instead of deleting it?
+    return this.animalAppointment.deleteAppointment(selectedAppointment.id).then((res) => {
+      this.updateAppointment(
+        {isCanceledByUser: true},
+        selectedAppointment.doctorAppointmentId,
+        selectedAppointment.doctorId)
+        .then(() => {
           this.uiAlertInterceptor.setUiError({
             message: USER_CARD_TXT.cancelAppointmentSuccess,
             class: 'snackbar-success'

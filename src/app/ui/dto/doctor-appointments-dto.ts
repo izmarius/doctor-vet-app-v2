@@ -30,6 +30,7 @@ export class DoctorsAppointmentDTO {
   private isAppointmentFinished: boolean;
   private isConfirmedByDoctor: boolean;
   private isUserCreated: boolean;
+  private isCanceledByUser: boolean;
   private animalAppointmentId: string;
   private timestamp: number;
 // todo: getter and setter when to use in typescript
@@ -80,6 +81,15 @@ export class DoctorsAppointmentDTO {
 
   setUserId(value: string): DoctorsAppointmentDTO {
     this.userId = value;
+    return this;
+  }
+
+  getIsCanceledByUser(): boolean {
+    return this.isCanceledByUser;
+  }
+
+  setIsCanceledByUser(value: boolean): DoctorsAppointmentDTO {
+    this.isCanceledByUser = value;
     return this;
   }
 

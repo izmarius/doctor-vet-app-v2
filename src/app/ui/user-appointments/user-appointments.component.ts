@@ -4,6 +4,8 @@ import {USER_LOCALSTORAGE} from "../../shared-data/Constants";
 import {take} from "rxjs/operators";
 import {MatDialog} from "@angular/material/dialog";
 import {ConfirmDialogComponent} from "../shared/confirm-dialog/confirm-dialog.component";
+import {AnimalAppointmentService} from "../../services/animal-appointment/animal-appointment.service";
+import {DoctorAppointmentsService} from "../services/doctor-appointments.service";
 
 @Component({
   selector: 'app-user-appointments',
@@ -15,7 +17,8 @@ export class UserAppointmentsComponent implements OnInit {
   appointmentList: any[] = [];
 
   constructor(private userService: UserService,
-              private dialogRef: MatDialog) {
+              private dialogRef: MatDialog,
+              private doctorAppointmentService: DoctorAppointmentsService) {
   }
 
   ngOnInit(): void {
@@ -33,17 +36,18 @@ export class UserAppointmentsComponent implements OnInit {
       });
   }
 
-  cancelAppointment(appointment: any): void {
-
+  cancelAppointmentByUser(appointment: any): void {
     const dialogRef = this.dialogRef.open(ConfirmDialogComponent, {
       panelClass: 'confirmation-modal'
     });
-
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
       if (result) {
-
-        // delete user appointment and update doctor appointment
+        this.doctorAppointmentService.cancelAnimalAppointmentByUser(appointment, null).then(() => {
+          debugger;
+          this.appointmentList = this.appointmentList.filter((app) => {
+            return app.id !== appointment.id;
+          });
+        });
       }
     });
   }
