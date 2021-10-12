@@ -21,25 +21,17 @@ export class DoctorService {
       .pipe(take(1));
   }
 
-  getAllDoctors(): Observable<DoctorDTO[]> {
-    return this.firestoreService.getCollection(this.DOCTOR_COLLECTION)
-      .pipe(
-        map((snaps) => convertSnapshots<DoctorService>(snaps)),
-        first()
-      );
-  }
-
   getDoctorById(doctorId: string): Observable<DoctorDTO> {
     return this.firestoreService.getDocById(this.DOCTOR_COLLECTION, doctorId);
   }
 
   createDoctor(doctorDTO: DoctorDTO): void {
-        this.firestoreService.saveDocumentWithCustomId(this.DOCTOR_COLLECTION, doctorDTO, doctorDTO.id)
-          .then((res) => {
-          console.log('DOCTOR created');
-        }).catch((err) => {
-          console.log(err);
-        });
+    this.firestoreService.saveDocumentWithCustomId(this.DOCTOR_COLLECTION, doctorDTO, doctorDTO.id)
+      .then((res) => {
+        console.log('DOCTOR created');
+      }).catch((err) => {
+      console.log(err);
+    });
   }
 
   updateDoctorInfo(doctor: any, doctorId: string): Promise<void> {
@@ -54,12 +46,4 @@ export class DoctorService {
       console.log('Error deleting service', error);
     });
   }
-
-  // @ts-ignore
-  getLoggedInDoctorId(): any {
-    if (this.logInService.isLoggedIn()) {
-      return JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
-    }
-  }
-
 }

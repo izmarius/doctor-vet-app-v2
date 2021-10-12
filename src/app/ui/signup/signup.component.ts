@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {FirebaseUtilsService} from "../../services/firebase-utils-service/firebase-utils.service";
 import {SignUpService} from "../../services/signup/sign-up.service";
@@ -55,9 +55,9 @@ export class SignupComponent implements OnInit {
     this.locationService.getCitiesByCountyCode(this.countiesAbbr[value])
       .subscribe((response: any) => {
         this.localities = response
-    }, error => {
-      console.log(error);
-    });
+      }, error => {
+        console.log(error);
+      });
   }
 
   setLocality(locality: string): void {
@@ -120,7 +120,7 @@ export class SignupComponent implements OnInit {
     doctor.services = this.selectedServices;
     doctor.photo = '';
     // doctor.outOfOfficeDays = [];
-    // doctor.unavailableTime = {};
+    doctor.unavailableTime = {};
     // set default schedule when creating account
     doctor.schedule = DOCTOR_DEFAULT_SCHEDULE;
     doctor.appointmentFrequency = {
@@ -155,8 +155,8 @@ export class SignupComponent implements OnInit {
   }
 
   isSignUpButtonDisabled(): boolean {
-    for(let service in this.selectedServices) {
-      if(this.selectedServices[service].length > 0){
+    for (let service in this.selectedServices) {
+      if (this.selectedServices[service].length > 0) {
         return false;
       }
     }

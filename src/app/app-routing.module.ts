@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
 import {HomePageComponent} from './ui/home-page/home-page.component';
 import {MyProfileComponent} from "./ui/my-profile/my-profile.component";
 import {DoctorScheduleComponent} from "./ui/doctor-schedule/doctor-schedule.component";
@@ -33,4 +33,5 @@ const routes: Routes = [
   ],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {
+}

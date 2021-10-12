@@ -80,22 +80,12 @@ export class DoctorScheduleComponent implements OnInit {
     if (this.isSaveScheduleDisabled()) {
       return;
     }
-    this.storedDoctor.unavailableTime.notWorkingDays = [];
 
-    for (let key in this.storedDoctor.schedule) {
-      if (!this.storedDoctor.schedule[key].isChecked) {
-        this.storedDoctor.unavailableTime.notWorkingDays.push(this.storedDoctor.schedule[key].dayNumber);
-      }
-    }
+    this.setDoctorUnavailableTime();
+    this.setDoctorWorkingHoursInterval();
 
-    const startHour = parseInt(this.storedDoctor.schedule['monday-friday'].startTime.split(':')[0], 10);
-    const endHour = parseInt(this.storedDoctor.schedule['monday-friday'].endTime.split(':')[0], 10);
-    this.storedDoctor.appointmentFrequency.hourIntervals = [];
     this.storedDoctor.appointmentInterval = this.selectedInterval;
 
-    for (let i = startHour; i <= endHour; i++) {
-      this.storedDoctor.appointmentFrequency.hourIntervals.push(i);
-    }
     // @ts-ignore
     this.storedDoctor.appointmentFrequency.minuteIntervals = FREQUENCY_MINUTES_INTERVALS[this.selectedInterval.toString()];
     this.doctorService.updateDoctorInfo({
@@ -114,6 +104,25 @@ export class DoctorScheduleComponent implements OnInit {
         this.uiAlertInterceptor.setUiError({message: SCHEDULE_HEADER_TEXT.saveScheduleError, class: 'snackbar-error'});
         console.log('Error updating service', error);
       });
+  }
+
+  setDoctorWorkingHoursInterval(): void {
+    this.storedDoctor.appointmentFrequency.hourIntervals = [];
+    const startHour = parseInt(this.storedDoctor.schedule['monday-friday'].startTime.split(':')[0], 10);
+    const endHour = parseInt(this.storedDoctor.schedule['monday-friday'].endTime.split(':')[0], 10);
+    for (let i = startHour; i <= endHour; i++) {
+      this.storedDoctor.appointmentFrequency.hourIntervals.push(i);
+    }
+  }
+
+  setDoctorUnavailableTime(): void {
+    this.storedDoctor.unavailableTime.notWorkingDays = [];
+
+    for (let key in this.storedDoctor.schedule) {
+      if (!this.storedDoctor.schedule[key].isChecked) {
+        this.storedDoctor.unavailableTime.notWorkingDays.push(this.storedDoctor.schedule[key].dayNumber);
+      }
+    }
   }
 
   setAppointmentInterval(interval: number): void {
