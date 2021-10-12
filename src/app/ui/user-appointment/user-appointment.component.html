@@ -32,8 +32,8 @@
       <div class="p-left" *ngIf="isUserWithoutAnimal">
         <p class="error-msg"><strong>{{errorMessage}}</strong></p>
       </div>
-      <div class="p-left d-flex justify-content-between user-appoinment-card-container" *ngIf="isSearchByUserSuccess">
-        <app-user-create-app-card class="doctor-card" *ngFor="let doctor of doctorList" [doctor]="doctor"
+      <div class="p-left row user-appoinment-card-container" *ngIf="isSearchByUserSuccess">
+        <app-user-create-app-card class="doctor-card col-4 mx-2 m-btn-small" *ngFor="let doctor of doctorList" [doctor]="doctor"
                                   (createAppointmentEmitter)="createAppointment($event)"></app-user-create-app-card>
       </div>
     </div>
