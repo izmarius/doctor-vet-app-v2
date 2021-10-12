@@ -78,6 +78,10 @@ a:hover {
   cursor: pointer
 }
 
+.link--active {
+  color: $error-color;
+}
+
 //end anchor
 
 //start border

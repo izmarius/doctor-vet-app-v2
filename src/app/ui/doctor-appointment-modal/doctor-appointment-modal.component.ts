@@ -160,6 +160,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
       .setUserEmail(this.selectedPatient.email)
       .setPhone(this.selectedPatient.phone)
       .setIsAppointmentFinished(false)
+      .setIsUserCreated(false)
       .setIsConfirmedByDoctor(true)
       .setAnimalAppointmentId(animalAppointmentId)
       .setTimestamp(this.appointmentForm.value.startDate.getTime());
