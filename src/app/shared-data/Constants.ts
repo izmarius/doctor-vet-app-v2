@@ -175,11 +175,11 @@ export const HOMEPAGE_CARD_TEXT = [{
 }, {
   photo: '../../../assets/photos/svg.svg',
   title: 'Programari',
-  text: 'O gestionare mai buna a programarilor. Progrmari online. Programari recurente. Progrmari realizate mai rapid si mai eficient.'
+  text: 'O gestionare mai buna a programarilor. Programari online. Programari recurente. Programari realizate mai rapid si mai eficient.'
 } , {
   photo: '../../../assets/photos/svg.svg',
   title: 'Notificari',
-  text: 'Alerte de notificari ale progrmarilor prin sms si email.'
+  text: 'Alerte de notificari ale programarilor prin SMS si email.'
 }
 ];
 
@@ -199,7 +199,7 @@ export const HOMEPAGE_ARTICLE_STEPS_DATA = {
   text: [
     'O singura aplicatie pentru datele animalului tau',
     'Programari realizate online',
-    'Alerte prin sms si email, pentru a nu uita cand este urmatoarea progrmare',
+    'Alerte prin sms si email, pentru a nu uita cand este urmatoarea programare',
     'Calendar pe zile, saptamanal si lunar cu toate programarile',
     'Posibilitatea de a refuza sau accepta o programare',
     'Efectuarea de programari recurente prin apasarea unui simplu buton'
