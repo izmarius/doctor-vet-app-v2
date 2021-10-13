@@ -64,6 +64,7 @@
       <mwl-calendar-month-view
         (dayClicked)="dayClicked($event.day)"
         *ngSwitchCase="CalendarView.Month"
+        [weekStartsOn]="weekStartsOn"
         [viewDate]="viewDate"
         [events]="appointments"
         [activeDayIsOpen]="activeDayIsOpen"
@@ -75,6 +76,7 @@
         *ngSwitchCase="CalendarView.Week"
         [viewDate]="viewDate"
         [events]="appointments"
+        [weekStartsOn]="weekStartsOn"
         [activeDayIsOpen]="activeDayIsOpen"
         (eventClicked)="handleEvent('Clicked', $event.event)"
         (hourSegmentClicked)="addAppointment($event.date)"
@@ -86,6 +88,7 @@
       <mwl-calendar-day-view
         *ngSwitchCase="CalendarView.Day"
         [viewDate]="viewDate"
+        [weekStartsOn]="weekStartsOn"
         [events]="appointments"
         [activeDayIsOpen]="activeDayIsOpen"
         (eventClicked)="handleEvent('Clicked', $event.event)"

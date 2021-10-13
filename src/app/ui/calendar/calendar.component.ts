@@ -27,6 +27,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   hourToStartTheDay: number = 0;
   hourToEndTheDay: number = 23;
   doctorAppointmentsSub!: Subscription;
+  weekStartsOn: number = 1;
 
   constructor(private doctorService: DoctorAppointmentsService,
               private animalService: AnimalService,

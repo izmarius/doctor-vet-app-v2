@@ -40,8 +40,9 @@ exports.addNotification = functions.firestore.document('animal-appointments/{app
 
 
 exports.scheduledSMSNotification = functions.pubsub
-  .schedule('every 5 minutes')
+  .schedule('0 7 * * *')
   .timeZone('Europe/Bucharest')
   .onRun((context) => {
+    console.log('Timestamp notification: ', context.timestamp);
     getTomorrowNotificationsAndSendSMS();
   });
