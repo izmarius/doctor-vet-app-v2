@@ -55,11 +55,12 @@ export class DoctorAppointmentsService {
   }
 
   updateAppointment(app: any, appointmentId: string, doctorId: string): Promise<any> {
+
     return this.firestoreService.updateDocumentById(this.getAppointmentUrl(doctorId), appointmentId, app)
       .then(() => {
         // do something here
       }, (error) => {
-        console.log('Error updating appointment', error);
+        console.log('Appointment from doctor already was deleted so it cannot be updated', error);
       });
   }
 

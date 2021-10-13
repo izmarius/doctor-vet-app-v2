@@ -2,7 +2,7 @@
   <div class="schedule-button d-flex justify-content-end m-btn-dialog-row">
     <p class="my-auto mx-2 text-center">Reprogrameaza in :</p>
     <button class="btn btn-light close-btn small-button me-2" (click)="addRecurrentAppointment('day')">1 zi</button>
-    <button class="btn btn-light close-btn small-button me-2" (click)="addRecurrentAppointment('week')">1 saptamana
+    <button class="btn btn-light close-btn small-button me-2" (click)="addRecurrentAppointment('week')">2 saptamana
     </button>
     <button class="btn btn-light close-btn small-button me-2" (click)="addRecurrentAppointment('month')">1 luna</button>
     <button class="btn btn-light close-btn small-button me-2" (click)="addRecurrentAppointment('year')">1 an</button>
@@ -15,6 +15,7 @@
     <!--  ANIMAL GENERAL DATA -->
     <div class="animal-data-container vet-border-right">
       <div class="vet-border-bottom">
+        <p class="m-btn-small error-msg" *ngIf="userAnimalData?.appointment?.isCanceledByUser">PROGRAMARE ANULATA</p>
         <p>{{userAnimalData?.userData?.name}}</p>
         <p>{{userAnimalData?.appointment?.phone}}</p>
         <div class="animal-info d-flex">

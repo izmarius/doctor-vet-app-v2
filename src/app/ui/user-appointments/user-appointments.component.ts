@@ -43,7 +43,6 @@ export class UserAppointmentsComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.doctorAppointmentService.cancelAnimalAppointmentByUser(appointment, null).then(() => {
-          debugger;
           this.appointmentList = this.appointmentList.filter((app) => {
             return app.id !== appointment.id;
           });

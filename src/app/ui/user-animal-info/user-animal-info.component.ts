@@ -151,6 +151,7 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
       userPhoneNumber += appointmentInfo.phone;
     }
     return {
+      animalName: appointmentInfo.animalData.name,
       isCanceled: false,
       dateTime: appointmentInfo.dateTime,
       doctorId: this.doctor.id,

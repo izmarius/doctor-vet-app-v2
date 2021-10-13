@@ -40,18 +40,18 @@ exports.addNotification = functions.firestore.document('animal-appointments/{app
     return null;
   });
 
-// exports.addNotification = functions.firestore.document('animal-appointments/{appointmentId}')
-//   .onUpdate((snap, context) => {
-//     const collection = adminFirestore.collection('notifications');
-//     // at update animal app - update also notification! - dupa if notification is Canceled nu mia trimite sms / sau trimite sms ca notifacrea a fost stearsa de doctor
-//     collection.doc(snap.data().id).update({isCanceled: });
-//     // email notification
-//     console.log(`Added appointment with id: ${snap.data().id} and created notification for it`,);
-//     return null;
-//   });
+exports.addNotification = functions.firestore.document('animal-appointments/{appointmentId}')
+  .onUpdate((snap, context) => {
+    const collection = adminFirestore.collection('notifications');
+    // at update animal app - update also notification! - dupa if notification is Canceled nu mia trimite sms / sau trimite sms ca notifacrea a fost stearsa de doctor
+    // email notification
+    console.log(`Added appointment with id: ${snap.data().id} and created notification for it`,);
+    return null;
+  });
 
+// todo see what to do when you have multiple clients - batching and querying with limits
 exports.scheduledSMSNotification = functions.pubsub
-  .schedule('every 12 hours')
+  .schedule('30 9 * * *')
   .timeZone('Europe/Bucharest')
   .onRun((context) => {
     console.log('Timestamp notification: ', context.timestamp);

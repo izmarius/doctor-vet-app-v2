@@ -17,7 +17,10 @@ export class AnimalAppointmentService {
   }
 
   updateAnimalAppointment(animalAppointment: any, userId: string, animalId: string): Promise<any> {
-    return this.firestoreService.updateDocumentById('animal-appointments', animalId, JSON.parse(JSON.stringify(animalAppointment)));
+    return this.firestoreService.updateDocumentById('animal-appointments', animalId, JSON.parse(JSON.stringify(animalAppointment)))
+      .catch((err) => {
+        console.log('Appointment already deleted from user so it cannot be updated: ', err);
+      });
   }
 
   deleteAppointment(appointmentId: string): Promise<any> {

@@ -42,11 +42,12 @@ export class CalendarComponent implements OnInit, OnDestroy {
     this.setHourDayStartAndDayEnd();
     this.doctorAppointmentsSub = this.doctorService.getDoctorAppointments(this.doctor.id).subscribe((res) => {
       this.appointments = res.map((calendarApp: any) => {
-        if (!calendarApp.userId || !calendarApp.animalId) {
+        if (calendarApp.appointment.isCanceledByUser) {
           calendarApp.color = {
             primary: '#ad2121',
             secondary: '#FAE3E3',
           }
+          return calendarApp;
         } else if (calendarApp.appointment.isUserCreated) {
           calendarApp.color = {
             primary: '#e3bc08',
@@ -97,7 +98,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
   handleEvent(action: string, event: CalendarEvent | any) {
     // for users without account
-    if(!event.userId) {
+    if (!event.userId) {
       const appointmentPayload = {
         appointment: event.appointment,
         appointmentId: event.appointmentId
