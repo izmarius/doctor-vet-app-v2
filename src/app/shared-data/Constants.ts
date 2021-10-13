@@ -142,6 +142,10 @@ export const INPUT_REGEX_TEXTS = {
   phoneNumber: '^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}$'
 };
 
+export const NAVBAR_IMG = {
+  logo: '../../assets/photos/DoctorVett-logos-removebg.png'
+};
+
 export const NAVBAR_TEXT = {
   locations: 'Locatii',
   appointments: 'Programari',
@@ -159,7 +163,7 @@ export const NAVBAR_TEXT = {
 
 export const HEADER_TEXT = {
   title: 'Datele animalelor tale intr-o singura aplicatie',
-  subtitle: 'Iti permite sa inregistrezi animalele tale in aplicatie, sa creezi notificari pentru vaccinuri, operatii, sau programari la medicul veterinar',
+  subtitle: 'Iti permite sa iti inregistrezi animalele tale in aplicatie, sa creezi notificari pentru vaccinuri, interventii chirurgicale sau programari la medicul veterinar',
   buttonText: 'See projects'
 };
 
@@ -167,27 +171,39 @@ export const HOMEPAGE_CARD_TEXT = [{
   photo: '../../../assets/photos/svg.svg',
   title: 'Istoric medical',
   text: 'Pentru mai bune tratamente ale animalului tau vei avea acces la istoricul lui medical.'
-}];
+}, {
+  photo: '../../../assets/photos/svg.svg',
+  title: 'Programari',
+  text: 'O gestionare mai buna a programarilor. Progrmari online. Programari recurente. Progrmari realizate mai rapid si mai eficient.'
+} , {
+  photo: '../../../assets/photos/svg.svg',
+  title: 'Notificari',
+  text: 'Alerte de notificari ale progrmarilor prin sms si email.'
+}
+];
 
 export const HOMEPAGE_SECTION_DATA = {
-  title: 'Tot ce iti ofera aplicatia Doctor Vet',
+  title: 'Tot ce iti ofera aplicatia DoctorVett',
   subTitle: 'Managementul animalelor tale'
 };
 
 export const HOMEPAGE_ARTICLE_DATA = {
-  title: 'Manage project communications efficiently',
-  subtitle: 'Shared Inbox',
-  text: 'Shared inbox helps you stay on top of every update, question, request, and compliment that comes your way. It\'s the single source of truth for all your client communications.'
+  title: 'Gestioneaza vizitele la medicul veterinar mult mai eficient',
+  subtitle: 'DoctorVett',
+  text: 'DcotorVett vine in sprijinul medicilor veterinari si al pecientilor acestora oferindu-le un loc unde sunt integrate o serie de beneficii.'
 };
 
 export const HOMEPAGE_ARTICLE_STEPS_DATA = {
-  title: 'Why it\'s better than email:\n',
+  title: 'De ce este DoctorVett mai eficient decat nelipsitul caiet cu programari?\n',
   text: [
-    'Te asteptam in locul unde prietenii tai cei mai buni raman sanatosi',
-    'O singura aplicatie pentru datele animalului tau'
+    'O singura aplicatie pentru datele animalului tau',
+    'Programari realizate online',
+    'Alerte prin sms si email, pentru a nu uita cand este urmatoarea progrmare',
+    'Calendar pe zile, saptamanal si lunar cu toate programarile',
+    'Posibilitatea de a refuza sau accepta o programare',
+    'Efectuarea de programari recurente prin apasarea unui simplu buton'
   ],
-  icon: 'icon-magic-wand',
-  anchorText : 'Go to next page'
+  icon: 'icon-magic-wand'
 };
 
 export const DOCTOR_CREATES_NEW_USER = {

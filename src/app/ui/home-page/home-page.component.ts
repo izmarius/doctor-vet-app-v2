@@ -9,7 +9,7 @@ export class HomePageComponent implements OnInit {
   constructor() { }
 
   headerContent = {
-    title: 'Te asteptam in locul unde prietenii tai cei mai buni raman sanatosi. O singura aplicatie pentru datele animalului tau - Doctor Vet.',
+    title: 'Te asteptam in locul unde prietenii tai cei mai buni raman sanatosi. O singura aplicatie pentru datele animalului tau - DoctorVett.',
     style: this.getHeaderStyle()
   };
 
