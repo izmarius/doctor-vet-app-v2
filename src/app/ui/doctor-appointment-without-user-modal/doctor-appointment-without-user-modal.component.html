@@ -31,6 +31,12 @@
       </div>
     </div>
     <div class="m-btn-small">
+      <label for="phone">Nume Prenume</label>
+      <input type="text" id="name" class="form-control"
+             formControlName="patientName"
+             [placeholder]="'Popescu Ion'"/>
+    </div>
+    <div class="m-btn-small">
       <label for="phone">{{ appointmentFormPlaceHolder.patientPhoneLabel }}</label>
       <input type="text" id="phone" class="form-control"
              formControlName="patientPhone" maxlength="10"

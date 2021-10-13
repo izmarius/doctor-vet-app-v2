@@ -42,7 +42,8 @@ body {
   color: #ed553b !important;
 }
 
-.user-animal-details-dialog .mat-dialog-container {
+.user-animal-details-dialog .mat-dialog-container,
+.user-without-account-details-dialog .mat-dialog-container {
   background: $bg-alternate-color !important;
 }
 

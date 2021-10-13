@@ -9,6 +9,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {DoctorAppointmentModalComponent} from "../doctor-appointment-modal/doctor-appointment-modal.component";
 import {Subscription} from "rxjs";
 import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-error-interceptor.service";
+import {UserWithoutAccountDetailsCardComponent} from "../user-without-account-details-card/user-without-account-details-card.component";
 
 @Component({
   selector: 'app-calendar',
@@ -41,7 +42,12 @@ export class CalendarComponent implements OnInit, OnDestroy {
     this.setHourDayStartAndDayEnd();
     this.doctorAppointmentsSub = this.doctorService.getDoctorAppointments(this.doctor.id).subscribe((res) => {
       this.appointments = res.map((calendarApp: any) => {
-        if(calendarApp.appointment.isUserCreated) {
+        if (!calendarApp.userId || !calendarApp.animalId) {
+          calendarApp.color = {
+            primary: '#ad2121',
+            secondary: '#FAE3E3',
+          }
+        } else if (calendarApp.appointment.isUserCreated) {
           calendarApp.color = {
             primary: '#e3bc08',
             secondary: '#FDF1BA',
@@ -90,14 +96,24 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   handleEvent(action: string, event: CalendarEvent | any) {
-    const userAnimalObs$ = this.animalService.getAnimalDataAndMedicalHistoryByAnimalId(event.animalId, event.userId);
-    this.userAnimalData = {
-      userAnimalDataObs: userAnimalObs$,
-      userId: event.userId,
-      appointment: event.appointment,
-      appointmentId: event.appointmentId
+    // for users without account
+    if(!event.userId) {
+      const appointmentPayload = {
+        appointment: event.appointment,
+        appointmentId: event.appointmentId
+      }
+      this.openUserWithoutAccountAnimalAppointmentModal(appointmentPayload);
+    } else {
+      const userAnimalObs$ = this.animalService.getAnimalDataAndMedicalHistoryByAnimalId(event.animalId, event.userId);
+      this.userAnimalData = {
+        userAnimalDataObs: userAnimalObs$,
+        userId: event.userId,
+        appointment: event.appointment,
+        appointmentId: event.appointmentId
+      }
+      this.openUserAnimalAppointmentModal();
     }
-    this.openUserAnimalAppointmentModal();
+
   }
 
   addAppointment(date: any) {
@@ -122,8 +138,18 @@ export class CalendarComponent implements OnInit, OnDestroy {
       panelClass: 'user-animal-details-dialog',
       data: this.userAnimalData
     });
+  }
 
-    dialogRef.afterClosed().subscribe(() => {
+  openUserWithoutAccountAnimalAppointmentModal(appointmentPayload: any): void {
+    const dialogRef = this.dialogRef.open(UserWithoutAccountDetailsCardComponent, {
+      width: '20%',
+      panelClass: 'user-without-account-details-dialog',
+      data: appointmentPayload
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.doctorService.deleteAppointment(appointmentPayload.appointmentId, this.doctor.id);
+      }
     });
   }
 
@@ -132,12 +158,6 @@ export class CalendarComponent implements OnInit, OnDestroy {
       height: '40rem',
       panelClass: 'doctor-appointment-dialog',
       data: date
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-
-      }
     });
   }
 

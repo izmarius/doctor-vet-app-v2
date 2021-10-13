@@ -136,10 +136,10 @@ export class DoctorAppointmentsService {
                   + ', '
                   + 'Tel: ' + appointment.phone
                   + ', '
-                  + 'Animal: ' + appointment.animalData.name
+                  + 'Animal: ' + appointment.animalData?.name
                   + ', '
                   + appointment.services,
-                animalId: appointment.animalData.uid,
+                animalId: appointment.animalData?.uid,
                 userId: appointment.userId,
                 appointment: appointment,
                 appointmentId: snap.payload.doc.id

@@ -46,7 +46,7 @@ export class NavbarComponent implements OnInit {
 
   openAppointmentsWithoutUserModal(): void {
     const dialogRef = this.dialog.open(DoctorAppointmentWithoutUserModalComponent, {
-      height: '33rem',
+      height: '37rem',
       panelClass: 'doctor-appointment-dialog',
       data: null
     });
