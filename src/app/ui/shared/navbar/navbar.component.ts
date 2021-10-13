@@ -1,3 +1,4 @@
+import { NAVBAR_IMG } from './../../../shared-data/Constants';
 import {Component, OnInit} from '@angular/core';
 import {MatDialog} from "@angular/material/dialog";
 import {LogInService} from "../../../services/login/log-in.service";
@@ -18,6 +19,7 @@ export class NavbarComponent implements OnInit {
   user: any;
   isUserLoggedIn = false;
   isDoctorLoggedIn = false;
+  navbarImg: any;
 
   constructor(private dialog: MatDialog,
               private loginService: LogInService,
@@ -27,6 +29,7 @@ export class NavbarComponent implements OnInit {
   ngOnInit(): void {
     this.setHiddenNavLinks();
     this.navbarText = NAVBAR_TEXT;
+    this.navbarImg = NAVBAR_IMG;
     // todo - see an alternative to this
     this.userLoggedInService.userLoggedInObs.subscribe(() => {
       this.setHiddenNavLinks();
