@@ -7,6 +7,6 @@ exports.sendSMSNotification = function sendSMSNotification(smsPayload) {
   //   const phoneNumberRoPrefix = smsPayload.phoneNumber.slice(0, 2);
   //   if()
   // }
-  return client.messages.create({body: smsPayload.message, from: functions.config().doctorver.twillio_phone, to: smsPayload.phoneNumber});
+  return client.messages.create({body: smsPayload.message, from: functions.config().doctorvet.twillio_phone, to: smsPayload.phoneNumber});
 }
 
