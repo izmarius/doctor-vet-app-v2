@@ -39,7 +39,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
   public selectedPatient!: IUserDTO;
   public selectedAnimal: any = {};
   public errorMessage: string = '';
-  planModel: any = {start_time: new Date()};
+  selectedDate = new Date();
 
 
   @ViewChild('patientList') patientListElem: any;
@@ -60,7 +60,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // todo: set time in inputs to the closest hour possible that can be booked today - if current day -set to closest from dropdonw
+    // todo: set time in inputs to the closest hour possible that can be booked today - if current day -set to closest from dropdown
     // if no hours available display message to user that today is out of work hours
     this.appointmentFormPlaceHolder = APPOINTMENTFORM_DATA;
     this.doctor = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
@@ -90,9 +90,9 @@ export class DoctorAppointmentModalComponent implements OnInit {
     this.stepMinute = this.stepMinutes[0];
 
     if (this.data) {
-      this.stepHour = this.data.getHours();
-      this.stepMinute = this.data.getMinutes();
-      this.planModel.start_time = new Date(this.data);
+      // this.stepHour = this.data.getHours();
+      // this.stepMinute = this.data.getMinutes();
+      this.selectedDate = new Date(this.data);
     }
   }
 
@@ -112,7 +112,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
     if (!this.isAnimalRegisteredToUser()) {
       // todo: save also new collections with empty document? to avoid errors
       // save animal to user - create new animal + insert in user animal name + id
-      // todo: check animal subcolection if we have problems - create an appointment and get data
+      // todo: check animal sub collection if we have problems - create an appointment and get data
       // todo get data directly from user service
       const animalDocUID = this.firestoreService.getNewFirestoreId();
       this.selectedAnimal.animalId = animalDocUID;
@@ -210,14 +210,14 @@ export class DoctorAppointmentModalComponent implements OnInit {
   validateTime(): void {
     const currentTime = new Date();
     const currentHours = currentTime.getHours();
-    const currentMinutes = currentTime.getMinutes();
+    // const currentMinutes = currentTime.getMinutes();
     // todo check when doctor has last appointment - set in dropdown only available hours?
     // todo - add start hour/ end hour? - if doctor wants to block 2 hours for an appointment what he'll do?
     if (this.stepHour === null
       || this.stepMinute === null
       || !this.dateTimeUtils.isSelectedDateGreaterOrEqualComparedToCurrentDate(this.appointmentForm.value.startDate.toLocaleDateString())
       || (this.stepHour < currentHours && this.dateTimeUtils.isCurrentDay(this.appointmentForm.value.startDate.toLocaleDateString()))) {
-      // todo - refactor this - debugg
+      // todo - refactor this - debug
       // || (this.stepHour <= currentHours && this.stepMinute <= currentMinutes)
       this.setErrorMessage(APPOINTMENTFORM_DATA.timeValidation);
       return;

@@ -86,7 +86,9 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   dayClicked({date, events}: { date: Date; events: CalendarEvent[] }): void {
-    if (isSameMonth(date, this.viewDate)) {
+    if (events && events.length === 0) {
+      this.openAppointmentsModal(date);
+    } else if (isSameMonth(date, this.viewDate)) {
       if ((isSameDay(this.viewDate, date) && this.activeDayIsOpen) || events.length === 0) {
         this.activeDayIsOpen = false;
       } else {

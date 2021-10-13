@@ -16,8 +16,8 @@ export class UserCreateAppCardComponent implements OnInit {
   services: string[] = [];
   selectedService!: string;
   public minDate = new Date();
-  public selectedDate: any;
   stepMinutes: any;
+  public selectedDate: any;
   stepMinute!: number;
   stepHours: any;
   stepHour!: number;

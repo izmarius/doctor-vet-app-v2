@@ -36,7 +36,7 @@ export class UserAppointmentDialogComponent implements OnInit {
   user: any;
   selectedAnimal: any;
   isAnimalSelected: any;
-  isUserWithoutAnimal = false
+  isUserWithoutAnimal = false;
 
   constructor(private dateTimeUtils: DateUtilsService,
               private doctorService: DoctorService,
