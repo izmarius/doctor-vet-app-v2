@@ -146,6 +146,7 @@ export const NAVBAR_TEXT = {
   locations: 'Locatii',
   appointments: 'Programari',
   createAppointment: 'Adauga programare',
+  createAppointmentWithoutUser: 'Programare - user fara cont',
   patient: 'Pacienti',
   calendar: 'Calendar',
   schedule: 'Programul meu',

@@ -40,7 +40,15 @@ export class CalendarComponent implements OnInit, OnDestroy {
     this.doctor = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
     this.setHourDayStartAndDayEnd();
     this.doctorAppointmentsSub = this.doctorService.getDoctorAppointments(this.doctor.id).subscribe((res) => {
-      this.appointments = res;
+      this.appointments = res.map((calendarApp: any) => {
+        if(calendarApp.appointment.isUserCreated) {
+          calendarApp.color = {
+            primary: '#e3bc08',
+            secondary: '#FDF1BA',
+          }
+        }
+        return calendarApp;
+      });
     });
   }
 

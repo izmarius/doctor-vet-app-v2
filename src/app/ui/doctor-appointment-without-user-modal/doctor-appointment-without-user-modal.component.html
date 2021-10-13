@@ -1,0 +1,62 @@
+<div class="container">
+  <div class="d-flex justify-content-end"><span class="icon-close modal-close-icon"
+                                                (click)="onCancelForm()"></span></div>
+  <h4 class="text-center">User fara cont</h4>
+  <form [formGroup]="appointmentWithoutUserForm" (ngSubmit)="onSubmitAppointmentWithoutUser()">
+    <div class="m-btn-small">
+      <label>{{ appointmentFormPlaceHolder.dateLabel }}</label>
+      <div class="d-flex">
+        <input matInput class="form-control" [min]="minDate" [matDatepicker]="picker" formControlName="startDate"
+               [placeholder]="appointmentFormPlaceHolder.dateFormat" [(ngModel)]="planModel.start_time">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      </div>
+      <mat-datepicker #picker color="accent"></mat-datepicker>
+    </div>
+    <div class="m-btn-small d-flex">
+      <div>
+        <label>{{ appointmentFormPlaceHolder.hourLabel }}</label>
+        <mat-select class="form-control" [(ngModel)]="stepHour" [ngModelOptions]="{standalone: true}">
+          <mat-option *ngFor="let step of stepHours" [value]="step">
+            {{step}}
+          </mat-option>
+        </mat-select>
+      </div>
+      <div>
+        <label>{{ appointmentFormPlaceHolder.minuteLabel }}</label>
+        <mat-select class="form-control" [(ngModel)]="stepMinute" [ngModelOptions]="{standalone: true}">
+          <mat-option *ngFor="let step of stepMinutes" [value]="step">
+            {{step}}
+          </mat-option>
+        </mat-select>
+      </div>
+    </div>
+    <div class="m-btn-small">
+      <label for="phone">{{ appointmentFormPlaceHolder.patientPhoneLabel }}</label>
+      <input type="text" id="phone" class="form-control"
+             formControlName="patientPhone" maxlength="10"
+             [placeholder]="appointmentFormPlaceHolder.patientPhonePlaceholder"/>
+    </div>
+    <div class="m-btn-small">
+      <label for="services">{{appointmentFormPlaceHolder.servicesLabel}}</label>
+      <select name="services" id="services" class="form-control pointer" formControlName="medService">
+        <option class="dropdown-elem" value="null" disabled="true" [selected]="true">
+          {{ appointmentFormPlaceHolder.servicesSelectDefaultOption }}
+        </option>
+        <option class="dropdown-elem pointer" *ngFor="let service of doctorServiceList" [value]="service">
+          {{ service }}
+        </option>
+      </select>
+      <p class="error-msg m-top-small" *ngIf="isErrorDisplayed">
+        {{ errorMessage }}
+      </p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-light" type="button" (click)="onCancelForm()">
+        {{ appointmentFormPlaceHolder.cancelBtn }}
+      </button>
+      <button class="btn button--active" type="submit" [disabled]="!appointmentWithoutUserForm.valid">
+        {{ appointmentFormPlaceHolder.submitBtn }}
+      </button>
+    </div>
+  </form>
+</div>
