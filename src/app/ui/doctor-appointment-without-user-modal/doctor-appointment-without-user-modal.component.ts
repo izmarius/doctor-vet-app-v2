@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {MatDialogRef} from "@angular/material/dialog";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {APPOINTMENTFORM_DATA, INPUT_REGEX_TEXTS, USER_LOCALSTORAGE} from "../../shared-data/Constants";
@@ -63,6 +63,10 @@ export class DoctorAppointmentWithoutUserModalComponent implements OnInit {
 
   onCancelForm(): void {
     this.dialogRef.close();
+  }
+
+  onStartDateChange(startDateChannge: Date): void {
+    this.doctorAppointmentService.checkAppointmentStartDateValidity(this.doctor, this.appointmentWithoutUserForm, startDateChannge, APPOINTMENTFORM_DATA.wrongStartDate);
   }
 
   onSubmitAppointmentWithoutUser(): void {
@@ -134,5 +138,4 @@ export class DoctorAppointmentWithoutUserModalComponent implements OnInit {
       throw value;
     }
   }
-
 }

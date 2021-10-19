@@ -1,3 +1,4 @@
+import { FormGroup } from '@angular/forms';
 import {Injectable} from '@angular/core';
 import {FirestoreService} from "../../data/http/firestore.service";
 import {DoctorsAppointmentDTO, IDoctorsAppointmentsDTO} from "../dto/doctor-appointments-dto";
@@ -150,5 +151,15 @@ export class DoctorAppointmentsService {
           return this.appointmentList;
         })
       )
+  }
+
+  checkAppointmentStartDateValidity(doctor: any, appointmentForm: FormGroup, appoinmentNewStartDate: Date, errorMessage: string): void {
+    if (doctor && (doctor.schedule.sunday.dayNumber === appoinmentNewStartDate.getDay() || doctor.schedule.saturday.dayNumber === appoinmentNewStartDate.getDay()) && !doctor.schedule.saturday.isChecked) {
+      this.uiAlertInterceptor.setUiError({
+        message: errorMessage,
+        class: 'snackbar-error'
+      });
+      appointmentForm.controls['startDate'].setErrors({'incorrect': true});
+    }
   }
 }

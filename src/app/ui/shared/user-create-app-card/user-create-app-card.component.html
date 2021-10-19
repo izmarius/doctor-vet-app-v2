@@ -12,7 +12,7 @@
     <div class="d-flex">
       <input matInput class="form-control" [min]="minDate"
              [matDatepicker]="picker" [(ngModel)]="selectedDate"
-             [placeholder]="'mm/dd/yyyy'">
+             [placeholder]="'mm/dd/yyyy'" (ngModelChange)="onStartDateChange($event)">
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     </div>
     <mat-datepicker #picker color="accent"></mat-datepicker>
@@ -40,6 +40,6 @@
     <app-dropdown [placeholder]="'Servicii'" [seriesList]="services" (valueEmitter)="setService($event)"></app-dropdown>
   </div>
   <div class="d-flex justify-content-end">
-    <button class="btn button--active" (click)="createAppointmentByUser(doctor)">Adauga programare</button>
+    <button class="btn button--active" (click)="createAppointmentByUser(doctor)" [disabled]="isStartDateOk()">Adauga programare</button>
   </div>
 </div>

@@ -96,6 +96,10 @@ export class DoctorAppointmentModalComponent implements OnInit {
     }
   }
 
+  onStartDateChange(startDateChannge: Date): void {
+    this.doctorAppointmentService.checkAppointmentStartDateValidity(this.doctor, this.appointmentForm, startDateChannge, APPOINTMENTFORM_DATA.wrongStartDate);
+  }
+
   onSubmitAppointment(): void {
     this.validateTime();
     if (!this.appointmentForm.valid) {

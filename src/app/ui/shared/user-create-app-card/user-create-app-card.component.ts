@@ -2,6 +2,8 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {DateUtilsService} from "../../../data/utils/date-utils.service";
 import {DoctorAppointmentsService} from "../../services/doctor-appointments.service";
 import {AnimalAppointmentService} from "../../../services/animal-appointment/animal-appointment.service";
+import { UiErrorInterceptorService } from '../alert-message/services/ui-error-interceptor.service';
+import { APPOINTMENTFORM_DATA } from 'src/app/shared-data/Constants';
 
 @Component({
   selector: 'app-user-create-app-card',
@@ -19,8 +21,9 @@ export class UserCreateAppCardComponent implements OnInit {
   stepMinute!: number;
   stepHours: any;
   stepHour!: number;
+  startDateOk!: boolean;
 
-  constructor(private dateTimeUtils: DateUtilsService) {
+  constructor(private dateTimeUtils: DateUtilsService, private uiAlertInterceptor: UiErrorInterceptorService) {
   }
 
   ngOnInit(): void {
@@ -32,6 +35,7 @@ export class UserCreateAppCardComponent implements OnInit {
       this.stepHour = this.stepHours[0]
       this.stepMinutes = this.doctor.appointmentFrequency.minuteIntervals;
       this.stepMinute = this.stepMinutes[0]
+      this.selectedDate = new Date();
     }
   }
 
@@ -81,6 +85,21 @@ export class UserCreateAppCardComponent implements OnInit {
     this.selectedService = service;
   }
 
+  checkUserAppointmentStartDateValidity(doctor: any, appoinmentNewStartDate: Date, errorMessage: string): boolean {
+    if (doctor && (doctor.schedule.sunday.dayNumber === appoinmentNewStartDate.getDay() || doctor.schedule.saturday.dayNumber === appoinmentNewStartDate.getDay()) && !doctor.schedule.saturday.isChecked) {
+      this.uiAlertInterceptor.setUiError({
+        message: errorMessage,
+        class: 'snackbar-error'
+      });
+      return true;
+    }
+    return false;
+  }
+
+  onStartDateChange(startDateChannge: Date): void {
+    this.startDateOk = this.checkUserAppointmentStartDateValidity(this.doctor, startDateChannge, APPOINTMENTFORM_DATA.wrongStartDate);
+  }
+
   createAppointmentByUser(doctor: any): void {
     const doctorAppointmentPayload = {
       localeDate: this.selectedDate.toLocaleDateString(),
@@ -90,5 +109,9 @@ export class UserCreateAppCardComponent implements OnInit {
       service: this.selectedService
     }
     this.createAppointmentEmitter.emit(doctorAppointmentPayload);
+  }
+
+  isStartDateOk(): any {
+    return this.startDateOk;
   }
 }
