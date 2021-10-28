@@ -1,4 +1,4 @@
-import { FormGroup } from '@angular/forms';
+import {FormGroup} from '@angular/forms';
 import {Injectable} from '@angular/core';
 import {FirestoreService} from "../../data/http/firestore.service";
 import {DoctorsAppointmentDTO, IDoctorsAppointmentsDTO} from "../dto/doctor-appointments-dto";
@@ -7,7 +7,7 @@ import {first, map} from "rxjs/operators";
 import {convertSnapshots} from "../../data/utils/firestore-utils.service";
 import {AnimalAppointmentService} from "../../services/animal-appointment/animal-appointment.service";
 import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-error-interceptor.service";
-import {USER_CARD_TXT} from "../../shared-data/Constants";
+import {APPOINTMENTFORM_DATA, USER_CARD_TXT} from "../../shared-data/Constants";
 import {DateUtilsService} from "../../data/utils/date-utils.service";
 import {MatDialog} from "@angular/material/dialog";
 
@@ -123,6 +123,7 @@ export class DoctorAppointmentsService {
           this.appointmentList = [];
           appointmentsSnaps.map((snap: any) => {
             const appointment = snap.payload.doc.data();
+            // todo DEBUGG HERE TEST WITH 01 IN DATE / TIME PARAMETERS
             let appointmentDate = new Date(new Date(appointment['dateTime'].split('-')[0].trim()));
             const hour = parseInt(appointment['dateTime'].split('-')[1].trim().split(':')[0], 10)
             const minute = parseInt(appointment['dateTime'].split('-')[1].trim().split(':')[1], 10)
@@ -134,7 +135,7 @@ export class DoctorAppointmentsService {
                 title:
                   'Ora: ' + appointment['dateTime'].split('-')[1].trim()
                   + ', '
-                  +'Client: ' + appointment.userName
+                  + 'Client: ' + appointment.userName
                   + ', '
                   + 'Tel: ' + appointment.phone
                   + ', '
@@ -153,13 +154,23 @@ export class DoctorAppointmentsService {
       )
   }
 
-  checkAppointmentStartDateValidity(doctor: any, appointmentForm: FormGroup, appoinmentNewStartDate: Date, errorMessage: string): void {
-    if (doctor && (doctor.schedule.sunday.dayNumber === appoinmentNewStartDate.getDay() || doctor.schedule.saturday.dayNumber === appoinmentNewStartDate.getDay()) && !doctor.schedule.saturday.isChecked) {
+  isFreeDayForDoctor(schedule: any, appointmentNewStartDate: Date): boolean {
+    // todo this should not depend on the appointment form, only on date and schedule - also is wrong to check only saturnday and sunday - what if doctor works on saturday/sunday?
+    let isOutOfOfficeDay = false;
+    for (const day in schedule) {
+      if (!schedule[day].isChecked && schedule[day].dayNumber === appointmentNewStartDate.getDay()) {
+        isOutOfOfficeDay =  true;
+        break;
+      }
+    }
+
+    if (isOutOfOfficeDay) {
       this.uiAlertInterceptor.setUiError({
-        message: errorMessage,
+        message: APPOINTMENTFORM_DATA.wrongStartDate,
         class: 'snackbar-error'
       });
-      appointmentForm.controls['startDate'].setErrors({'incorrect': true});
     }
+
+    return isOutOfOfficeDay;
   }
 }

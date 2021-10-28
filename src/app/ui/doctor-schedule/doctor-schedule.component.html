@@ -67,9 +67,13 @@
 <!--    START SCHEDULE -->
     <h2 class="out-of-office-container">Seteaza-ti programul de lucru</h2>
     <div class="half-width m-auto-h">
-      <p>Frecventa programarilor - Din cate in cate minute se pot face programari?</p>
-      <app-dropdown (valueEmitter)="setAppointmentInterval($event)" [placeholder]="'10 / 15 / 20 / 25 / 30 / 35 / 40 / 45'"
-                    [seriesList]="minuteIntervals" [defaultValue]="selectedInterval"></app-dropdown>
+<!--      todo error in calendar per week when doctor has set a 45 minute interval
+          set 45 minute interval and click on the calendar day starting at 9:30 / 10:30 -> the minutes are not shown and we can save the appointment
+          the appointment is saved at 9:30 even though we don't have this option and have only 0 and 45 minutes-->
+
+  <!--      <p>Frecventa programarilor - Din cate in cate minute se pot face programari?</p>-->
+  <!--      <app-dropdown (valueEmitter)="setAppointmentInterval($event)" [placeholder]="'10 / 15 / 20 / 25 / 30 / 35 / 40 / 45'"-->
+  <!--                    [seriesList]="minuteIntervals" [defaultValue]="selectedInterval"></app-dropdown>-->
 
     </div>
     <app-schedule-setter *ngFor="let day of weekDaysList" [day]="day" (checkEmitter)="getAndSetDay($event)"

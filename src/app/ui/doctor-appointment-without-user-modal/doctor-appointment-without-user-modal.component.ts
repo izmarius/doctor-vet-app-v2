@@ -7,6 +7,7 @@ import {DoctorsAppointmentDTO} from "../dto/doctor-appointments-dto";
 import {DoctorAppointmentsService} from "../services/doctor-appointments.service";
 import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-error-interceptor.service";
 import {FirestoreService} from "../../data/http/firestore.service";
+import {DoctorService} from "../../services/doctor/doctor.service";
 
 @Component({
   selector: 'app-doctor-appointment-without-user-modal',
@@ -31,7 +32,8 @@ export class DoctorAppointmentWithoutUserModalComponent implements OnInit {
               private dateTimeUtils: DateUtilsService,
               private doctorAppointmentService: DoctorAppointmentsService,
               private uiAlertInterceptor: UiErrorInterceptorService,
-              private firestoreService: FirestoreService) {
+              private firestoreService: FirestoreService,
+              private doctorService: DoctorService) {
   }
 
   ngOnInit(): void {
@@ -65,8 +67,10 @@ export class DoctorAppointmentWithoutUserModalComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  onStartDateChange(startDateChannge: Date): void {
-    this.doctorAppointmentService.checkAppointmentStartDateValidity(this.doctor, this.appointmentWithoutUserForm, startDateChannge, APPOINTMENTFORM_DATA.wrongStartDate);
+  onStartDateChange(startDateChange: Date): void {
+    if(this.doctorAppointmentService.isFreeDayForDoctor(this.doctor.schedule,startDateChange)) {
+      this.appointmentWithoutUserForm.controls.startDate.setErrors({'incorrect': true});
+    }
   }
 
   onSubmitAppointmentWithoutUser(): void {
@@ -75,22 +79,55 @@ export class DoctorAppointmentWithoutUserModalComponent implements OnInit {
       this.setErrorMessage(APPOINTMENTFORM_DATA.formAllFieldsValidMessage);
       return;
     }
+    this.appointmentWithoutUserForm.value.startDate.setHours(this.stepHour, this.stepMinute);
+    if(this.areAppointmentsOverlapping()) {
+      return;
+    }
     const doctorAppointmentId = this.firestoreService.getNewFirestoreId();
 
-    this.doctorAppointmentService.createAppointment(
-      this.getDoctorAppointmentUserWithoutAccount(),
-      this.doctor.id,
-      doctorAppointmentId
-    ).then(() => {
+    Promise.all([
+      this.doctorAppointmentService.createAppointment(this.getDoctorAppointmentUserWithoutAccount(), this.doctor.id, doctorAppointmentId),
+      this.doctorService.updateDoctorInfo({appointmentsMap: this.doctor.appointmentsMap}, this.doctor.id)
+    ]).then(() => {
+      localStorage.removeItem(USER_LOCALSTORAGE);
+      localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.doctor));
       this.uiAlertInterceptor.setUiError({
         message: APPOINTMENTFORM_DATA.successAppointment,
         class: 'snackbar-success'
       });
-    }).catch((error: any) => {
+      this.dialogRef.close();
+    }).catch((error) => {
       this.uiAlertInterceptor.setUiError({message: error.message, class: 'snackbar-error'});
       console.log('Error: ', error);
-    });
+    })
   }
+  areAppointmentsOverlapping(): boolean {
+    const startTimestamp = this.appointmentWithoutUserForm.value.startDate.getTime()
+    const endTimestamp = this.appointmentWithoutUserForm.value.startDate.getTime() + (this.doctor.appointmentInterval * 60000);
+
+    const appointmentDate = this.appointmentWithoutUserForm.value.startDate.toLocaleDateString();
+    if(!this.doctor.appointmentsMap[appointmentDate]) {
+      this.doctor.appointmentsMap[appointmentDate] = [];
+      this.doctor.appointmentsMap[appointmentDate].push({startTimestamp, endTimestamp});
+      return false;
+    }
+
+    let overlappingAppointment = this.doctor.appointmentsMap[appointmentDate].find((interval: any) => {
+      return startTimestamp >= interval.startTimestamp && startTimestamp <= interval.endTimestamp;
+    });
+
+    if(overlappingAppointment) {
+      this.uiAlertInterceptor.setUiError({
+        message: 'O programare exista deja in acest interval orar.',
+        class: 'snackbar-error'
+      });
+      return true;
+    }
+
+    this.doctor.appointmentsMap[appointmentDate].push({startTimestamp, endTimestamp});
+    return false;
+  }
+
 
   getDoctorAppointmentUserWithoutAccount() {
     return new DoctorsAppointmentDTO()

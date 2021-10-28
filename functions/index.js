@@ -8,5 +8,6 @@ const user = require('./user/user');
 
 exports.scheduledSMSNotification = notification.scheduledSMSNotification;
 exports.getNotifications = notification.getNotifications;
+exports.addNotification = notification.addNotification;
 
 exports.createNewUser = user.doctorCreatesUser;

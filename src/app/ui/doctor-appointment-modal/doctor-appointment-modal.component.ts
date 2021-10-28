@@ -21,7 +21,7 @@ import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-err
   styleUrls: ['./doctor-appointment-modal.component.scss']
 })
 export class DoctorAppointmentModalComponent implements OnInit {
-  //todo add minutes and hours depending on the schedule
+
   stepMinutes: any
   stepMinute!: number;
   stepHours: any;
@@ -90,14 +90,16 @@ export class DoctorAppointmentModalComponent implements OnInit {
     this.stepMinute = this.stepMinutes[0];
 
     if (this.data) {
-      // this.stepHour = this.data.getHours();
-      // this.stepMinute = this.data.getMinutes();
+      this.stepHour = this.data.getHours();
+      this.stepMinute = this.data.getMinutes();
       this.selectedDate = new Date(this.data);
     }
   }
 
-  onStartDateChange(startDateChannge: Date): void {
-    this.doctorAppointmentService.checkAppointmentStartDateValidity(this.doctor, this.appointmentForm, startDateChannge, APPOINTMENTFORM_DATA.wrongStartDate);
+  onStartDateChange(startDateChange: Date): void {
+    if(this.doctorAppointmentService.isFreeDayForDoctor(this.doctor.schedule,startDateChange)) {
+      this.appointmentForm.controls.startDate.setErrors({'incorrect': true});
+    }
   }
 
   onSubmitAppointment(): void {
@@ -106,6 +108,11 @@ export class DoctorAppointmentModalComponent implements OnInit {
       this.setErrorMessage(APPOINTMENTFORM_DATA.formAllFieldsValidMessage);
       return;
     }
+    this.appointmentForm.value.startDate.setHours(this.stepHour, this.stepMinute);
+    if(this.areAppointmentsOverlapping()) {
+      return;
+    }
+
     const newAnimalInfo = new AnimalUtilInfo()
       .setName(this.selectedAnimal.animalName);
 
@@ -127,27 +134,53 @@ export class DoctorAppointmentModalComponent implements OnInit {
 
     const doctorAppointmentId = this.firestoreService.getNewFirestoreId();
     const animalAppointmentId = this.firestoreService.getNewFirestoreId();
-    this.appointmentForm.value.startDate.setHours(this.stepHour, this.stepMinute);
     const newDoctorAppointment = this.getDoctorAppointment(animalAppointmentId, newAnimalInfo);
     const newAnimalAppointment = this.getAnimalAppointmentPayload(doctorAppointmentId, animalAppointmentId, newAnimalInfo);
 
-    this.doctorAppointmentService.createAppointment(
-      newDoctorAppointment,
-      this.doctor.id,
-      doctorAppointmentId
-    ).then(() => {
+    Promise.all([
+      this.doctorService.updateDoctorInfo({appointmentsMap: this.doctor.appointmentsMap}, this.doctor.id),
+      this.doctorAppointmentService.createAppointment(newDoctorAppointment, this.doctor.id, doctorAppointmentId),
       this.animalAppointment.saveAnimalAppointment(newAnimalAppointment, this.selectedPatient?.id, animalAppointmentId)
-        .then(() => {
-          this.uiAlertInterceptor.setUiError({
-            message: APPOINTMENTFORM_DATA.successAppointment,
-            class: 'snackbar-success'
-          });
-          this.onCancelForm(true);
-        });
-    }).catch((error: any) => {
+    ]).then(() => {
+      localStorage.removeItem(USER_LOCALSTORAGE);
+      localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.doctor));
+      this.uiAlertInterceptor.setUiError({
+        message: APPOINTMENTFORM_DATA.successAppointment,
+        class: 'snackbar-success'
+      });
+      // update localstorage
+      this.onCancelForm(true);
+    }).catch((error) => {
       this.uiAlertInterceptor.setUiError({message: error.message, class: 'snackbar-error'});
       console.log('Error: ', error);
     });
+  }
+
+  areAppointmentsOverlapping(): boolean {
+    const startTimestamp = this.appointmentForm.value.startDate.getTime()
+    const endTimestamp = this.appointmentForm.value.startDate.getTime() + (this.doctor.appointmentInterval * 60000);
+
+    const appointmentDate = this.appointmentForm.value.startDate.toLocaleDateString();
+    if(!this.doctor.appointmentsMap[appointmentDate]) {
+      this.doctor.appointmentsMap[appointmentDate] = [];
+      this.doctor.appointmentsMap[appointmentDate].push({startTimestamp, endTimestamp});
+      return false;
+    }
+
+    let overlappingAppointment = this.doctor.appointmentsMap[appointmentDate].find((interval: any) => {
+      return startTimestamp >= interval.startTimestamp && startTimestamp <= interval.endTimestamp;
+    });
+
+    if(overlappingAppointment) {
+      this.uiAlertInterceptor.setUiError({
+        message: 'O programare exista deja in acest interval orar.',
+        class: 'snackbar-error'
+      });
+      return true;
+    }
+
+    this.doctor.appointmentsMap[appointmentDate].push({startTimestamp, endTimestamp});
+    return false;
   }
 
   getDoctorAppointment(animalAppointmentId: string, newAnimalInfo: any) {
@@ -169,6 +202,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
       .setIsConfirmedByDoctor(true)
       .setAnimalAppointmentId(animalAppointmentId)
       .setTimestamp(this.appointmentForm.value.startDate.getTime());
+    // todo set Timestamp is correct?
   }
 
   getAnimalAppointmentPayload(doctorAppointmentId: string, animalAppointmentId: string, animalInfo: any): any {

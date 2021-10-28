@@ -33,7 +33,8 @@ export class CalendarComponent implements OnInit, OnDestroy {
   constructor(private doctorService: DoctorAppointmentsService,
               private animalService: AnimalService,
               private dialogRef: MatDialog,
-              private alertInterceptor: UiErrorInterceptorService) {
+              private alertInterceptor: UiErrorInterceptorService,
+              private doctorAppointmentService: DoctorAppointmentsService) {
   }
 
   ngOnInit() {
@@ -99,6 +100,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   handleEvent(action: string, event: CalendarEvent | any) {
+    // todo validate date - > cannot click if is a free day
     // for users without account
     if (!event.userId) {
       const appointmentPayload = {
@@ -120,6 +122,9 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   addAppointment(date: any) {
+    if(this.doctorAppointmentService.isFreeDayForDoctor(this.doctor.schedule, date)) {
+      return;
+    }
     const estDate = new Date(date);
     const now = new Date();
 

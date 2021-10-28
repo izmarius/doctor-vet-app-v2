@@ -22,7 +22,7 @@ export class AuthStateChangeService {
     this.afAuth.authState.subscribe((user) => {
       const userFromLocalStorage = localStorage.getItem(USER_LOCALSTORAGE);
       this.loaderService.show();
-      if (user && !userFromLocalStorage) {
+      if (user) {
         // todo: fix in cloud functions
         // if(!user.emailVerified) {
         //   this.uiAlertInterceptor.setUiError({message: USER_STATE.emailVerified, class: 'snackbar-error'});

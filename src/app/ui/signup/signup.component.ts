@@ -127,7 +127,8 @@ export class SignupComponent implements OnInit {
       minuteIntervals: FREQUENCY_MINUTES_INTERVALS['30'],
       hourIntervals: [9, 10, 11, 12, 13, 14, 15, 16, 17]
     }
-    doctor.appointmentInterval = 15;
+    doctor.appointmentInterval = 30;
+    doctor.appointmentsMap = {}
     return doctor;
   }
 

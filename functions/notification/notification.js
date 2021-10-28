@@ -29,7 +29,7 @@ function getTomorrowNotificationsAndSendSMS() {
 exports.getNotifications = functions.https.onRequest(async (req, res) => {
   getTomorrowNotificationsAndSendSMS();
   res.send("Success");
-})
+});
 
 exports.addNotification = functions.firestore.document('animal-appointments/{appointmentId}')
   .onCreate((snap, context) => {
@@ -40,19 +40,31 @@ exports.addNotification = functions.firestore.document('animal-appointments/{app
     return null;
   });
 
-exports.addNotification = functions.firestore.document('animal-appointments/{appointmentId}')
-  .onUpdate((snap, context) => {
-    const collection = adminFirestore.collection('notifications');
-    // at update animal app - update also notification! - dupa if notification is Canceled nu mia trimite sms / sau trimite sms ca notifacrea a fost stearsa de doctor
-    // email notification
-    console.log(`Added appointment with id: ${snap.data().id} and created notification for it`,);
-    return null;
-  });
+// exports.deleteNotificationWhenUserAppIsCanceled = functions.firestore.document('animal-appointments/{appointmentId}')
+//   .onDelete((snap, context) => {
+//     const collection = adminFirestore.collection('notifications');
+//     collection.doc().delete(snap.data().id).then(r => {
+//       console.log(`DELETED appointment with id : ${snap.id} from notification when user deletes his appointment`);
+//     }).catch((error)=> {
+//       console.log(`Error deleting notification when user deletes an appointment`, error);
+//     });
+//     return null;
+//   });
+//
+// exports.deleteNotificationWhenUserAppIsCanceled = functions.firestore.document('doctors/{doctorId}/appointments/{appointmentId}')
+//   .onDelete((snap, context) => {
+//     const collection = adminFirestore.collection('notifications');
+//     collection.doc().delete(snap.data().animalAppointmentId).then(r => {
+//       console.log(`DELETED appointment with id : ${snap.id} from notification when user deletes his appointment`);
+//     }).catch((error)=> {
+//       console.log(`Error deleting notification when user deletes an appointment`, error);
+//     });
+//     return null;
+//   });
 
 // todo see what to do when you have multiple clients - batching and querying with limits
 exports.scheduledSMSNotification = functions.pubsub
-  .schedule('30 9 * * *')
-  .timeZone('Europe/Bucharest')
+  .schedule('0 7 * * *')
   .onRun((context) => {
     console.log('Timestamp notification: ', context.timestamp);
     getTomorrowNotificationsAndSendSMS();

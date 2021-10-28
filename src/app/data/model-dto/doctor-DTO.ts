@@ -15,6 +15,7 @@ export class DoctorDTO {
   public unavailableTime?: any;
   public appointmentFrequency?: any;
   public appointmentInterval?: number;
+  appointmentsMap?: any;
 }
 
 export interface IDaySchedule {
