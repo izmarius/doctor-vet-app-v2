@@ -7,9 +7,10 @@ import {first, map} from "rxjs/operators";
 import {convertSnapshots} from "../../data/utils/firestore-utils.service";
 import {AnimalAppointmentService} from "../../services/animal-appointment/animal-appointment.service";
 import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-error-interceptor.service";
-import {APPOINTMENTFORM_DATA, USER_CARD_TXT} from "../../shared-data/Constants";
+import {APPOINTMENTFORM_DATA, USER_CARD_TXT, USER_LOCALSTORAGE} from "../../shared-data/Constants";
 import {DateUtilsService} from "../../data/utils/date-utils.service";
 import {MatDialog} from "@angular/material/dialog";
+import {DoctorService} from "../../services/doctor/doctor.service";
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +23,8 @@ export class DoctorAppointmentsService {
   constructor(private firestoreService: FirestoreService,
               private animalAppointment: AnimalAppointmentService,
               private uiAlertInterceptor: UiErrorInterceptorService,
-              private dateUtils: DateUtilsService) {
+              private dateUtils: DateUtilsService,
+              private doctorService: DoctorService) {
   }
 
   getAllAppointments(doctorId: string): Observable<IDoctorsAppointmentsDTO[]> {
@@ -67,19 +69,19 @@ export class DoctorAppointmentsService {
 
   cancelAppointment(selectedAppointment: any, doctor: any, dialogRef: MatDialog): void {
     //todo maybe update also doctor's appointment instead of deleting it?
-    this.deleteAppointment(selectedAppointment.id, doctor.id).then((res) => {
-      this.animalAppointment.updateAnimalAppointment(
-        {isCanceled: true},
-        selectedAppointment.userId,
-        selectedAppointment.animalAppointmentId)
-        .then(() => {
-          dialogRef.closeAll();
-          this.uiAlertInterceptor.setUiError({
-            message: USER_CARD_TXT.cancelAppointmentSuccess,
-            class: 'snackbar-success'
-          });
-          // todo notify user
-        });
+    Promise.all([
+      this.doctorService.updateDoctorInfo({appointmentsMap: doctor.appointmentsMap}, doctor.id),
+      this.deleteAppointment(selectedAppointment.id, doctor.id),
+      this.animalAppointment.updateAnimalAppointment({isCanceled: true}, selectedAppointment.userId, selectedAppointment.animalAppointmentId)
+    ]).then(() => {
+      localStorage.removeItem(USER_LOCALSTORAGE);
+      localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(doctor));
+      dialogRef.closeAll();
+      this.uiAlertInterceptor.setUiError({
+        message: USER_CARD_TXT.cancelAppointmentSuccess,
+        class: 'snackbar-success'
+      });
+      // todo notify user
     }).catch((error) => {
       this.uiAlertInterceptor.setUiError({message: USER_CARD_TXT.cancelAppointmentError, class: 'snackbar-success'});
       console.log(error);
@@ -159,7 +161,7 @@ export class DoctorAppointmentsService {
     let isOutOfOfficeDay = false;
     for (const day in schedule) {
       if (!schedule[day].isChecked && schedule[day].dayNumber === appointmentNewStartDate.getDay()) {
-        isOutOfOfficeDay =  true;
+        isOutOfOfficeDay = true;
         break;
       }
     }

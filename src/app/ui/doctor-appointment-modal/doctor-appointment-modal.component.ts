@@ -97,7 +97,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
   }
 
   onStartDateChange(startDateChange: Date): void {
-    if(this.doctorAppointmentService.isFreeDayForDoctor(this.doctor.schedule,startDateChange)) {
+    if (this.doctorAppointmentService.isFreeDayForDoctor(this.doctor.schedule, startDateChange)) {
       this.appointmentForm.controls.startDate.setErrors({'incorrect': true});
     }
   }
@@ -109,7 +109,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
       return;
     }
     this.appointmentForm.value.startDate.setHours(this.stepHour, this.stepMinute);
-    if(this.areAppointmentsOverlapping()) {
+    if (this.areAppointmentsOverlapping()) {
       return;
     }
 
@@ -161,17 +161,23 @@ export class DoctorAppointmentModalComponent implements OnInit {
     const endTimestamp = this.appointmentForm.value.startDate.getTime() + (this.doctor.appointmentInterval * 60000);
 
     const appointmentDate = this.appointmentForm.value.startDate.toLocaleDateString();
-    if(!this.doctor.appointmentsMap[appointmentDate]) {
+    if (!this.doctor.appointmentsMap[appointmentDate]) {
       this.doctor.appointmentsMap[appointmentDate] = [];
       this.doctor.appointmentsMap[appointmentDate].push({startTimestamp, endTimestamp});
       return false;
     }
 
     let overlappingAppointment = this.doctor.appointmentsMap[appointmentDate].find((interval: any) => {
-      return startTimestamp >= interval.startTimestamp && startTimestamp <= interval.endTimestamp;
+      return startTimestamp >= interval.startTimestamp && startTimestamp < interval.endTimestamp;
+      // if (!(startTimestamp == interval.endTimestamp && startTimestamp > interval.startTimestamp)) {
+      //   return true;
+      // } else if () {
+      //   return true;
+      // }
+      // return false;
     });
 
-    if(overlappingAppointment) {
+    if (overlappingAppointment) {
       this.uiAlertInterceptor.setUiError({
         message: 'O programare exista deja in acest interval orar.',
         class: 'snackbar-error'

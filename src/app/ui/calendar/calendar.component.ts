@@ -141,7 +141,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   openUserAnimalAppointmentModal(): void {
-    const dialogRef = this.dialogRef.open(UserAnimalInfoComponent, {
+    this.dialogRef.open(UserAnimalInfoComponent, {
       width: '80%',
       panelClass: 'user-animal-details-dialog',
       data: this.userAnimalData
@@ -162,7 +162,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   openAppointmentsModal(date: Date): void {
-    const dialogRef = this.dialogRef.open(DoctorAppointmentModalComponent, {
+    this.dialogRef.open(DoctorAppointmentModalComponent, {
       height: '40rem',
       panelClass: 'doctor-appointment-dialog',
       data: date

@@ -1,4 +1,4 @@
-import {Component, ElementRef, Inject,  OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {AnimalService} from "../services/animal.service";
 import {
   APPOINTMENTFORM_DATA,
@@ -16,6 +16,7 @@ import {DoctorAppointmentsService} from "../services/doctor-appointments.service
 import {AnimalAppointmentService} from "../../services/animal-appointment/animal-appointment.service";
 import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-error-interceptor.service";
 import {ConfirmDialogComponent} from "../shared/confirm-dialog/confirm-dialog.component";
+import {DoctorService} from "../../services/doctor/doctor.service";
 
 @Component({
   selector: 'app-user-animal-info',
@@ -44,6 +45,8 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
               private doctorAppointmentsService: DoctorAppointmentsService,
               private animalAppointment: AnimalAppointmentService,
               private uiAlertService: UiErrorInterceptorService,
+              private doctorService: DoctorService,
+              private uiAlertInterceptor: UiErrorInterceptorService
   ) {
   }
 
@@ -77,9 +80,24 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.userAnimalData.appointment.id = this.userAnimalData.appointmentId;
+        // how to handle the filing request - we will have corrupted data
+        this.removeAppointmentFromAppointmentMap();
         this.doctorAppointmentsService.cancelAppointment(this.userAnimalData.appointment, this.doctor, this.dialog);
       }
     });
+  }
+
+  removeAppointmentFromAppointmentMap() {
+    const date = this.userAnimalData.appointment.dateTime.split('-')[0].trim();
+    this.doctor.appointmentsMap[date].forEach((interval: any, index: number) => {
+      if(interval.startTimestamp === this.userAnimalData.appointment.timestamp) {
+        this.doctor.appointmentsMap[date].splice(index, 1);
+        return;
+      }
+    });
+    if(this.doctor.appointmentsMap[date].length === 0) {
+      delete this.doctor.appointmentsMap[date];
+    }
   }
 
   addRecurrentAppointment(period: string) {
@@ -96,6 +114,13 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
       // todo display error message
       return;
     }
+    if (this.doctorAppointmentsService.isFreeDayForDoctor(this.doctor.schedule, appointmentDate)) {
+      return;
+    }
+
+    if(this.areAppointmentsOverlapping(appointmentDate)) {
+      return;
+    }
     let appointment = Object.create(this.userAnimalData.appointment);
     appointment.timestamp = appointmentDate.getTime();
     const localeDate = appointmentDate.toLocaleDateString();
@@ -108,22 +133,50 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
     const newDoctorAppointment = this.getDoctorAppointment(animalAppointmentId, appointment);
     const newAnimalAppointment = this.getAnimalAppointmentPayload(doctorAppointmentId, animalAppointmentId, appointment);
 
-    this.doctorAppointmentsService.createAppointment(
-      newDoctorAppointment,
-      this.doctor.id,
-      doctorAppointmentId
-    ).then(() => {
+    // todo update appointment date
+
+    Promise.all([
+      this.doctorService.updateDoctorInfo({appointmentsMap: this.doctor.appointmentsMap}, this.doctor.id),
+      this.doctorAppointmentsService.createAppointment(newDoctorAppointment, this.doctor.id, doctorAppointmentId),
       this.animalAppointment.saveAnimalAppointment(newAnimalAppointment, appointment.userId, animalAppointmentId)
-        .then(() => {
-          this.uiAlertService.setUiError({
-            message: APPOINTMENTFORM_DATA.successAppointment,
-            class: 'snackbar-success'
-          });
-        });
+    ]).then(() => {
+      localStorage.removeItem(USER_LOCALSTORAGE);
+      localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.doctor));
+      this.uiAlertService.setUiError({
+        message: APPOINTMENTFORM_DATA.successAppointment,
+        class: 'snackbar-success'
+      });
     }).catch((error: any) => {
       this.uiAlertService.setUiError({message: error.message, class: 'snackbar-error'});
       console.log('Error: ', error);
     });
+  }
+
+  areAppointmentsOverlapping(date: Date): boolean {
+    const startTimestamp = date.getTime()
+    const endTimestamp = date.getTime() + (this.doctor.appointmentInterval * 60000);
+
+    const appointmentDate = date.toLocaleDateString();
+    if(!this.doctor.appointmentsMap[appointmentDate]) {
+      this.doctor.appointmentsMap[appointmentDate] = [];
+      this.doctor.appointmentsMap[appointmentDate].push({startTimestamp, endTimestamp});
+      return false;
+    }
+
+    let overlappingAppointment = this.doctor.appointmentsMap[appointmentDate].find((interval: any) => {
+      return startTimestamp >= interval.startTimestamp && startTimestamp <= interval.endTimestamp;
+    });
+
+    if(overlappingAppointment) {
+      this.uiAlertInterceptor.setUiError({
+        message: 'O programare exista deja in acest interval orar.',
+        class: 'snackbar-error'
+      });
+      return true;
+    }
+
+    this.doctor.appointmentsMap[appointmentDate].push({startTimestamp, endTimestamp});
+    return false;
   }
 
   getDoctorAppointment(animalAppointmentId: string, appointmentInfo: any) {

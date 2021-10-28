@@ -13,7 +13,7 @@ import {USER_LOCALSTORAGE} from "../../shared-data/Constants";
 export class DoctorService {
   private DOCTOR_COLLECTION = 'doctors';
 
-  constructor(private firestoreService: FirestoreService, private logInService: LogInService) {
+  constructor(private firestoreService: FirestoreService) {
   }
 
   getDoctorsByLocation(locality: string): Observable<any> {
