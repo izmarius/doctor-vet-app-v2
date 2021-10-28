@@ -1,10 +1,8 @@
-import {FormGroup} from '@angular/forms';
 import {Injectable} from '@angular/core';
 import {FirestoreService} from "../../data/http/firestore.service";
-import {DoctorsAppointmentDTO, IDoctorsAppointmentsDTO} from "../dto/doctor-appointments-dto";
+import {DoctorsAppointmentDTO} from "../dto/doctor-appointments-dto";
 import {Observable} from "rxjs";
-import {first, map} from "rxjs/operators";
-import {convertSnapshots} from "../../data/utils/firestore-utils.service";
+import {map} from "rxjs/operators";
 import {AnimalAppointmentService} from "../../services/animal-appointment/animal-appointment.service";
 import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-error-interceptor.service";
 import {APPOINTMENTFORM_DATA, USER_CARD_TXT, USER_LOCALSTORAGE} from "../../shared-data/Constants";
@@ -25,32 +23,6 @@ export class DoctorAppointmentsService {
               private uiAlertInterceptor: UiErrorInterceptorService,
               private dateUtils: DateUtilsService,
               private doctorService: DoctorService) {
-  }
-
-  getAllAppointments(doctorId: string): Observable<IDoctorsAppointmentsDTO[]> {
-    return this.firestoreService.getCollection(this.getAppointmentUrl(doctorId)).pipe(
-      map(snaps => convertSnapshots<IDoctorsAppointmentsDTO[]>(snaps)
-      )
-    );
-    // firebase uses websocket to transfer data and first closes that connection after first value was transmited - for multiple tryes we will use take method
-    // todo: subscribe in component
-  }
-
-  getAllCurrentAppointments(doctorId: string): Observable<IDoctorsAppointmentsDTO[]> {
-    const timestamps = this.dateUtils.setAndGetDateToFetch();
-
-    return this.firestoreService.getCollectionByMultipleWhereClauses(this.getAppointmentUrl(doctorId), timestamps).pipe(
-      map(snaps => convertSnapshots<IDoctorsAppointmentsDTO[]>(snaps)
-      )
-    );
-    // firebase uses websocket to transfer data and first closes that connection after first value was transmited - for multiple tryes we will use take method
-    // todo: subscribe in component
-  }
-
-
-  getAppointmentById(appointmentId: string, doctorId: string): Observable<DoctorsAppointmentDTO> {
-    return this.firestoreService.getDocById(this.getAppointmentUrl(doctorId), appointmentId);
-    // todo: subscribe in component
   }
 
   createAppointment(doctorAppointmentDTO: DoctorsAppointmentDTO, doctorId: string, doctorAppointmentId: string): Promise<any> {
@@ -174,5 +146,32 @@ export class DoctorAppointmentsService {
     }
 
     return isOutOfOfficeDay;
+  }
+
+  areAppointmentsOverlapping(date: Date, doctor: any): boolean {
+    const startTimestamp = date.getTime()
+    const endTimestamp = date.getTime() + (doctor.appointmentInterval * 60000);
+
+    const appointmentDate = date.toLocaleDateString();
+    if (!doctor.appointmentsMap[appointmentDate]) {
+      doctor.appointmentsMap[appointmentDate] = [];
+      doctor.appointmentsMap[appointmentDate].push({startTimestamp, endTimestamp});
+      return false;
+    }
+
+    let overlappingAppointment = doctor.appointmentsMap[appointmentDate].find((interval: any) => {
+      return startTimestamp >= interval.startTimestamp && startTimestamp < interval.endTimestamp;
+    });
+
+    if (overlappingAppointment) {
+      this.uiAlertInterceptor.setUiError({
+        message: 'O programare exista deja in acest interval orar.',
+        class: 'snackbar-error'
+      });
+      return true;
+    }
+
+    doctor.appointmentsMap[appointmentDate].push({startTimestamp, endTimestamp});
+    return false;
   }
 }

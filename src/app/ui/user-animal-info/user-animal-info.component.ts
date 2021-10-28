@@ -90,12 +90,12 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
   removeAppointmentFromAppointmentMap() {
     const date = this.userAnimalData.appointment.dateTime.split('-')[0].trim();
     this.doctor.appointmentsMap[date].forEach((interval: any, index: number) => {
-      if(interval.startTimestamp === this.userAnimalData.appointment.timestamp) {
+      if (interval.startTimestamp === this.userAnimalData.appointment.timestamp) {
         this.doctor.appointmentsMap[date].splice(index, 1);
         return;
       }
     });
-    if(this.doctor.appointmentsMap[date].length === 0) {
+    if (this.doctor.appointmentsMap[date].length === 0) {
       delete this.doctor.appointmentsMap[date];
     }
   }
@@ -118,7 +118,7 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if(this.areAppointmentsOverlapping(appointmentDate)) {
+    if (this.doctorAppointmentsService.areAppointmentsOverlapping(appointmentDate, this.doctor)) {
       return;
     }
     let appointment = Object.create(this.userAnimalData.appointment);
@@ -150,33 +150,6 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
       this.uiAlertService.setUiError({message: error.message, class: 'snackbar-error'});
       console.log('Error: ', error);
     });
-  }
-
-  areAppointmentsOverlapping(date: Date): boolean {
-    const startTimestamp = date.getTime()
-    const endTimestamp = date.getTime() + (this.doctor.appointmentInterval * 60000);
-
-    const appointmentDate = date.toLocaleDateString();
-    if(!this.doctor.appointmentsMap[appointmentDate]) {
-      this.doctor.appointmentsMap[appointmentDate] = [];
-      this.doctor.appointmentsMap[appointmentDate].push({startTimestamp, endTimestamp});
-      return false;
-    }
-
-    let overlappingAppointment = this.doctor.appointmentsMap[appointmentDate].find((interval: any) => {
-      return startTimestamp >= interval.startTimestamp && startTimestamp <= interval.endTimestamp;
-    });
-
-    if(overlappingAppointment) {
-      this.uiAlertInterceptor.setUiError({
-        message: 'O programare exista deja in acest interval orar.',
-        class: 'snackbar-error'
-      });
-      return true;
-    }
-
-    this.doctor.appointmentsMap[appointmentDate].push({startTimestamp, endTimestamp});
-    return false;
   }
 
   getDoctorAppointment(animalAppointmentId: string, appointmentInfo: any) {

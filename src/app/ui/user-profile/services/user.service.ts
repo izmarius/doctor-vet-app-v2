@@ -10,7 +10,6 @@ import {USER_LOCALSTORAGE, USER_SERVICE} from "../../../shared-data/Constants";
 import {IUserData} from "../../../shared-data/iuser-data";
 import {FirebaseUtilsService} from "../../../services/firebase-utils-service/firebase-utils.service";
 import {DateUtilsService} from "../../../data/utils/date-utils.service";
-import {IDoctorsAppointmentsDTO} from "../../dto/doctor-appointments-dto";
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +18,6 @@ export class UserService {
   private USER_COLLECTION = 'user/';
   private DOCTORS_COLLECTION = 'doctors';
   private ANIMAL_COLLECTION = '/animals';
-  private APPOINTMENTS_COLLECTION = '/\'/appointments\'';
 
   // todo : move from here
   constructor(

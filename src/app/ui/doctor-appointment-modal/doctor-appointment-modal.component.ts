@@ -109,7 +109,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
       return;
     }
     this.appointmentForm.value.startDate.setHours(this.stepHour, this.stepMinute);
-    if (this.areAppointmentsOverlapping()) {
+    if (this.doctorAppointmentService.areAppointmentsOverlapping(this.appointmentForm.value.startDate, this.doctor)) {
       return;
     }
 
@@ -148,45 +148,11 @@ export class DoctorAppointmentModalComponent implements OnInit {
         message: APPOINTMENTFORM_DATA.successAppointment,
         class: 'snackbar-success'
       });
-      // update localstorage
       this.onCancelForm(true);
     }).catch((error) => {
       this.uiAlertInterceptor.setUiError({message: error.message, class: 'snackbar-error'});
       console.log('Error: ', error);
     });
-  }
-
-  areAppointmentsOverlapping(): boolean {
-    const startTimestamp = this.appointmentForm.value.startDate.getTime()
-    const endTimestamp = this.appointmentForm.value.startDate.getTime() + (this.doctor.appointmentInterval * 60000);
-
-    const appointmentDate = this.appointmentForm.value.startDate.toLocaleDateString();
-    if (!this.doctor.appointmentsMap[appointmentDate]) {
-      this.doctor.appointmentsMap[appointmentDate] = [];
-      this.doctor.appointmentsMap[appointmentDate].push({startTimestamp, endTimestamp});
-      return false;
-    }
-
-    let overlappingAppointment = this.doctor.appointmentsMap[appointmentDate].find((interval: any) => {
-      return startTimestamp >= interval.startTimestamp && startTimestamp < interval.endTimestamp;
-      // if (!(startTimestamp == interval.endTimestamp && startTimestamp > interval.startTimestamp)) {
-      //   return true;
-      // } else if () {
-      //   return true;
-      // }
-      // return false;
-    });
-
-    if (overlappingAppointment) {
-      this.uiAlertInterceptor.setUiError({
-        message: 'O programare exista deja in acest interval orar.',
-        class: 'snackbar-error'
-      });
-      return true;
-    }
-
-    this.doctor.appointmentsMap[appointmentDate].push({startTimestamp, endTimestamp});
-    return false;
   }
 
   getDoctorAppointment(animalAppointmentId: string, newAnimalInfo: any) {

@@ -61,7 +61,6 @@ import { UserWithoutAccountDetailsCardComponent } from './ui/user-without-accoun
     FooterComponent,
     NavbarComponent,
     UploadPhotoComponent,
-    // DoctorAppointmentsComponent,
     UserCardComponent,
     UserAnimalInfoComponent,
     UserProfileComponent,

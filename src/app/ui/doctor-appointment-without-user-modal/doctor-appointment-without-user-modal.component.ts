@@ -1,4 +1,4 @@
-import {Component, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MatDialogRef} from "@angular/material/dialog";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {APPOINTMENTFORM_DATA, INPUT_REGEX_TEXTS, USER_LOCALSTORAGE} from "../../shared-data/Constants";
@@ -68,7 +68,7 @@ export class DoctorAppointmentWithoutUserModalComponent implements OnInit {
   }
 
   onStartDateChange(startDateChange: Date): void {
-    if(this.doctorAppointmentService.isFreeDayForDoctor(this.doctor.schedule,startDateChange)) {
+    if (this.doctorAppointmentService.isFreeDayForDoctor(this.doctor.schedule, startDateChange)) {
       this.appointmentWithoutUserForm.controls.startDate.setErrors({'incorrect': true});
     }
   }
@@ -80,7 +80,7 @@ export class DoctorAppointmentWithoutUserModalComponent implements OnInit {
       return;
     }
     this.appointmentWithoutUserForm.value.startDate.setHours(this.stepHour, this.stepMinute);
-    if(this.areAppointmentsOverlapping()) {
+    if (this.doctorAppointmentService.areAppointmentsOverlapping(this.appointmentWithoutUserForm.value.startDate, this.doctor)) {
       return;
     }
     const doctorAppointmentId = this.firestoreService.getNewFirestoreId();
@@ -101,33 +101,6 @@ export class DoctorAppointmentWithoutUserModalComponent implements OnInit {
       console.log('Error: ', error);
     })
   }
-  areAppointmentsOverlapping(): boolean {
-    const startTimestamp = this.appointmentWithoutUserForm.value.startDate.getTime()
-    const endTimestamp = this.appointmentWithoutUserForm.value.startDate.getTime() + (this.doctor.appointmentInterval * 60000);
-
-    const appointmentDate = this.appointmentWithoutUserForm.value.startDate.toLocaleDateString();
-    if(!this.doctor.appointmentsMap[appointmentDate]) {
-      this.doctor.appointmentsMap[appointmentDate] = [];
-      this.doctor.appointmentsMap[appointmentDate].push({startTimestamp, endTimestamp});
-      return false;
-    }
-
-    let overlappingAppointment = this.doctor.appointmentsMap[appointmentDate].find((interval: any) => {
-      return startTimestamp >= interval.startTimestamp && startTimestamp <= interval.endTimestamp;
-    });
-
-    if(overlappingAppointment) {
-      this.uiAlertInterceptor.setUiError({
-        message: 'O programare exista deja in acest interval orar.',
-        class: 'snackbar-error'
-      });
-      return true;
-    }
-
-    this.doctor.appointmentsMap[appointmentDate].push({startTimestamp, endTimestamp});
-    return false;
-  }
-
 
   getDoctorAppointmentUserWithoutAccount() {
     return new DoctorsAppointmentDTO()

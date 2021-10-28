@@ -20,7 +20,6 @@ export class AuthStateChangeService {
               private loaderService: LoaderService,
               private routerService: Router) {
     this.afAuth.authState.subscribe((user) => {
-      const userFromLocalStorage = localStorage.getItem(USER_LOCALSTORAGE);
       this.loaderService.show();
       if (user) {
         // todo: fix in cloud functions

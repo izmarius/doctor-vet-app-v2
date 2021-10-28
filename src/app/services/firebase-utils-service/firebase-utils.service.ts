@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {AngularFireAuth} from "@angular/fire/auth";
-import {UiErrorInterceptorService} from "../../ui/shared/alert-message/services/ui-error-interceptor.service";
 
 @Injectable({
   providedIn: 'root'
