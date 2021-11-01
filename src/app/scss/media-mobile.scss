@@ -7,19 +7,49 @@
   h4 {
     font-size: 1.35rem;
   }
+
+  .nav-link {
+    padding-left: 0 !important;
+  }
+
+  a {
+    font-size: 0.875rem;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+
+  .main-title {
+    font-size: 3rem;
+  }
+
+  .title {
+    font-size: 2.5rem !important;
+  }
+
+  .doctor-appointment-dialog {
+    max-width: 20% !important;
+  }
+
+  .navbar-nav .nav-link {
+    padding-right: 0;
+    padding-left: 0;
+  }
 }
 
 /* smartphones, iPhone, portrait 480x320 phones */
 @media only screen and (max-width: 641px) {
   .vet-content {
-    //width: $m-full-size;
+    width: $m-full-size;
+  }
+
+  .vet-container {
+    padding-left: 0;
+    padding-right: 0;
   }
 
   //appointment dialog
-  .doctor-appointment-dialog {
-    width: $full-size !important;
-    max-width: $full-size !important;
-  }
 
   .modal-footer {
     padding: 0 !important;
@@ -86,6 +116,10 @@
   }
 
   //  confirmation modal
+  .confirmation-modal {
+    width: 90% !important;
+  }
+
   .button-container {
     flex-direction: column;
     width: $full-size !important;
@@ -94,7 +128,13 @@
   .button-container button {
     width: $full-size !important;
   }
-  // todo refactor css?
+
+  //navbar DIALOGS
+  .doctor-appointment-dialog {
+    width: 90% !important;
+    max-width: 90% !important
+  }
+
   // schedule
   .schedule-container {
     padding-right: 5px !important;
@@ -145,7 +185,7 @@
 
   //   my profile
   .my-profile-container {
-    width: $full-size !important;
+    width: $m-full-size !important;
   }
 
   .photo-container {
@@ -190,6 +230,44 @@
     height: 500px !important;
   }
 
+
+  //  USER SECTION
+  //  MY ANIMALS
+  .add-animal-form-container {
+    width: $full-size ! important;
+  }
+
+  .my-animals-links-container {
+    flex-wrap: wrap;
+  }
+
+  //   create new appointment:
+  .search-appointment-sidebar, .user-appoinment-card-container {
+    width: $full-size !important;
+  }
+  .animal-list {
+    display: flex;
+  }
+
+  .user-appointment-container {
+    flex-direction: column;
+  }
+  .user-appoinment-card-container {
+    padding-left: 0 !important;
+  }
+  .user-appoinment-card-container .doctor-card {
+    width: $full-size !important;
+    max-width: $full-size !important;
+    margin-right: 0;
+    margin-left: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+//  user appointments list
+  .user-appointment {
+    width: $full-size!important;
+  }
 }
 
 

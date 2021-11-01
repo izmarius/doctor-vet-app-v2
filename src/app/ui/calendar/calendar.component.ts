@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {CalendarEvent, CalendarView} from 'angular-calendar';
 import {isSameDay, isSameMonth} from 'date-fns';
 import {APPOINTMENT_MESSAGES, CALENDAR_DATA, USER_LOCALSTORAGE} from "../../shared-data/Constants";
@@ -32,6 +32,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   doctorAppointmentsSub$!: Subscription;
   weekStartsOn: number = 1;
 
+
   constructor(private doctorService: DoctorAppointmentsService,
               private animalService: AnimalService,
               private dialogRef: MatDialog,
@@ -43,12 +44,22 @@ export class CalendarComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.calendarPlaceHolder = CALENDAR_DATA;
     this.doctor = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
+    this.onResize();
     this.setHourDayStartAndDayEnd();
     this.getDoctorAppointments();
   }
 
   ngOnDestroy() {
     this.doctorAppointmentsSub$?.unsubscribe();
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    if(window.innerWidth && window.innerWidth <= 641) {
+      this.view = CalendarView.Day;
+    } else {
+      this.view = CalendarView.Week;
+    }
   }
 
   setView(view: CalendarView): void {

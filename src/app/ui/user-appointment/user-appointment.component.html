@@ -1,10 +1,12 @@
 <div class="vet-container">
   <div class="vet-content">
-    <div class="p-around d-flex">
+    <div class="p-around d-flex user-appointment-container">
       <div class="search-appointment-sidebar">
         <p><strong>Selecteaza un animal</strong></p>
-        <div class="m-btn-small" *ngFor="let animal of user.animals; let i=index; first as isFirst">
-          <p [id]="animal.animalId" class="d-flex justify-content-start pointer" [class.link--active]="isFirst" (click)="setAnimalToDoAppointment($event, animal)">{{animal.animalName}}</p>
+        <div class="animal-list">
+          <div class="m-btn-small pe-2" *ngFor="let animal of user.animals; let i=index; first as isFirst">
+            <p [id]="animal.animalId" class="d-flex justify-content-start pointer" [class.link--active]="isFirst" (click)="setAnimalToDoAppointment($event, animal)">{{animal.animalName}}</p>
+          </div>
         </div>
         <p><strong>Cauta doctor</strong></p>
         <form>
@@ -33,7 +35,7 @@
         <p class="error-msg"><strong>{{errorMessage}}</strong></p>
       </div>
       <div class="p-left row user-appoinment-card-container" *ngIf="isSearchByUserSuccess">
-        <app-user-create-app-card class="doctor-card col-4 mx-2 m-btn-small" *ngFor="let doctor of doctorList" [doctor]="doctor"
+        <app-user-create-app-card class="doctor-card mx-2 m-btn-small" *ngFor="let doctor of doctorList" [doctor]="doctor"
                                   (createAppointmentEmitter)="createAppointment($event)"></app-user-create-app-card>
       </div>
     </div>

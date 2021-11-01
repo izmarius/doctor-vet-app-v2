@@ -1,4 +1,4 @@
-import { NAVBAR_IMG } from './../../../shared-data/Constants';
+import {NAVBAR_IMG} from './../../../shared-data/Constants';
 import {Component, OnInit} from '@angular/core';
 import {MatDialog} from "@angular/material/dialog";
 import {LogInService} from "../../../services/login/log-in.service";
@@ -38,7 +38,8 @@ export class NavbarComponent implements OnInit {
   }
 
   openAppointmentsModal(): void {
-    const dialogRef = this.dialog.open(DoctorAppointmentModalComponent, {
+    // @ts-ignore
+    this.dialog.open(DoctorAppointmentModalComponent, {
       height: '40rem',
       panelClass: 'doctor-appointment-dialog',
       data: null
@@ -46,7 +47,7 @@ export class NavbarComponent implements OnInit {
   }
 
   openAppointmentsWithoutUserModal(): void {
-    const dialogRef = this.dialog.open(DoctorAppointmentWithoutUserModalComponent, {
+    this.dialog.open(DoctorAppointmentWithoutUserModalComponent, {
       height: '37rem',
       panelClass: 'doctor-appointment-dialog',
       data: null

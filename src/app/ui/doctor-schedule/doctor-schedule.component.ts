@@ -41,11 +41,6 @@ export class DoctorScheduleComponent implements OnInit {
     this.scheduleBtnText = SCHEDULE_HEADER_TEXT.scheduleButtonText;
     this.weekDaysList = DAYS_OF_WEEK;
     this.selectedInterval = <number>this.storedDoctor.appointmentInterval;
-    this.headerContent = {
-      title: SCHEDULE_HEADER_TEXT.title,
-      subtitle: SCHEDULE_HEADER_TEXT.subtitle,
-      style: this.getHeaderStyle()
-    };
   }
 
   getAndSetDay(dayPayload: IDaySchedule): void {
@@ -57,19 +52,6 @@ export class DoctorScheduleComponent implements OnInit {
       }
     }
   }
-
-  getHeaderStyle(): any {
-    return {
-      headerContainer: {
-        height: '300px',
-        background: '#ffdc4d',
-      },
-      headerContent: {
-        height: '180px'
-      }
-    };
-  }
-
 
   isSaveScheduleDisabled(): boolean {
     return !this.storedDoctor.schedule || Object.keys(this.storedDoctor.schedule).length === 0;
