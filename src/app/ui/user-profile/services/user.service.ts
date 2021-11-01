@@ -1,6 +1,5 @@
 import {map, first, take, mergeMap} from 'rxjs/operators';
 import {Injectable} from '@angular/core';
-import {AngularFirestore, AngularFirestoreDocument} from '@angular/fire/firestore';
 import {FirestoreService} from 'src/app/data/http/firestore.service';
 import {Observable, of} from 'rxjs';
 import {convertSnapshots} from 'src/app/data/utils/firestore-utils.service';
@@ -19,9 +18,7 @@ export class UserService {
   private DOCTORS_COLLECTION = 'doctors';
   private ANIMAL_COLLECTION = '/animals';
 
-  // todo : move from here
   constructor(
-    private angularFirestore: AngularFirestore,
     private firestoreService: FirestoreService,
     private uiAlertInterceptor: UiErrorInterceptorService,
     private firebaseUtils: FirebaseUtilsService,
@@ -30,7 +27,7 @@ export class UserService {
   }
 
   setUserData(user: any): Promise<void> {
-    const userRef: AngularFirestoreDocument<UserDTO> = this.angularFirestore.doc(`user/${user.uid}`);
+    const userRef = this.firestoreService.getDocumentRef(`user/${user.uid}`);
     const userData = new UserDTO();
     userData.setUserCity('')
       .setUserEmail(user.email)

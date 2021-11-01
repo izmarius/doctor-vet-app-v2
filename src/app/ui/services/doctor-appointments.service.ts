@@ -63,7 +63,6 @@ export class DoctorAppointmentsService {
   cancelAnimalAppointmentByUser(selectedAppointment: any, doctor: any): Promise<any> {
     //todo maybe update also doctor's appointment instead of deleting it?
     this.setAppointmentFromAppointmentMapAsCanceledByUser(selectedAppointment, doctor);
-    debugger
     return Promise.all([
       this.doctorService.updateDoctorInfo({appointmentsMap: doctor.appointmentsMap}, doctor.id),
       this.animalAppointment.deleteAppointment(selectedAppointment.id),

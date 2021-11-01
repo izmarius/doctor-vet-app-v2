@@ -36,25 +36,27 @@ export class SignUpService {
           });
           return;
         }
+
         this.afAuth.createUserWithEmailAndPassword(userPayload.email, userPayload.password)
           .then((userCredentials) => {
-            // todo - add default photo to user?
-            const userDto = {
-              id: userCredentials.user?.uid,
-              animals: [],
-              email: userPayload.email,
-              phone: userPayload.phone,
-              city: '-',
-              photo: '',
-              name: userPayload.name
-            }
-            this.userService.createUser(userDto);
+            this.userService.createUser(this.getUserDTO(userCredentials, userPayload));
           })
           .catch((error) => {
             this.uiErrorInterceptor.setUiError({message: error.message, class: 'snackbar-error'});
           });
       });
+  }
 
+  getUserDTO(userCredentials: any, userPayload: any) {
+    return {
+      id: userCredentials.user?.uid,
+      animals: [],
+      email: userPayload.email,
+      phone: userPayload.phone,
+      city: '-',
+      photo: '',
+      name: userPayload.name
+    }
   }
 
   signUpWithEmailAndPassword(email: string, password: string): Promise<any> {
