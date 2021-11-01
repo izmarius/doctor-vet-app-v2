@@ -1,22 +1,5 @@
 import {AnimalUtilInfo} from "./animal-util-info";
 
-export interface IDoctorsAppointmentsDTO {
-  id: string;
-  animalData: AnimalUtilInfo;
-  dateTime: string;
-  location: string;
-  userId: string;
-  userName: string;
-  services: string;
-  userEmail: string;
-  phone: string;
-  isAppointmentFinished: boolean;
-  isConfirmedByDoctor: boolean;
-  isUserCreated: boolean;
-  animalAppointmentId: string;
-  timestamp: number;
-}
-
 export class DoctorsAppointmentDTO {
   private id: string;
   private animalData: AnimalUtilInfo;

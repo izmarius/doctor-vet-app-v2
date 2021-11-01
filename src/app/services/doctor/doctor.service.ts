@@ -13,6 +13,10 @@ export class DoctorService {
   constructor(private firestoreService: FirestoreService) {
   }
 
+  getDoctorById(id: string): Observable<any> {
+    return this.firestoreService.getDocById(this.DOCTOR_COLLECTION, id);
+  }
+
   getDoctorsByLocation(locality: string): Observable<any> {
     return this.firestoreService.getCollectionByWhereClause(this.DOCTOR_COLLECTION, 'locality', '==', locality)
       .pipe(take(1));

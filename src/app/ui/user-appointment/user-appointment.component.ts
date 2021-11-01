@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {APPOINTMENTFORM_DATA, COUNTIES, COUNTIES_ABBR, USER_LOCALSTORAGE} from "../../shared-data/Constants";
 import {DateUtilsService} from "../../data/utils/date-utils.service";
 import {DoctorService} from "../../services/doctor/doctor.service";
@@ -18,10 +18,6 @@ import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-err
 export class UserAppointmentDialogComponent implements OnInit {
   userAppointmentFormText: any;
   countiesAbbr: any;
-  stepMinutes: any = [0, 15, 30, 45];
-  stepMinute: number = this.stepMinutes[0];
-  stepHours: any = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
-  stepHour: number = this.stepHours[0];
   isErrorDisplayed = false;
   formErrorMessage = '';
   errorMessage = '';
@@ -76,6 +72,9 @@ export class UserAppointmentDialogComponent implements OnInit {
       });
       return;
     }
+    if(this.doctorAppointmentService.areAppointmentsOverlapping(new Date(doctorDetails.timestamp), doctorDetails.doctor)) {
+      return;
+    }
 
     const newAnimalInfo = new AnimalUtilInfo()
       .setName(this.selectedAnimal.animalName)
@@ -87,18 +86,17 @@ export class UserAppointmentDialogComponent implements OnInit {
     const newDoctorAppointment = this.getDoctorAppointment(animalAppointmentId, newAnimalInfo, doctorDetails);
     const newAnimalAppointment = this.getAnimalAppointmentPayload(doctorAppointmentId, animalAppointmentId, doctorDetails, newAnimalInfo);
 
-    this.doctorAppointmentService.createAppointment(
-      newDoctorAppointment,
-      doctorDetails.doctor.id,
-      doctorAppointmentId
-    ).then(() => {
+    // todo update doctor - also on cancel appointment by user
+    // todo create a transaction
+    Promise.all([
+      this.doctorService.updateDoctorInfo({appointmentsMap: doctorDetails.doctor.appointmentsMap}, doctorDetails.doctor.id),
+      this.doctorAppointmentService.createAppointment(newDoctorAppointment, doctorDetails.doctor.id, doctorAppointmentId),
       this.animalAppointmentService.saveAnimalAppointment(newAnimalAppointment, this.user?.id, animalAppointmentId)
-        .then(() => {
+    ]).then(() => {
           this.uiAlertInterceptor.setUiError({
             message: APPOINTMENTFORM_DATA.successAppointment,
             class: 'snackbar-success'
           });
-        });
     }).catch((error: any) => {
       this.uiAlertInterceptor.setUiError({message: error.message, class: 'snackbar-error'});
       console.log('Error: ', error);
@@ -158,11 +156,10 @@ export class UserAppointmentDialogComponent implements OnInit {
   isTimeValid(doctorDetails: any): boolean {
     const currentTime = new Date();
     const currentHours = currentTime.getHours();
-    const currentMinutes = currentTime.getMinutes();
-    if (this.stepHour === null
-      || this.stepMinute === null
+    if (doctorDetails.stepHour === null
+      || doctorDetails.stepMinute === null
       || !this.dateTimeUtils.isSelectedDateGreaterOrEqualComparedToCurrentDate(doctorDetails.localeDate)
-      || (this.stepHour < currentHours && this.dateTimeUtils.isCurrentDay(doctorDetails.localeDate))) {
+      || (doctorDetails.stepHour < currentHours && this.dateTimeUtils.isCurrentDay(doctorDetails.localeDate))) {
       // todo - refactor this - debugg
       // || (this.stepHour <= currentHours && this.stepMinute <= currentMinutes)
       this.uiAlertInterceptor.setUiError({message: APPOINTMENTFORM_DATA.timeValidation, class: 'snackbar-error'});

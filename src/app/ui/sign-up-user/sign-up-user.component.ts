@@ -44,6 +44,7 @@ export class SignUpUserComponent implements OnInit {
       email: this.userFormGroup.controls.email.value,
       password: this.userFormGroup.controls.password.value,
       phone: this.userFormGroup.controls.phone.value,
+      appointmentsMap: {}
     }
 
     this.errorMessage = '';

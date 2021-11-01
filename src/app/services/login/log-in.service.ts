@@ -20,6 +20,11 @@ export class LogInService {
         this.uiAlertInterceptor.setUiError({message: UI_ALERT_MESSAGES.welcome, class: 'snackbar-success'});
       })
       .catch((error) => {
+        if(error.code) {
+          // @ts-ignore
+          this.uiAlertInterceptor.setUiError({message: FIREBASE_ERRORS[error.code], class: 'snackbar-error'});
+          return;
+        }
         this.uiAlertInterceptor.setUiError({message: FIREBASE_ERRORS["auth/user-not-found"], class: 'snackbar-error'});
       });
   }

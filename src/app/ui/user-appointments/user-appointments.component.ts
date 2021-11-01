@@ -4,8 +4,8 @@ import {USER_LOCALSTORAGE} from "../../shared-data/Constants";
 import {take} from "rxjs/operators";
 import {MatDialog} from "@angular/material/dialog";
 import {ConfirmDialogComponent} from "../shared/confirm-dialog/confirm-dialog.component";
-import {AnimalAppointmentService} from "../../services/animal-appointment/animal-appointment.service";
 import {DoctorAppointmentsService} from "../services/doctor-appointments.service";
+import {DoctorService} from "../../services/doctor/doctor.service";
 
 @Component({
   selector: 'app-user-appointments',
@@ -18,7 +18,8 @@ export class UserAppointmentsComponent implements OnInit {
 
   constructor(private userService: UserService,
               private dialogRef: MatDialog,
-              private doctorAppointmentService: DoctorAppointmentsService) {
+              private doctorAppointmentService: DoctorAppointmentsService,
+              private doctorService: DoctorService) {
   }
 
   ngOnInit(): void {
@@ -42,11 +43,15 @@ export class UserAppointmentsComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.doctorAppointmentService.cancelAnimalAppointmentByUser(appointment, null).then(() => {
-          this.appointmentList = this.appointmentList.filter((app) => {
-            return app.id !== appointment.id;
+        this.doctorService.getDoctorById(appointment.doctorId)
+          .pipe(take(1))
+          .subscribe((doctor: any) => {
+            this.doctorAppointmentService.cancelAnimalAppointmentByUser(appointment, doctor).then(() => {
+              this.appointmentList = this.appointmentList.filter((app) => {
+                return app.id !== appointment.id;
+              });
+            });
           });
-        });
       }
     });
   }

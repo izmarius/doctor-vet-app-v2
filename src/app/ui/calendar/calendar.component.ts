@@ -10,6 +10,8 @@ import {DoctorAppointmentModalComponent} from "../doctor-appointment-modal/docto
 import {Subscription} from "rxjs";
 import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-error-interceptor.service";
 import {UserWithoutAccountDetailsCardComponent} from "../user-without-account-details-card/user-without-account-details-card.component";
+import {UserService} from "../user-profile/services/user.service";
+import {take} from "rxjs/operators";
 
 @Component({
   selector: 'app-calendar',
@@ -34,30 +36,15 @@ export class CalendarComponent implements OnInit, OnDestroy {
               private animalService: AnimalService,
               private dialogRef: MatDialog,
               private alertInterceptor: UiErrorInterceptorService,
-              private doctorAppointmentService: DoctorAppointmentsService) {
+              private doctorAppointmentService: DoctorAppointmentsService,
+              private userService: UserService) {
   }
 
   ngOnInit() {
     this.calendarPlaceHolder = CALENDAR_DATA;
     this.doctor = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
     this.setHourDayStartAndDayEnd();
-    this.doctorAppointmentsSub = this.doctorService.getDoctorAppointments(this.doctor.id).subscribe((res) => {
-      this.appointments = res.map((calendarApp: any) => {
-        if (calendarApp.appointment.isCanceledByUser) {
-          calendarApp.color = {
-            primary: '#ad2121',
-            secondary: '#FAE3E3',
-          }
-          return calendarApp;
-        } else if (calendarApp.appointment.isUserCreated) {
-          calendarApp.color = {
-            primary: '#e3bc08',
-            secondary: '#FDF1BA',
-          }
-        }
-        return calendarApp;
-      });
-    });
+    this.getDoctorAppointments();
   }
 
   ngOnDestroy() {
@@ -66,6 +53,41 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
   setView(view: CalendarView): void {
     this.view = view;
+  }
+
+  getDoctorAppointments() {
+    this.doctorAppointmentsSub = this.doctorService.getDoctorAppointments(this.doctor.id).subscribe((res) => {
+        this.resetDoctorAppointmentsMap();
+      this.appointments = res.map((calendarApp: any) => {
+        return this.setAndGetCalendarAppointmentsBasedOnDoctorAndUser(calendarApp);
+      });
+    });
+  }
+
+  resetDoctorAppointmentsMap() {
+    this.userService.getUserByEmail(this.doctor.email)
+      .pipe(take(1))
+      .subscribe((doctor: any) => {
+        this.doctor = doctor;
+        localStorage.removeItem(USER_LOCALSTORAGE);
+        localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.doctor));
+      });
+  }
+
+  setAndGetCalendarAppointmentsBasedOnDoctorAndUser(calendarApp: any): any {
+    if (calendarApp.appointment.isCanceledByUser) {
+      calendarApp.color = {
+        primary: '#ad2121',
+        secondary: '#FAE3E3',
+      }
+      return calendarApp;
+    } else if (calendarApp.appointment.isUserCreated) {
+      calendarApp.color = {
+        primary: '#e3bc08',
+        secondary: '#FDF1BA',
+      }
+    }
+    return calendarApp;
   }
 
   setHourDayStartAndDayEnd() {
@@ -122,7 +144,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   addAppointment(date: any) {
-    if(this.doctorAppointmentService.isFreeDayForDoctor(this.doctor.schedule, date)) {
+    if (this.doctorAppointmentService.isFreeDayForDoctor(this.doctor.schedule, date)) {
       return;
     }
     const estDate = new Date(date);

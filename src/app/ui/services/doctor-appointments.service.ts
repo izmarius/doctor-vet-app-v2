@@ -62,22 +62,32 @@ export class DoctorAppointmentsService {
 
   cancelAnimalAppointmentByUser(selectedAppointment: any, doctor: any): Promise<any> {
     //todo maybe update also doctor's appointment instead of deleting it?
-    return this.animalAppointment.deleteAppointment(selectedAppointment.id).then((res) => {
-      this.updateAppointment(
-        {isCanceledByUser: true},
-        selectedAppointment.doctorAppointmentId,
-        selectedAppointment.doctorId)
-        .then(() => {
-          this.uiAlertInterceptor.setUiError({
-            message: USER_CARD_TXT.cancelAppointmentSuccess,
-            class: 'snackbar-success'
-          });
-          // todo notify user
-        });
+    this.removeAppointmentFromAppointmentMap(selectedAppointment, doctor);
+    debugger
+    return Promise.all([
+      this.doctorService.updateDoctorInfo({appointmentsMap: doctor.appointmentsMap}, doctor.id),
+      this.animalAppointment.deleteAppointment(selectedAppointment.id),
+      this.updateAppointment({isCanceledByUser: true}, selectedAppointment.doctorAppointmentId, selectedAppointment.doctorId)
+    ]).then((res) => {
+      this.uiAlertInterceptor.setUiError({
+        message: USER_CARD_TXT.cancelAppointmentSuccess,
+        class: 'snackbar-success'
+        // todo notify user
+      });
     }).catch((error) => {
       this.uiAlertInterceptor.setUiError({message: USER_CARD_TXT.cancelAppointmentError, class: 'snackbar-success'});
       console.log(error);
     })
+  }
+
+  removeAppointmentFromAppointmentMap(appointment: any, doctor: any) {
+    const date = appointment.dateTime.split('-')[0].trim();
+    doctor.appointmentsMap[date].forEach((interval: any, index: number) => {
+      if (interval.startTimestamp === appointment.timestamp) {
+        interval.appointmentId = appointment.id;
+        return;
+      }
+    });
   }
 
   deleteAppointment(appointmentId: string, doctorId: string): Promise<any> {

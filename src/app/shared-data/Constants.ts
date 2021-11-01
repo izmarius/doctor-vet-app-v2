@@ -47,13 +47,9 @@ export const DOCTORAPPOINTMENT_DATA = {
   scheduleBtn: 'Orele de lucru'
 };
 
-export const DOCTORAPPOINTMENTHEADER_DATA = {
-  title: 'Creeaza o programare',
-  subTitle: 'Rapid si eficient'
-};
-
 export const FIREBASE_ERRORS = {
-  'auth/user-not-found': 'Nu a fost gasit nici un user inregistrat cu acest cont sau acest cont a fost sters. Te rugam sa-ti creezi un cont nou sau sa ne contactezi'
+  'auth/user-not-found': 'Nu a fost gasit nici un user inregistrat cu acest cont sau acest cont a fost sters. Te rugam sa-ti creezi un cont nou sau sa ne contactezi',
+  'auth/network-request-failed': 'A aparut o problema de conexiune la server. Te rugam sa iti verifici conexiunea la internet.'
 }
 
 export const UI_ALERT_MESSAGES = {

@@ -82,6 +82,7 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
         this.userAnimalData.appointment.id = this.userAnimalData.appointmentId;
         // how to handle the filing request - we will have corrupted data
         this.removeAppointmentFromAppointmentMap();
+        debugger;
         this.doctorAppointmentsService.cancelAppointment(this.userAnimalData.appointment, this.doctor, this.dialog);
       }
     });

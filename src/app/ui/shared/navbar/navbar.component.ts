@@ -7,6 +7,7 @@ import {DoctorAppointmentModalComponent} from "../../doctor-appointment-modal/do
 import {CreateUserDialogComponent} from "../../create-user-dialog/create-user-dialog.component";
 import {AuthLoggedInServiceService} from "../../../services/auth-logged-in/auth-logged-in";
 import {DoctorAppointmentWithoutUserModalComponent} from "../../doctor-appointment-without-user-modal/doctor-appointment-without-user-modal.component";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-navbar',

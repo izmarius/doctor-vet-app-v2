@@ -137,6 +137,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
     const newDoctorAppointment = this.getDoctorAppointment(animalAppointmentId, newAnimalInfo);
     const newAnimalAppointment = this.getAnimalAppointmentPayload(doctorAppointmentId, animalAppointmentId, newAnimalInfo);
 
+    // todo create a transaction
     Promise.all([
       this.doctorService.updateDoctorInfo({appointmentsMap: this.doctor.appointmentsMap}, this.doctor.id),
       this.doctorAppointmentService.createAppointment(newDoctorAppointment, this.doctor.id, doctorAppointmentId),

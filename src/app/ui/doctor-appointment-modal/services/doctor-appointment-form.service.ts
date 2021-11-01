@@ -15,7 +15,7 @@ export class DoctorAppointmentFormService {
   // @ts-ignore
   filterClients(searchText: string): Observable<any> {
     if (searchText.length > 2) {
-      // todo : change to where clause and change filtering by email
+      // todo : get users that are associated with the doctor
       return this.userService.getAllUsers()
         .pipe(
           debounceTime(200),

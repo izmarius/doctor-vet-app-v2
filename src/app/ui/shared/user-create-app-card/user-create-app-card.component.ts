@@ -1,9 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {DateUtilsService} from "../../../data/utils/date-utils.service";
-import {DoctorAppointmentsService} from "../../services/doctor-appointments.service";
-import {AnimalAppointmentService} from "../../../services/animal-appointment/animal-appointment.service";
 import { UiErrorInterceptorService } from '../alert-message/services/ui-error-interceptor.service';
-import { APPOINTMENTFORM_DATA } from 'src/app/shared-data/Constants';
+import {DoctorAppointmentsService} from "../../services/doctor-appointments.service";
 
 @Component({
   selector: 'app-user-create-app-card',
@@ -23,7 +21,9 @@ export class UserCreateAppCardComponent implements OnInit {
   stepHour!: number;
   startDateOk!: boolean;
 
-  constructor(private dateTimeUtils: DateUtilsService, private uiAlertInterceptor: UiErrorInterceptorService) {
+  constructor(private dateTimeUtils: DateUtilsService,
+              private uiAlertInterceptor: UiErrorInterceptorService,
+              private doctorAppointmentService: DoctorAppointmentsService) {
   }
 
   ngOnInit(): void {
@@ -38,32 +38,6 @@ export class UserCreateAppCardComponent implements OnInit {
       this.selectedDate = new Date();
     }
   }
-
-  // filterUnavailableDays(d: Date): boolean {
-  //   if (!d) {
-  //     return true;
-  //   }
-  //   const day = d.getDay();
-  //   let saturday = null;
-  //   let sunday = null;
-  //   if (this.doctor.unavailableTime.notWorkingDays && this.doctor.unavailableTime.notWorkingDays.length > 0) {
-  //     this.doctor.unavailableTime.notWorkingDays.forEach((dayNumber: number) => {
-  //       if (dayNumber === 6) {
-  //         saturday = 6
-  //       } else if (dayNumber === 0) {
-  //         sunday = 0;
-  //       }
-  //     });
-  //     if (saturday && sunday === 0) {
-  //       return day !== saturday && day !== sunday;
-  //     } else if (saturday) {
-  //       return day !== saturday;
-  //     } else if (sunday) {
-  //       return day !== sunday;
-  //     }
-  //   }
-  //   return true;
-  // }
 
   setDoctorUnavailableDays(): void {
     if (this.doctor.unavailableTime.notWorkingDay && this.doctor.unavailableTime.notWorkingDay.length === 0) {
@@ -85,28 +59,20 @@ export class UserCreateAppCardComponent implements OnInit {
     this.selectedService = service;
   }
 
-  checkUserAppointmentStartDateValidity(doctor: any, appoinmentNewStartDate: Date, errorMessage: string): boolean {
-    if (doctor && (doctor.schedule.sunday.dayNumber === appoinmentNewStartDate.getDay() || doctor.schedule.saturday.dayNumber === appoinmentNewStartDate.getDay()) && !doctor.schedule.saturday.isChecked) {
-      this.uiAlertInterceptor.setUiError({
-        message: errorMessage,
-        class: 'snackbar-error'
-      });
-      return true;
-    }
-    return false;
-  }
-
-  onStartDateChange(startDateChannge: Date): void {
-    this.startDateOk = this.checkUserAppointmentStartDateValidity(this.doctor, startDateChannge, APPOINTMENTFORM_DATA.wrongStartDate);
+  onStartDateChange(startDateChange: Date): void {
+    this.startDateOk = this.doctorAppointmentService.isFreeDayForDoctor(this.doctor.schedule, startDateChange);
   }
 
   createAppointmentByUser(doctor: any): void {
+    this.selectedDate.setHours(this.stepHour, this.stepMinute);
     const doctorAppointmentPayload = {
       localeDate: this.selectedDate.toLocaleDateString(),
       doctor: doctor,
       date: this.selectedDate.toLocaleDateString() + " - " + this.dateTimeUtils.formatTime(this.stepHour, this.stepMinute),
       timestamp: this.selectedDate.getTime(),
-      service: this.selectedService
+      service: this.selectedService,
+      stepHour: this.stepHour,
+      stepMinute: this.stepMinute
     }
     this.createAppointmentEmitter.emit(doctorAppointmentPayload);
   }
