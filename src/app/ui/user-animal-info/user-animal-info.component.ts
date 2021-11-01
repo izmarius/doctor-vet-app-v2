@@ -45,8 +45,7 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
               private doctorAppointmentsService: DoctorAppointmentsService,
               private animalAppointment: AnimalAppointmentService,
               private uiAlertService: UiErrorInterceptorService,
-              private doctorService: DoctorService,
-              private uiAlertInterceptor: UiErrorInterceptorService
+              private doctorService: DoctorService
   ) {
   }
 

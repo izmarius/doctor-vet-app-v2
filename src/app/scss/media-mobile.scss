@@ -60,6 +60,20 @@
     padding: 3.5rem 0!important;
   }
 
+  .user-animal-details-dialog {
+    max-width: 90%!important;
+    width: 90%!important;
+  }
+
+
+  .user-animal-details-dialog {
+    overflow-y: scroll;
+  }
+
+  .user-animal-details-dialog::-webkit-scrollbar {
+    display: none;
+  }
+
   .text-card-container {
     padding: 0 0.5rem 2rem!important;
   }
