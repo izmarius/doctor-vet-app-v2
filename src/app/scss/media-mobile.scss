@@ -3,6 +3,12 @@
   width: 25%;
 }
 
+@media only screen and (max-width : 1200px) {
+  .vet-content {
+    max-width: 1200px;
+  }
+}
+
 @media (min-width: 1200px) {
   h4 {
     font-size: 1.35rem;
@@ -35,6 +41,12 @@
   .navbar-nav .nav-link {
     padding-right: 0;
     padding-left: 0;
+  }
+
+
+//  USER
+  .user-appointment {
+    width: 25%!important;
   }
 }
 
