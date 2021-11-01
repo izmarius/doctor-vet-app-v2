@@ -79,11 +79,12 @@ export class DoctorAppointmentWithoutUserModalComponent implements OnInit {
       this.setErrorMessage(APPOINTMENTFORM_DATA.formAllFieldsValidMessage);
       return;
     }
+    const doctorAppointmentId = this.firestoreService.getNewFirestoreId();
+
     this.appointmentWithoutUserForm.value.startDate.setHours(this.stepHour, this.stepMinute);
-    if (this.doctorAppointmentService.areAppointmentsOverlapping(this.appointmentWithoutUserForm.value.startDate, this.doctor)) {
+    if (this.doctorAppointmentService.areAppointmentsOverlapping(this.appointmentWithoutUserForm.value.startDate, this.doctor, doctorAppointmentId)) {
       return;
     }
-    const doctorAppointmentId = this.firestoreService.getNewFirestoreId();
 
     Promise.all([
       this.doctorAppointmentService.createAppointment(this.getDoctorAppointmentUserWithoutAccount(), this.doctor.id, doctorAppointmentId),

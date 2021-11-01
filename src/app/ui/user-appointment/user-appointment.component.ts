@@ -72,16 +72,16 @@ export class UserAppointmentDialogComponent implements OnInit {
       });
       return;
     }
-    if(this.doctorAppointmentService.areAppointmentsOverlapping(new Date(doctorDetails.timestamp), doctorDetails.doctor)) {
+
+    const doctorAppointmentId = this.firestoreService.getNewFirestoreId();
+    const animalAppointmentId = this.firestoreService.getNewFirestoreId();
+    if(this.doctorAppointmentService.areAppointmentsOverlapping(new Date(doctorDetails.timestamp), doctorDetails.doctor, doctorAppointmentId)) {
       return;
     }
 
     const newAnimalInfo = new AnimalUtilInfo()
       .setName(this.selectedAnimal.animalName)
       .setUid(this.selectedAnimal.animalId);
-
-    const doctorAppointmentId = this.firestoreService.getNewFirestoreId();
-    const animalAppointmentId = this.firestoreService.getNewFirestoreId();
 
     const newDoctorAppointment = this.getDoctorAppointment(animalAppointmentId, newAnimalInfo, doctorDetails);
     const newAnimalAppointment = this.getAnimalAppointmentPayload(doctorAppointmentId, animalAppointmentId, doctorDetails, newAnimalInfo);

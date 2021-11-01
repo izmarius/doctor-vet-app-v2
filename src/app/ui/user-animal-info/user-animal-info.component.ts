@@ -91,7 +91,7 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
   removeAppointmentFromAppointmentMap() {
     const date = this.userAnimalData.appointment.dateTime.split('-')[0].trim();
     this.doctor.appointmentsMap[date].forEach((interval: any, index: number) => {
-      if (interval.startTimestamp === this.userAnimalData.appointment.timestamp) {
+      if (interval.startTimestamp === this.userAnimalData.appointment.timestamp && interval.appointmentId === this.userAnimalData.appointment.id) {
         this.doctor.appointmentsMap[date].splice(index, 1);
         return;
       }
@@ -118,8 +118,10 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
     if (this.doctorAppointmentsService.isFreeDayForDoctor(this.doctor.schedule, appointmentDate)) {
       return;
     }
+    const doctorAppointmentId = this.firestoreService.getNewFirestoreId();
+    const animalAppointmentId = this.firestoreService.getNewFirestoreId();
 
-    if (this.doctorAppointmentsService.areAppointmentsOverlapping(appointmentDate, this.doctor)) {
+    if (this.doctorAppointmentsService.areAppointmentsOverlapping(appointmentDate, this.doctor, doctorAppointmentId)) {
       return;
     }
     let appointment = Object.create(this.userAnimalData.appointment);
@@ -129,8 +131,7 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
     appointment.dateTime = localeDate + ' ' + dateTime[1] + ' ' + dateTime[2];
 
     // save new appointment to animal and to doctor
-    const doctorAppointmentId = this.firestoreService.getNewFirestoreId();
-    const animalAppointmentId = this.firestoreService.getNewFirestoreId();
+
     const newDoctorAppointment = this.getDoctorAppointment(animalAppointmentId, appointment);
     const newAnimalAppointment = this.getAnimalAppointmentPayload(doctorAppointmentId, animalAppointmentId, appointment);
 

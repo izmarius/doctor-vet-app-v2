@@ -108,8 +108,10 @@ export class DoctorAppointmentModalComponent implements OnInit {
       this.setErrorMessage(APPOINTMENTFORM_DATA.formAllFieldsValidMessage);
       return;
     }
+    const doctorAppointmentId = this.firestoreService.getNewFirestoreId();
+    const animalAppointmentId = this.firestoreService.getNewFirestoreId();
     this.appointmentForm.value.startDate.setHours(this.stepHour, this.stepMinute);
-    if (this.doctorAppointmentService.areAppointmentsOverlapping(this.appointmentForm.value.startDate, this.doctor)) {
+    if (this.doctorAppointmentService.areAppointmentsOverlapping(this.appointmentForm.value.startDate, this.doctor, doctorAppointmentId)) {
       return;
     }
 
@@ -132,8 +134,6 @@ export class DoctorAppointmentModalComponent implements OnInit {
 
     this.setErrorMessage('');
 
-    const doctorAppointmentId = this.firestoreService.getNewFirestoreId();
-    const animalAppointmentId = this.firestoreService.getNewFirestoreId();
     const newDoctorAppointment = this.getDoctorAppointment(animalAppointmentId, newAnimalInfo);
     const newAnimalAppointment = this.getAnimalAppointmentPayload(doctorAppointmentId, animalAppointmentId, newAnimalInfo);
 

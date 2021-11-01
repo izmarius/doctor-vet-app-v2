@@ -62,7 +62,7 @@ export class DoctorAppointmentsService {
 
   cancelAnimalAppointmentByUser(selectedAppointment: any, doctor: any): Promise<any> {
     //todo maybe update also doctor's appointment instead of deleting it?
-    this.removeAppointmentFromAppointmentMap(selectedAppointment, doctor);
+    this.setAppointmentFromAppointmentMapAsCanceledByUser(selectedAppointment, doctor);
     debugger
     return Promise.all([
       this.doctorService.updateDoctorInfo({appointmentsMap: doctor.appointmentsMap}, doctor.id),
@@ -80,11 +80,11 @@ export class DoctorAppointmentsService {
     })
   }
 
-  removeAppointmentFromAppointmentMap(appointment: any, doctor: any) {
+  setAppointmentFromAppointmentMapAsCanceledByUser(appointment: any, doctor: any) {
     const date = appointment.dateTime.split('-')[0].trim();
     doctor.appointmentsMap[date].forEach((interval: any, index: number) => {
       if (interval.startTimestamp === appointment.timestamp) {
-        interval.appointmentId = appointment.id;
+        interval.isCanceled = true;
         return;
       }
     });
@@ -158,19 +158,18 @@ export class DoctorAppointmentsService {
     return isOutOfOfficeDay;
   }
 
-  areAppointmentsOverlapping(date: Date, doctor: any): boolean {
+  areAppointmentsOverlapping(date: Date, doctor: any, appointmentId: string): boolean {
     const startTimestamp = date.getTime()
     const endTimestamp = date.getTime() + (doctor.appointmentInterval * 60000);
 
     const appointmentDate = date.toLocaleDateString();
     if (!doctor.appointmentsMap[appointmentDate]) {
       doctor.appointmentsMap[appointmentDate] = [];
-      doctor.appointmentsMap[appointmentDate].push({startTimestamp, endTimestamp});
+      doctor.appointmentsMap[appointmentDate].push({startTimestamp, endTimestamp, appointmentId});
       return false;
     }
-
     let overlappingAppointment = doctor.appointmentsMap[appointmentDate].find((interval: any) => {
-      return startTimestamp >= interval.startTimestamp && startTimestamp < interval.endTimestamp;
+      return startTimestamp >= interval.startTimestamp && startTimestamp < interval.endTimestamp && !interval.isCanceled;
     });
 
     if (overlappingAppointment) {
@@ -181,7 +180,7 @@ export class DoctorAppointmentsService {
       return true;
     }
 
-    doctor.appointmentsMap[appointmentDate].push({startTimestamp, endTimestamp});
+    doctor.appointmentsMap[appointmentDate].push({startTimestamp, endTimestamp, appointmentId});
     return false;
   }
 }
