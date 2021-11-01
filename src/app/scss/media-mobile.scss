@@ -3,7 +3,7 @@
   width: 25%;
 }
 
-@media only screen and (max-width : 1200px) {
+@media only screen and (max-width: 1200px) {
   .vet-content {
     max-width: 1200px;
   }
@@ -43,19 +43,15 @@
     padding-left: 0;
   }
 
-  .logo {
-    width: 175px;
-  }
-
-
-//  USER
+  //  USER
   .user-appointment {
-    width: 25%!important;
+    width: 25% !important;
   }
 }
 
 /* smartphones, iPhone, portrait 480x320 phones */
 @media only screen and (max-width: 641px) {
+
   .vet-content {
     width: $m-full-size;
   }
@@ -63,6 +59,24 @@
   .vet-container {
     padding-left: 0;
     padding-right: 0;
+  }
+
+  //home page
+
+  .logo {
+    width: 175px !important;
+  }
+
+  .main-title {
+    font-size: 2.7rem !important;
+  }
+
+  .article-section-img-container {
+    display: none !important;
+  }
+
+  .title {
+    font-size: 2.5rem !important;
   }
 
   //appointment dialog
@@ -242,6 +256,10 @@
     margin: 0 !important;
   }
 
+  .header-content-small {
+    margin: auto !important;
+  }
+
   .p-container {
     height: 500px !important;
   }
@@ -280,9 +298,9 @@
     padding-right: 0;
   }
 
-//  user appointments list
+  //  user appointments list
   .user-appointment {
-    width: $full-size!important;
+    width: $full-size !important;
   }
 }
 
