@@ -89,10 +89,10 @@ export const APPOINTMENTFORM_DATA = {
   wrongStartDate: 'Zi libera! Selecteaza o zi diferita'
 };
 
-export const DOCTORAPPOINTMENTSECTION_DATA = {
-  title: 'Section title here',
-  subTitle: 'Section Subtitle here'
+export const APPOINTMENT_MESSAGES = {
+  APPOINTMENT_IN_PAST_NOT_POSSIBLE: 'Programarea nu poate fi setata in trecut',
 };
+
 export const USER_ANIMAL_DIALOG = {
   ownersPets: 'Animale: ',
   medicalHistory: 'Istoric recomandari:',
@@ -112,6 +112,7 @@ export const USER_SERVICE = {
   addUserError: 'Userul nu a putut fi creat, te rugam sa incerci din nou',
   deleteUserSuccess: 'Userul a fost sters cu succes',
   deleteUserError: 'Userul nu a putut fi sters, te rugam sa incerci din nou',
+  USER_ALREADY_EXISTS: 'Userul este deja inregistrat',
 }
 
 export const DIALOG_UI_ERRORS = {
@@ -129,7 +130,7 @@ export const FOOTER_COMPONENT = {
 
 export const USER_STATE = {
   emailVerified: 'Pentru a putea folosi aplicatia te rugam sa iti verifici emailul',
-  patientNotFound: APPOINTMENTFORM_DATA.patientDoesNotExist
+  patientNotFound: APPOINTMENTFORM_DATA.patientDoesNotExist,
 }
 
 export const USER_LOCALSTORAGE = 'user'

@@ -52,9 +52,6 @@ export class CreateUserDialogComponent implements OnInit {
 
     // todo check for user to be authenticated
     this.userService.createUserByDoctorAuthAndSaveAnimal(userDataPayload, this.dialogRef);
-
-    // create user with email and password
-    //create animal if exists!
   }
 
   onCancelForm(): void {

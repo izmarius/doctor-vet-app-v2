@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {CalendarEvent, CalendarView} from 'angular-calendar';
 import {isSameDay, isSameMonth} from 'date-fns';
-import {CALENDAR_DATA, USER_LOCALSTORAGE} from "../../shared-data/Constants";
+import {APPOINTMENT_MESSAGES, CALENDAR_DATA, USER_LOCALSTORAGE} from "../../shared-data/Constants";
 import {DoctorAppointmentsService} from "../services/doctor-appointments.service";
 import {AnimalService} from "../services/animal.service";
 import {UserAnimalInfoComponent} from "../user-animal-info/user-animal-info.component";
@@ -29,7 +29,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   userAnimalData: any;
   hourToStartTheDay: number = 0;
   hourToEndTheDay: number = 23;
-  doctorAppointmentsSub!: Subscription;
+  doctorAppointmentsSub$!: Subscription;
   weekStartsOn: number = 1;
 
   constructor(private doctorService: DoctorAppointmentsService,
@@ -48,7 +48,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.doctorAppointmentsSub?.unsubscribe();
+    this.doctorAppointmentsSub$?.unsubscribe();
   }
 
   setView(view: CalendarView): void {
@@ -56,8 +56,8 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   getDoctorAppointments() {
-    this.doctorAppointmentsSub = this.doctorService.getDoctorAppointments(this.doctor.id).subscribe((res) => {
-        this.resetDoctorAppointmentsMap();
+    this.doctorAppointmentsSub$ = this.doctorService.getDoctorAppointments(this.doctor.id).subscribe((res) => {
+      this.resetDoctorAppointmentsMap();
       this.appointments = res.map((calendarApp: any) => {
         return this.setAndGetCalendarAppointmentsBasedOnDoctorAndUser(calendarApp);
       });
@@ -121,9 +121,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
     }
   }
 
-  handleEvent(action: string, event: CalendarEvent | any) {
-    // todo validate date - > cannot click if is a free day
-    // for users without account
+  calendarIntervalClicked(event: CalendarEvent | any) {
     if (!event.userId) {
       const appointmentPayload = {
         appointment: event.appointment,
@@ -131,9 +129,8 @@ export class CalendarComponent implements OnInit, OnDestroy {
       }
       this.openUserWithoutAccountAnimalAppointmentModal(appointmentPayload);
     } else {
-      const userAnimalObs$ = this.animalService.getAnimalDataAndMedicalHistoryByAnimalId(event.animalId, event.userId);
       this.userAnimalData = {
-        userAnimalDataObs: userAnimalObs$,
+        userAnimalDataObs: this.animalService.getAnimalDataAndMedicalHistoryByAnimalId(event.animalId, event.userId),
         userId: event.userId,
         appointment: event.appointment,
         appointmentId: event.appointmentId
@@ -151,9 +148,8 @@ export class CalendarComponent implements OnInit, OnDestroy {
     const now = new Date();
 
     if (estDate.getTime() < now.getTime()) {
-      // alert that the date shouldn't be in the past
       this.alertInterceptor.setUiError({
-        message: 'Programarea nu poate fi setata in trecut',
+        message: APPOINTMENT_MESSAGES.APPOINTMENT_IN_PAST_NOT_POSSIBLE,
         class: 'snackbar-error'
       });
       return;
@@ -190,5 +186,4 @@ export class CalendarComponent implements OnInit, OnDestroy {
       data: date
     });
   }
-
 }

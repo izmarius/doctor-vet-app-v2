@@ -68,7 +68,7 @@
         [viewDate]="viewDate"
         [events]="appointments"
         [activeDayIsOpen]="activeDayIsOpen"
-        (eventClicked)="handleEvent('Clicked', $event.event)"
+        (eventClicked)="calendarIntervalClicked($event.event)"
       >
       </mwl-calendar-month-view>
 
@@ -78,7 +78,7 @@
         [events]="appointments"
         [weekStartsOn]="weekStartsOn"
         [activeDayIsOpen]="activeDayIsOpen"
-        (eventClicked)="handleEvent('Clicked', $event.event)"
+        (eventClicked)="calendarIntervalClicked($event.event)"
         (hourSegmentClicked)="addAppointment($event.date)"
         [dayStartHour]="hourToStartTheDay"
         [dayEndHour]="hourToEndTheDay"
@@ -91,7 +91,7 @@
         [weekStartsOn]="weekStartsOn"
         [events]="appointments"
         [activeDayIsOpen]="activeDayIsOpen"
-        (eventClicked)="handleEvent('Clicked', $event.event)"
+        (eventClicked)="calendarIntervalClicked($event.event)"
         (hourSegmentClicked)="addAppointment($event.date)"
         [dayStartHour]="hourToStartTheDay"
         [dayEndHour]="hourToEndTheDay"

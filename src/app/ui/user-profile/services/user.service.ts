@@ -97,20 +97,20 @@ export class UserService {
       .subscribe((res) => {
         if (res && res.length === 0) {
           userPayload.id = this.firestoreService.getNewFirestoreId();
+          // transaction here
           this.firestoreService.saveDocumentWithGeneratedFirestoreId(this.USER_COLLECTION, userPayload.id, JSON.parse(JSON.stringify(userPayload)))
             .then(() => {
-              // todo make it as a transaction!
               if (userData.animalName) {
                 this.saveAnimalToUser(userPayload, userPayload.id).then(() => {
                   this.firebaseUtils.resendValidationEmail();
                   this.uiAlertInterceptor.setUiError({
-                    message: 'Userul a fost adaugat cu succes',
+                    message: USER_SERVICE.addUserSuccess,
                     class: 'snackbar-success'
                   });
                 });
               } else {
                 this.uiAlertInterceptor.setUiError({
-                  message: 'Userul a fost adaugat cu succes',
+                  message: USER_SERVICE.addUserError,
                   class: 'snackbar-success'
                 });
               }
@@ -118,12 +118,15 @@ export class UserService {
             }).catch((error: any) => {
             console.error('Error: ', error);
             this.uiAlertInterceptor.setUiError({
-              message: 'O eroare a aparut la crearea userului',
+              message: USER_SERVICE.addUserError,
               class: 'snackbar-error'
             });
           });
         } else {
-          this.uiAlertInterceptor.setUiError({message: 'Userul este deja inregistrat', class: 'snackbar-error'});
+          this.uiAlertInterceptor.setUiError({
+            message: USER_SERVICE.USER_ALREADY_EXISTS,
+            class: 'snackbar-error'
+          });
         }
       });
   }
