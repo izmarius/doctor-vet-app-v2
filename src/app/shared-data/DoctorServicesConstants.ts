@@ -7,6 +7,10 @@ export const DOCTOR_SERVICES = {
     serviceName: 'Documente',
     services: [['Carnet de sanatate', false], ['Creare pasaport', false], ['Implantare microcip', false]]
   },
+  DISINFESTATION: {
+    serviceName: 'Deparazitare',
+    services: [['Deparazitare interna', false], ['Deparazitare externa', false]]
+  },
   IMAGERY: {
     serviceName: 'Imagistica',
     services: [['Ecografie', false], ['Ecocardografie', false], ['Radiografie', false]]

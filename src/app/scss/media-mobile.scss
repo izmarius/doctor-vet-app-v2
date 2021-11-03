@@ -47,10 +47,14 @@
   .user-appointment {
     width: 25% !important;
   }
+  .navbar {
+    width: 90% !important;
+  }
 }
 
 /* smartphones, iPhone, portrait 480x320 phones */
 @media only screen and (max-width: 641px) {
+
 
   .vet-content {
     width: $m-full-size;
