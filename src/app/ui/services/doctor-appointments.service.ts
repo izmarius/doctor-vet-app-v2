@@ -159,9 +159,13 @@ export class DoctorAppointmentsService {
 
   areAppointmentsOverlapping(date: Date, doctor: any, appointmentId: string): boolean {
     const startTimestamp = date.getTime()
-    const endTimestamp = date.getTime() + (doctor.appointmentInterval * 60000);
+    const endDate = new Date(date);
+    endDate.setMinutes(date.getMinutes() + doctor.appointmentInterval);
+    endDate.setSeconds(0);
+    endDate.setMilliseconds(0);
+    const endTimestamp = endDate.getTime();
 
-    const appointmentDate = date.toLocaleDateString();
+    const appointmentDate = this.dateUtils.getDateFormat(date);
     if (!doctor.appointmentsMap[appointmentDate]) {
       doctor.appointmentsMap[appointmentDate] = [];
       doctor.appointmentsMap[appointmentDate].push({startTimestamp, endTimestamp, appointmentId});

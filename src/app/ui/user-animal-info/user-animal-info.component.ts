@@ -17,6 +17,7 @@ import {AnimalAppointmentService} from "../../services/animal-appointment/animal
 import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-error-interceptor.service";
 import {ConfirmDialogComponent} from "../shared/confirm-dialog/confirm-dialog.component";
 import {DoctorService} from "../../services/doctor/doctor.service";
+import {DateUtilsService} from "../../data/utils/date-utils.service";
 
 @Component({
   selector: 'app-user-animal-info',
@@ -45,7 +46,8 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
               private doctorAppointmentsService: DoctorAppointmentsService,
               private animalAppointment: AnimalAppointmentService,
               private uiAlertService: UiErrorInterceptorService,
-              private doctorService: DoctorService
+              private doctorService: DoctorService,
+              private dateUtils: DateUtilsService
   ) {
   }
 
@@ -124,7 +126,7 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
     }
     let appointment = Object.create(this.userAnimalData.appointment);
     appointment.timestamp = appointmentDate.getTime();
-    const localeDate = appointmentDate.toLocaleDateString();
+    const localeDate = this.dateUtils.getDateFormat(appointmentDate);
     const dateTime = appointment.dateTime.split(' ');
     appointment.dateTime = localeDate + ' ' + dateTime[1] + ' ' + dateTime[2];
 

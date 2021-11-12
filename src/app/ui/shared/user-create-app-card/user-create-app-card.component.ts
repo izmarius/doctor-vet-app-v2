@@ -66,9 +66,9 @@ export class UserCreateAppCardComponent implements OnInit {
   createAppointmentByUser(doctor: any): void {
     this.selectedDate.setHours(this.stepHour, this.stepMinute);
     const doctorAppointmentPayload = {
-      localeDate: this.selectedDate.toLocaleDateString(),
+      localeDate: this.dateTimeUtils.getDateFormat(this.selectedDate),
       doctor: doctor,
-      date: this.selectedDate.toLocaleDateString() + " - " + this.dateTimeUtils.formatTime(this.stepHour, this.stepMinute),
+      date: this.dateTimeUtils.getDateFormat(this.selectedDate) + " - " + this.dateTimeUtils.formatTime(this.stepHour, this.stepMinute),
       timestamp: this.selectedDate.getTime(),
       service: this.selectedService,
       stepHour: this.stepHour,

@@ -26,8 +26,7 @@ export class DateUtilsService {
   }
 
   setCurrentDateAndSelectedDate(selectedDate: string): void {
-    this.currentDate = new Date()
-      .toLocaleDateString()
+    this.currentDate = this.getDateFormat(new Date())
       .split('/')
       .map((elem) => {
         return parseInt(elem);
@@ -52,6 +51,13 @@ export class DateUtilsService {
     date.setHours(0, 0);
     date.setMonth(date.getMonth() - 1);
     return date.getTime();
+  }
+
+  getDateFormat(date: Date) {
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const year = date.getFullYear();
+    return month + '/' + day + '/' + year;
   }
 
   setAndGetDateToFetch(): any {

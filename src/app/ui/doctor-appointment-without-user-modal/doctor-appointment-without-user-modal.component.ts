@@ -107,7 +107,8 @@ export class DoctorAppointmentWithoutUserModalComponent implements OnInit {
     return new DoctorsAppointmentDTO()
       .setServices(this.appointmentWithoutUserForm.value.medService)
       .setDateTime(
-        this.appointmentWithoutUserForm.value.startDate.toLocaleDateString() + ' - ' +
+        this.dateTimeUtils.getDateFormat(this.appointmentWithoutUserForm.value.startDate)
+        + ' - ' +
         this.appointmentWithoutUserForm.value.startTime
       )
       .setLocation(this.doctor.location)
@@ -128,8 +129,8 @@ export class DoctorAppointmentWithoutUserModalComponent implements OnInit {
     // todo - add start hour/ end hour? - if doctor wants to block 2 hours for an appointment what he'll do?
     if (this.stepHour === null
       || this.stepMinute === null
-      || !this.dateTimeUtils.isSelectedDateGreaterOrEqualComparedToCurrentDate(this.appointmentWithoutUserForm.value.startDate.toLocaleDateString())
-      || (this.stepHour < currentHours && this.dateTimeUtils.isCurrentDay(this.appointmentWithoutUserForm.value.startDate.toLocaleDateString()))) {
+      || !this.dateTimeUtils.isSelectedDateGreaterOrEqualComparedToCurrentDate(this.dateTimeUtils.getDateFormat(this.appointmentWithoutUserForm.value.startDate))
+      || (this.stepHour < currentHours && this.dateTimeUtils.isCurrentDay(this.dateTimeUtils.getDateFormat(this.appointmentWithoutUserForm.value.startDate)))) {
       // todo - refactor this - debugg
       // || (this.stepHour <= currentHours && this.stepMinute <= currentMinutes)
       this.setErrorMessage(APPOINTMENTFORM_DATA.timeValidation);

@@ -162,7 +162,8 @@ export class DoctorAppointmentModalComponent implements OnInit {
       .setUserId(this.selectedPatient?.id)
       .setServices(this.appointmentForm.value.medService)
       .setDateTime(
-        this.appointmentForm.value.startDate.toLocaleDateString() + ' - ' +
+        this.dateTimeUtils.getDateFormat(this.appointmentForm.value.startDate)
+        + ' - ' +
         this.appointmentForm.value.startTime
       )
       .setAnimal(newAnimalInfo)
@@ -187,7 +188,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
     return {
       isCanceled: false,
       animalName: animalInfo.name,
-      dateTime: this.appointmentForm.value.startDate.toLocaleDateString() + ' - ' +
+      dateTime: this.dateTimeUtils.getDateFormat(this.appointmentForm.value.startDate) + ' - ' +
         this.appointmentForm.value.startTime,
       doctorId: this.doctor.id,
       doctorName: this.doctor.doctorName,
@@ -222,8 +223,8 @@ export class DoctorAppointmentModalComponent implements OnInit {
     // todo - add start hour/ end hour? - if doctor wants to block 2 hours for an appointment what he'll do?
     if (this.stepHour === null
       || this.stepMinute === null
-      || !this.dateTimeUtils.isSelectedDateGreaterOrEqualComparedToCurrentDate(this.appointmentForm.value.startDate.toLocaleDateString())
-      || (this.stepHour < currentHours && this.dateTimeUtils.isCurrentDay(this.appointmentForm.value.startDate.toLocaleDateString()))) {
+      || !this.dateTimeUtils.isSelectedDateGreaterOrEqualComparedToCurrentDate(this.dateTimeUtils.getDateFormat(this.appointmentForm.value.startDate))
+      || (this.stepHour < currentHours && this.dateTimeUtils.isCurrentDay(this.dateTimeUtils.getDateFormat(this.appointmentForm.value.startDate)))) {
       // todo - refactor this - debug
       // || (this.stepHour <= currentHours && this.stepMinute <= currentMinutes)
       this.setErrorMessage(APPOINTMENTFORM_DATA.timeValidation);

@@ -1,6 +1,7 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {ANIMAL_FORM_TEXT} from "../../../shared-data/Constants";
+import {DateUtilsService} from "../../../data/utils/date-utils.service";
 
 @Component({
   selector: 'app-animal-form',
@@ -15,7 +16,7 @@ export class AnimalFormComponent implements OnInit {
   animalFormText: any;
   maxDate = new Date();
 
-  constructor() {
+  constructor(private dateUtils: DateUtilsService) {
   }
 
   ngOnInit(): void {
@@ -44,7 +45,7 @@ export class AnimalFormComponent implements OnInit {
     const animalPayload = {
       name: this.animalFormGroup.controls.name.value,
       age: this.animalFormGroup.controls.age.value,
-      birthDay: this.animalFormGroup.controls.birthDay.value.toLocaleString().split(',')[0],
+      birthDay: this.dateUtils.getDateFormat(this.animalFormGroup.controls.birthDay.value),
       weight: this.animalFormGroup.controls.weight.value,
     }
     this.animalPayloadEmitter.emit(animalPayload);
