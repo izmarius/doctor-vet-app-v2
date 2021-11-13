@@ -5,7 +5,7 @@ import {Observable, of} from 'rxjs';
 import {convertSnapshots} from 'src/app/data/utils/firestore-utils.service';
 import {UserDTO} from "../dto/user-dto";
 import {UiErrorInterceptorService} from "../../shared/alert-message/services/ui-error-interceptor.service";
-import {USER_LOCALSTORAGE, USER_SERVICE} from "../../../shared-data/Constants";
+import {UI_ALERTS_CLASSES, USER_LOCALSTORAGE, USER_SERVICE} from "../../../shared-data/Constants";
 import {IUserData} from "../../../shared-data/iuser-data";
 import {FirebaseUtilsService} from "../../../services/firebase-utils-service/firebase-utils.service";
 import {DateUtilsService} from "../../../data/utils/date-utils.service";
@@ -105,13 +105,13 @@ export class UserService {
                   this.firebaseUtils.resendValidationEmail();
                   this.uiAlertInterceptor.setUiError({
                     message: USER_SERVICE.addUserSuccess,
-                    class: 'snackbar-success'
+                    class: UI_ALERTS_CLASSES.SUCCESS
                   });
                 });
               } else {
                 this.uiAlertInterceptor.setUiError({
                   message: USER_SERVICE.addUserError,
-                  class: 'snackbar-success'
+                  class: UI_ALERTS_CLASSES.SUCCESS
                 });
               }
               dialog.close();
@@ -119,13 +119,13 @@ export class UserService {
             console.error('Error: ', error);
             this.uiAlertInterceptor.setUiError({
               message: USER_SERVICE.addUserError,
-              class: 'snackbar-error'
+              class: UI_ALERTS_CLASSES.ERROR
             });
           });
         } else {
           this.uiAlertInterceptor.setUiError({
             message: USER_SERVICE.USER_ALREADY_EXISTS,
-            class: 'snackbar-error'
+            class: UI_ALERTS_CLASSES.ERROR
           });
         }
       });
@@ -175,9 +175,9 @@ export class UserService {
   createUser(userDto: any): Promise<void> {
     return this.firestoreService.saveDocumentWithGeneratedFirestoreId(this.USER_COLLECTION, userDto.id, userDto)
       .then(() => {
-        this.uiAlertInterceptor.setUiError({message: USER_SERVICE.addUserSuccess, class: 'snackbar-success'});
+        this.uiAlertInterceptor.setUiError({message: USER_SERVICE.addUserSuccess, class: UI_ALERTS_CLASSES.SUCCESS});
       }).catch((error: any) => {
-        this.uiAlertInterceptor.setUiError({message: USER_SERVICE.addUserError, class: 'snackbar-error'});
+        this.uiAlertInterceptor.setUiError({message: USER_SERVICE.addUserError, class: UI_ALERTS_CLASSES.ERROR});
         console.log('Error:', error);
       });
   }
@@ -187,7 +187,7 @@ export class UserService {
       .then(() => {
       })
       .catch((error) => {
-        this.uiAlertInterceptor.setUiError({message: error.message, class: 'snackbar-error'});
+        this.uiAlertInterceptor.setUiError({message: error.message, class: UI_ALERTS_CLASSES.ERROR});
         console.log('Error:', error);
       });
   }
@@ -203,16 +203,16 @@ export class UserService {
         .then(() => {
           localStorage.removeItem(USER_LOCALSTORAGE);
           localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(userData));
-          this.uiAlertInterceptor.setUiError({message: 'Animalul a fost adaugat cu succes', class: 'snackbar-success'});
+          this.uiAlertInterceptor.setUiError({message: 'Animalul a fost adaugat cu succes', class: UI_ALERTS_CLASSES.SUCCESS});
         }).catch((error: any) => {
         this.uiAlertInterceptor.setUiError({
           message: 'A aparut o eroare, te rugam sa incerci din nou',
-          class: 'snackbar-success'
+          class: UI_ALERTS_CLASSES.SUCCESS
         });
         console.error(error.message);
       });
     }).catch((error: any) => {
-      this.uiAlertInterceptor.setUiError({message: error.message, class: 'snackbar-error'});
+      this.uiAlertInterceptor.setUiError({message: error.message, class: UI_ALERTS_CLASSES.ERROR});
       console.error('Error:', error);
     })
   }
@@ -220,10 +220,10 @@ export class UserService {
   deleteUser(userId: string): Promise<void> {
     return this.firestoreService.deleteDocById(this.USER_COLLECTION, userId)
       .then(() => {
-        this.uiAlertInterceptor.setUiError({message: USER_SERVICE.deleteUserSuccess, class: 'snackbar-success'});
+        this.uiAlertInterceptor.setUiError({message: USER_SERVICE.deleteUserSuccess, class: UI_ALERTS_CLASSES.SUCCESS});
       })
       .catch((error) => {
-        this.uiAlertInterceptor.setUiError({message: USER_SERVICE.deleteUserError, class: 'snackbar-error'});
+        this.uiAlertInterceptor.setUiError({message: USER_SERVICE.deleteUserError, class: UI_ALERTS_CLASSES.ERROR});
         console.log('Error:', error);
       });
   }

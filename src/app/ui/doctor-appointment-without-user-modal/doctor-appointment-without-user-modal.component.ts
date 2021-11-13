@@ -1,7 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {MatDialogRef} from "@angular/material/dialog";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {APPOINTMENTFORM_DATA, INPUT_REGEX_TEXTS, USER_LOCALSTORAGE} from "../../shared-data/Constants";
+import {
+  APPOINTMENTFORM_DATA,
+  INPUT_REGEX_TEXTS,
+  UI_ALERTS_CLASSES,
+  USER_LOCALSTORAGE
+} from "../../shared-data/Constants";
 import {DateUtilsService} from "../../data/utils/date-utils.service";
 import {DoctorsAppointmentDTO} from "../dto/doctor-appointments-dto";
 import {DoctorAppointmentsService} from "../services/doctor-appointments.service";
@@ -94,11 +99,11 @@ export class DoctorAppointmentWithoutUserModalComponent implements OnInit {
       localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.doctor));
       this.uiAlertInterceptor.setUiError({
         message: APPOINTMENTFORM_DATA.successAppointment,
-        class: 'snackbar-success'
+        class: UI_ALERTS_CLASSES.SUCCESS
       });
       this.dialogRef.close();
     }).catch((error) => {
-      this.uiAlertInterceptor.setUiError({message: error.message, class: 'snackbar-error'});
+      this.uiAlertInterceptor.setUiError({message: error.message, class: UI_ALERTS_CLASSES.ERROR});
       console.log('Error: ', error);
     })
   }

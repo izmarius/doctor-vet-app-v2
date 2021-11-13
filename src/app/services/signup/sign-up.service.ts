@@ -8,12 +8,14 @@ import {UiErrorInterceptorService} from "../../ui/shared/alert-message/services/
 import {UserService} from "../../ui/user-profile/services/user.service";
 import {take} from "rxjs/operators";
 import {FirestoreService} from "../../data/http/firestore.service";
+import {UI_ALERTS_CLASSES, USER_SERVICE} from "../../shared-data/Constants";
 
 @Injectable({
   providedIn: 'root'
 })
 export class SignUpService {
   USER_COLLECTION = 'user';
+
   constructor(
     private afAuth: AngularFireAuth,
     private doctorService: DoctorService,
@@ -29,10 +31,10 @@ export class SignUpService {
     this.firestoreService.getCollectionByWhereClause(this.USER_COLLECTION, 'email', '==', userPayload.email)
       .pipe(take(1))
       .subscribe((users) => {
-        if(users && users.length > 0) {
+        if (users && users.length > 0) {
           this.uiAlertInterceptor.setUiError({
-            message: 'Userul este deja inregistrat cu acest email',
-            class: 'snackbar-error'
+            message: USER_SERVICE.USER_ALREADY_EXISTS_WITH_EMAIL,
+            class: UI_ALERTS_CLASSES.ERROR
           });
           return;
         }
@@ -42,7 +44,7 @@ export class SignUpService {
             this.userService.createUser(this.getUserDTO(userCredentials, userPayload));
           })
           .catch((error) => {
-            this.uiErrorInterceptor.setUiError({message: error.message, class: 'snackbar-error'});
+            this.uiErrorInterceptor.setUiError({message: error.message, class: UI_ALERTS_CLASSES.ERROR});
           });
       });
   }
@@ -59,10 +61,6 @@ export class SignUpService {
     }
   }
 
-  signUpWithEmailAndPassword(email: string, password: string): Promise<any> {
-    return this.afAuth.createUserWithEmailAndPassword(email, password);
-  }
-
   signUpDoctor(password: string, doctorDTO: DoctorDTO): Promise<void> {
     return this.afAuth.createUserWithEmailAndPassword(doctorDTO.email, password)
       .then((userCredentials) => {
@@ -72,7 +70,7 @@ export class SignUpService {
         this.loginService.logIn(doctorDTO.email, password);
       })
       .catch((error) => {
-        this.uiErrorInterceptor.setUiError({message: error.message, class: 'snackbar-error'});
+        this.uiErrorInterceptor.setUiError({message: error.message, class: UI_ALERTS_CLASSES.ERROR});
       });
   }
 }

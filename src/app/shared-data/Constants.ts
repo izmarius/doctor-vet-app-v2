@@ -93,6 +93,11 @@ export const APPOINTMENT_MESSAGES = {
   APPOINTMENT_IN_PAST_NOT_POSSIBLE: 'Programarea nu poate fi setata in trecut',
 };
 
+export const UI_ALERTS_CLASSES = {
+  SUCCESS: 'snackbar-success',
+  ERROR: 'snackbar-error'
+}
+
 export const USER_ANIMAL_DIALOG = {
   ownersPets: 'Animale: ',
   medicalHistory: 'Istoric recomandari:',
@@ -113,6 +118,7 @@ export const USER_SERVICE = {
   deleteUserSuccess: 'Userul a fost sters cu succes',
   deleteUserError: 'Userul nu a putut fi sters, te rugam sa incerci din nou',
   USER_ALREADY_EXISTS: 'Userul este deja inregistrat',
+  USER_ALREADY_EXISTS_WITH_EMAIL: 'Userul este deja inregistrat cu acest email',
 }
 
 export const DIALOG_UI_ERRORS = {

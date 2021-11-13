@@ -2,7 +2,7 @@ import {Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild} from '@angu
 import {AnimalService} from "../services/animal.service";
 import {
   APPOINTMENTFORM_DATA,
-  DIALOG_UI_ERRORS,
+  DIALOG_UI_ERRORS, UI_ALERTS_CLASSES,
   USER_ANIMAL_DIALOG,
   USER_LOCALSTORAGE
 } from "../../shared-data/Constants";
@@ -146,10 +146,10 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
       localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.doctor));
       this.uiAlertService.setUiError({
         message: APPOINTMENTFORM_DATA.successAppointment,
-        class: 'snackbar-success'
+        class: UI_ALERTS_CLASSES.SUCCESS
       });
     }).catch((error: any) => {
-      this.uiAlertService.setUiError({message: error.message, class: 'snackbar-error'});
+      this.uiAlertService.setUiError({message: error.message, class: UI_ALERTS_CLASSES.ERROR});
       console.log('Error: ', error);
     });
   }

@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
-import {USER_LOCALSTORAGE, USER_STATE} from 'src/app/shared-data/Constants';
+import {UI_ALERTS_CLASSES, USER_LOCALSTORAGE, USER_STATE} from 'src/app/shared-data/Constants';
 import {take} from "rxjs/operators";
 import {UiErrorInterceptorService} from "../../ui/shared/alert-message/services/ui-error-interceptor.service";
 import {UserService} from "../../ui/user-profile/services/user.service";
@@ -24,13 +24,13 @@ export class AuthStateChangeService {
       if (user) {
         // todo: fix in cloud functions
         // if(!user.emailVerified) {
-        //   this.uiAlertInterceptor.setUiError({message: USER_STATE.emailVerified, class: 'snackbar-error'});
+        //   this.uiAlertInterceptor.setUiError({message: USER_STATE.emailVerified, class: UI_ALERTS_CLASSES.ERROR});
         // }
         this.userService.getUserByEmail(<string>user.email)
           .pipe(take(1))
           .subscribe((userOrDoctor) => {
             if (!userOrDoctor) {
-              this.uiAlertInterceptor.setUiError({message: USER_STATE.patientNotFound, class: 'snackbar-error'});
+              this.uiAlertInterceptor.setUiError({message: USER_STATE.patientNotFound, class: UI_ALERTS_CLASSES.ERROR});
             }
             const userFromLocalStorage = localStorage.getItem(USER_LOCALSTORAGE);
             if (!userFromLocalStorage && userOrDoctor) {

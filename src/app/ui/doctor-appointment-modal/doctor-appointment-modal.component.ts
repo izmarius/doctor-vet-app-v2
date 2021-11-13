@@ -5,7 +5,12 @@ import {DoctorsAppointmentDTO} from "../dto/doctor-appointments-dto";
 import {DoctorService} from "../../services/doctor/doctor.service";
 import {DoctorAppointmentsService} from "../services/doctor-appointments.service";
 import {DateUtilsService} from "../../data/utils/date-utils.service";
-import {APPOINTMENTFORM_DATA, INPUT_REGEX_TEXTS, USER_LOCALSTORAGE} from "../../shared-data/Constants";
+import {
+  APPOINTMENTFORM_DATA,
+  INPUT_REGEX_TEXTS,
+  UI_ALERTS_CLASSES,
+  USER_LOCALSTORAGE
+} from "../../shared-data/Constants";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {DoctorAppointmentFormService} from "./services/doctor-appointment-form.service";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
@@ -147,11 +152,11 @@ export class DoctorAppointmentModalComponent implements OnInit {
       localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.doctor));
       this.uiAlertInterceptor.setUiError({
         message: APPOINTMENTFORM_DATA.successAppointment,
-        class: 'snackbar-success'
+        class: UI_ALERTS_CLASSES.SUCCESS
       });
       this.onCancelForm(true);
     }).catch((error) => {
-      this.uiAlertInterceptor.setUiError({message: error.message, class: 'snackbar-error'});
+      this.uiAlertInterceptor.setUiError({message: error.message, class: UI_ALERTS_CLASSES.ERROR});
       console.log('Error: ', error);
     });
   }

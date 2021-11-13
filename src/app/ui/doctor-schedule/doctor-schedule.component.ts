@@ -3,7 +3,7 @@ import {DoctorDTO, IDaySchedule} from "../../data/model-dto/doctor-DTO";
 import {
   DAYS_OF_WEEK,
   DAYS_OF_WEEK_MAP, FREQUENCY_MINUTES_INTERVALS,
-  SCHEDULE_HEADER_TEXT,
+  SCHEDULE_HEADER_TEXT, UI_ALERTS_CLASSES,
   USER_LOCALSTORAGE
 } from "../../shared-data/Constants";
 import {DoctorService} from "../../services/doctor/doctor.service";
@@ -80,10 +80,10 @@ export class DoctorScheduleComponent implements OnInit {
         localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.storedDoctor));
         this.uiAlertInterceptor.setUiError({
           message: SCHEDULE_HEADER_TEXT.saveScheduleSuccess,
-          class: 'snackbar-success'
+          class: UI_ALERTS_CLASSES.SUCCESS
         });
       }, (error) => {
-        this.uiAlertInterceptor.setUiError({message: SCHEDULE_HEADER_TEXT.saveScheduleError, class: 'snackbar-error'});
+        this.uiAlertInterceptor.setUiError({message: SCHEDULE_HEADER_TEXT.saveScheduleError, class: UI_ALERTS_CLASSES.ERROR});
         console.log('Error updating service', error);
       });
   }
@@ -125,7 +125,7 @@ export class DoctorScheduleComponent implements OnInit {
 
   // saveBlockedDay(): void {
   //   if (this.isBlockedHoursDisabled()) {
-  //     this.uiAlertInterceptor.setUiError({message: 'Toate campurile trebuie sa fie valide', class: 'snackbar-error'});
+  //     this.uiAlertInterceptor.setUiError({message: 'Toate campurile trebuie sa fie valide', class: UI_ALERTS_CLASSES.ERROR});
   //     return;
   //   }
   //   const localDate = this.blockedDate.toLocaleString().split(',')[0];
@@ -149,10 +149,10 @@ export class DoctorScheduleComponent implements OnInit {
   //     localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.storedDoctor));
   //     this.uiAlertInterceptor.setUiError({
   //       message: SCHEDULE_HEADER_TEXT.saveScheduleSuccess,
-  //       class: 'snackbar-success'
+  //       class: UI_ALERTS_CLASSES.SUCCESS
   //     });
   //   }, (error) => {
-  //     this.uiAlertInterceptor.setUiError({message: SCHEDULE_HEADER_TEXT.saveScheduleError, class: 'snackbar-error'});
+  //     this.uiAlertInterceptor.setUiError({message: SCHEDULE_HEADER_TEXT.saveScheduleError, class: UI_ALERTS_CLASSES.ERROR);
   //     console.log('Error updating service', error);
   //   });
   // }
@@ -197,13 +197,13 @@ export class DoctorScheduleComponent implements OnInit {
   //       // todo - alert message?
   //       this.uiAlertInterceptor.setUiError({
   //         message: SCHEDULE_HEADER_TEXT.addOutOfOfficeSuccess,
-  //         class: 'snackbar-success'
+  //         class: UI_ALERTS_CLASSES.SUCCESS
   //       });
   //       localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.storedDoctor));
   //     }, (error) => {
   //       this.uiAlertInterceptor.setUiError({
   //         message: SCHEDULE_HEADER_TEXT.addOutOfOfficeError,
-  //         class: 'snackbar-error'
+  //         class: UI_ALERTS_CLASSES.ERROR
   //       });
   //       console.log('Error ', error);
   //     });
@@ -219,12 +219,12 @@ export class DoctorScheduleComponent implements OnInit {
   //       localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.storedDoctor));
   //       this.uiAlertInterceptor.setUiError({
   //         message: SCHEDULE_HEADER_TEXT.cancelOutOfOfficeSuccess,
-  //         class: 'snackbar-success'
+  //         class: UI_ALERTS_CLASSES.SUCCESS
   //       });
   //     }, (error) => {
   //       this.uiAlertInterceptor.setUiError({
   //         message: SCHEDULE_HEADER_TEXT.cancelOutOfOfficeError,
-  //         class: 'snackbar-error'
+  //         class: UI_ALERTS_CLASSES.ERROR'
   //       });
   //       console.log('Error updating service', error);
   //     });

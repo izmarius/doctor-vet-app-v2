@@ -29,12 +29,11 @@ export class SignupComponent implements OnInit {
   isAllowedToGoToSecondStep = false;
   isAllowedToGoToThirdStep = false;
   isErrorMessage = false;
-  isPhotoUploaded = true;
   photo!: string;
   secondStepGuide!: string[];
   selectedCounty: string = '';
   private selectedServices: any = {};
-  servicesUI: any;
+  servicesObjectsForDoctor: any;
   signupText: any;
 
   constructor(private firebaseUtils: FirebaseUtilsService,
@@ -50,24 +49,16 @@ export class SignupComponent implements OnInit {
     this.initAuthForm();
   }
 
-  setCountyAndSetLocalities(value: any): void {
-    this.selectedCounty = value;
-    this.locationService.getCitiesByCountyCode(this.countiesAbbr[value])
-      .subscribe((response: any) => {
-        this.localities = response
-      }, error => {
-        console.log(error);
-      });
+  clickFirstStepOnFormSubmit(): void {
+    if (this.isFormBtnDisabled()) {
+      this.isErrorMessage = true;
+    } else {
+      this.isAllowedToGoToFirstStep = false;
+      this.isErrorMessage = false;
+      this.secondStepGuide = AUTH_SIGNUP_FORM_TEXT.secondStepText.split(';');
+      this.isAllowedToGoToSecondStep = true;
+    }
   }
-
-  setLocality(locality: string): void {
-    this.locality = locality;
-  }
-
-  // getUploadedImage(base64Image: any): void {
-  //   this.photo = base64Image; //- limita de 1 mb - skip second step for the moment
-  //   this.isPhotoUploaded = false;
-  // }
 
   initAuthForm(): void {
     this.authFormGroup = new FormGroup({
@@ -79,38 +70,8 @@ export class SignupComponent implements OnInit {
     });
   }
 
-  firstStepOnFormSubmit(): void {
-    if (!this.authFormGroup.valid && !this.selectedCounty && !this.locality) {
-      this.isErrorMessage = true;
-    } else {
-      this.isAllowedToGoToFirstStep = false;
-      this.isErrorMessage = false;
-      this.secondStepGuide = AUTH_SIGNUP_FORM_TEXT.secondStepText.split(';');
-      this.isAllowedToGoToSecondStep = true;
-    }
-  }
-
-  signupWithEmailAndPassword(): void {
-    // todo refactor here?
-    if (this.isSignUpButtonDisabled()) {
-      this.isErrorMessage = true;
-      this.errorMessage = AUTH_SIGNUP_FORM_TEXT.selectAtLeastOneService;
-      return;
-    }
-    this.isErrorMessage = false;
-    this.signUpService.signUpDoctor(this.authFormGroup.controls.password.value, this.getDoctorDto());
-  }
-
-  goBackToPreviousStep(stepToGo: number) {
-    if (stepToGo === 1) {
-      this.isAllowedToGoToThirdStep = false;
-      this.isAllowedToGoToFirstStep = true;
-    }
-  }
-
   getDoctorDto(): any {
     const doctor = new DoctorDTO();
-    // doctor.photoCertificate = this.photo;
     doctor.location = this.authFormGroup.controls.address.value;
     doctor.county = this.selectedCounty;
     doctor.locality = this.locality;
@@ -119,9 +80,7 @@ export class SignupComponent implements OnInit {
     doctor.email = this.authFormGroup.controls.email.value;
     doctor.services = this.selectedServices;
     doctor.photo = '';
-    // doctor.outOfOfficeDays = [];
     doctor.unavailableTime = {};
-    // set default schedule when creating account
     doctor.schedule = DOCTOR_DEFAULT_SCHEDULE;
     doctor.appointmentFrequency = {
       minuteIntervals: FREQUENCY_MINUTES_INTERVALS['30'],
@@ -132,8 +91,15 @@ export class SignupComponent implements OnInit {
     return doctor;
   }
 
+  goBackToPreviousStep(stepToGo: number) {
+    if (stepToGo === 1) {
+      this.isAllowedToGoToThirdStep = false;
+      this.isAllowedToGoToFirstStep = true;
+    }
+  }
+
   goToServicesStep(): void {
-    this.servicesUI = DOCTOR_SERVICES;
+    this.servicesObjectsForDoctor = DOCTOR_SERVICES;
     this.isAllowedToGoToThirdStep = true;
     this.isAllowedToGoToSecondStep = false;
   }
@@ -150,7 +116,7 @@ export class SignupComponent implements OnInit {
     }
   }
 
-  isSignUpFormBtnDisabled(): boolean {
+  isFormBtnDisabled(): boolean {
     // @ts-ignore
     return !this.authFormGroup.valid || !this.selectedCounty || !this.locality;
   }
@@ -164,8 +130,28 @@ export class SignupComponent implements OnInit {
     return true;
   }
 
-  resendValidationEmail(): void {
-    this.firebaseUtils.resendValidationEmail();
+  setCountyAndSetLocalities(value: any): void {
+    this.selectedCounty = value;
+    this.locationService.getCitiesByCountyCode(this.countiesAbbr[value])
+      .subscribe((response: any) => {
+        this.localities = response
+      }, error => {
+        console.log(error);
+      });
+  }
+
+  setLocality(locality: string): void {
+    this.locality = locality;
+  }
+
+  signupWithEmailAndPasswordAndRegisterDoctor(): void {
+    if (this.isSignUpButtonDisabled()) {
+      this.isErrorMessage = true;
+      this.errorMessage = AUTH_SIGNUP_FORM_TEXT.selectAtLeastOneService;
+      return;
+    }
+    this.isErrorMessage = false;
+    this.signUpService.signUpDoctor(this.authFormGroup.controls.password.value, this.getDoctorDto());
   }
 
 }

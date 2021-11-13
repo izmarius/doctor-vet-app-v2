@@ -1,5 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {APPOINTMENTFORM_DATA, COUNTIES, COUNTIES_ABBR, USER_LOCALSTORAGE} from "../../shared-data/Constants";
+import {
+  APPOINTMENTFORM_DATA,
+  COUNTIES,
+  COUNTIES_ABBR,
+  UI_ALERTS_CLASSES,
+  USER_LOCALSTORAGE
+} from "../../shared-data/Constants";
 import {DateUtilsService} from "../../data/utils/date-utils.service";
 import {DoctorService} from "../../services/doctor/doctor.service";
 import {LocationService} from "../../services/location-service/location.service";
@@ -68,7 +74,7 @@ export class UserAppointmentDialogComponent implements OnInit {
     if (this.isAppointmentDataInvalid(doctorDetails)) {
       this.uiAlertInterceptor.setUiError({
         message: 'Selecteaza toate datele de pe card pentru a creea o programare',
-        class: 'snackbar-error'
+        class: UI_ALERTS_CLASSES.ERROR
       });
       return;
     }
@@ -95,10 +101,10 @@ export class UserAppointmentDialogComponent implements OnInit {
     ]).then(() => {
           this.uiAlertInterceptor.setUiError({
             message: APPOINTMENTFORM_DATA.successAppointment,
-            class: 'snackbar-success'
+            class: UI_ALERTS_CLASSES.SUCCESS
           });
     }).catch((error: any) => {
-      this.uiAlertInterceptor.setUiError({message: error.message, class: 'snackbar-error'});
+      this.uiAlertInterceptor.setUiError({message: error.message, class: UI_ALERTS_CLASSES.ERROR});
       console.log('Error: ', error);
     });
   }
@@ -162,7 +168,7 @@ export class UserAppointmentDialogComponent implements OnInit {
       || (doctorDetails.stepHour < currentHours && this.dateTimeUtils.isCurrentDay(doctorDetails.localeDate))) {
       // todo - refactor this - debugg
       // || (this.stepHour <= currentHours && this.stepMinute <= currentMinutes)
-      this.uiAlertInterceptor.setUiError({message: APPOINTMENTFORM_DATA.timeValidation, class: 'snackbar-error'});
+      this.uiAlertInterceptor.setUiError({message: APPOINTMENTFORM_DATA.timeValidation, class: UI_ALERTS_CLASSES.ERROR});
       return false;
     }
     return true;

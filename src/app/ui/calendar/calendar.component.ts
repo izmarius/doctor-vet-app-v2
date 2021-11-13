@@ -1,7 +1,7 @@
 import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {CalendarEvent, CalendarView} from 'angular-calendar';
 import {isSameDay, isSameMonth} from 'date-fns';
-import {APPOINTMENT_MESSAGES, CALENDAR_DATA, USER_LOCALSTORAGE} from "../../shared-data/Constants";
+import {APPOINTMENT_MESSAGES, CALENDAR_DATA, UI_ALERTS_CLASSES, USER_LOCALSTORAGE} from "../../shared-data/Constants";
 import {DoctorAppointmentsService} from "../services/doctor-appointments.service";
 import {AnimalService} from "../services/animal.service";
 import {UserAnimalInfoComponent} from "../user-animal-info/user-animal-info.component";
@@ -161,7 +161,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
     if (estDate.getTime() < now.getTime()) {
       this.alertInterceptor.setUiError({
         message: APPOINTMENT_MESSAGES.APPOINTMENT_IN_PAST_NOT_POSSIBLE,
-        class: 'snackbar-error'
+        class: UI_ALERTS_CLASSES.ERROR
       });
       return;
     }

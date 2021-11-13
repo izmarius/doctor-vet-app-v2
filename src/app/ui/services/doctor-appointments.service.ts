@@ -5,7 +5,7 @@ import {Observable} from "rxjs";
 import {map} from "rxjs/operators";
 import {AnimalAppointmentService} from "../../services/animal-appointment/animal-appointment.service";
 import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-error-interceptor.service";
-import {APPOINTMENTFORM_DATA, USER_CARD_TXT, USER_LOCALSTORAGE} from "../../shared-data/Constants";
+import {APPOINTMENTFORM_DATA, UI_ALERTS_CLASSES, USER_CARD_TXT, USER_LOCALSTORAGE} from "../../shared-data/Constants";
 import {DateUtilsService} from "../../data/utils/date-utils.service";
 import {MatDialog} from "@angular/material/dialog";
 import {DoctorService} from "../../services/doctor/doctor.service";
@@ -51,11 +51,11 @@ export class DoctorAppointmentsService {
       dialogRef.closeAll();
       this.uiAlertInterceptor.setUiError({
         message: USER_CARD_TXT.cancelAppointmentSuccess,
-        class: 'snackbar-success'
+        class: UI_ALERTS_CLASSES.SUCCESS
       });
       // todo notify user
     }).catch((error) => {
-      this.uiAlertInterceptor.setUiError({message: USER_CARD_TXT.cancelAppointmentError, class: 'snackbar-success'});
+      this.uiAlertInterceptor.setUiError({message: USER_CARD_TXT.cancelAppointmentError, class: UI_ALERTS_CLASSES.SUCCESS});
       console.log(error);
     })
   }
@@ -70,11 +70,11 @@ export class DoctorAppointmentsService {
     ]).then((res) => {
       this.uiAlertInterceptor.setUiError({
         message: USER_CARD_TXT.cancelAppointmentSuccess,
-        class: 'snackbar-success'
+        class: UI_ALERTS_CLASSES.SUCCESS
         // todo notify user
       });
     }).catch((error) => {
-      this.uiAlertInterceptor.setUiError({message: USER_CARD_TXT.cancelAppointmentError, class: 'snackbar-success'});
+      this.uiAlertInterceptor.setUiError({message: USER_CARD_TXT.cancelAppointmentError, class: UI_ALERTS_CLASSES.SUCCESS});
       console.log(error);
     })
   }
@@ -150,7 +150,7 @@ export class DoctorAppointmentsService {
     if (isOutOfOfficeDay) {
       this.uiAlertInterceptor.setUiError({
         message: APPOINTMENTFORM_DATA.wrongStartDate,
-        class: 'snackbar-error'
+        class: UI_ALERTS_CLASSES.ERROR
       });
     }
 
@@ -178,7 +178,7 @@ export class DoctorAppointmentsService {
     if (overlappingAppointment) {
       this.uiAlertInterceptor.setUiError({
         message: 'O programare exista deja in acest interval orar.',
-        class: 'snackbar-error'
+        class: UI_ALERTS_CLASSES.ERROR
       });
       return true;
     }
