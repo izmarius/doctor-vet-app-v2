@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {FirebaseUtilsService} from "../../services/firebase-utils-service/firebase-utils.service";
 import {SignUpService} from "../../services/signup/sign-up.service";
 import {
   AUTH_SIGNUP_FORM_TEXT,
@@ -12,6 +11,9 @@ import {
 import {DoctorDTO} from "../../data/model-dto/doctor-DTO";
 import {DOCTOR_SERVICES} from "../../shared-data/DoctorServicesConstants";
 import {LocationService} from "../../services/location-service/location.service";
+import {LoaderService} from "../../services/loader/loader.service";
+import {finalize} from "rxjs/operators";
+import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-error-interceptor.service";
 
 @Component({
   selector: 'app-signup',
@@ -26,19 +28,17 @@ export class SignupComponent implements OnInit {
   locality: string = '';
   errorMessage: string = '';
   isAllowedToGoToFirstStep = true;
-  isAllowedToGoToSecondStep = false;
   isAllowedToGoToThirdStep = false;
   isErrorMessage = false;
-  photo!: string;
-  secondStepGuide!: string[];
   selectedCounty: string = '';
   private selectedServices: any = {};
   servicesObjectsForDoctor: any;
   signupText: any;
 
-  constructor(private firebaseUtils: FirebaseUtilsService,
-              private signUpService: SignUpService,
-              private locationService: LocationService) {
+  constructor(private signUpService: SignUpService,
+              private locationService: LocationService,
+              private loaderService: LoaderService,
+              private uiAlertMessageService: UiErrorInterceptorService) {
   }
 
   ngOnInit(): void {
@@ -55,8 +55,7 @@ export class SignupComponent implements OnInit {
     } else {
       this.isAllowedToGoToFirstStep = false;
       this.isErrorMessage = false;
-      this.secondStepGuide = AUTH_SIGNUP_FORM_TEXT.secondStepText.split(';');
-      this.isAllowedToGoToSecondStep = true;
+      this.goToServicesStep();
     }
   }
 
@@ -101,7 +100,6 @@ export class SignupComponent implements OnInit {
   goToServicesStep(): void {
     this.servicesObjectsForDoctor = DOCTOR_SERVICES;
     this.isAllowedToGoToThirdStep = true;
-    this.isAllowedToGoToSecondStep = false;
   }
 
   toggleServiceSelection(serviceDesc: string, serviceKey: string): void {
@@ -132,10 +130,13 @@ export class SignupComponent implements OnInit {
 
   setCountyAndSetLocalities(value: any): void {
     this.selectedCounty = value;
+    this.loaderService.show();
     this.locationService.getCitiesByCountyCode(this.countiesAbbr[value])
+      .pipe(finalize(() => this.loaderService.hide()))
       .subscribe((response: any) => {
         this.localities = response
       }, error => {
+        // this.uiAlertMessageService.setUiError({message:})
         console.log(error);
       });
   }
@@ -153,5 +154,4 @@ export class SignupComponent implements OnInit {
     this.isErrorMessage = false;
     this.signUpService.signUpDoctor(this.authFormGroup.controls.password.value, this.getDoctorDto());
   }
-
 }

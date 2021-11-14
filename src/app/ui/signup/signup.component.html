@@ -41,7 +41,7 @@
         <li *ngIf="isErrorMessage"
             class="m-btn-dialog-row error-msg list-style-type-none">{{signupText?.formErrorMessage}}</li>
         <div class="sign-up-btn-first-step d-flex justify-content-center">
-          <button type="submit" class="btn button--active" (click)="goToServicesStep()"
+          <button type="submit" class="btn button--active"
                   [disabled]="isFormBtnDisabled()">{{signupText?.step1}}</button>
         </div>
       </form>
