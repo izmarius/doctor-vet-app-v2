@@ -15,21 +15,15 @@ import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-err
   styleUrls: ['./doctor-schedule.component.scss']
 })
 export class DoctorScheduleComponent implements OnInit {
-  minuteIntervals = [10, 15, 20, 25, 30, 35, 40, 45];
   selectedInterval!: number;
   storedDoctor!: DoctorDTO;
-  headerContent: any;
-  daysOfWeekMap: any = DAYS_OF_WEEK_MAP;
   weekDaysList: any[] = [];
   scheduleBtnText: string = '';
+  daysOfWeekMap: any;
   public minDate = new Date();
   public schedulePlaceholder: any;
   startDate: any;
   endDate: any;
-  // isOutOfOfficeError = false;
-  // blockedDate: any;
-  // blockedStartHour!: number;
-  // blockedEndHour!: number;
 
   constructor(private doctorService: DoctorService,
               private uiAlertInterceptor: UiErrorInterceptorService) {
@@ -41,6 +35,8 @@ export class DoctorScheduleComponent implements OnInit {
     this.scheduleBtnText = SCHEDULE_HEADER_TEXT.scheduleButtonText;
     this.weekDaysList = DAYS_OF_WEEK;
     this.selectedInterval = <number>this.storedDoctor.appointmentInterval;
+    this.daysOfWeekMap = DAYS_OF_WEEK_MAP;
+
   }
 
   getAndSetDay(dayPayload: IDaySchedule): void {
@@ -83,7 +79,10 @@ export class DoctorScheduleComponent implements OnInit {
           class: UI_ALERTS_CLASSES.SUCCESS
         });
       }, (error) => {
-        this.uiAlertInterceptor.setUiError({message: SCHEDULE_HEADER_TEXT.saveScheduleError, class: UI_ALERTS_CLASSES.ERROR});
+        this.uiAlertInterceptor.setUiError({
+          message: SCHEDULE_HEADER_TEXT.saveScheduleError,
+          class: UI_ALERTS_CLASSES.ERROR
+        });
         console.log('Error updating service', error);
       });
   }
@@ -99,7 +98,6 @@ export class DoctorScheduleComponent implements OnInit {
 
   setDoctorUnavailableTime(): void {
     this.storedDoctor.unavailableTime.notWorkingDays = [];
-
     for (let key in this.storedDoctor.schedule) {
       if (!this.storedDoctor.schedule[key].isChecked) {
         this.storedDoctor.unavailableTime.notWorkingDays.push(this.storedDoctor.schedule[key].dayNumber);
@@ -112,122 +110,5 @@ export class DoctorScheduleComponent implements OnInit {
   }
 
 //   SET BLOCKED TIME FOR DOCTOR
-  // setBlockedHours() {
-  //   if ((this.blockedStartHour && this.blockedStartHour > 24) || (this.blockedEndHour && this.blockedEndHour > 24)) {
-  //     this.blockedStartHour = 24;
-  //     this.blockedEndHour = 24;
-  //   }
-  // }
-
-  // isBlockedHoursDisabled(): boolean {
-  //   return !this.blockedDate || !this.blockedEndHour || !this.blockedStartHour || this.blockedStartHour > this.blockedEndHour;
-  // }
-
-  // saveBlockedDay(): void {
-  //   if (this.isBlockedHoursDisabled()) {
-  //     this.uiAlertInterceptor.setUiError({message: 'Toate campurile trebuie sa fie valide', class: UI_ALERTS_CLASSES.ERROR});
-  //     return;
-  //   }
-  //   const localDate = this.blockedDate.toLocaleString().split(',')[0];
-  //   if (!this.storedDoctor.unavailableTime) {
-  //     this.storedDoctor.unavailableTime = {};
-  //     this.storedDoctor.unavailableTime[localDate] = {
-  //       startHour: this.blockedStartHour,
-  //       endHour: this.blockedEndHour
-  //     };
-  //   } else if (!this.storedDoctor.unavailableTime[localDate]) {
-  //     this.storedDoctor.unavailableTime[localDate] = {
-  //       startHour: this.blockedStartHour,
-  //       endHour: this.blockedEndHour
-  //     };
-  //   } else {
-  //     this.storedDoctor.unavailableTime[localDate].startHour = this.blockedStartHour;
-  //     this.storedDoctor.unavailableTime[localDate].endHour = this.blockedEndHour;
-  //   }
-  //
-  //   this.doctorService.updateDoctorInfo({unavailableTime: this.storedDoctor.unavailableTime}, <string>this.storedDoctor.id).then(() => {
-  //     localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.storedDoctor));
-  //     this.uiAlertInterceptor.setUiError({
-  //       message: SCHEDULE_HEADER_TEXT.saveScheduleSuccess,
-  //       class: UI_ALERTS_CLASSES.SUCCESS
-  //     });
-  //   }, (error) => {
-  //     this.uiAlertInterceptor.setUiError({message: SCHEDULE_HEADER_TEXT.saveScheduleError, class: UI_ALERTS_CLASSES.ERROR);
-  //     console.log('Error updating service', error);
-  //   });
-  // }
-
-
 //  START OUT OF OFFICE
-  // isOutOfOfficeDisabled(): boolean {
-  //   return !this.startDate || !this.endDate || this.endDate.getTime() < this.startDate.getTime();
-  // }
-
-  // todo ADD MATDATEPICKER RANGE!!!!!
-  // saveOutOfOfficeDate(): void {
-  //   if (this.isOutOfOfficeDisabled()) {
-  //     // todo display error
-  //     this.isOutOfOfficeError = true;
-  //     return;
-  //   }
-  //   // @ts-ignore
-  //   this.storedDoctor.outOfOfficeDays.push({
-  //     startTimestamp: this.startDate.getTime(),
-  //     endTimestamp: this.endDate.getTime(),
-  //     startDate: this.startDate.toLocaleDateString(),
-  //     endDate: this.endDate.toLocaleDateString()
-  //   });
-  //
-  //   if (!this.storedDoctor.unavailableTime.outOfOfficeTimestamp) {
-  //     this.storedDoctor.unavailableTime.outOfOfficeTimestamp = [];
-  //   }
-  //
-  //   // todo see if timestamps overlaps!
-  //   // this.storedDoctor.unavailableTime.outOfOfficeTimestamp.push({
-  //   //   startTimestamp: this.startDate.getTime(),
-  //   //   endTimestamp: this.endDate.getTime()
-  //   // });
-  //
-  //   // @ts-ignore
-  //   this.doctorService.updateDoctorInfo({
-  //     outOfOfficeDays: this.storedDoctor.outOfOfficeDays,
-  //   }, <string>this.storedDoctor.id)
-  //     .then(() => {
-  //       this.isOutOfOfficeError = false;
-  //       // todo - alert message?
-  //       this.uiAlertInterceptor.setUiError({
-  //         message: SCHEDULE_HEADER_TEXT.addOutOfOfficeSuccess,
-  //         class: UI_ALERTS_CLASSES.SUCCESS
-  //       });
-  //       localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.storedDoctor));
-  //     }, (error) => {
-  //       this.uiAlertInterceptor.setUiError({
-  //         message: SCHEDULE_HEADER_TEXT.addOutOfOfficeError,
-  //         class: UI_ALERTS_CLASSES.ERROR
-  //       });
-  //       console.log('Error ', error);
-  //     });
-  // }
-
-  // cancelOutOfOffice(index: number): void {
-  //   // @ts-ignore
-  //   this.storedDoctor.outOfOfficeDays.splice(index, 1);
-  //   // @ts-ignore
-  //   this.doctorService.updateDoctorInfo({outOfOfficeDays: this.storedDoctor.outOfOfficeDays}, this.storedDoctor.id)
-  //     .then(() => {
-  //       this.storedDoctor.outOfOfficeDays?.splice(index, 1);
-  //       localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.storedDoctor));
-  //       this.uiAlertInterceptor.setUiError({
-  //         message: SCHEDULE_HEADER_TEXT.cancelOutOfOfficeSuccess,
-  //         class: UI_ALERTS_CLASSES.SUCCESS
-  //       });
-  //     }, (error) => {
-  //       this.uiAlertInterceptor.setUiError({
-  //         message: SCHEDULE_HEADER_TEXT.cancelOutOfOfficeError,
-  //         class: UI_ALERTS_CLASSES.ERROR'
-  //       });
-  //       console.log('Error updating service', error);
-  //     });
-  // }
-
 }

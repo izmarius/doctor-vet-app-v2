@@ -86,7 +86,8 @@ export const APPOINTMENTFORM_DATA = {
   patientDoesNotExist: 'Nu am gasit nici un user cu acest nume, te rugam sa incerci din nou sau sa creezi un user clientului in sectiunea "Creeaza client nou"',
   userDoesNotHaveAnimal: 'Acest user nu are nici un animal inregistrat, insereaza in casuta numele animalului pentru a-l adauga clientului',
   successAppointment: 'Programarea a fost facut cu succes',
-  wrongStartDate: 'Zi libera! Selecteaza o zi diferita'
+  wrongStartDate: 'Zi libera! Selecteaza o zi diferita',
+  outOfWorkingOfficeWarning: ['Programul in aceasta zi este pana la: ','. Te rugam sa te incadrezi in orarul setat.']
 };
 
 export const APPOINTMENT_MESSAGES = {

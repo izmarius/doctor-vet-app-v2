@@ -55,7 +55,10 @@ export class DoctorAppointmentsService {
       });
       // todo notify user
     }).catch((error) => {
-      this.uiAlertInterceptor.setUiError({message: USER_CARD_TXT.cancelAppointmentError, class: UI_ALERTS_CLASSES.SUCCESS});
+      this.uiAlertInterceptor.setUiError({
+        message: USER_CARD_TXT.cancelAppointmentError,
+        class: UI_ALERTS_CLASSES.SUCCESS
+      });
       console.log(error);
     })
   }
@@ -74,7 +77,10 @@ export class DoctorAppointmentsService {
         // todo notify user
       });
     }).catch((error) => {
-      this.uiAlertInterceptor.setUiError({message: USER_CARD_TXT.cancelAppointmentError, class: UI_ALERTS_CLASSES.SUCCESS});
+      this.uiAlertInterceptor.setUiError({
+        message: USER_CARD_TXT.cancelAppointmentError,
+        class: UI_ALERTS_CLASSES.SUCCESS
+      });
       console.log(error);
     })
   }
@@ -138,23 +144,55 @@ export class DoctorAppointmentsService {
   }
 
   isFreeDayForDoctor(schedule: any, appointmentNewStartDate: Date): boolean {
-    // todo this should not depend on the appointment form, only on date and schedule - also is wrong to check only saturnday and sunday - what if doctor works on saturday/sunday?
     let isOutOfOfficeDay = false;
+    let isOutOfWorkingHours = false;
+    let outOfWorkingHoursTime;
     for (const day in schedule) {
       if (!schedule[day].isChecked && schedule[day].dayNumber === appointmentNewStartDate.getDay()) {
         isOutOfOfficeDay = true;
         break;
+      } else if (day === 'monday-friday' && !schedule[day].isChecked && appointmentNewStartDate.getDay() < 6 && appointmentNewStartDate.getDay() > 0) {
+        isOutOfOfficeDay = true;
+        break;
+      } else if (schedule[day].isChecked) {
+        const isDoctorWorkingAtThisHour = this.hasDoctorScheduleAtThisHour(schedule[day], appointmentNewStartDate);
+        if (!isDoctorWorkingAtThisHour && schedule[day].dayNumber === appointmentNewStartDate.getDay()) {
+          isOutOfWorkingHours = true;
+          isOutOfOfficeDay = true;
+          outOfWorkingHoursTime = schedule[day].endTime;
+          break;
+        } else if(day === 'monday-friday' && !isDoctorWorkingAtThisHour && appointmentNewStartDate.getDay() < 6 && appointmentNewStartDate.getDay() > 0) {
+          isOutOfWorkingHours = true;
+          isOutOfOfficeDay = true;
+          outOfWorkingHoursTime = schedule[day].endTime;
+          break;
+        }
       }
     }
 
     if (isOutOfOfficeDay) {
       this.uiAlertInterceptor.setUiError({
-        message: APPOINTMENTFORM_DATA.wrongStartDate,
+        message: isOutOfWorkingHours ?
+          APPOINTMENTFORM_DATA.outOfWorkingOfficeWarning[0] + outOfWorkingHoursTime + APPOINTMENTFORM_DATA.outOfWorkingOfficeWarning[1] :
+          APPOINTMENTFORM_DATA.wrongStartDate,
         class: UI_ALERTS_CLASSES.ERROR
       });
     }
 
     return isOutOfOfficeDay;
+  }
+
+  hasDoctorScheduleAtThisHour(daySchedule: any, selectedDate: Date): boolean {
+    const selectedHour = selectedDate.getHours();
+    const selectedMinutes = selectedDate.getMinutes();
+    const doctorDayEndHour = parseInt(daySchedule.endTime.split(':')[0]);
+    const doctorDayEndMinutes = parseInt(daySchedule.endTime.split(':')[1]);
+    if (selectedHour > doctorDayEndHour) {
+      return false;
+    } else if (selectedHour === doctorDayEndHour && selectedMinutes >= doctorDayEndMinutes) {
+      return false;
+    }
+    return true;
   }
 
   areAppointmentsOverlapping(date: Date, doctor: any, appointmentId: string): boolean {
