@@ -1,7 +1,20 @@
-mat-progress-spinner {
+.mat-progress-spinner {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 3 ;
+  z-index: 3;
+  width: 500px !important;
+  height: 500px !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+@media only screen and (max-width: 641px) {
+  // spinner
+  .mat-progress-spinner {
+    width: 100% !important;
+    height: 100% !important;
+  }
 }

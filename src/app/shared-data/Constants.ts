@@ -239,6 +239,7 @@ export const AUTH_SIGNUP_FORM_TEXT = {
   address: 'Adresa clinicii - Oras, Strada, Numar',
   googleBtnTxt: 'Creeaza cont cu Google',
   title: 'Creeaza cont nou',
+  subtitle: 'Toate campuurile sunt obligatorii',
   emailPlaceholder: 'john@gmail.com',
   passwordPlaceholder: 'Parola - minim 6 caractere',
   step1: 'Urmatorul pas - 1/2 ',

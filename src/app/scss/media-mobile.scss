@@ -61,12 +61,12 @@
   }
 
   .vet-container {
-    padding: 3.5rem 0!important;
+    padding: 3.5rem 0 !important;
   }
 
   .user-animal-details-dialog {
-    max-width: 90%!important;
-    width: 90%!important;
+    max-width: 90% !important;
+    width: 90% !important;
   }
 
 
@@ -79,7 +79,7 @@
   }
 
   .text-card-container {
-    padding: 0 0.5rem 2rem!important;
+    padding: 0 0.5rem 2rem !important;
   }
 
   //home page
@@ -337,11 +337,7 @@
 //@media (min-width: 961px) { /* tablet, landscape iPad, lo-res laptops ands desktops */
 //}
 
-@media (min-width: 1025px) { /* big landscape tablets, laptops, and desktops */
-}
-
-@media (min-width: 1281px) { /* hi-res laptops and desktops */
-}
+//@media (min-width: 1025px) { /* big landscape tablets, laptops, and desktops */}
 
 //# Desktop
 //only screen and (min-width: 992px)
