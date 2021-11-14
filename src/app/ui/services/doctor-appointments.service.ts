@@ -145,8 +145,7 @@ export class DoctorAppointmentsService {
 
   isFreeDayForDoctor(schedule: any, appointmentNewStartDate: Date): boolean {
     let isOutOfOfficeDay = false;
-    let isOutOfWorkingHours = false;
-    let outOfWorkingHoursTime;
+
     for (const day in schedule) {
       if (!schedule[day].isChecked && schedule[day].dayNumber === appointmentNewStartDate.getDay()) {
         isOutOfOfficeDay = true;
@@ -154,27 +153,12 @@ export class DoctorAppointmentsService {
       } else if (day === 'monday-friday' && !schedule[day].isChecked && appointmentNewStartDate.getDay() < 6 && appointmentNewStartDate.getDay() > 0) {
         isOutOfOfficeDay = true;
         break;
-      } else if (schedule[day].isChecked) {
-        const isDoctorWorkingAtThisHour = this.hasDoctorScheduleAtThisHour(schedule[day], appointmentNewStartDate);
-        if (!isDoctorWorkingAtThisHour && schedule[day].dayNumber === appointmentNewStartDate.getDay()) {
-          isOutOfWorkingHours = true;
-          isOutOfOfficeDay = true;
-          outOfWorkingHoursTime = schedule[day].endTime;
-          break;
-        } else if(day === 'monday-friday' && !isDoctorWorkingAtThisHour && appointmentNewStartDate.getDay() < 6 && appointmentNewStartDate.getDay() > 0) {
-          isOutOfWorkingHours = true;
-          isOutOfOfficeDay = true;
-          outOfWorkingHoursTime = schedule[day].endTime;
-          break;
-        }
       }
     }
 
     if (isOutOfOfficeDay) {
       this.uiAlertInterceptor.setUiError({
-        message: isOutOfWorkingHours ?
-          APPOINTMENTFORM_DATA.outOfWorkingOfficeWarning[0] + outOfWorkingHoursTime + APPOINTMENTFORM_DATA.outOfWorkingOfficeWarning[1] :
-          APPOINTMENTFORM_DATA.wrongStartDate,
+        message: APPOINTMENTFORM_DATA.wrongStartDate,
         class: UI_ALERTS_CLASSES.ERROR
       });
     }
@@ -182,7 +166,34 @@ export class DoctorAppointmentsService {
     return isOutOfOfficeDay;
   }
 
-  hasDoctorScheduleAtThisHour(daySchedule: any, selectedDate: Date): boolean {
+  checkWorkingDaysIfHourIsSetOutOfSchedule(schedule: any, appointmentNewStartDate: Date): boolean {
+    let isOutOfWorkingHours = false;
+    let outOfWorkingHoursTime;
+    // todo - combine with validateTime method
+    for (const day in schedule) {
+      if (schedule[day].isChecked) {
+        const isDoctorWorkingAtThisHour = this.hasDoctorScheduleAtThisHour(schedule[day], appointmentNewStartDate);
+        if (!isDoctorWorkingAtThisHour && schedule[day].dayNumber === appointmentNewStartDate.getDay()) {
+          isOutOfWorkingHours = true;
+          outOfWorkingHoursTime = schedule[day].endTime;
+        } else if (day === 'monday-friday' && !isDoctorWorkingAtThisHour && appointmentNewStartDate.getDay() < 6 && appointmentNewStartDate.getDay() > 0) {
+          isOutOfWorkingHours = true;
+          outOfWorkingHoursTime = schedule[day].endTime;
+        }
+      }
+    }
+
+    if (isOutOfWorkingHours) {
+      this.uiAlertInterceptor.setUiError({
+        message: APPOINTMENTFORM_DATA.outOfWorkingOfficeWarning[0] + outOfWorkingHoursTime + APPOINTMENTFORM_DATA.outOfWorkingOfficeWarning[1],
+        class: UI_ALERTS_CLASSES.ERROR
+      });
+    }
+
+    return isOutOfWorkingHours;
+  }
+
+  private hasDoctorScheduleAtThisHour(daySchedule: any, selectedDate: Date): boolean {
     const selectedHour = selectedDate.getHours();
     const selectedMinutes = selectedDate.getMinutes();
     const doctorDayEndHour = parseInt(daySchedule.endTime.split(':')[0]);

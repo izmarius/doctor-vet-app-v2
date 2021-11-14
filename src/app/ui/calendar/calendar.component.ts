@@ -1,5 +1,10 @@
 import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
-import {CalendarEvent, CalendarView} from 'angular-calendar';
+import {
+  CalendarDayViewBeforeRenderEvent,
+  CalendarEvent,
+  CalendarView,
+  CalendarWeekViewBeforeRenderEvent
+} from 'angular-calendar';
 import {isSameDay, isSameMonth} from 'date-fns';
 import {APPOINTMENT_MESSAGES, CALENDAR_DATA, UI_ALERTS_CLASSES, USER_LOCALSTORAGE} from "../../shared-data/Constants";
 import {DoctorAppointmentsService} from "../services/doctor-appointments.service";
@@ -55,11 +60,34 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
   @HostListener('window:resize', ['$event'])
   onResize() {
-    if(window.innerWidth && window.innerWidth <= 641) {
+    if (window.innerWidth && window.innerWidth <= 641) {
       this.view = CalendarView.Day;
     } else {
       this.view = CalendarView.Week;
     }
+  }
+
+  beforeWeekViewRender(renderEvent: CalendarWeekViewBeforeRenderEvent) {
+    // todo set not working days disabled? without click event?
+    // renderEvent.hourColumns.forEach((hourColumn) => {
+    //   hourColumn.hours.forEach((hour) => {
+    //     hour.segments.forEach((segment) => {
+    //         segment.cssClass = 'bg-pink';
+    //     });
+    //   });
+    // });
+  }
+
+  beforeDayViewRender(renderEvent: CalendarDayViewBeforeRenderEvent) {
+    // renderEvent.hourColumns.forEach((hourColumn) => {
+    //   hourColumn.hours.forEach((hour) => {
+    //     hour.segments.forEach((segment) => {
+    //       if (segment.date.getHours() >= 2 && segment.date.getHours() <= 5) {
+    //         segment.cssClass = 'bg-pink';
+    //       }
+    //     });
+    //   });
+    // });
   }
 
   setView(view: CalendarView): void {
@@ -117,6 +145,9 @@ export class CalendarComponent implements OnInit, OnDestroy {
       this.hourToStartTheDay = parseInt(this.doctor.schedule.saturday.startTime[1]);
       this.hourToEndTheDay = parseInt(this.doctor.schedule.saturday.endTime[1]);
     }
+    if (this.hourToEndTheDay) {
+      this.hourToEndTheDay--;
+    }
   }
 
   dayClicked({date, events}: { date: Date; events: CalendarEvent[] }): void {
@@ -148,11 +179,11 @@ export class CalendarComponent implements OnInit, OnDestroy {
       }
       this.openUserAnimalAppointmentModal();
     }
-
   }
 
   addAppointment(date: any) {
-    if (this.doctorAppointmentService.isFreeDayForDoctor(this.doctor.schedule, date)) {
+    if (this.doctorAppointmentService.isFreeDayForDoctor(this.doctor.schedule, date) ||
+      this.doctorAppointmentService.checkWorkingDaysIfHourIsSetOutOfSchedule(this.doctor.schedule, date)) {
       return;
     }
     const estDate = new Date(date);

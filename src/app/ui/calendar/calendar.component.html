@@ -82,6 +82,7 @@
         (hourSegmentClicked)="addAppointment($event.date)"
         [dayStartHour]="hourToStartTheDay"
         [dayEndHour]="hourToEndTheDay"
+        (beforeViewRender)="beforeWeekViewRender($event)"
       >
       </mwl-calendar-week-view>
 
@@ -95,6 +96,7 @@
         (hourSegmentClicked)="addAppointment($event.date)"
         [dayStartHour]="hourToStartTheDay"
         [dayEndHour]="hourToEndTheDay"
+        (beforeViewRender)="beforeDayViewRender($event)"
       >
       </mwl-calendar-day-view>
     </div>

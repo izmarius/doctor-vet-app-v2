@@ -63,3 +63,10 @@ body {
   position: relative !important;
 }
 
+.cal-month-view .bg-pink,
+.cal-week-view .cal-day-columns .bg-pink,
+.cal-day-view .bg-pink {
+  background-color: hotpink !important;
+  pointer-events: none!important;
+  //opacity: 0.4;
+}

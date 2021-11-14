@@ -68,6 +68,7 @@ export class DoctorAppointmentWithoutUserModalComponent implements OnInit {
     });
   }
 
+
   onCancelForm(): void {
     this.dialogRef.close();
   }

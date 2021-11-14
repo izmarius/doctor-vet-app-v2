@@ -91,7 +91,7 @@ export class DoctorScheduleComponent implements OnInit {
     this.storedDoctor.appointmentFrequency.hourIntervals = [];
     const startHour = parseInt(this.storedDoctor.schedule['monday-friday'].startTime.split(':')[0], 10);
     const endHour = parseInt(this.storedDoctor.schedule['monday-friday'].endTime.split(':')[0], 10);
-    for (let i = startHour; i <= endHour; i++) {
+    for (let i = startHour; i <= endHour - 1; i++) {
       this.storedDoctor.appointmentFrequency.hourIntervals.push(i);
     }
   }
