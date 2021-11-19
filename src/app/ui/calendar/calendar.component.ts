@@ -95,12 +95,13 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   getDoctorAppointments() {
-    this.doctorAppointmentsSub$ = this.doctorService.getDoctorAppointments(this.doctor.id).subscribe((res) => {
-      this.resetDoctorAppointmentsMap();
-      this.appointments = res.map((calendarApp: any) => {
-        return this.setAndGetCalendarAppointmentsBasedOnDoctorAndUser(calendarApp);
+    this.doctorAppointmentsSub$ = this.doctorService.getDoctorAppointments(this.doctor.id)
+      .subscribe((res) => {
+        this.resetDoctorAppointmentsMap();
+        this.appointments = res.map((calendarApp: any) => {
+          return this.setAndGetCalendarAppointmentsBasedOnDoctorAndUser(calendarApp);
+        });
       });
-    });
   }
 
   resetDoctorAppointmentsMap() {

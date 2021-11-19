@@ -9,6 +9,7 @@ import {UI_ALERTS_CLASSES, USER_LOCALSTORAGE, USER_SERVICE} from "../../../share
 import {IUserData} from "../../../shared-data/iuser-data";
 import {FirebaseUtilsService} from "../../../services/firebase-utils-service/firebase-utils.service";
 import {DateUtilsService} from "../../../data/utils/date-utils.service";
+import {AngularFireAuth} from "@angular/fire/auth";
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +23,8 @@ export class UserService {
     private firestoreService: FirestoreService,
     private uiAlertInterceptor: UiErrorInterceptorService,
     private firebaseUtils: FirebaseUtilsService,
-    private dateUtils: DateUtilsService
+    private dateUtils: DateUtilsService,
+    private afAuth: AngularFireAuth
   ) {
   }
 
@@ -92,42 +94,49 @@ export class UserService {
       userPayload.animals[0].animalName = userData.animalName;
     }
 
-    this.firestoreService.getCollectionByWhereClause(this.USER_COLLECTION, 'email', '==', userData.email)
-      .pipe(take(1))
-      .subscribe((res) => {
-        if (res && res.length === 0) {
-          userPayload.id = this.firestoreService.getNewFirestoreId();
-          // transaction here
-          this.firestoreService.saveDocumentWithGeneratedFirestoreId(this.USER_COLLECTION, userPayload.id, JSON.parse(JSON.stringify(userPayload)))
-            .then(() => {
-              if (userData.animalName) {
-                this.saveAnimalToUser(userPayload, userPayload.id).then(() => {
-                  this.firebaseUtils.resendValidationEmail();
-                  this.uiAlertInterceptor.setUiError({
-                    message: USER_SERVICE.addUserSuccess,
-                    class: UI_ALERTS_CLASSES.SUCCESS
-                  });
-                });
-              } else {
+    // todo handle this with a cloud function?
+    this.afAuth.createUserWithEmailAndPassword(userData.email, "password")
+      .then(() => {
+        userPayload.id = this.firestoreService.getNewFirestoreId();
+        // transaction here
+        this.firestoreService.saveDocumentWithGeneratedFirestoreId(this.USER_COLLECTION, userPayload.id, JSON.parse(JSON.stringify(userPayload)))
+          .then(() => {
+            if (userData.animalName) {
+              this.saveAnimalToUser(userPayload, userPayload.id).then(() => {
+                this.firebaseUtils.resendValidationEmail();
                 this.uiAlertInterceptor.setUiError({
-                  message: USER_SERVICE.addUserError,
+                  message: USER_SERVICE.addUserSuccess,
                   class: UI_ALERTS_CLASSES.SUCCESS
                 });
-              }
-              dialog.close();
-            }).catch((error: any) => {
-            console.error('Error: ', error);
-            this.uiAlertInterceptor.setUiError({
-              message: USER_SERVICE.addUserError,
-              class: UI_ALERTS_CLASSES.ERROR
-            });
+              });
+            } else {
+              this.uiAlertInterceptor.setUiError({
+                message: USER_SERVICE.addUserError,
+                class: UI_ALERTS_CLASSES.SUCCESS
+              });
+            }
+            dialog.close();
+          }).catch((error: any) => {
+          console.error('Error: ', error);
+          this.uiAlertInterceptor.setUiError({
+            message: USER_SERVICE.addUserError,
+            class: UI_ALERTS_CLASSES.ERROR
+          });
+        });
+      })
+      .catch((error) => {
+        if (error && error.code === 'auth/email-already-in-use') {
+          this.uiAlertInterceptor.setUiError({
+            message: "Acest email este deja inregistrat.Te rugam sa incerci cu un alt email",
+            class: UI_ALERTS_CLASSES.ERROR
           });
         } else {
           this.uiAlertInterceptor.setUiError({
-            message: USER_SERVICE.USER_ALREADY_EXISTS,
+            message: error.code,
             class: UI_ALERTS_CLASSES.ERROR
           });
         }
+
       });
   }
 
@@ -203,7 +212,10 @@ export class UserService {
         .then(() => {
           localStorage.removeItem(USER_LOCALSTORAGE);
           localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(userData));
-          this.uiAlertInterceptor.setUiError({message: 'Animalul a fost adaugat cu succes', class: UI_ALERTS_CLASSES.SUCCESS});
+          this.uiAlertInterceptor.setUiError({
+            message: 'Animalul a fost adaugat cu succes',
+            class: UI_ALERTS_CLASSES.SUCCESS
+          });
         }).catch((error: any) => {
         this.uiAlertInterceptor.setUiError({
           message: 'A aparut o eroare, te rugam sa incerci din nou',

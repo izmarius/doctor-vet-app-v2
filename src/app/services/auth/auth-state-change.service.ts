@@ -19,6 +19,7 @@ export class AuthStateChangeService {
               private userLoggedInService: AuthLoggedInServiceService,
               private loaderService: LoaderService,
               private routerService: Router) {
+    // todo needs to be opened all the time?
     this.afAuth.authState.subscribe((user) => {
       this.loaderService.show();
       if (user) {
