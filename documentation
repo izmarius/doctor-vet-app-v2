@@ -25,3 +25,13 @@ DEPLOY APPLICATION
 2.firebase deploy  sau firebase deploy --only hosting
 3.firebase open hosting:site
 - to change hosting config: firebase init hosting (configs are in firebase.json)
+
+
+BUILD/SERVE PROD
+ng serve --configuration=production
+ng build
+
+BUILD/SERVE DEV
+ng serve
+ng build --configuration=development
+
