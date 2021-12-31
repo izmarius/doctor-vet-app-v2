@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {map, take} from "rxjs/operators";
+import {LoaderService} from "../loader/loader.service";
 
 @Injectable({
   providedIn: 'root'
@@ -8,10 +9,12 @@ import {map, take} from "rxjs/operators";
 export class LocationService {
   private LOCATION_URL = 'https://roloca.coldfuse.io/orase/';
 
-  constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient,
+              private loaderService: LoaderService) {
   }
 
   getCitiesByCountyCode(countyCode: string) {
+    this.loaderService.show();
     return this.httpClient.get(this.LOCATION_URL + countyCode)
       .pipe(
         take(1),
@@ -25,6 +28,7 @@ export class LocationService {
               locationList.push(place.nume);
             }
           });
+          this.loaderService.hide();
           return locationList;
         })
       );

@@ -13,7 +13,6 @@ import {DOCTOR_SERVICES} from "../../shared-data/DoctorServicesConstants";
 import {LocationService} from "../../services/location-service/location.service";
 import {LoaderService} from "../../services/loader/loader.service";
 import {finalize} from "rxjs/operators";
-import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-error-interceptor.service";
 
 @Component({
   selector: 'app-signup',
@@ -37,8 +36,7 @@ export class SignupComponent implements OnInit {
 
   constructor(private signUpService: SignUpService,
               private locationService: LocationService,
-              private loaderService: LoaderService,
-              private uiAlertMessageService: UiErrorInterceptorService) {
+              private loaderService: LoaderService) {
   }
 
   ngOnInit(): void {
