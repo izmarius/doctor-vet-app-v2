@@ -15,10 +15,10 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {DoctorAppointmentFormService} from "./services/doctor-appointment-form.service";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {Subscription} from "rxjs";
-import {AnimalAppointmentService} from "../../services/animal-appointment/animal-appointment.service";
 import {FirestoreService} from "../../data/http/firestore.service";
 import {UserService} from "../user-profile/services/user.service";
 import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-error-interceptor.service";
+import {AppointmentsService} from "../../services/appointments/appointments.service";
 
 @Component({
   selector: 'app-doctor-appointment-modal',
@@ -51,12 +51,12 @@ export class DoctorAppointmentModalComponent implements OnInit {
   @ViewChild('animalList') animalListElem: any;
 
   constructor(
+    private appointmentService: AppointmentsService,
+    private appointmentFormService: DoctorAppointmentFormService,
+    private dateTimeUtils: DateUtilsService,
     public dialogRef: MatDialogRef<DoctorAppointmentModalComponent>,
     private doctorService: DoctorService,
     private doctorAppointmentService: DoctorAppointmentsService,
-    private appointmentFormService: DoctorAppointmentFormService,
-    private dateTimeUtils: DateUtilsService,
-    private animalAppointment: AnimalAppointmentService,
     private firestoreService: FirestoreService,
     private userService: UserService,
     private uiAlertInterceptor: UiErrorInterceptorService,
@@ -113,10 +113,9 @@ export class DoctorAppointmentModalComponent implements OnInit {
       this.setErrorMessage(APPOINTMENTFORM_DATA.formAllFieldsValidMessage);
       return;
     }
-    const doctorAppointmentId = this.firestoreService.getNewFirestoreId();
-    const animalAppointmentId = this.firestoreService.getNewFirestoreId();
+    const appointmentId = this.firestoreService.getNewFirestoreId();
     this.appointmentForm.value.startDate.setHours(this.stepHour, this.stepMinute);
-    if (this.doctorAppointmentService.areAppointmentsOverlapping(this.appointmentForm.value.startDate, this.doctor, doctorAppointmentId)) {
+    if (this.doctorAppointmentService.areAppointmentsOverlapping(this.appointmentForm.value.startDate, this.doctor, appointmentId)) {
       return;
     }
 
@@ -139,14 +138,12 @@ export class DoctorAppointmentModalComponent implements OnInit {
 
     this.setErrorMessage('');
 
-    const newDoctorAppointment = this.getDoctorAppointment(animalAppointmentId, newAnimalInfo);
-    const newAnimalAppointment = this.getAnimalAppointmentPayload(doctorAppointmentId, animalAppointmentId, newAnimalInfo);
+    const appointmentDTO = this.appointmentService.getAppointmentDTO(newAnimalInfo, this.appointmentForm, this.doctor, this.selectedPatient, appointmentId);
 
     // todo create a transaction
     Promise.all([
       this.doctorService.updateDoctorInfo({appointmentsMap: this.doctor.appointmentsMap}, this.doctor.id),
-      this.doctorAppointmentService.createAppointment(newDoctorAppointment, this.doctor.id, doctorAppointmentId),
-      this.animalAppointment.saveAnimalAppointment(newAnimalAppointment, this.selectedPatient?.id, animalAppointmentId)
+      this.appointmentService.createAppointment(appointmentDTO),
     ]).then(() => {
       localStorage.removeItem(USER_LOCALSTORAGE);
       localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.doctor));
@@ -159,53 +156,6 @@ export class DoctorAppointmentModalComponent implements OnInit {
       this.uiAlertInterceptor.setUiError({message: error.message, class: UI_ALERTS_CLASSES.ERROR});
       console.log('Error: ', error);
     });
-  }
-
-  getDoctorAppointment(animalAppointmentId: string, newAnimalInfo: any) {
-    return new DoctorsAppointmentDTO()
-      .setUserName(this.appointmentForm.value.patientName)
-      .setUserId(this.selectedPatient?.id)
-      .setServices(this.appointmentForm.value.medService)
-      .setDateTime(
-        this.dateTimeUtils.getDateFormat(this.appointmentForm.value.startDate)
-        + ' - ' +
-        this.appointmentForm.value.startTime
-      )
-      .setAnimal(newAnimalInfo)
-      .setLocation(this.doctor.location)
-      .setUserEmail(this.selectedPatient.email)
-      .setPhone(this.selectedPatient.phone)
-      .setIsAppointmentFinished(false)
-      .setIsUserCreated(false)
-      .setIsCanceledByUser(false)
-      .setIsConfirmedByDoctor(true)
-      .setAnimalAppointmentId(animalAppointmentId)
-      .setTimestamp(this.appointmentForm.value.startDate.getTime());
-    // todo set Timestamp is correct?
-  }
-
-  getAnimalAppointmentPayload(doctorAppointmentId: string, animalAppointmentId: string, animalInfo: any): any {
-    let userPhoneNumber = '+4';
-    if (this.selectedPatient.phone.length === 10) {
-      // this change is made for sms notification!! - also validate on cloud functions to make sure that the phone respects this prefix
-      userPhoneNumber += this.selectedPatient.phone;
-    }
-    return {
-      isCanceled: false,
-      animalName: animalInfo.name,
-      dateTime: this.dateTimeUtils.getDateFormat(this.appointmentForm.value.startDate) + ' - ' +
-        this.appointmentForm.value.startTime,
-      doctorId: this.doctor.id,
-      doctorName: this.doctor.doctorName,
-      location: this.doctor.location,
-      service: this.appointmentForm.value.medService,
-      doctorAppointmentId: doctorAppointmentId,
-      timestamp: this.appointmentForm.value.startDate.getTime(),
-      email: this.selectedPatient.email,
-      phone: userPhoneNumber,
-      userId: this.selectedPatient?.id,
-      id: animalAppointmentId
-    }
   }
 
   isAnimalRegisteredToUser(): boolean {

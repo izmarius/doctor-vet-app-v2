@@ -95,7 +95,7 @@ export class UserService {
     }
 
     // todo handle this with a cloud function?
-    this.afAuth.createUserWithEmailAndPassword(userData.email, "password")
+    this.afAuth.createUserWithEmailAndPassword(userData.email, "bunvenit123")
       .then(() => {
         userPayload.id = this.firestoreService.getNewFirestoreId();
         // transaction here
@@ -136,14 +136,13 @@ export class UserService {
             class: UI_ALERTS_CLASSES.ERROR
           });
         }
-
       });
   }
 
   getAllCurrentUserAppointments(userData: any) {
     // todo - save appointment  to a different collection to fetch here?
     const timestamps = this.dateUtils.setAndGetDateToFetch();
-    return this.firestoreService.getCollectionByTimestampAndUserId('animal-appointments', timestamps, 'userId', userData.id);
+    return this.firestoreService.getCollectionByTimestampAndUserId('appointments', timestamps, 'userId', userData.id);
   }
 
   saveAnimal(user: any, animalName: string, animalDocUid: string): void {

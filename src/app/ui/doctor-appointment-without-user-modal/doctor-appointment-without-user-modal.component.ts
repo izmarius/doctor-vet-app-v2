@@ -8,11 +8,11 @@ import {
   USER_LOCALSTORAGE
 } from "../../shared-data/Constants";
 import {DateUtilsService} from "../../data/utils/date-utils.service";
-import {DoctorsAppointmentDTO} from "../dto/doctor-appointments-dto";
 import {DoctorAppointmentsService} from "../services/doctor-appointments.service";
 import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-error-interceptor.service";
 import {FirestoreService} from "../../data/http/firestore.service";
 import {DoctorService} from "../../services/doctor/doctor.service";
+import {AppointmentsService} from "../../services/appointments/appointments.service";
 
 @Component({
   selector: 'app-doctor-appointment-without-user-modal',
@@ -33,12 +33,13 @@ export class DoctorAppointmentWithoutUserModalComponent implements OnInit {
   public errorMessage: string = '';
   public isErrorDisplayed: boolean = false;
 
-  constructor(private dialogRef: MatDialogRef<DoctorAppointmentWithoutUserModalComponent>,
+  constructor(private appointmentService: AppointmentsService,
+              private dialogRef: MatDialogRef<DoctorAppointmentWithoutUserModalComponent>,
               private dateTimeUtils: DateUtilsService,
               private doctorAppointmentService: DoctorAppointmentsService,
-              private uiAlertInterceptor: UiErrorInterceptorService,
+              private doctorService: DoctorService,
               private firestoreService: FirestoreService,
-              private doctorService: DoctorService) {
+              private uiAlertInterceptor: UiErrorInterceptorService) {
   }
 
   ngOnInit(): void {
@@ -85,15 +86,17 @@ export class DoctorAppointmentWithoutUserModalComponent implements OnInit {
       this.setErrorMessage(APPOINTMENTFORM_DATA.formAllFieldsValidMessage);
       return;
     }
-    const doctorAppointmentId = this.firestoreService.getNewFirestoreId();
+    const appointmentId = this.firestoreService.getNewFirestoreId();
 
     this.appointmentWithoutUserForm.value.startDate.setHours(this.stepHour, this.stepMinute);
-    if (this.doctorAppointmentService.areAppointmentsOverlapping(this.appointmentWithoutUserForm.value.startDate, this.doctor, doctorAppointmentId)) {
+    if (this.doctorAppointmentService.areAppointmentsOverlapping(this.appointmentWithoutUserForm.value.startDate, this.doctor, appointmentId)) {
       return;
     }
 
+    const appointmentDTO = this.appointmentService.getDoctorAppointmentUserWithoutAccount(null, this.appointmentWithoutUserForm, this.doctor, null, appointmentId);
+
     Promise.all([
-      this.doctorAppointmentService.createAppointment(this.getDoctorAppointmentUserWithoutAccount(), this.doctor.id, doctorAppointmentId),
+      this.appointmentService.createAppointment(appointmentDTO),
       this.doctorService.updateDoctorInfo({appointmentsMap: this.doctor.appointmentsMap}, this.doctor.id)
     ]).then(() => {
       localStorage.removeItem(USER_LOCALSTORAGE);
@@ -107,24 +110,6 @@ export class DoctorAppointmentWithoutUserModalComponent implements OnInit {
       this.uiAlertInterceptor.setUiError({message: error.message, class: UI_ALERTS_CLASSES.ERROR});
       console.log('Error: ', error);
     })
-  }
-
-  getDoctorAppointmentUserWithoutAccount() {
-    return new DoctorsAppointmentDTO()
-      .setServices(this.appointmentWithoutUserForm.value.medService)
-      .setDateTime(
-        this.dateTimeUtils.getDateFormat(this.appointmentWithoutUserForm.value.startDate)
-        + ' - ' +
-        this.appointmentWithoutUserForm.value.startTime
-      )
-      .setLocation(this.doctor.location)
-      .setPhone(this.appointmentWithoutUserForm.value.patientPhone)
-      .setUserName(this.appointmentWithoutUserForm.value.patientName)
-      .setIsAppointmentFinished(false)
-      .setIsUserCreated(false)
-      .setIsCanceledByUser(false)
-      .setIsConfirmedByDoctor(true)
-      .setTimestamp(this.appointmentWithoutUserForm.value.startDate.getTime());
   }
 
   validateTime(): void {

@@ -17,6 +17,7 @@ import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-err
 import {UserWithoutAccountDetailsCardComponent} from "../user-without-account-details-card/user-without-account-details-card.component";
 import {UserService} from "../user-profile/services/user.service";
 import {take} from "rxjs/operators";
+import {AppointmentsService} from "../../services/appointments/appointments.service";
 
 @Component({
   selector: 'app-calendar',
@@ -38,12 +39,12 @@ export class CalendarComponent implements OnInit, OnDestroy {
   weekStartsOn: number = 1;
 
 
-  constructor(private doctorService: DoctorAppointmentsService,
-              private animalService: AnimalService,
+  constructor(private animalService: AnimalService,
               private dialogRef: MatDialog,
               private alertInterceptor: UiErrorInterceptorService,
               private doctorAppointmentService: DoctorAppointmentsService,
-              private userService: UserService) {
+              private userService: UserService,
+              private appointmentService: AppointmentsService) {
   }
 
   ngOnInit() {
@@ -95,7 +96,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   getDoctorAppointments() {
-    this.doctorAppointmentsSub$ = this.doctorService.getDoctorAppointments(this.doctor.id)
+    this.doctorAppointmentsSub$ = this.appointmentService.getDoctorAppointments()
       .subscribe((res) => {
         this.resetDoctorAppointmentsMap();
         this.appointments = res.map((calendarApp: any) => {
@@ -217,7 +218,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.doctorService.deleteAppointment(appointmentPayload.appointmentId, this.doctor.id);
+        this.appointmentService.deleteAppointment(appointmentPayload.appointmentId);
       }
     });
   }

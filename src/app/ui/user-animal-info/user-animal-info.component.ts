@@ -10,14 +10,13 @@ import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog
 import {DoctorAppointmentModalComponent} from "../doctor-appointment-modal/doctor-appointment-modal.component";
 import {take} from "rxjs/operators";
 import {FirestoreService} from "../../data/http/firestore.service";
-import {DoctorsAppointmentDTO} from "../dto/doctor-appointments-dto";
 import {Subscription} from "rxjs";
 import {DoctorAppointmentsService} from "../services/doctor-appointments.service";
-import {AnimalAppointmentService} from "../../services/animal-appointment/animal-appointment.service";
 import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-error-interceptor.service";
 import {ConfirmDialogComponent} from "../shared/confirm-dialog/confirm-dialog.component";
 import {DoctorService} from "../../services/doctor/doctor.service";
 import {DateUtilsService} from "../../data/utils/date-utils.service";
+import {AppointmentsService} from "../../services/appointments/appointments.service";
 
 @Component({
   selector: 'app-user-animal-info',
@@ -39,16 +38,15 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
   public userAnimalDataSub!: Subscription;
 
   constructor(private animalService: AnimalService,
+              private appointmentService: AppointmentsService,
+              private dateUtils: DateUtilsService,
               private dialog: MatDialog,
               public dialogRef: MatDialogRef<UserAnimalInfoComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any,
-              private firestoreService: FirestoreService,
               private doctorAppointmentsService: DoctorAppointmentsService,
-              private animalAppointment: AnimalAppointmentService,
-              private uiAlertService: UiErrorInterceptorService,
               private doctorService: DoctorService,
-              private dateUtils: DateUtilsService
-  ) {
+              private firestoreService: FirestoreService,
+              private uiAlertService: UiErrorInterceptorService) {
   }
 
   ngOnInit(): void {
@@ -83,7 +81,7 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
         this.userAnimalData.appointment.id = this.userAnimalData.appointmentId;
         // how to handle the filing request - we will have corrupted data
         this.removeAppointmentFromAppointmentMap();
-        this.doctorAppointmentsService.cancelAppointment(this.userAnimalData.appointment, this.doctor, this.dialog);
+        this.appointmentService.cancelAppointmentByDoctor(this.userAnimalData.appointment, this.doctor, this.dialog);
       }
     });
   }
@@ -118,10 +116,9 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
     if (this.doctorAppointmentsService.isFreeDayForDoctor(this.doctor.schedule, appointmentDate)) {
       return;
     }
-    const doctorAppointmentId = this.firestoreService.getNewFirestoreId();
-    const animalAppointmentId = this.firestoreService.getNewFirestoreId();
+    const appointmentId = this.firestoreService.getNewFirestoreId();
 
-    if (this.doctorAppointmentsService.areAppointmentsOverlapping(appointmentDate, this.doctor, doctorAppointmentId)) {
+    if (this.doctorAppointmentsService.areAppointmentsOverlapping(appointmentDate, this.doctor, appointmentId)) {
       return;
     }
     let appointment = Object.create(this.userAnimalData.appointment);
@@ -132,15 +129,11 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
 
     // save new appointment to animal and to doctor
 
-    const newDoctorAppointment = this.getDoctorAppointment(animalAppointmentId, appointment);
-    const newAnimalAppointment = this.getAnimalAppointmentPayload(doctorAppointmentId, animalAppointmentId, appointment);
-
-    // todo update appointment date
+    const appointmentDTO = this.appointmentService.getUserAnimalInfoAppointmentDTO(appointment, this.doctor, appointmentId);
 
     Promise.all([
       this.doctorService.updateDoctorInfo({appointmentsMap: this.doctor.appointmentsMap}, this.doctor.id),
-      this.doctorAppointmentsService.createAppointment(newDoctorAppointment, this.doctor.id, doctorAppointmentId),
-      this.animalAppointment.saveAnimalAppointment(newAnimalAppointment, appointment.userId, animalAppointmentId)
+      this.appointmentService.createAppointment(appointmentDTO),
     ]).then(() => {
       localStorage.removeItem(USER_LOCALSTORAGE);
       localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.doctor));
@@ -152,47 +145,6 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
       this.uiAlertService.setUiError({message: error.message, class: UI_ALERTS_CLASSES.ERROR});
       console.log('Error: ', error);
     });
-  }
-
-  getDoctorAppointment(animalAppointmentId: string, appointmentInfo: any) {
-    return new DoctorsAppointmentDTO()
-      .setUserName(appointmentInfo.userName)
-      .setUserId(appointmentInfo.userId)
-      .setServices(appointmentInfo.services)
-      .setDateTime(
-        appointmentInfo.dateTime
-      )
-      .setAnimal(appointmentInfo.animalData)
-      .setLocation(appointmentInfo.location)
-      .setUserEmail(appointmentInfo.userEmail)
-      .setPhone(appointmentInfo.phone)
-      .setIsAppointmentFinished(false)
-      .setIsConfirmedByDoctor(true)
-      .setAnimalAppointmentId(animalAppointmentId)
-      .setTimestamp(appointmentInfo.timestamp);
-  }
-
-  getAnimalAppointmentPayload(doctorAppointmentId: string, animalAppointmentId: string, appointmentInfo: any): any {
-    let userPhoneNumber = '+4';
-    if (appointmentInfo.phone.length === 10) {
-      // this change is made for sms notification!! - also validate on cloud functions to make sure that the phone respects this prefix
-      userPhoneNumber += appointmentInfo.phone;
-    }
-    return {
-      animalName: appointmentInfo.animalData.name,
-      isCanceled: false,
-      dateTime: appointmentInfo.dateTime,
-      doctorId: this.doctor.id,
-      doctorName: this.doctor.doctorName,
-      location: this.doctor.location,
-      service: appointmentInfo.services,
-      doctorAppointmentId: doctorAppointmentId,
-      timestamp: appointmentInfo.timestamp,
-      email: appointmentInfo.userEmail,
-      phone: userPhoneNumber,
-      userId: appointmentInfo.userId,
-      id: animalAppointmentId
-    }
   }
 
   addDisease(): void {
@@ -358,45 +310,6 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
     this.userAnimalData.animalMedicalHistory.recommendations.splice(indexOfRecommendation, 1);
     this.updateMedicalHistory(this.data.userId, this.userAnimalData.animalData.id, {recommendations: this.userAnimalData.animalMedicalHistory.recommendations});
   }
-
-  //FOR MULTIPLE ANIMALS
-
-  // getAndSetAnimalData(event: any, animalId: string): void {
-  //   // todo validation here - if same id => don't go further
-  //   // if(animalId !== this.userAnimalData) {
-  //   //
-  //   // }
-  //   this.animalService.getAnimalDataAndMedicalHistoryByAnimalId(animalId, this.data.userId).subscribe((res) => {
-  //     this.userAnimalData = res;
-  //     this.userAnimalData.appointment = this.data.appointment;
-  //     this.userAnimalData.appointmentId = this.data.appointmentId;
-  //     this.userAnimalData.animalMedicalHistory = res.animalMedicalHistory;
-  //     this.userAnimalData.animalMedicalHistory.diseases = !res.animalMedicalHistory.diseases? [] : res.animalMedicalHistory.diseases;
-  //     this.userAnimalData.animalMedicalHistory.recommendations = !res.animalMedicalHistory.recommendations? [] : res.animalMedicalHistory.recommendations;
-  //     // this.toggleActiveClass(event);
-  //   });
-  // }
-
-  //
-  // setSelectedAnimalActive(animalId: string): void {
-  //   for (const elem of this.ANIMAL_PARENT_ELEM.nativeElement.children) {
-  //     if (elem.id === animalId) {
-  //       this.selectedLink = elem;
-  //       this.isActiveLink = true;
-  //       break;
-  //     }
-  //   }
-  // }
-
-  // toggleActiveClass(event: any): void {
-  //   for (const elem of this.ANIMAL_PARENT_ELEM.nativeElement.children) {
-  //     if (elem.id === event.target.id && this.selectedLink.id !== event.target.id) {
-  //       this.selectedLink = elem;
-  //       this.isActiveLink = true;
-  //       return;
-  //     }
-  //   }
-  // }
 
 }
 

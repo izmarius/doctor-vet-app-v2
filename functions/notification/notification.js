@@ -31,7 +31,7 @@ exports.getNotifications = functions.https.onRequest(async (req, res) => {
   res.send("Success");
 });
 
-exports.addNotification = functions.firestore.document('animal-appointments/{appointmentId}')
+exports.addNotification = functions.firestore.document('appointments/{appointmentId}')
   .onCreate((snap, context) => {
     const collection = adminFirestore.collection('notifications');
     collection.add(snap.data());
@@ -40,7 +40,7 @@ exports.addNotification = functions.firestore.document('animal-appointments/{app
     return null;
   });
 
-// exports.deleteNotificationWhenUserAppIsCanceled = functions.firestore.document('animal-appointments/{appointmentId}')
+// exports.deleteNotificationWhenUserAppIsCanceled = functions.firestore.document('appointments/{appointmentId}')
 //   .onDelete((snap, context) => {
 //     const collection = adminFirestore.collection('notifications');
 //     collection.doc().delete(snap.data().id).then(r => {
@@ -50,17 +50,7 @@ exports.addNotification = functions.firestore.document('animal-appointments/{app
 //     });
 //     return null;
 //   });
-//
-// exports.deleteNotificationWhenUserAppIsCanceled = functions.firestore.document('doctors/{doctorId}/appointments/{appointmentId}')
-//   .onDelete((snap, context) => {
-//     const collection = adminFirestore.collection('notifications');
-//     collection.doc().delete(snap.data().animalAppointmentId).then(r => {
-//       console.log(`DELETED appointment with id : ${snap.id} from notification when user deletes his appointment`);
-//     }).catch((error)=> {
-//       console.log(`Error deleting notification when user deletes an appointment`, error);
-//     });
-//     return null;
-//   });
+
 
 // todo see what to do when you have multiple clients - batching and querying with limits
 exports.scheduledSMSNotification = functions.pubsub

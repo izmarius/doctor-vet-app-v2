@@ -6,6 +6,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {ConfirmDialogComponent} from "../shared/confirm-dialog/confirm-dialog.component";
 import {DoctorAppointmentsService} from "../services/doctor-appointments.service";
 import {DoctorService} from "../../services/doctor/doctor.service";
+import {AppointmentsService} from "../../services/appointments/appointments.service";
 
 @Component({
   selector: 'app-user-appointments',
@@ -16,10 +17,11 @@ export class UserAppointmentsComponent implements OnInit {
   user: any;
   appointmentList: any[] = [];
 
-  constructor(private userService: UserService,
+  constructor(private appointmentService: AppointmentsService,
               private dialogRef: MatDialog,
               private doctorAppointmentService: DoctorAppointmentsService,
-              private doctorService: DoctorService) {
+              private doctorService: DoctorService,
+              private userService: UserService) {
   }
 
   ngOnInit(): void {
@@ -46,7 +48,7 @@ export class UserAppointmentsComponent implements OnInit {
         this.doctorService.getDoctorById(appointment.doctorId)
           .pipe(take(1))
           .subscribe((doctor: any) => {
-            this.doctorAppointmentService.cancelAnimalAppointmentByUser(appointment, doctor).then(() => {
+            this.appointmentService.cancelAnimalAppointmentByUser(appointment, doctor).then(() => {
               this.appointmentList = this.appointmentList.filter((app) => {
                 return app.id !== appointment.id;
               });
