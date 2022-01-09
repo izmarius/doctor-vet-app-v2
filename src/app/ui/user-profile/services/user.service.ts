@@ -5,11 +5,12 @@ import {Observable, of} from 'rxjs';
 import {convertSnapshots} from 'src/app/data/utils/firestore-utils.service';
 import {UserDTO} from "../dto/user-dto";
 import {UiErrorInterceptorService} from "../../shared/alert-message/services/ui-error-interceptor.service";
-import {UI_ALERTS_CLASSES, USER_LOCALSTORAGE, USER_SERVICE} from "../../../shared-data/Constants";
+import {FIREBASE_ERRORS, UI_ALERTS_CLASSES, USER_LOCALSTORAGE, USER_SERVICE} from "../../../shared-data/Constants";
 import {IUserData} from "../../../shared-data/iuser-data";
 import {FirebaseUtilsService} from "../../../services/firebase-utils-service/firebase-utils.service";
 import {DateUtilsService} from "../../../data/utils/date-utils.service";
 import {AngularFireAuth} from "@angular/fire/auth";
+import {AngularFireFunctions} from "@angular/fire/functions";
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +25,8 @@ export class UserService {
     private uiAlertInterceptor: UiErrorInterceptorService,
     private firebaseUtils: FirebaseUtilsService,
     private dateUtils: DateUtilsService,
-    private afAuth: AngularFireAuth
+    private afAuth: AngularFireAuth,
+    private functions: AngularFireFunctions
   ) {
   }
 
@@ -75,6 +77,15 @@ export class UserService {
       userData.animals[0].animalId, animalPayload);
   }
 
+  createUserWithEmailAndPassword(user: any): Observable<any> {
+    const userAuthPayload = {
+      email: user.email,
+      password: "bunvenit123"
+    }
+    const createUser = this.functions.httpsCallable('createUserByDoctor');
+    return createUser(userAuthPayload);
+  }
+
   createUserByDoctorAuthAndSaveAnimal(userData: IUserData, dialog: any): void {
     const userPayload = {
       city: '-',
@@ -95,48 +106,49 @@ export class UserService {
     }
 
     // todo handle this with a cloud function?
-    this.afAuth.createUserWithEmailAndPassword(userData.email, "bunvenit123")
-      .then(() => {
-        userPayload.id = this.firestoreService.getNewFirestoreId();
-        // transaction here
-        this.firestoreService.saveDocumentWithGeneratedFirestoreId(this.USER_COLLECTION, userPayload.id, JSON.parse(JSON.stringify(userPayload)))
-          .then(() => {
-            if (userData.animalName) {
-              this.saveAnimalToUser(userPayload, userPayload.id).then(() => {
-                this.firebaseUtils.resendValidationEmail();
+
+    this.createUserWithEmailAndPassword(userPayload)
+      .subscribe((result) => {
+          userPayload.id = this.firestoreService.getNewFirestoreId();
+          // transaction here
+          this.firestoreService.saveDocumentWithGeneratedFirestoreId(this.USER_COLLECTION, userPayload.id, JSON.parse(JSON.stringify(userPayload)))
+            .then(() => {
+              if (userData.animalName) {
+                this.saveAnimalToUser(userPayload, userPayload.id).then(() => {
+                  this.firebaseUtils.resendValidationEmail();
+                  this.uiAlertInterceptor.setUiError({
+                    message: USER_SERVICE.addUserSuccess,
+                    class: UI_ALERTS_CLASSES.SUCCESS
+                  });
+                });
+              } else {
                 this.uiAlertInterceptor.setUiError({
-                  message: USER_SERVICE.addUserSuccess,
+                  message: USER_SERVICE.addUserError,
                   class: UI_ALERTS_CLASSES.SUCCESS
                 });
-              });
-            } else {
-              this.uiAlertInterceptor.setUiError({
-                message: USER_SERVICE.addUserError,
-                class: UI_ALERTS_CLASSES.SUCCESS
-              });
-            }
-            dialog.close();
-          }).catch((error: any) => {
-          console.error('Error: ', error);
-          this.uiAlertInterceptor.setUiError({
-            message: USER_SERVICE.addUserError,
-            class: UI_ALERTS_CLASSES.ERROR
+              }
+              dialog.close();
+            }).catch((error: any) => {
+            console.error('Error: ', error);
+            this.uiAlertInterceptor.setUiError({
+              message: USER_SERVICE.addUserError,
+              class: UI_ALERTS_CLASSES.ERROR
+            });
           });
+        },
+        (error: any) => {
+          if (error && FIREBASE_ERRORS[error.code]) {
+            this.uiAlertInterceptor.setUiError({
+              message: FIREBASE_ERRORS[error.code],
+              class: UI_ALERTS_CLASSES.ERROR
+            });
+          } else {
+            this.uiAlertInterceptor.setUiError({
+              message: error.code,
+              class: UI_ALERTS_CLASSES.ERROR
+            });
+          }
         });
-      })
-      .catch((error) => {
-        if (error && error.code === 'auth/email-already-in-use') {
-          this.uiAlertInterceptor.setUiError({
-            message: "Acest email este deja inregistrat.Te rugam sa incerci cu un alt email",
-            class: UI_ALERTS_CLASSES.ERROR
-          });
-        } else {
-          this.uiAlertInterceptor.setUiError({
-            message: error.code,
-            class: UI_ALERTS_CLASSES.ERROR
-          });
-        }
-      });
   }
 
   getAllCurrentUserAppointments(userData: any) {

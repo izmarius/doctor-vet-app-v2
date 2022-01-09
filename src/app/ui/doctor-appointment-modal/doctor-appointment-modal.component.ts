@@ -65,8 +65,6 @@ export class DoctorAppointmentModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // todo: set time in inputs to the closest hour possible that can be booked today - if current day -set to closest from dropdown
-    // if no hours available display message to user that today is out of work hours
     this.appointmentFormPlaceHolder = APPOINTMENTFORM_DATA;
     this.doctor = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
     this.stepHours = this.doctor.appointmentFrequency.hourIntervals;
@@ -123,10 +121,6 @@ export class DoctorAppointmentModalComponent implements OnInit {
       .setName(this.selectedAnimal.animalName);
 
     if (!this.isAnimalRegisteredToUser()) {
-      // todo: save also new collections with empty document? to avoid errors
-      // save animal to user - create new animal + insert in user animal name + id
-      // todo: check animal sub collection if we have problems - create an appointment and get data
-      // todo get data directly from user service
       const animalDocUID = this.firestoreService.getNewFirestoreId();
       this.selectedAnimal.animalId = animalDocUID;
       this.userService.saveAnimal(this.selectedPatient, this.appointmentForm.value.animalName, animalDocUID);
@@ -140,7 +134,6 @@ export class DoctorAppointmentModalComponent implements OnInit {
 
     const appointmentDTO = this.appointmentService.getAppointmentDTO(newAnimalInfo, this.appointmentForm, this.doctor, this.selectedPatient, appointmentId);
 
-    // todo create a transaction
     Promise.all([
       this.doctorService.updateDoctorInfo({appointmentsMap: this.doctor.appointmentsMap}, this.doctor.id),
       this.appointmentService.createAppointment(appointmentDTO),
@@ -174,8 +167,6 @@ export class DoctorAppointmentModalComponent implements OnInit {
     const currentTime = new Date();
     const currentHours = currentTime.getHours();
     // const currentMinutes = currentTime.getMinutes();
-    // todo check when doctor has last appointment - set in dropdown only available hours?
-    // todo - add start hour/ end hour? - if doctor wants to block 2 hours for an appointment what he'll do?
     if (this.stepHour === null
       || this.stepMinute === null
       || !this.dateTimeUtils.isSelectedDateGreaterOrEqualComparedToCurrentDate(this.dateTimeUtils.getDateFormat(this.appointmentForm.value.startDate))

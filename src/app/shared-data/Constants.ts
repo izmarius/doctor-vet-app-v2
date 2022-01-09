@@ -54,10 +54,11 @@ export const DOCTORAPPOINTMENT_DATA = {
   scheduleBtn: 'Orele de lucru'
 };
 
-export const FIREBASE_ERRORS = {
+export const FIREBASE_ERRORS: any = {
   'auth/user-not-found': 'Nu a fost gasit nici un user inregistrat cu acest cont sau acest cont a fost sters. Te rugam sa-ti creezi un cont nou sau sa ne contactezi',
   'auth/network-request-failed': 'A aparut o problema de conexiune la server. Te rugam sa iti verifici conexiunea la internet.',
-  'auth/wrong-password': 'Parola este nu este valida'
+  'auth/wrong-password': 'Parola este nu este valida',
+  'auth/email-already-in-use': 'Acest email este deja inregistrat.Te rugam sa incerci cu un alt email',
 }
 
 export const UI_ALERT_MESSAGES = {
@@ -91,7 +92,7 @@ export const APPOINTMENTFORM_DATA = {
   patientEmailLabel: INPUT_LABELS_TXT.emailLabel,
   patientEmailPlaceholder: MY_PROFILE.emailPlaceholder,
   timeValidation: 'Ora si data programarii nu pot fi setate in trecut',
-  patientDoesNotExist: 'Nu am gasit nici un user cu acest nume, te rugam sa incerci din nou sau sa creezi un user clientului in sectiunea "Creeaza client nou"',
+  patientDoesNotExist: 'Nu am gasit nici un user cu acest nume, te rugam sa incerci din nou sau sa creezi un user nou in sectiunea "Creeaza client nou"',
   userDoesNotHaveAnimal: 'Acest user nu are nici un animal inregistrat, insereaza in casuta numele animalului pentru a-l adauga clientului',
   successAppointment: 'Programarea a fost facut cu succes',
   wrongStartDate: 'Zi libera! Selecteaza o zi diferita',

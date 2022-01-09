@@ -79,24 +79,26 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.userAnimalData.appointment.id = this.userAnimalData.appointmentId;
-        // how to handle the filing request - we will have corrupted data
-        this.removeAppointmentFromAppointmentMap();
-        this.appointmentService.cancelAppointmentByDoctor(this.userAnimalData.appointment, this.doctor, this.dialog);
+        const appointmentsMap = this.removeAppointmentFromAppointmentMap();
+        this.appointmentService.cancelAppointmentByDoctor(this.userAnimalData.appointment, this.doctor, this.dialog, appointmentsMap);
       }
     });
   }
 
   removeAppointmentFromAppointmentMap() {
+    // todo : return a new appointmentMapObject and only replate doctor's obj if it is canceled with success
+    const appointmentsMap = Object.create(this.doctor.appointmentsMap);
     const date = this.userAnimalData.appointment.dateTime.split('-')[0].trim();
-    this.doctor.appointmentsMap[date].forEach((interval: any, index: number) => {
+    appointmentsMap[date].forEach((interval: any, index: number) => {
       if (interval.startTimestamp === this.userAnimalData.appointment.timestamp && interval.appointmentId === this.userAnimalData.appointment.id) {
-        this.doctor.appointmentsMap[date].splice(index, 1);
+        appointmentsMap[date].splice(index, 1);
         return;
       }
     });
-    if (this.doctor.appointmentsMap[date].length === 0) {
-      delete this.doctor.appointmentsMap[date];
+    if (appointmentsMap[date].length === 0) {
+      delete appointmentsMap[date];
     }
+    return appointmentsMap;
   }
 
   addRecurrentAppointment(period: string) {
