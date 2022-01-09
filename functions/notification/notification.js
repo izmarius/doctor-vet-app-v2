@@ -9,17 +9,15 @@ function getTomorrowNotificationsAndSendSMS() {
   return notificationService.getTomorrowNotifications()
     .then((notificationSnaps) => {
       notificationSnaps.forEach((snap) => {
-        // if(snap.data() && !snap.data().isCanceled) {
         smsService.sendSMSNotification({
           message: `Salutare, maine: ${snap.data().dateTime} ai o programare la veterinar pentru prietenul tau cel mai bun. O zi frumoasa iti dorim, echipa Doctor Vet`,
-          phoneNumber: snap.data().phone
+          phoneNumber: snap.data().userPhone
         }).then(message => {
-          console.log(`Notification sent to ${snap.data().phone}  with data: `, JSON.stringify(snap.data()));
+          console.log(`Notification sent to ${snap.data().userPhone}  with data: `, JSON.stringify(snap.data()));
           notificationService.deleteNotification(snap.id);
         }).catch((error) => {
           console.error(`ERROR - SMS notifications failed to ${smsPayload.phoneNumber}`, JSON.stringify(error));
         });
-        // }
       });
     }).catch((error) => {
       console.error('ERROR - Getting notification failed with error: ', error);
@@ -40,7 +38,6 @@ exports.addNotification = functions.firestore.document('appointments/{appointmen
     return null;
   });
 
-//
 exports.deleteNotification = functions.firestore.document('appointments/{appointmentId}')
   .onUpdate((snap, context) => {
     console.log("Assignment: ", JSON.stringify(snap.after.data()));

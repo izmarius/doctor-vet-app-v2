@@ -7,7 +7,6 @@
     <button class="btn btn-light close-btn small-button me-2" (click)="addRecurrentAppointment('month')">1 luna</button>
     <button class="btn btn-light close-btn small-button me-2" (click)="addRecurrentAppointment('year')">1 an</button>
 
-    <button class="btn button--active me-2" (click)="addNewAppointment()">Programare noua</button>
     <button class="btn btn-light close-btn me-2" (click)="openConfirmationModalModal()">Anuleaza programarea</button>
     <button class="btn button--active small-button" (click)="closeAppointmentDetails()">X</button>
   </div>
@@ -17,7 +16,7 @@
       <div class="vet-border-bottom">
         <p class="m-btn-small error-msg" *ngIf="userAnimalData?.appointment?.isCanceledByUser">PROGRAMARE ANULATA</p>
         <p>{{userAnimalData?.userData?.name}}</p>
-        <p>{{userAnimalData?.appointment?.phone}}</p>
+        <p>{{userAnimalData?.appointment?.userPhone}}</p>
         <div class="animal-info d-flex">
 <!--          //FOR MULTIPLE ANIMALS-->
 <!--          <p class="bold-text me-2">{{userAnimalDialog.ownersPets}}</p>-->

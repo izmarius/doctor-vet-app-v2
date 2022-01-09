@@ -1,8 +1,8 @@
-<div class="p-around bg-alternative border-with-radius" [class.canceled-card]="appointment.isCanceled">
-  <p class="m-btn-small error-msg" *ngIf="appointment.isCanceled">PROGRAMARE ANULATA</p>
+<div class="p-around bg-alternative border-with-radius" [class.canceled-card]="appointment.isCanceledByDoctor">
+  <p class="m-btn-small error-msg" *ngIf="appointment.isCanceledByDoctor">PROGRAMARE ANULATA</p>
   <div class="m-btn-small">
     <label><strong>Animal</strong></label>
-    <p>{{appointment.animalName}}</p>
+    <p>{{appointment.animalData.name}}</p>
   </div>
   <div class="m-btn-small">
     <label><strong>Nume doctor</strong></label>
