@@ -181,7 +181,7 @@ export class UserService {
   }
 
   getUserDataById(userId: string): Observable<any> {
-    return this.firestoreService.getDocById(this.USER_COLLECTION, userId);
+    return this.firestoreService.getDocById(this.USER_COLLECTION, userId).pipe(take(1));
   }
 
   getAllUsers(): Observable<UserDTO[]> {

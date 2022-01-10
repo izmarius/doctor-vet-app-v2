@@ -149,7 +149,7 @@ export class AppointmentsService {
   }
 
 
-  //START DTO S
+  //START DTOs
 
   getAppointmentDTO(appointmentAnimalData: any, appointmentForm: FormGroup, doctor: DoctorDTO, user: any, appointmentId: string): IAppointmentDto {
     let appointmentDTO: any = {};

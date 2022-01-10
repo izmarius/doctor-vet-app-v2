@@ -62,7 +62,15 @@ export const FIREBASE_ERRORS: any = {
 }
 
 export const UI_ALERT_MESSAGES = {
-  welcome: 'Bine ai venit:D'
+  welcome: 'Bine ai venit:D',
+}
+
+export const UI_USERS_OF_DOCTOR_MSGS = {
+  NO_LOGGED_IN_DOCTOR: 'Sesiunea ta a expirat, te rugam sa te loghezi in aplicatie',
+  ERROR_GETTING_USERS_DOCTORS: 'A aparut o problema de conexiune la server. Te rugam sa incerci din nou!',
+  ERROR_GETTING_USERS_DATA: 'Userul nu a fost gasit sau a aparut o eroare la conexiunea la server.',
+  ERROR_GETTING_ANIMAL_DATA: 'Animalul nu a fost gasit sau a aparut o eroare la conexiunea la server.',
+  ERROR_GETTING_ANIMAL_MEDICAL_HISTORY: 'Animalul nu are istoric medical sau a aparut o eroare la conexiunea la server.',
 }
 
 export const APPOINTMENT_PAGE = {
@@ -150,6 +158,7 @@ export const USER_STATE = {
 }
 
 export const USER_LOCALSTORAGE = 'user'
+export const USERS_DOCTORS = 'clienti'
 
 export const INPUT_REGEX_TEXTS = {
   email: '^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$',

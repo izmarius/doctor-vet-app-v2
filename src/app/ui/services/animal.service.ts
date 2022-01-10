@@ -20,7 +20,7 @@ export class AnimalService {
   private ANIMALS_COLLECTION = '/animals';
   private MEDICAL_HISTORY_COLLECTION = '/medical-history';
 
-  getAnimalById(animalId: string | number, userId: string): Observable<AnimalDTO> {
+  getAnimalById(animalId: string | number, userId: string): Observable<any> {
     return this.fireStoreService.getDocById(this.getAnimalUrl(userId), animalId as string);
   }
 

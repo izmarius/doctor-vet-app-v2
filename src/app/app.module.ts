@@ -49,6 +49,8 @@ import { UserCreateAppCardComponent } from './ui/shared/user-create-app-card/use
 import {AppCalendarModule} from "./ui/calendar/app-calendar-module";
 import { DoctorAppointmentWithoutUserModalComponent } from './ui/doctor-appointment-without-user-modal/doctor-appointment-without-user-modal.component';
 import { UserWithoutAccountDetailsCardComponent } from './ui/user-without-account-details-card/user-without-account-details-card.component';
+import { UsersOfDoctorPageComponent } from './ui/users-of-doctor-page/users-of-doctor-page.component';
+import { SidebarComponent } from './ui/shared/sidebar/sidebar.component';
 
 @NgModule({
   entryComponents: [AlertMessageComponent],
@@ -90,6 +92,8 @@ import { UserWithoutAccountDetailsCardComponent } from './ui/user-without-accoun
     UserCreateAppCardComponent,
     DoctorAppointmentWithoutUserModalComponent,
     UserWithoutAccountDetailsCardComponent,
+    UsersOfDoctorPageComponent,
+    SidebarComponent,
   ],
   imports: [
     BrowserModule,
