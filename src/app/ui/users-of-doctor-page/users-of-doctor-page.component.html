@@ -1,29 +1,47 @@
 <div class="vet-container">
   <div class="vet-content d-flex">
     <app-sidebar class="user-sidebar p-around" [sidebarContent]="listOfClients"
-                 (clickOnList)="getUserData($event)"></app-sidebar>
+                 (clickOnList)="getUserData($event)"
+                 (clickOnAddNewItem)="openModalToAddNewUser($event)"></app-sidebar>
     <div class="user-content p-around">
       <div *ngIf="isUserDataFetched">
-        <h4>{{userData.name}} : {{userData.phone}}</h4>
+        <div class="d-flex justify-content-between">
+          <h4>{{userData?.name}} : {{userData?.phone}}</h4>
+          <div class="d-flex">
+            <p class="me-2">{{quickAppointmentPeriods.title}}</p>
+            <button class="btn btn-light small-button me-2" (click)="addRecurrentAppointment('day')">{{quickAppointmentPeriods.oneDay}}</button>
+            <button class="btn btn-light small-button me-2" (click)="addRecurrentAppointment('week')">{{quickAppointmentPeriods.twoWeeks}}</button>
+            <button class="btn btn-light small-button me-2" (click)="addRecurrentAppointment('month')">{{quickAppointmentPeriods.oneMonth}}</button>
+            <button class="btn btn-light small-button me-2" (click)="addRecurrentAppointment('year')">{{quickAppointmentPeriods.oneYear}}</button>
+          </div>
+        </div>
         <div>
           <span *ngFor="let  animal of userData.animals"
-                class="me-2 pointer" (click)="getAnimalData(animal.animalId)">{{animal.animalName}} | </span>
+                class="me-2 pointer highlighted-link" (click)="getAnimalData(animal.animalId)">{{animal.animalName}}
+            | </span>
         </div>
-        <div class="m-top-small m-btn-small border-bottom" *ngIf="isAnimalDataFetched">
-          <span>Varsta: {{animalData.age}} | </span>
-          <span>Greutate: {{animalData.weight}} | </span>
-          <span>Grupa de sange: {{animalData.bloodType}} | </span>
-          <span>Ziua de nastere: {{animalData.birthDay}} | </span>
-<!--          <span>Sterilizat/a: {{animalData.isSterilized}} | </span>-->
+        <div class="m-top-small m-btn-small border-bottom d-flex justify-content-between" *ngIf="isAnimalDataFetched">
+          <div>
+            <span>{{animalLabels.age}} {{animalData.age}} | </span>
+            <span>{{animalLabels.weight}} {{animalData.weight}} | </span>
+            <span>{{animalLabels.bloodType}} {{animalData.bloodType}} | </span>
+            <span>{{animalLabels.birthDay}} {{animalData.birthDay}} | </span>
+            <!--          <span>Sterilizat/a: {{animalData.isSterilized}} | </span>-->
+          </div>
+          <div>
+            <button class="btn btn-light">{{animalLabels.editAnimalData}}</button>
+          </div>
+
         </div>
         <div class="m-top-small" *ngIf="isAnimalMedicalHistoryFetched">
-            <h4 class="m-btn-small">{{diseasesTitle}}</h4>
-            <ul>
-              <li class="m-btn-small" *ngFor="let disease of animalMedicalHistory.diseases">{{disease}}</li>
-            </ul>
-            <h4 class="m-btn-small">{{recommendationTitle}}</h4>
+          <h4 class="m-btn-small">{{diseasesTitle}}</h4>
           <ul>
-            <li class="m-btn-small" *ngFor="let recommendation of animalMedicalHistory.recommendations">{{recommendation}}</li>
+            <li class="m-btn-small" *ngFor="let disease of animalMedicalHistory?.diseases">{{disease}}</li>
+          </ul>
+          <h4 class="m-btn-small">{{recommendationTitle}}</h4>
+          <ul>
+            <li class="m-btn-small"
+                *ngFor="let recommendation of animalMedicalHistory?.recommendations">{{recommendation}}</li>
           </ul>
         </div>
       </div>

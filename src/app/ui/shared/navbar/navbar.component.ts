@@ -1,4 +1,4 @@
-import {NAVBAR_IMG} from './../../../shared-data/Constants';
+import {MODALS_DATA, NAVBAR_IMG} from './../../../shared-data/Constants';
 import {Component, OnInit} from '@angular/core';
 import {MatDialog} from "@angular/material/dialog";
 import {LogInService} from "../../../services/login/log-in.service";
@@ -40,7 +40,7 @@ export class NavbarComponent implements OnInit {
     // @ts-ignore
     this.dialog.open(DoctorAppointmentModalComponent, {
       height: '40rem',
-      panelClass: 'doctor-appointment-dialog',
+      panelClass: MODALS_DATA.DOCTOR_APP_MODAL,
       data: null
     });
   }
@@ -48,7 +48,7 @@ export class NavbarComponent implements OnInit {
   openAppointmentsWithoutUserModal(): void {
     this.dialog.open(DoctorAppointmentWithoutUserModalComponent, {
       height: '37rem',
-      panelClass: 'doctor-appointment-dialog',
+      panelClass: MODALS_DATA.DOCTOR_APP_MODAL,
       data: null
     });
   }
@@ -57,7 +57,7 @@ export class NavbarComponent implements OnInit {
     this.dialog.open(CreateUserDialogComponent, {
       minWidth: '20%',
       minHeight: '10rem',
-      panelClass: 'doctor-appointment-dialog',
+      panelClass: MODALS_DATA.DOCTOR_APP_MODAL,
     });
   }
 

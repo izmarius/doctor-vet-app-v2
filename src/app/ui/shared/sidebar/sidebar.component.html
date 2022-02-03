@@ -1,9 +1,12 @@
 <div class="sidebar-content">
   <div *ngFor="let sidebarObj of sidebarContent">
-    <h2 class="bold-text">{{sidebarObj.title}}</h2>
+    <div class="m-btn-small">
+      <h2 class="bold-text ">{{sidebarObj.title}}</h2>
+      <button class="btn button--active" (click)="addNewItemIsClicked(sidebarObj.title)"><span class="icon-plus px-2"></span>{{sidebarObj.buttonText}}</button>
+    </div>
     <ul *ngFor="let link of sidebarObj.list">
-      <li [class.list-style-type-none]="isListBullet" [id]="link.id"
-          (click)="setAndGetUserDetails($event)">{{link.name}}</li>
+      <li [class.list-style-type-none]="isListBullet"
+          (click)="setAndGetUserDetails(link)">{{link.name}}</li>
     </ul>
   </div>
 </div>

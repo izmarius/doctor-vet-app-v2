@@ -6,7 +6,13 @@ import {
   CalendarWeekViewBeforeRenderEvent
 } from 'angular-calendar';
 import {isSameDay, isSameMonth} from 'date-fns';
-import {APPOINTMENT_MESSAGES, CALENDAR_DATA, UI_ALERTS_CLASSES, USER_LOCALSTORAGE} from "../../shared-data/Constants";
+import {
+  APPOINTMENT_MESSAGES,
+  CALENDAR_DATA,
+  MODALS_DATA,
+  UI_ALERTS_CLASSES,
+  USER_LOCALSTORAGE
+} from "../../shared-data/Constants";
 import {DoctorAppointmentsService} from "../services/doctor-appointments.service";
 import {AnimalService} from "../services/animal.service";
 import {UserAnimalInfoComponent} from "../user-animal-info/user-animal-info.component";
@@ -226,7 +232,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   openAppointmentsModal(date: Date): void {
     this.dialogRef.open(DoctorAppointmentModalComponent, {
       height: '40rem',
-      panelClass: 'doctor-appointment-dialog',
+      panelClass: MODALS_DATA.DOCTOR_APP_MODAL,
       data: date
     });
   }

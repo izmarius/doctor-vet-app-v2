@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from "../user-profile/services/user.service";
-import {USER_LOCALSTORAGE} from "../../shared-data/Constants";
+import {MODALS_DATA, USER_LOCALSTORAGE} from "../../shared-data/Constants";
 import {take} from "rxjs/operators";
 import {MatDialog} from "@angular/material/dialog";
 import {ConfirmDialogComponent} from "../shared/confirm-dialog/confirm-dialog.component";
@@ -41,7 +41,7 @@ export class UserAppointmentsComponent implements OnInit {
 
   cancelAppointmentByUser(appointment: any): void {
     const dialogRef = this.dialogRef.open(ConfirmDialogComponent, {
-      panelClass: 'confirmation-modal'
+      panelClass: MODALS_DATA.CONFIRMATION_MODAL
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {

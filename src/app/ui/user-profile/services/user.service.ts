@@ -5,12 +5,21 @@ import {Observable, of} from 'rxjs';
 import {convertSnapshots} from 'src/app/data/utils/firestore-utils.service';
 import {UserDTO} from "../dto/user-dto";
 import {UiErrorInterceptorService} from "../../shared/alert-message/services/ui-error-interceptor.service";
-import {FIREBASE_ERRORS, UI_ALERTS_CLASSES, USER_LOCALSTORAGE, USER_SERVICE} from "../../../shared-data/Constants";
+import {
+  FIREBASE_ERRORS,
+  UI_ALERTS_CLASSES,
+  USER_LOCALSTORAGE,
+  USER_SERVICE,
+  USERS_DOCTORS
+} from "../../../shared-data/Constants";
 import {IUserData} from "../../../shared-data/iuser-data";
 import {FirebaseUtilsService} from "../../../services/firebase-utils-service/firebase-utils.service";
 import {DateUtilsService} from "../../../data/utils/date-utils.service";
 import {AngularFireAuth} from "@angular/fire/auth";
 import {AngularFireFunctions} from "@angular/fire/functions";
+import {UsersOfDoctorService} from "../../../services/users-of-doctor/users-of-doctor.service";
+import {UsersDoctorsListService} from "../../../services/usersDoctorsObservableService/usersDoctorsListService";
+import {IUsersDoctors} from "../../../services/users-of-doctor/users-doctors-interface";
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +28,7 @@ export class UserService {
   private USER_COLLECTION = 'user/';
   private DOCTORS_COLLECTION = 'doctors';
   private ANIMAL_COLLECTION = '/animals';
+  private doctor: any;
 
   constructor(
     private firestoreService: FirestoreService,
@@ -26,8 +36,11 @@ export class UserService {
     private firebaseUtils: FirebaseUtilsService,
     private dateUtils: DateUtilsService,
     private afAuth: AngularFireAuth,
-    private functions: AngularFireFunctions
+    private functions: AngularFireFunctions,
+    private usersDoctorsService: UsersOfDoctorService,
+    private userDoctorListService: UsersDoctorsListService
   ) {
+    this.doctor = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
   }
 
   setUserData(user: any): Promise<void> {
@@ -114,13 +127,32 @@ export class UserService {
           this.firestoreService.saveDocumentWithGeneratedFirestoreId(this.USER_COLLECTION, userPayload.id, JSON.parse(JSON.stringify(userPayload)))
             .then(() => {
               if (userData.animalName) {
-                this.saveAnimalToUser(userPayload, userPayload.id).then(() => {
+                const usersDoctorPayload: IUsersDoctors = {
+                  clientId: userPayload.id,
+                  clientName: userPayload.name,
+                  doctorId: this.doctor.id,
+                  doctorName: this.doctor.doctorName,
+                  isClientRegisteredInApp: true
+                }
+                // todo add transaction here
+                Promise.all([
+                  this.saveAnimalToUser(userPayload, userPayload.id),
+                  this.usersDoctorsService.addUserToDoctorList(usersDoctorPayload)
+                ]).then(() => {
+                  const usersList = JSON.parse(<string>localStorage.getItem(USERS_DOCTORS));
+                  usersList.push(usersDoctorPayload);
+                  localStorage.removeItem(USERS_DOCTORS);
+                  localStorage.setItem(USERS_DOCTORS, JSON.stringify(usersList));
+                  this.userDoctorListService.setUsersDoctorList(usersList);
+                  // todo create a service here and subscribe to it
                   this.firebaseUtils.resendValidationEmail();
                   this.uiAlertInterceptor.setUiError({
                     message: USER_SERVICE.addUserSuccess,
                     class: UI_ALERTS_CLASSES.SUCCESS
                   });
-                });
+                }).catch((error) => {
+                  console.error("ERROR", error);
+                })
               } else {
                 this.uiAlertInterceptor.setUiError({
                   message: USER_SERVICE.addUserError,

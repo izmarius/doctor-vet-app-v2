@@ -51,6 +51,7 @@ import { DoctorAppointmentWithoutUserModalComponent } from './ui/doctor-appointm
 import { UserWithoutAccountDetailsCardComponent } from './ui/user-without-account-details-card/user-without-account-details-card.component';
 import { UsersOfDoctorPageComponent } from './ui/users-of-doctor-page/users-of-doctor-page.component';
 import { SidebarComponent } from './ui/shared/sidebar/sidebar.component';
+import { CreateUserWithoutAccountDialogComponent } from './ui/create-user-without-account-dialog/create-user-without-account-dialog.component';
 
 @NgModule({
   entryComponents: [AlertMessageComponent],
@@ -94,6 +95,7 @@ import { SidebarComponent } from './ui/shared/sidebar/sidebar.component';
     UserWithoutAccountDetailsCardComponent,
     UsersOfDoctorPageComponent,
     SidebarComponent,
+    CreateUserWithoutAccountDialogComponent,
   ],
   imports: [
     BrowserModule,

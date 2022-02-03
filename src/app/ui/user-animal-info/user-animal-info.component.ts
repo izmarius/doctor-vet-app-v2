@@ -2,12 +2,11 @@ import {Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild} from '@angu
 import {AnimalService} from "../services/animal.service";
 import {
   APPOINTMENTFORM_DATA,
-  DIALOG_UI_ERRORS, UI_ALERTS_CLASSES,
+  DIALOG_UI_ERRORS, MODALS_DATA, QUICK_APP_PERIOD, UI_ALERTS_CLASSES,
   USER_ANIMAL_DIALOG,
   USER_LOCALSTORAGE
 } from "../../shared-data/Constants";
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
-import {DoctorAppointmentModalComponent} from "../doctor-appointment-modal/doctor-appointment-modal.component";
 import {take} from "rxjs/operators";
 import {FirestoreService} from "../../data/http/firestore.service";
 import {Subscription} from "rxjs";
@@ -26,13 +25,14 @@ import {AppointmentsService} from "../../services/appointments/appointments.serv
 export class UserAnimalInfoComponent implements OnInit, OnDestroy {
 
   @ViewChild('animalsParent') private ANIMAL_PARENT_ELEM!: ElementRef;
-
+  public doctor: any;
+  private HIDE_CLASS = 'hide';
   public isAddDiseaseEnabled!: boolean;
   public isAddRecEnabled!: boolean;
   public newDisease: string = '';
   public newRecommendation: string = '';
+  quickAppointmentPeriods = QUICK_APP_PERIOD;
   public userAnimalData!: any;
-  public doctor: any;
   public userAnimalDialog: any;
   public userAnimalDialogErrorTxt: any;
   public userAnimalDataSub!: Subscription;
@@ -73,7 +73,7 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
   // todo : daca au depasit orele de munca? sau programarea a expirat?
   openConfirmationModalModal(): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      panelClass: 'confirmation-modal'
+      panelClass: MODALS_DATA.CONFIRMATION_MODAL
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -167,18 +167,6 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
     this.isAddDiseaseEnabled = true;
   }
 
-  addNewAppointment(): void {
-    const dialogRef = this.dialog.open(DoctorAppointmentModalComponent, {
-      height: '37.5rem',
-      panelClass: 'doctor-appointment-dialog',
-      data: null
-    });
-
-
-    dialogRef.afterClosed().subscribe(result => {
-    });
-  }
-
   addRecommendation(): void {
     if (!this.newRecommendation) {
       return;
@@ -218,7 +206,7 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
               closeInputIcon: HTMLSpanElement,
               diseaseItem: HTMLLIElement): void {
     if (!diseaseItem.innerText || !this.newDisease || diseaseItem.innerText === this.newDisease.trim()) {
-      errorElem.classList.remove('hide');
+      errorElem.classList.remove(this.HIDE_CLASS);
       return;
     }
     this.resetErrorMessage(errorElem);
@@ -239,7 +227,7 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
                       recItem: HTMLLIElement): void {
 
     if (!recItem.innerText || !this.newRecommendation || recItem.innerText === this.newRecommendation.trim()) {
-      errorElem.classList.remove('hide');
+      errorElem.classList.remove(this.HIDE_CLASS);
       return;
     }
     this.resetErrorMessage(errorElem);
@@ -254,7 +242,7 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
 
   resetErrorMessage(errorElem: HTMLLIElement): void {
     if (errorElem.innerText) {
-      errorElem.classList.add('hide');
+      errorElem.classList.add(this.HIDE_CLASS);
       errorElem.innerText = '';
     }
   }
@@ -268,20 +256,20 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
                              diseaseItem: HTMLLIElement): void {
     if (isInputDisplayed) {
       editInput.value = diseaseItem.innerText;
-      diseaseItem.classList.add('hide');
-      editIcon.classList.add('hide');
-      checkIcon.classList.remove('hide');
-      editInput.classList.remove('hide');
-      closeInputIcon.classList.remove('hide');
+      diseaseItem.classList.add(this.HIDE_CLASS);
+      editIcon.classList.add(this.HIDE_CLASS);
+      checkIcon.classList.remove(this.HIDE_CLASS);
+      editInput.classList.remove(this.HIDE_CLASS);
+      closeInputIcon.classList.remove(this.HIDE_CLASS);
     } else {
       // reset input value
       editInput.value = '';
-      diseaseItem.classList.remove('hide');
-      editIcon.classList.remove('hide');
-      errorText.classList.add('hide');
-      checkIcon.classList.add('hide');
-      editInput.classList.add('hide');
-      closeInputIcon.classList.add('hide');
+      diseaseItem.classList.remove(this.HIDE_CLASS);
+      editIcon.classList.remove(this.HIDE_CLASS);
+      errorText.classList.add(this.HIDE_CLASS);
+      checkIcon.classList.add(this.HIDE_CLASS);
+      editInput.classList.add(this.HIDE_CLASS);
+      closeInputIcon.classList.add(this.HIDE_CLASS);
     }
   }
 

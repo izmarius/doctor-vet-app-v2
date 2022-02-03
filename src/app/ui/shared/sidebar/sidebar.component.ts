@@ -9,6 +9,7 @@ export class SidebarComponent implements OnInit {
   @Input() sidebarContent: ISidebar[] = [];
   @Input() isListBullet: boolean = false;
   @Output() clickOnList: EventEmitter<string> = new EventEmitter<string>();
+  @Output() clickOnAddNewItem: EventEmitter<string> = new EventEmitter<string>();
 
   constructor() {
   }
@@ -17,7 +18,11 @@ export class SidebarComponent implements OnInit {
   }
 
   setAndGetUserDetails(link: any) {
-    this.clickOnList.emit(link.target.id);
+    this.clickOnList.emit(link);
+  }
+
+  addNewItemIsClicked(clientWithOrWithoutAccount: string) {
+    this.clickOnAddNewItem.emit(clientWithOrWithoutAccount);
   }
 
 }
