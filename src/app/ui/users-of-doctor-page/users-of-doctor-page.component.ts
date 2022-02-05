@@ -221,10 +221,9 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
   }
 
   openModalToAddNewUser(clientTitle: string) {
-    //todo refactor here - is to ugly
-    if (clientTitle.split(" ")[1] === USERS_DOCTOR_PAGE_CONST.CLIENT_WITH_ACC_SEPARATOR) {
+    if (clientTitle === USERS_DOCTOR_PAGE_CONST.CLIENT_WITH_ACCOUNT.title) {
       this.openCreateUserDialog();
-    } else if (clientTitle.split(" ")[1] === USERS_DOCTOR_PAGE_CONST.CLIENT_WITHOUT_ACC_SEPARATOR) {
+    } else if (clientTitle === USERS_DOCTOR_PAGE_CONST.CLIENT_WITHOUT_ACCOUNT.title) {
       this.openCreateUserWithoutAccountDialog();
     }
   }

@@ -20,8 +20,7 @@ export class UserAppointmentsComponent implements OnInit {
   constructor(private appointmentService: AppointmentsService,
               private dialogRef: MatDialog,
               private doctorAppointmentService: DoctorAppointmentsService,
-              private doctorService: DoctorService,
-              private userService: UserService) {
+              private doctorService: DoctorService) {
   }
 
   ngOnInit(): void {
@@ -30,7 +29,7 @@ export class UserAppointmentsComponent implements OnInit {
   }
 
   getAllAppointments(userData: any): void {
-    this.userService.getAllCurrentUserAppointments(userData)
+    this.appointmentService.getAllCurrentUserAppointments(userData)
       .pipe(take(1))
       .subscribe((snaps) => {
         snaps.docs.forEach((doc: any) => {

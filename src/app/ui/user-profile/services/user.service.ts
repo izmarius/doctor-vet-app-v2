@@ -183,12 +183,6 @@ export class UserService {
         });
   }
 
-  getAllCurrentUserAppointments(userData: any) {
-    // todo - save appointment  to a different collection to fetch here?
-    const timestamps = this.dateUtils.setAndGetDateToFetch();
-    return this.firestoreService.getCollectionByTimestampAndUserId('appointments', timestamps, 'userId', userData.id);
-  }
-
   saveAnimal(user: any, animalName: string, animalDocUid: string): void {
     const payload = {
       id: animalDocUid,

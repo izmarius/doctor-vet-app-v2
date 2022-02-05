@@ -43,7 +43,10 @@ export class AppointmentsService {
     } else if (period === 'year') {
       appointmentDate.setFullYear(appointmentDate.getFullYear() + 1);
     } else {
-      // todo display error message
+      this.uiAlertInterceptor.setUiError({
+        class: UI_ALERTS_CLASSES.ERROR,
+        message: APPOINTMENTFORM_DATA.quickAppointmentError
+      })
       return;
     }
     if (this.doctorAppointmentsService.isFreeDayForDoctor(doctor.schedule, appointmentDate)) {
@@ -130,6 +133,11 @@ export class AppointmentsService {
 
   deleteAppointment(appointmentId: string): Promise<any> {
     return this.firestoreService.deleteDocById(this.APPOINTMENT_COLLECTION, appointmentId)
+  }
+
+  getAllCurrentUserAppointments(userData: any) {
+    const timestamps = this.dateUtils.setAndGetDateToFetch();
+    return this.firestoreService.getCollectionByTimestampAndUserId(this.APPOINTMENT_COLLECTION, timestamps, 'userId', userData.id);
   }
 
   getDoctorAppointments(): Observable<any> {

@@ -52,10 +52,6 @@ export class FirestoreService {
     return this.dbRef.collection(collection,
       ref => ref.where('timestamp', '>=', timestamp.today).where(field, '==', value))
       .get()
-    //todo add pagination
-    // .where('timestamp', '>=', dates.tomorrow)
-    // .where('timestamp', '<', dates.nextDayAfterTomorrow);
-
   }
 
   /**
@@ -105,6 +101,13 @@ export class FirestoreService {
    */
   getCollectionByWhereClause(collection: string, key: string, operator: any, value: string): Observable<any> {
     return this.dbRef.collection(collection, ref => ref.where(key, operator, value)).valueChanges();
+  }
+
+  /**
+   * Gets value of a collection where a match is found
+   */
+  getCollectionWhereStringStartsWith(collection: string, key: string, operator: any, operator2: any, value: string): Observable<any> {
+    return this.dbRef.collection(collection, ref => ref.where(key, operator, value).where(key, operator2, value + 'uf8ff')).valueChanges();
   }
 
   // save

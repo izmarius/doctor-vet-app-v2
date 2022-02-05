@@ -25,6 +25,7 @@ export const APPOINTMENTFORM_DATA = {
   patientPhoneLabel: 'Telefon',
   patientPhonePlaceholder: '0743922xxx',
   patientLabel: 'Nume si prenume client',
+  quickAppointmentError: 'Programarile rapide se pot face doar cu valorile: 1 zi, 2 saptamani, 1 luna, sau 1 an!',
   servicesLabel: 'Servicii',
   servicesSelectDefaultOption: 'Selecteaza un serviciu',
   submitBtn: 'Salveaza',
@@ -388,8 +389,6 @@ export const USERS_DOCTOR_PAGE_CONST = {
     title: 'Clienti fara cont:',
     buttonText: 'Adauga client fara cont'
   },
-  CLIENT_WITH_ACC_SEPARATOR: 'cu',
-  CLIENT_WITHOUT_ACC_SEPARATOR: 'FARA'
 }
 
 // Q
