@@ -42,11 +42,7 @@ export class FirestoreService {
     return this.dbRef.collection(collection,
       ref => ref.where('timestamp', '>=', timestamp)
         .where('isCanceledByDoctor', '==', false))
-      .snapshotChanges()
-    //todo add pagination
-    // .where('timestamp', '>=', dates.tomorrow)
-    // .where('timestamp', '<', dates.nextDayAfterTomorrow);
-
+      .stateChanges();
   }
 
   /**

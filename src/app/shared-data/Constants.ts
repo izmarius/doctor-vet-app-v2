@@ -37,6 +37,7 @@ export const APPOINTMENTFORM_DATA = {
 };
 
 export const APPOINTMENT_MESSAGES = {
+  APPOINTMENT_DELETION_FAILED: 'Programarea nu a putut fi stearsa',
   APPOINTMENT_IN_PAST_NOT_POSSIBLE: 'Programarea nu poate fi setata in trecut',
 };
 
@@ -395,6 +396,7 @@ export const USERS_DOCTOR_PAGE_CONST = {
 export const QUICK_APP_PERIOD = {
   cancelAppointment: USER_CARD_TXT.buttonCancelValue,
   cancelAppointmentSuccess: 'PROGRAMARE ANULATA',
+  customAppointment: 'Custom',
   oneDay: '1 zi',
   oneMonth: '1 luna',
   oneYear: '1 an',

@@ -105,9 +105,18 @@ export class CalendarComponent implements OnInit, OnDestroy {
     this.doctorAppointmentsSub$ = this.appointmentService.getDoctorAppointments()
       .subscribe((res) => {
         this.resetDoctorAppointmentsMap();
-        this.appointments = res.map((calendarApp: any) => {
+        let newAppointments = res.map((calendarApp: any) => {
           return this.setAndGetCalendarAppointmentsBasedOnDoctorAndUser(calendarApp);
         });
+        //for when we add to db and duplicates comes in 2 separate subscriptions
+        if (newAppointments.length === 1) {
+          this.appointments.forEach((currentApp, i) => {
+            if (currentApp.appointment.id === newAppointments[0].appointment.id) {
+              this.appointments.splice(i, 1);
+            }
+          });
+        }
+        this.appointments = this.appointments.concat(newAppointments);
       });
   }
 
@@ -173,19 +182,23 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
   calendarIntervalClicked(event: CalendarEvent | any) {
     if (!event.userId) {
-      const appointmentPayload = {
-        appointment: event.appointment,
-        appointmentId: event.appointmentId
-      }
-      this.openUserWithoutAccountAnimalAppointmentModal(appointmentPayload);
+      this.openUserWithoutAccountAnimalAppointmentModal(event.appointment);
     } else {
       this.userAnimalData = {
         userAnimalDataObs: this.animalService.getAnimalDataAndMedicalHistoryByAnimalId(event.animalId, event.userId),
         userId: event.userId,
         appointment: event.appointment,
-        appointmentId: event.appointmentId
       }
-      this.openUserAnimalAppointmentModal();
+      this.animalService.getAnimalDataAndMedicalHistoryByAnimalId(event.animalId, event.userId)
+        .pipe(take(1))
+        .subscribe((userAnimalData: any) => {
+          this.userAnimalData = {
+            userAnimalData: userAnimalData,
+            userId: event.userId,
+            appointment: event.appointment,
+          }
+          this.openUserAnimalAppointmentModal();
+        });
     }
   }
 
@@ -209,24 +222,52 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   openUserAnimalAppointmentModal(): void {
-    this.dialogRef.open(UserAnimalInfoComponent, {
+    const dialog = this.dialogRef.open(UserAnimalInfoComponent, {
       width: '80%',
       panelClass: 'user-animal-details-dialog',
       data: this.userAnimalData
     });
+
+    dialog.afterClosed()
+      .pipe(take(1))
+      .subscribe(isAppointmentCanceled => {
+        if (isAppointmentCanceled) {
+          const appointmentsMap = this.appointmentService.removeAppointmentFromAppointmentMap(this.doctor.appointmentsMap, this.userAnimalData.appointment);
+          this.appointmentService.cancelAppointmentByDoctor(this.userAnimalData.appointment, this.doctor, this.dialogRef, appointmentsMap);
+        }
+      });
   }
 
-  openUserWithoutAccountAnimalAppointmentModal(appointmentPayload: any): void {
+  openUserWithoutAccountAnimalAppointmentModal(appointment: any): void {
     const dialogRef = this.dialogRef.open(UserWithoutAccountDetailsCardComponent, {
       width: '20%',
       panelClass: 'user-without-account-details-dialog',
-      data: appointmentPayload
+      data: appointment
     });
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.appointmentService.deleteAppointment(appointmentPayload.appointmentId);
-      }
-    });
+    dialogRef.afterClosed()
+      .pipe(take(1))
+      .subscribe(result => {
+        if (result) {
+          this.appointmentService.deleteAppointment(appointment.id).then(() => {
+            this.appointments.forEach((currentApp, index) => {
+              if (currentApp.id === appointment.appointment.id) {
+                this.appointments.splice(index, 1);
+                this.alertInterceptor.setUiError({
+                  class: UI_ALERTS_CLASSES.ERROR,
+                  message: APPOINTMENT_MESSAGES.APPOINTMENT_DELETION_FAILED
+                })
+                return;
+              }
+            });
+          }).catch((error) => {
+            console.error('Error while deleting an appointment', error);
+            this.alertInterceptor.setUiError({
+              class: UI_ALERTS_CLASSES.ERROR,
+              message: APPOINTMENT_MESSAGES.APPOINTMENT_DELETION_FAILED
+            })
+          });
+        }
+      });
   }
 
   openAppointmentsModal(date: Date): void {

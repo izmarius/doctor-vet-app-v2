@@ -43,18 +43,20 @@ export class UserAppointmentsComponent implements OnInit {
     const dialogRef = this.dialogRef.open(ConfirmDialogComponent, {
       panelClass: MODALS_DATA.CONFIRMATION_MODAL
     });
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.doctorService.getDoctorById(appointment.doctorId)
-          .pipe(take(1))
-          .subscribe((doctor: any) => {
-            this.appointmentService.cancelAnimalAppointmentByUser(appointment, doctor).then(() => {
-              this.appointmentList = this.appointmentList.filter((app) => {
-                return app.id !== appointment.id;
+    dialogRef.afterClosed()
+      .pipe(take(1))
+      .subscribe(result => {
+        if (result) {
+          this.doctorService.getDoctorById(appointment.doctorId)
+            .pipe(take(1))
+            .subscribe((doctor: any) => {
+              this.appointmentService.cancelAnimalAppointmentByUser(appointment, doctor).then(() => {
+                this.appointmentList = this.appointmentList.filter((app) => {
+                  return app.id !== appointment.id;
+                });
               });
             });
-          });
-      }
-    });
+        }
+      });
   }
 }

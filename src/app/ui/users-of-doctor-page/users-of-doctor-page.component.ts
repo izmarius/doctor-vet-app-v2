@@ -6,7 +6,7 @@ import {
   QUICK_APP_PERIOD,
   UI_ALERTS_CLASSES,
   UI_USERS_OF_DOCTOR_MSGS,
-  USER_ANIMAL_DIALOG, USERS_DOCTOR_PAGE_CONST,
+  USER_ANIMAL_DIALOG, USER_LOCALSTORAGE, USERS_DOCTOR_PAGE_CONST,
   USERS_DOCTORS
 } from "../../shared-data/Constants";
 import {IUsersDoctors} from "../../services/users-of-doctor/users-doctors-interface";
@@ -17,6 +17,8 @@ import {MatDialog} from "@angular/material/dialog";
 import {UsersDoctorsListService} from "../../services/usersDoctorsObservableService/usersDoctorsListService";
 import {Subscription} from "rxjs";
 import {CreateUserWithoutAccountDialogComponent} from "../create-user-without-account-dialog/create-user-without-account-dialog.component";
+import {AppointmentsService} from "../../services/appointments/appointments.service";
+import {DateUtilsService} from "../../data/utils/date-utils.service";
 
 @Component({
   selector: 'app-users-of-doctor-page',
@@ -39,6 +41,8 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
   userData: any;
 
   constructor(private animalService: AnimalService,
+              private appointmentService: AppointmentsService,
+              private dateUtils: DateUtilsService,
               private dialog: MatDialog,
               private uiAlert: UiErrorInterceptorService,
               private usersOfDoctorsService: UsersOfDoctorService,
@@ -102,6 +106,7 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
     sidebarContentUserWithoutAccount.title = USERS_DOCTOR_PAGE_CONST.CLIENT_WITHOUT_ACCOUNT.title;
     sidebarContentUserWithoutAccount.buttonText = USERS_DOCTOR_PAGE_CONST.CLIENT_WITHOUT_ACCOUNT.buttonText;
     sidebarContentUserWithoutAccount.list = this.getSidebarComponentLinks(usersWithoutAccount);
+    sidebarContentUserWithAccount.list = this.getSidebarComponentLinks(usersWithAccount);
 
     return [sidebarContentUserWithAccount, sidebarContentUserWithoutAccount];
   }
@@ -184,11 +189,34 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
       });
   }
 
-  openAddAppointmentDialog(userData: any) {
-
+  addRecurrentAppointment(period: string) {
+    const doctor = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
+    const currentDate = new Date();
+    let appMinutes;
+    if (currentDate.getMinutes() > 0 && currentDate.getMinutes() < 30) {
+      appMinutes = 0
+    } else {
+      appMinutes = 30;
+    }
+    currentDate.setMinutes(appMinutes);
+    const appointmentTime = this.dateUtils.formatTime(currentDate.getHours(), currentDate.getMinutes());
+    const appointment = {
+      dateTime: this.dateUtils.getDateFormat(currentDate) + ' - ' + appointmentTime,
+      timestamp: currentDate.getTime(),
+      userEmail: this.userData.email,
+      userId: this.userData.id,
+      userName: this.userData.name,
+      phone: this.userData.phone,
+      services: 'Consult medical',
+      animalData: {
+        name: this.animalData.name,
+        uid: this.animalData.id
+      },
+    }
+    this.appointmentService.addRecurrentAppointment(period, doctor, {appointment});
   }
 
-  addRecurrentAppointment(period: string) {
+  openAddAppointmentModal(){
 
   }
 

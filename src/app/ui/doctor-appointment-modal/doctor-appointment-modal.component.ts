@@ -119,7 +119,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
 
     const newAnimalInfo = new AnimalUtilInfo()
       .setName(this.selectedAnimal.animalName);
-
+// todo - leave it here or remove it and add to user list
     if (!this.isAnimalRegisteredToUser()) {
       const animalDocUID = this.firestoreService.getNewFirestoreId();
       this.selectedAnimal.animalId = animalDocUID;
@@ -147,7 +147,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
       this.onCancelForm(true);
     }).catch((error) => {
       this.uiAlertInterceptor.setUiError({message: error.message, class: UI_ALERTS_CLASSES.ERROR});
-      console.log('Error: ', error);
+      console.error('Error: ', error);
     });
   }
 

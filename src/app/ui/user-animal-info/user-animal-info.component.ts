@@ -1,21 +1,16 @@
 import {Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {AnimalService} from "../services/animal.service";
 import {
-  APPOINTMENTFORM_DATA,
-  DIALOG_UI_ERRORS, MODALS_DATA, QUICK_APP_PERIOD, UI_ALERTS_CLASSES,
+  DIALOG_UI_ERRORS, MODALS_DATA, QUICK_APP_PERIOD,
   USER_ANIMAL_DIALOG,
   USER_LOCALSTORAGE
 } from "../../shared-data/Constants";
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
-import {take} from "rxjs/operators";
 import {FirestoreService} from "../../data/http/firestore.service";
 import {Subscription} from "rxjs";
-import {DoctorAppointmentsService} from "../services/doctor-appointments.service";
-import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-error-interceptor.service";
 import {ConfirmDialogComponent} from "../shared/confirm-dialog/confirm-dialog.component";
-import {DoctorService} from "../../services/doctor/doctor.service";
-import {DateUtilsService} from "../../data/utils/date-utils.service";
 import {AppointmentsService} from "../../services/appointments/appointments.service";
+import {take} from "rxjs/operators";
 
 @Component({
   selector: 'app-user-animal-info',
@@ -39,31 +34,17 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
 
   constructor(private animalService: AnimalService,
               private appointmentService: AppointmentsService,
-              private dateUtils: DateUtilsService,
               private dialog: MatDialog,
               public dialogRef: MatDialogRef<UserAnimalInfoComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any,
-              private doctorAppointmentsService: DoctorAppointmentsService,
-              private doctorService: DoctorService,
-              private firestoreService: FirestoreService,
-              private uiAlertService: UiErrorInterceptorService) {
+              private firestoreService: FirestoreService) {
   }
 
   ngOnInit(): void {
     this.userAnimalDialog = USER_ANIMAL_DIALOG;
     this.userAnimalDialogErrorTxt = DIALOG_UI_ERRORS;
     this.doctor = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
-    this.userAnimalDataSub = this.data?.userAnimalDataObs
-      .pipe(take(1))
-      .subscribe((userAnimalData: any) => {
-        // todo refactor and get initial data only from one place!!!! - spaghetti
-        this.userAnimalData = userAnimalData;
-        this.userAnimalData.appointment = this.data.appointment;
-        this.userAnimalData.appointmentId = this.data.appointmentId;
-        this.userAnimalData.animalMedicalHistory = userAnimalData.animalMedicalHistory;
-        this.userAnimalData.animalMedicalHistory.diseases = !userAnimalData.animalMedicalHistory.diseases ? [] : userAnimalData.animalMedicalHistory.diseases;
-        this.userAnimalData.animalMedicalHistory.recommendations = !userAnimalData.animalMedicalHistory.recommendations ? [] : userAnimalData.animalMedicalHistory.recommendations;
-      });
+    this.userAnimalData = this.data.userAnimalData;
   }
 
   ngOnDestroy() {
@@ -76,77 +57,15 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
       panelClass: MODALS_DATA.CONFIRMATION_MODAL
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.userAnimalData.appointment.id = this.userAnimalData.appointmentId;
-        const appointmentsMap = this.removeAppointmentFromAppointmentMap();
-        this.appointmentService.cancelAppointmentByDoctor(this.userAnimalData.appointment, this.doctor, this.dialog, appointmentsMap);
-      }
-    });
-  }
-
-  removeAppointmentFromAppointmentMap() {
-    // todo : return a new appointmentMapObject and only replate doctor's obj if it is canceled with success
-    const appointmentsMap = Object.create(this.doctor.appointmentsMap);
-    const date = this.userAnimalData.appointment.dateTime.split('-')[0].trim();
-    appointmentsMap[date].forEach((interval: any, index: number) => {
-      if (interval.startTimestamp === this.userAnimalData.appointment.timestamp && interval.appointmentId === this.userAnimalData.appointment.id) {
-        appointmentsMap[date].splice(index, 1);
-        return;
-      }
-    });
-    if (appointmentsMap[date].length === 0) {
-      delete appointmentsMap[date];
-    }
-    return appointmentsMap;
+    dialogRef.afterClosed()
+      .pipe(take(1))
+      .subscribe(isAppointmentCanceled => {
+        this.dialogRef.close(isAppointmentCanceled);
+      });
   }
 
   addRecurrentAppointment(period: string) {
-    let appointmentDate = new Date(this.userAnimalData.appointment.timestamp);
-    if (period === 'day') {
-      appointmentDate.setDate(appointmentDate.getDate() + 1);
-    } else if (period === 'week') {
-      appointmentDate.setDate(appointmentDate.getDate() + 14);
-    } else if (period === 'month') {
-      appointmentDate.setMonth(appointmentDate.getMonth() + 1);
-    } else if (period === 'year') {
-      appointmentDate.setFullYear(appointmentDate.getFullYear() + 1);
-    } else {
-      // todo display error message
-      return;
-    }
-    if (this.doctorAppointmentsService.isFreeDayForDoctor(this.doctor.schedule, appointmentDate)) {
-      return;
-    }
-    const appointmentId = this.firestoreService.getNewFirestoreId();
-
-    if (this.doctorAppointmentsService.areAppointmentsOverlapping(appointmentDate, this.doctor, appointmentId)) {
-      return;
-    }
-    let appointment = Object.create(this.userAnimalData.appointment);
-    appointment.timestamp = appointmentDate.getTime();
-    const localeDate = this.dateUtils.getDateFormat(appointmentDate);
-    const dateTime = appointment.dateTime.split(' ');
-    appointment.dateTime = localeDate + ' ' + dateTime[1] + ' ' + dateTime[2];
-
-    // save new appointment to animal and to doctor
-
-    const appointmentDTO = this.appointmentService.getUserAnimalInfoAppointmentDTO(appointment, this.doctor, appointmentId);
-
-    Promise.all([
-      this.doctorService.updateDoctorInfo({appointmentsMap: this.doctor.appointmentsMap}, this.doctor.id),
-      this.appointmentService.createAppointment(appointmentDTO),
-    ]).then(() => {
-      localStorage.removeItem(USER_LOCALSTORAGE);
-      localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.doctor));
-      this.uiAlertService.setUiError({
-        message: APPOINTMENTFORM_DATA.successAppointment,
-        class: UI_ALERTS_CLASSES.SUCCESS
-      });
-    }).catch((error: any) => {
-      this.uiAlertService.setUiError({message: error.message, class: UI_ALERTS_CLASSES.ERROR});
-      console.log('Error: ', error);
-    });
+    this.appointmentService.addRecurrentAppointment(period, this.doctor, this.userAnimalData)
   }
 
   addDisease(): void {
@@ -168,6 +87,7 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
   }
 
   addRecommendation(): void {
+    // TODO when is this happening? how to delete it?
     if (!this.newRecommendation) {
       return;
     }
@@ -262,7 +182,6 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
       editInput.classList.remove(this.HIDE_CLASS);
       closeInputIcon.classList.remove(this.HIDE_CLASS);
     } else {
-      // reset input value
       editInput.value = '';
       diseaseItem.classList.remove(this.HIDE_CLASS);
       editIcon.classList.remove(this.HIDE_CLASS);
@@ -300,6 +219,5 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
     this.userAnimalData.animalMedicalHistory.recommendations.splice(indexOfRecommendation, 1);
     this.updateMedicalHistory(this.data.userId, this.userAnimalData.animalData.id, {recommendations: this.userAnimalData.animalMedicalHistory.recommendations});
   }
-
 }
 
