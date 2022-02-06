@@ -1,4 +1,4 @@
-import {map, first, take, mergeMap} from 'rxjs/operators';
+import {map, first, take, mergeMap, debounceTime, distinctUntilChanged} from 'rxjs/operators';
 import {Injectable} from '@angular/core';
 import {FirestoreService} from 'src/app/data/http/firestore.service';
 import {Observable, of} from 'rxjs';
@@ -25,10 +25,11 @@ import {IUsersDoctors} from "../../../services/users-of-doctor/users-doctors-int
   providedIn: 'root'
 })
 export class UserService {
-  private USER_COLLECTION = 'user/';
-  private DOCTORS_COLLECTION = 'doctors';
   private ANIMAL_COLLECTION = '/animals';
+  private DOCTORS_COLLECTION = 'doctors';
+  private DEFAULT_PASS = 'bunvenit123';
   private doctor: any;
+  private USER_COLLECTION = 'user/';
 
   constructor(
     private firestoreService: FirestoreService,
@@ -76,6 +77,33 @@ export class UserService {
       );
   }
 
+  getUserByNameOrPhone(name: string, phone: string) {
+    let keyToSearch = '';
+    let valueToSearch = '';
+    if (phone && phone.length > 6) {
+      keyToSearch = 'phone'
+      valueToSearch = phone;
+    } else if (name && name.length > 2) {
+      keyToSearch = 'name'
+      valueToSearch = name;
+    }
+    if (keyToSearch) {
+      // first step is to add it to the list of yours and after that you can search the user in appointments
+      return this.firestoreService.getCollectionWhereStringStartsWith(this.USER_COLLECTION, keyToSearch, '>=', '<=', valueToSearch)
+        .pipe(
+          debounceTime(200),
+          distinctUntilChanged(),
+          map((usersList: any) => {
+            return usersList.filter((user: any) => {
+              return user[keyToSearch].toLowerCase().indexOf(valueToSearch.toLowerCase()) > -1
+            });
+          }),
+          take(1)
+        );
+    }
+    return of([])
+  }
+
   saveAnimalToUser(userData: any, userDocId: string): Promise<any> {
     const animalPayload = {
       id: userData.animals[0].animalId,
@@ -93,72 +121,39 @@ export class UserService {
   createUserWithEmailAndPassword(user: any): Observable<any> {
     const userAuthPayload = {
       email: user.email,
-      password: "bunvenit123"
+      password: this.DEFAULT_PASS
     }
     const createUser = this.functions.httpsCallable('createUserByDoctor');
     return createUser(userAuthPayload);
   }
 
-  createUserByDoctorAuthAndSaveAnimal(userData: IUserData, dialog: any): void {
-    const userPayload = {
-      city: '-',
-      email: userData.email,
-      phone: userData.phone,
-      photo: '',
-      name: userData.name,
-      animals: [],
-      id: ''
-    }
-    if (userData.animalName) {
-      // @ts-ignore
-      userPayload.animals[0] = {};
-      // @ts-ignore
-      userPayload.animals[0].animalId = this.firestoreService.getNewFirestoreId();
-      // @ts-ignore
-      userPayload.animals[0].animalName = userData.animalName;
-    }
-
+  createUserByDoctorAuthAndSaveAnimal(userData: any, dialog: any): void {
+    userData.animals[0].animalId = this.firestoreService.getNewFirestoreId();
     // todo handle this with a cloud function?
-
-    this.createUserWithEmailAndPassword(userPayload)
-      .subscribe((result) => {
-          userPayload.id = this.firestoreService.getNewFirestoreId();
+    // todo refactor!!!!
+    this.createUserWithEmailAndPassword(userData)
+      .pipe(take(1))
+      .subscribe(() => {
+          userData.id = this.firestoreService.getNewFirestoreId();
           // transaction here
-          this.firestoreService.saveDocumentWithGeneratedFirestoreId(this.USER_COLLECTION, userPayload.id, JSON.parse(JSON.stringify(userPayload)))
+          this.firestoreService.saveDocumentWithGeneratedFirestoreId(this.USER_COLLECTION, userData.id, JSON.parse(JSON.stringify(userData)))
             .then(() => {
-              if (userData.animalName) {
-                const usersDoctorPayload: IUsersDoctors = {
-                  clientId: userPayload.id,
-                  clientName: userPayload.name,
-                  doctorId: this.doctor.id,
-                  doctorName: this.doctor.doctorName,
-                  isClientRegisteredInApp: true
-                }
-                // todo add transaction here
-                Promise.all([
-                  this.saveAnimalToUser(userPayload, userPayload.id),
-                  this.usersDoctorsService.addUserToDoctorList(usersDoctorPayload)
-                ]).then(() => {
-                  const usersList = JSON.parse(<string>localStorage.getItem(USERS_DOCTORS));
-                  usersList.push(usersDoctorPayload);
-                  localStorage.removeItem(USERS_DOCTORS);
-                  localStorage.setItem(USERS_DOCTORS, JSON.stringify(usersList));
-                  this.userDoctorListService.setUsersDoctorList(usersList);
-                  // todo create a service here and subscribe to it
-                  this.firebaseUtils.resendValidationEmail();
-                  this.uiAlertInterceptor.setUiError({
-                    message: USER_SERVICE.addUserSuccess,
-                    class: UI_ALERTS_CLASSES.SUCCESS
-                  });
-                }).catch((error) => {
-                  console.error("ERROR", error);
-                })
-              } else {
+              Promise.all([
+                this.saveAnimalToUser(userData, userData.id),
+                this.usersDoctorsService.addUserToDoctorList(userData, true)
+              ]).then(() => {
+                this.firebaseUtils.resendValidationEmail();
+                this.uiAlertInterceptor.setUiError({
+                  message: USER_SERVICE.addUserSuccess,
+                  class: UI_ALERTS_CLASSES.SUCCESS
+                });
+              }).catch((error) => {
                 this.uiAlertInterceptor.setUiError({
                   message: USER_SERVICE.addUserError,
                   class: UI_ALERTS_CLASSES.SUCCESS
                 });
-              }
+                console.error("ERROR", error);
+              })
               dialog.close();
             }).catch((error: any) => {
             console.error('Error: ', error);
@@ -208,14 +203,6 @@ export class UserService {
 
   getUserDataById(userId: string): Observable<any> {
     return this.firestoreService.getDocById(this.USER_COLLECTION, userId).pipe(take(1));
-  }
-
-  getAllUsers(): Observable<UserDTO[]> {
-    return this.firestoreService.getCollection(this.USER_COLLECTION)
-      .pipe(
-        map((snaps) => convertSnapshots<UserDTO>(snaps)),
-        first()
-      );
   }
 
   createUser(userDto: any): Promise<void> {

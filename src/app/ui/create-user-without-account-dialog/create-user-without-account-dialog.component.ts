@@ -2,15 +2,11 @@ import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {MatDialogRef} from "@angular/material/dialog";
 import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-error-interceptor.service";
-import {UserService} from "../user-profile/services/user.service";
 import {
   DOCTOR_CREATES_NEW_USER,
   INPUT_REGEX_TEXTS,
-  USER_LOCALSTORAGE,
-  USERS_DOCTORS
 } from "../../shared-data/Constants";
 import {UsersOfDoctorService} from "../../services/users-of-doctor/users-of-doctor.service";
-import {UsersDoctorsListService} from "../../services/usersDoctorsObservableService/usersDoctorsListService";
 
 @Component({
   selector: 'app-create-user-without-account-dialog',
@@ -23,13 +19,10 @@ export class CreateUserWithoutAccountDialogComponent implements OnInit {
   doctorCreatesUserText: any;
   isErrorDisplayed = false;
   errorMessage = '';
-  doctor: any;
 
   constructor(public dialogRef: MatDialogRef<CreateUserWithoutAccountDialogComponent>,
               private uiAlertInterceptor: UiErrorInterceptorService,
-              private usersDoctorsService: UsersOfDoctorService,
-              private usersDoctorsListService: UsersDoctorsListService) {
-    this.doctor = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
+              private usersDoctorsService: UsersOfDoctorService) {
   }
 
   ngOnInit(): void {
@@ -53,24 +46,15 @@ export class CreateUserWithoutAccountDialogComponent implements OnInit {
     this.errorMessage = '';
 
     const userDataPayload = {
-      clientPhone: this.doctorCreatesUserForm.controls.patientPhone.value,
-      clientName: this.doctorCreatesUserForm.controls.patientName.value,
-      isClientRegisteredInApp: false,
-      doctorName: this.doctor.doctorName,
-      doctorId: this.doctor.id
+      animals: [],
+      name: this.doctorCreatesUserForm.controls.patientName.value,
+      phone: this.doctorCreatesUserForm.controls.patientPhone.value,
     }
 
-    // todo check for user to be authenticated
-    this.usersDoctorsService.addUserToDoctorList(userDataPayload).then((res) => {
-      const usersList = JSON.parse(<string>localStorage.getItem(USERS_DOCTORS));
-      usersList.push(userDataPayload);
-      localStorage.removeItem(USERS_DOCTORS);
-      localStorage.setItem(USERS_DOCTORS, JSON.stringify(usersList));
-      this.usersDoctorsListService.setUsersDoctorList(usersList);
+    const isUserAdded: any = this.usersDoctorsService.addUserToDoctorList(userDataPayload, false);
+    if (isUserAdded) {
       this.dialogRef.close();
-    }).catch((error) => {
-      console.error("ERROR:", error);
-    });
+    }
   }
 
   onCancelForm(): void {

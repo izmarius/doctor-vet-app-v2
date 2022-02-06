@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import {AngularFireAuth} from "@angular/fire/auth";
+import {take} from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,9 @@ export class FirebaseUtilsService {
   }
 
   resendValidationEmail(): void {
-    this.afAuth.user.subscribe((user) => {
+    this.afAuth.user
+      .pipe(take(1))
+      .subscribe((user) => {
       if (!user) {
       } else {
         user.sendEmailVerification();

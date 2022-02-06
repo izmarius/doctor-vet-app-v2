@@ -1,4 +1,26 @@
 <div class="vet-container">
+  <div class="vet-content m-btn-header d-flex">
+    <div>
+      <input type="text" autocomplete="none"
+             class="form-control m-btn-small"
+             [placeholder]="searchTextPlaceholders.SEARCH_BY_NAME_PLACEHOLDER"
+             [(ngModel)]="nameOrPhoneToSearch"
+             (ngModelChange)="filterAllUsers()"
+             (focus)="onFocusUser()">
+      <ul class="list-group" #searchedUserListElement>
+        <li class="list-group-item list-group-item-action dropdown-elem d-flex justify-content-between"
+            *ngFor="let user of searchUserList">
+          <span class="m-1">{{user.name}} | {{user.phone}} | {{user.email}}</span>
+          <button class="btn button--active" (click)="addUserToDoctorList(user)">
+            {{searchTextPlaceholders.ADD_USER_TO_DOCTOR_LIST_BTN}}</button>
+        </li>
+      </ul>
+    </div>
+    <div class="m-btn-small">
+      <label>{{searchTextPlaceholders.SEARCH_BY_PHONE_LABEL}}</label>
+      <input type="checkbox" class="m-btn-small" [(ngModel)]="isSearchingByPhone"/>
+    </div>
+  </div>
   <div class="vet-content d-flex">
     <app-sidebar class="user-sidebar p-around" [sidebarContent]="listOfClients"
                  (clickOnList)="getUserData($event)"

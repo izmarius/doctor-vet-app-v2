@@ -14,6 +14,7 @@ import {FirestoreService} from "../../data/http/firestore.service";
 import {DoctorAppointmentsService} from "../services/doctor-appointments.service";
 import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-error-interceptor.service";
 import {AppointmentsService} from "../../services/appointments/appointments.service";
+import {take} from "rxjs/operators";
 
 @Component({
   selector: 'app-user-appointment',
@@ -142,6 +143,7 @@ export class UserAppointmentDialogComponent implements OnInit {
   setCountyAndSetLocalities(county: string): void {
     this.county = county;
     this.locationService.getCitiesByCountyCode(this.countiesAbbr[county])
+      .pipe(take(1))
       .subscribe((response: any) => {
         this.localities = response
       }, error => {
@@ -167,18 +169,20 @@ export class UserAppointmentDialogComponent implements OnInit {
 
     this.isErrorDisplayed = false;
     this.formErrorMessage = '';
-    this.doctorService.getDoctorsByLocation(this.locality).subscribe((doctors) => {
-      if (doctors && doctors.length === 0) {
-        this.isSearchByUserSuccessAndEmpty = true;
-        this.isSearchByUserSuccess = false;
-      } else if (doctors.length > 0) {
-        this.isSearchByUserSuccessAndEmpty = false;
-        this.isSearchByUserSuccess = true;
-        this.doctorList = doctors;
-      }
-    }, error => {
-      // todo  alert error
-    });
+    this.doctorService.getDoctorsByLocation(this.locality)
+      .pipe(take(1))
+      .subscribe((doctors) => {
+        if (doctors && doctors.length === 0) {
+          this.isSearchByUserSuccessAndEmpty = true;
+          this.isSearchByUserSuccess = false;
+        } else if (doctors.length > 0) {
+          this.isSearchByUserSuccessAndEmpty = false;
+          this.isSearchByUserSuccess = true;
+          this.doctorList = doctors;
+        }
+      }, error => {
+        // todo  alert error
+      });
   }
 
   //END FORM VALIDATION AND SETTERS

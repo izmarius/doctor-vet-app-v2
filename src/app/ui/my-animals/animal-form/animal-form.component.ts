@@ -2,6 +2,8 @@ import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {ANIMAL_FORM_TEXT} from "../../../shared-data/Constants";
 import {DateUtilsService} from "../../../data/utils/date-utils.service";
+import {take} from "rxjs/operators";
+import {pipe} from "rxjs";
 
 @Component({
   selector: 'app-animal-form',
@@ -52,7 +54,9 @@ export class AnimalFormComponent implements OnInit {
   }
 
   setAnimalAge() {
-    this.animalFormGroup.get('birthDay')?.valueChanges.subscribe((date) => {
+    this.animalFormGroup.get('birthDay')?.valueChanges
+      .pipe(take(1))
+      .subscribe((date) => {
       const currentYear = new Date().getFullYear();
       const ageOfAnimal = currentYear - date.getFullYear();
       this.animalFormGroup.get('age')?.setValue(ageOfAnimal);

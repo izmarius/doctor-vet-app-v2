@@ -106,7 +106,7 @@ export const CALENDAR_DATA = {
 
 // D
 export const DOCTOR_CREATES_NEW_USER = {
-  animalNameLabel: '(OPTIONAL) Adauga animal - doar daca animalul nu este inregistrat!',
+  animalNameLabel: 'Adauga animal',
   animalNamePlaceholder: 'Nume animal',
   buttonDialog: 'Salveaza user',
   emailLabel: APPOINTMENTFORM_DATA.patientEmailLabel,
@@ -329,10 +329,12 @@ export const UI_ALERT_MESSAGES = {
 }
 
 export const UI_USERS_OF_DOCTOR_MSGS = {
+  ERROR_CLIENT_ALREADY_EXISTS: 'Clientul exista deja si nu poate fi adaugat de doua ori!',
   ERROR_GETTING_ANIMAL_DATA: 'Animalul nu a fost gasit sau a aparut o eroare la conexiunea la server.',
   ERROR_GETTING_ANIMAL_MEDICAL_HISTORY: 'Animalul nu are istoric medical sau a aparut o eroare la conexiunea la server.',
   ERROR_GETTING_USERS_DATA: 'Userul nu a fost gasit sau a aparut o eroare la conexiunea la server.',
   ERROR_GETTING_USERS_DOCTORS: 'A aparut o problema de conexiune la server. Te rugam sa incerci din nou!',
+  ERROR_SAVING_USERS_DOCTORS: 'A aparut o problema la salvarea acestui client. Te rugam sa incerci din nou!',
   NO_LOGGED_IN_DOCTOR: 'Sesiunea ta a expirat, te rugam sa te loghezi in aplicatie',
 }
 
@@ -381,6 +383,7 @@ export const USER_SERVICE = {
 }
 
 export const USERS_DOCTOR_PAGE_CONST = {
+  ADD_USER_TO_DOCTOR_LIST_BTN: 'Adauga user in lista',
   CLIENT_WITH_ACCOUNT: {
     title: 'Clienti cu cont:',
     buttonText: 'Adauga client cu cont'
@@ -389,6 +392,8 @@ export const USERS_DOCTOR_PAGE_CONST = {
     title: 'Clienti fara cont:',
     buttonText: 'Adauga client fara cont'
   },
+  SEARCH_BY_NAME_PLACEHOLDER: 'Cauta useri dupa nume',
+  SEARCH_BY_PHONE_LABEL: 'Cauta useri dupa numarul de telefon'
 }
 
 // Q

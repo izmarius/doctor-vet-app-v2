@@ -184,7 +184,6 @@ export class AppointmentsService {
   removeAppointmentFromAppointmentMap(doctorAppointmentsMap: any, appointment: any) {
     const appointmentsMap = Object.create(doctorAppointmentsMap);
     const date = appointment.dateTime.split('-')[0].trim();
-    debugger;
     appointmentsMap[date].forEach((interval: any, index: number) => {
       if (interval.startTimestamp === appointment.timestamp && interval.appointmentId === appointment.id) {
         appointmentsMap[date].splice(index, 1);

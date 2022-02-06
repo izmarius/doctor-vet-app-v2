@@ -19,13 +19,14 @@ import {UserService} from "../user-profile/services/user.service";
 import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-error-interceptor.service";
 import {AppointmentsService} from "../../services/appointments/appointments.service";
 import {UsersOfDoctorService} from "../../services/users-of-doctor/users-of-doctor.service";
+import {take} from "rxjs/operators";
 
 @Component({
   selector: 'app-doctor-appointment-modal',
   templateUrl: './doctor-appointment-modal.component.html',
   styleUrls: ['./doctor-appointment-modal.component.scss']
 })
-export class DoctorAppointmentModalComponent implements OnInit, OnDestroy {
+export class DoctorAppointmentModalComponent implements OnInit {
 
   stepMinutes: any
   stepMinute!: number;
@@ -46,7 +47,6 @@ export class DoctorAppointmentModalComponent implements OnInit, OnDestroy {
   public selectedAnimal: any = {};
   public errorMessage: string = '';
   selectedDate = new Date();
-  userDataSub: Subscription = new Subscription();
 
 
   @ViewChild('patientList') patientListElem: any;
@@ -78,18 +78,14 @@ export class DoctorAppointmentModalComponent implements OnInit, OnDestroy {
     this.initForm();
   }
 
-  ngOnDestroy() {
-    this.filterSubscription.unsubscribe();
-    this.userDataSub.unsubscribe();
-  }
-
   filterClients(name: string): void {
-    this.filterSubscription = this.usersOfDoctorService.filterUsersOfDoctors(name)
+    this.usersOfDoctorService.filterUsersOfDoctors(name)
+      .pipe(take(1))
       .subscribe((users: any) => {
         if (name.length > 2 && users.length === 0) {
           this.setErrorMessage(APPOINTMENTFORM_DATA.patientDoesNotExist);
         } else {
-          this.filterSubscription.unsubscribe();
+          // this.filterSubscription.unsubscribe();
           this.setErrorMessage('');
         }
         this.users = users;
@@ -158,7 +154,8 @@ export class DoctorAppointmentModalComponent implements OnInit, OnDestroy {
   }
 
   onSelectPatient(selectedPatient: IUserDTO | any): void {
-    this.userDataSub = this.userService.getUserDataById(selectedPatient.clientId)
+    this.userService.getUserDataById(selectedPatient.clientId)
+      .pipe(take(1))
       .subscribe((userData) => {
         // todo HERE WILL COME AN UNDEFINED USER IF HE IS NOT INSERTED IN DB
         this.selectedPatient = userData;
