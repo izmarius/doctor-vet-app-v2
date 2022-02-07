@@ -65,19 +65,20 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
   }
 
   addRecurrentAppointment(period: string) {
-    this.appointmentService.addRecurrentAppointment(period, this.doctor, this.userAnimalData)
+    this.appointmentService.addRecurrentAppointment(period, this.doctor, this.data)
+    this.appointmentService.addRecurrentAppointment(period, this.doctor, this.data)
   }
 
   addDisease(): void {
     if (!this.newDisease) {
       return;
     }
-    this.userAnimalData.animalMedicalHistory.diseases.push(this.newDisease);
-    if (!this.userAnimalData.medicalHistoryDocId) {
-      this.userAnimalData.medicalHistoryDocId = this.firestoreService.getNewFirestoreId();
-      this.createMedicalHistory(this.data.userId, this.userAnimalData.animalData.id, {diseases: this.userAnimalData.animalMedicalHistory.diseases});
+    this.userAnimalData.userAnimalData.animalMedicalHistory.diseases.push(this.newDisease);
+    if (!this.userAnimalData.userAnimalData.medicalHistoryDocId) {
+      this.userAnimalData.userAnimalData.medicalHistoryDocId = this.firestoreService.getNewFirestoreId();
+      this.createMedicalHistory(this.data.userId, this.userAnimalData.animalData.id, {diseases: this.userAnimalData.userAnimalData.animalMedicalHistory.diseases});
     } else {
-      this.updateMedicalHistory(this.data.userId, this.userAnimalData.animalData.id, {diseases: this.userAnimalData.animalMedicalHistory.diseases});
+      this.updateMedicalHistory(this.data.userId, this.userAnimalData.animalData.id, {diseases: this.userAnimalData.userAnimalData.animalMedicalHistory.diseases});
     }
     this.hideDiseaseInput();
   }

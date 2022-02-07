@@ -28,27 +28,25 @@ import {take} from "rxjs/operators";
 })
 export class DoctorAppointmentModalComponent implements OnInit {
 
+  public animals: IAnimalUserInfo[] = [];
+  public appointmentForm!: FormGroup;
+  public appointmentFormPlaceHolder: any;
+  public doctor: any;
+  public doctorAppointment!: DoctorsAppointmentDTO;
+  public doctorServiceList: string[] = [];
+  public errorMessage: string = '';
+  public filteredAnimals: IAnimalUserInfo[] = [];
+  public isErrorDisplayed: boolean = false;
+  public minDate = new Date();
+  public isSearchingByPhone: boolean = false;
+  public selectedAnimal: any = {};
+  selectedDate = new Date();
+  public selectedPatient!: IUserDTO;
   stepMinutes: any
   stepMinute!: number;
   stepHours: any;
   stepHour!: number;
-  public appointmentForm!: FormGroup;
   public users!: IUserDTO[];
-  public animals: IAnimalUserInfo[] = [];
-  public filteredAnimals: IAnimalUserInfo[] = [];
-  public filterSubscription: Subscription = new Subscription();
-  public doctorAppointment!: DoctorsAppointmentDTO;
-  public appointmentFormPlaceHolder: any;
-  public doctor: any;
-  public doctorServiceList: string[] = [];
-  public isErrorDisplayed: boolean = false;
-  public minDate = new Date();
-  public selectedPatient!: IUserDTO;
-  public selectedAnimal: any = {};
-  public errorMessage: string = '';
-  selectedDate = new Date();
-
-
   @ViewChild('patientList') patientListElem: any;
   @ViewChild('animalList') animalListElem: any;
 
@@ -78,18 +76,20 @@ export class DoctorAppointmentModalComponent implements OnInit {
     this.initForm();
   }
 
-  filterClients(name: string): void {
-    this.usersOfDoctorService.filterUsersOfDoctors(name)
-      .pipe(take(1))
-      .subscribe((users: any) => {
-        if (name.length > 2 && users.length === 0) {
-          this.setErrorMessage(APPOINTMENTFORM_DATA.patientDoesNotExist);
-        } else {
-          // this.filterSubscription.unsubscribe();
-          this.setErrorMessage('');
-        }
-        this.users = users;
-      });
+  filterClients(nameOrPhone: string): void {
+    if (!this.isSearchingByPhone) {
+      this.usersOfDoctorService.filterUsersOfDoctors(nameOrPhone, '')
+        .pipe(take(1))
+        .subscribe((users: any) => {
+          this.users = users;
+        });
+    } else {
+      this.usersOfDoctorService.filterUsersOfDoctors('', nameOrPhone)
+        .pipe(take(1))
+        .subscribe((users: any) => {
+          this.users = users;
+        });
+    }
   }
 
   filterAnimals(searchText: string): void {
@@ -111,7 +111,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
       patientName: new FormControl(null, Validators.required),
       animalName: new FormControl(null, Validators.required),
       patientPhone: new FormControl(null, [Validators.required, Validators.minLength(10), Validators.pattern(INPUT_REGEX_TEXTS.phoneNumber)]),
-      patientEmail: new FormControl(null, [Validators.required, Validators.pattern(INPUT_REGEX_TEXTS.email)]),
+      patientEmail: new FormControl(null, [Validators.pattern(INPUT_REGEX_TEXTS.email)]),
     });
   }
 
@@ -120,13 +120,11 @@ export class DoctorAppointmentModalComponent implements OnInit {
       const filteredAnimals = this.animals.filter((animal) => {
         return animal.animalName === this.appointmentForm.value.animalName;
       });
-
       return filteredAnimals.length > 0;
     } else {
       return false;
     }
   }
-
 
   onCancelForm(isAppointmentSuccess: boolean): void {
     this.dialogRef.close(isAppointmentSuccess);
@@ -153,19 +151,29 @@ export class DoctorAppointmentModalComponent implements OnInit {
     this.animalListElem.nativeElement.classList.add('hide');
   }
 
-  onSelectPatient(selectedPatient: IUserDTO | any): void {
-    this.userService.getUserDataById(selectedPatient.clientId)
-      .pipe(take(1))
-      .subscribe((userData) => {
-        // todo HERE WILL COME AN UNDEFINED USER IF HE IS NOT INSERTED IN DB
-        this.selectedPatient = userData;
-        this.appointmentForm.controls.patientName.setValue(userData.name);
-        this.appointmentForm.controls.patientPhone.setValue(userData.phone);
-        this.appointmentForm.controls.patientEmail.setValue(userData.email);
-        this.patientListElem.nativeElement.classList.add('hide');
-        this.animals = userData.animals;
-        this.filteredAnimals = this.animals;
-      });
+  onSelectPatient(selectedPatient: any): void {
+    if (selectedPatient.isClientRegisteredInApp) {
+      this.userService.getUserDataById(selectedPatient.clientId)
+        .pipe(take(1))
+        .subscribe((userData) => {
+          this.selectedPatient = selectedPatient;
+          this.selectedPatient.email = userData.email;
+          this.appointmentForm.controls.patientName.setValue(userData.name);
+          this.appointmentForm.controls.patientPhone.setValue(userData.phone);
+          this.appointmentForm.controls.patientEmail.setValue(userData.email);
+          this.patientListElem.nativeElement.classList.add('hide');
+          this.animals = userData.animals;
+          this.filteredAnimals = this.animals;
+        });
+    } else {
+      this.selectedPatient = selectedPatient;
+      this.appointmentForm.controls.patientName.setValue(selectedPatient.clientName);
+      this.appointmentForm.controls.patientPhone.setValue(selectedPatient.clientPhone);
+      this.appointmentForm.controls.patientEmail.setValue('');
+      this.patientListElem.nativeElement.classList.add('hide');
+      this.animals = selectedPatient.animals;
+      this.filteredAnimals = this.animals;
+    }
   }
 
   onStartDateChange(startDateChange: Date): void {
@@ -187,17 +195,12 @@ export class DoctorAppointmentModalComponent implements OnInit {
     }
 
     const newAnimalInfo = new AnimalUtilInfo()
-      .setName(this.selectedAnimal.animalName);
-    // todo - leave it here or remove it and add to user list
+      .setName(this.selectedAnimal.animalName)
+      .setUid(this.selectedAnimal.animalId);
 
     if (!this.isAnimalRegisteredToUser()) {
-      const animalDocUID = this.firestoreService.getNewFirestoreId();
-      this.selectedAnimal.animalId = animalDocUID;
-      this.userService.saveAnimal(this.selectedPatient, this.appointmentForm.value.animalName, animalDocUID);
-      newAnimalInfo.setUid(animalDocUID);
-      newAnimalInfo.setName(this.appointmentForm.value.animalName);
-    } else {
-      newAnimalInfo.setUid(this.selectedAnimal.animalId)
+      this.setErrorMessage(APPOINTMENTFORM_DATA.animalNeedsRegistration);
+      return;
     }
     this.setErrorMessage('');
     const appointmentDTO = this.appointmentService.getAppointmentDTO(newAnimalInfo, this.appointmentForm, this.doctor, this.selectedPatient, appointmentId);

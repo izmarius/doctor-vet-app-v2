@@ -232,8 +232,10 @@ export class CalendarComponent implements OnInit, OnDestroy {
       .pipe(take(1))
       .subscribe(isAppointmentCanceled => {
         if (isAppointmentCanceled) {
-          const appointmentsMap = this.appointmentService.removeAppointmentFromAppointmentMap(this.doctor.appointmentsMap, this.userAnimalData.appointment);
-          this.appointmentService.cancelAppointmentByDoctor(this.userAnimalData.appointment, this.doctor, this.dialogRef, appointmentsMap);
+          this.appointmentService.cancelAppointmentByDoctor(this.userAnimalData.appointment, this.doctor, this.dialogRef)
+            .then(() => {
+              this.resetAppointmentList(this.userAnimalData.appointment.id);
+            });
         }
       });
   }
@@ -244,28 +246,15 @@ export class CalendarComponent implements OnInit, OnDestroy {
       panelClass: 'user-without-account-details-dialog',
       data: appointment
     });
+
     dialogRef.afterClosed()
       .pipe(take(1))
       .subscribe(result => {
         if (result) {
-          this.appointmentService.deleteAppointment(appointment.id).then(() => {
-            this.appointments.forEach((currentApp, index) => {
-              if (currentApp.id === appointment.appointment.id) {
-                this.appointments.splice(index, 1);
-                this.alertInterceptor.setUiError({
-                  class: UI_ALERTS_CLASSES.ERROR,
-                  message: APPOINTMENT_MESSAGES.APPOINTMENT_DELETION_FAILED
-                })
-                return;
-              }
+          this.appointmentService.deleteAppointment(appointment, this.doctor)
+            .then(() => {
+              this.resetAppointmentList(appointment.id);
             });
-          }).catch((error) => {
-            console.error('Error while deleting an appointment', error);
-            this.alertInterceptor.setUiError({
-              class: UI_ALERTS_CLASSES.ERROR,
-              message: APPOINTMENT_MESSAGES.APPOINTMENT_DELETION_FAILED
-            })
-          });
         }
       });
   }
@@ -275,6 +264,12 @@ export class CalendarComponent implements OnInit, OnDestroy {
       height: '40rem',
       panelClass: MODALS_DATA.DOCTOR_APP_MODAL,
       data: date
+    });
+  }
+
+  resetAppointmentList(appointmentId: string) {
+    this.appointments = this.appointments.filter((currentSelection, i) => {
+      return currentSelection.appointment.id !== appointmentId
     });
   }
 }

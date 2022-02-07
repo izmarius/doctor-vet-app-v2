@@ -32,6 +32,7 @@ export class CreateUserWithoutAccountDialogComponent implements OnInit {
 
   initForm() {
     this.doctorCreatesUserForm = new FormGroup({
+      animalName: new FormControl(null, Validators.required),
       patientName: new FormControl(null, Validators.required),
       patientPhone: new FormControl(null, [Validators.required, Validators.minLength(10), Validators.pattern(INPUT_REGEX_TEXTS.phoneNumber)]),
     });
@@ -46,7 +47,9 @@ export class CreateUserWithoutAccountDialogComponent implements OnInit {
     this.errorMessage = '';
 
     const userDataPayload = {
-      animals: [],
+      animals: [{
+        animalName: this.doctorCreatesUserForm.controls.animalName.value,
+      }],
       name: this.doctorCreatesUserForm.controls.patientName.value,
       phone: this.doctorCreatesUserForm.controls.patientPhone.value,
     }

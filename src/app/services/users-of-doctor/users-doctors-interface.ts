@@ -4,5 +4,6 @@ export interface IUsersDoctors {
   doctorName: string,
   clientId: string,
   clientName: string,
+  clientPhone: string,
   isClientRegisteredInApp: boolean
 }

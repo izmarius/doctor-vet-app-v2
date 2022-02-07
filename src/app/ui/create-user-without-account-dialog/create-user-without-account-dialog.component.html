@@ -15,6 +15,12 @@
              formControlName="patientPhone"
              [placeholder]="doctorCreatesUserText.phonePlaceholder"/>
     </div>
+    <div class="m-btn-small">
+      <label>{{doctorCreatesUserText.phoneLabel}}</label>
+      <input type="text" id="animalName" class="form-control"
+             formControlName="animalName"
+             [placeholder]="doctorCreatesUserText.animalNamePlaceholder"/>
+    </div>
     <p class="error-msg m-top-small" *ngIf="isErrorDisplayed">
       {{ errorMessage }}
     </p>

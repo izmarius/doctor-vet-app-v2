@@ -130,7 +130,7 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
     this.usersOfDoctorsService.getAllUsersOfDoctor()
       .pipe(take(1))
       .subscribe((listOfUsers) => {
-        if (listOfUsers && listOfUsers.length > 0) {
+        if (listOfUsers) {
           this.listOfClients = this.getSidebarContent(listOfUsers);
           localStorage.removeItem(USERS_DOCTORS);
           localStorage.setItem(USERS_DOCTORS, JSON.stringify(listOfUsers));
@@ -204,27 +204,34 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
       this.animalData = {};
       this.userData.phone = link.userDoctor.clientPhone
       this.userData.name = link.userDoctor.clientName;
+      this.userData.animals = link.userDoctor.animals;
       this.isUserDataFetched = true;
       this.isAnimalDataFetched = false;
       this.isAnimalMedicalHistoryFetched = false;
-      console.log(link.userDoctor);
     }
   }
 
   getAnimalData(animalId: string) {
-    this.animalService.getAnimalById(animalId, this.userData.id)
-      .pipe(take(1))
-      .subscribe((res) => {
-        this.animalData = res;
-        this.isAnimalDataFetched = true;
-        this.getAnimalMedicalHistory(animalId);
-      }, error => {
-        console.log("ERROR while fetching animal data: ", JSON.stringify(error));
-        this.uiAlert.setUiError({
-          class: UI_ALERTS_CLASSES.ERROR,
-          message: UI_USERS_OF_DOCTOR_MSGS.ERROR_GETTING_USERS_DATA
+    if (animalId) {
+      this.animalService.getAnimalById(animalId, this.userData.id)
+        .pipe(take(1))
+        .subscribe((res) => {
+          this.animalData = res;
+          this.isAnimalDataFetched = true;
+          this.getAnimalMedicalHistory(animalId);
+        }, error => {
+          console.log("ERROR while fetching animal data: ", JSON.stringify(error));
+          this.uiAlert.setUiError({
+            class: UI_ALERTS_CLASSES.ERROR,
+            message: UI_USERS_OF_DOCTOR_MSGS.ERROR_GETTING_USERS_DATA
+          })
         })
+    } else {
+      this.uiAlert.setUiError({
+        class: UI_ALERTS_CLASSES.ERROR,
+        message: UI_USERS_OF_DOCTOR_MSGS.CREATE_AN_ACCOUNT_FOR_USER
       })
+    }
   }
 
   getAnimalMedicalHistory(animalId: string) {

@@ -20,9 +20,9 @@
     <div class="animal-data-container vet-border-right">
       <div class="vet-border-bottom">
         <p class="m-btn-small error-msg"
-           *ngIf="userAnimalData?.appointment?.isCanceledByUser">{{quickAppointmentPeriods.cancelAppointmentSuccess}}</p>
+           *ngIf="data?.appointment?.isCanceledByUser">{{quickAppointmentPeriods.cancelAppointmentSuccess}}</p>
         <p>{{userAnimalData?.userData?.name}}</p>
-        <p>{{userAnimalData?.appointment?.userPhone}}</p>
+        <p>{{data?.appointment?.userPhone}}</p>
         <div class="animal-info d-flex">
           <!--          //FOR MULTIPLE ANIMALS-->
           <!--          <p class="bold-text me-2">{{userAnimalDialog.ownersPets}}</p>-->

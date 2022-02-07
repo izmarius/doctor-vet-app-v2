@@ -24,17 +24,25 @@ export class UsersOfDoctorService {
     this.doctor = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
   }
 
-  filterUsersOfDoctors(name: string): Observable<any> {
-    if (name.length > 2) {
-      // todo - filter patient after email?
+  filterUsersOfDoctors(name: string, phone: string): Observable<any> {
+    let keyToSearch = '';
+    let valueToSearch = '';
+    if (phone && phone.length > 6) {
+      keyToSearch = 'clientPhone'
+      valueToSearch = phone;
+    } else if (name && name.length > 2) {
+      keyToSearch = 'clientName'
+      valueToSearch = name;
+    }
+    if (keyToSearch) {
       // first step is to add it to the list of yours and after that you can search the user in appointments
-      return this.firestore.getCollectionWhereStringStartsWith(this.USERS_OF_DOCTOR_COLLECTION, 'clientName', '>=', '<=', name)
+      return this.firestore.getCollectionWhereStringStartsWith(this.USERS_OF_DOCTOR_COLLECTION, keyToSearch, '>=', '<=', valueToSearch)
         .pipe(
           debounceTime(200),
           distinctUntilChanged(),
           map((usersList: any) => {
             return usersList.filter((user: any) => {
-              return user.clientName.toLowerCase().indexOf(name.toLowerCase()) > -1
+              return user[keyToSearch].toLowerCase().indexOf(name.toLowerCase()) > -1
             });
           }),
           take(1)
@@ -73,11 +81,11 @@ export class UsersOfDoctorService {
       });
       return null;
     }
-    debugger;
     const usersDoctorPayload: IUsersDoctors = {
       animals: user.animals,
       clientId: user.id,
       clientName: user.name,
+      clientPhone: user.phone,
       doctorId: this.doctor.id,
       doctorName: this.doctor.doctorName,
       isClientRegisteredInApp: isClientRegistered

@@ -4,7 +4,7 @@ import {UiErrorInterceptorService} from "../../ui/shared/alert-message/services/
 import {DateUtilsService} from "../../data/utils/date-utils.service";
 import {IAppointmentDto} from "./appointment-dto";
 import {Observable} from "rxjs";
-import {delay, map, take} from "rxjs/operators";
+import {map} from "rxjs/operators";
 import {
   APPOINTMENT_CALENDAR_TAG, APPOINTMENTFORM_DATA,
   UI_ALERTS_CLASSES,
@@ -87,20 +87,14 @@ export class AppointmentsService {
     return this.firestoreService.saveDocumentWithGeneratedFirestoreId(this.APPOINTMENT_COLLECTION, appointmentDto.id, JSON.parse(JSON.stringify(appointmentDto)));
   }
 
-  cancelAppointmentByDoctor(selectedAppointment: any, doctor: any, dialogRef: MatDialog, doctorAppointmentsMap: any): void {
-    Promise.all([
-      this.doctorService.updateDoctorInfo({appointmentsMap: doctorAppointmentsMap.__proto__}, doctor.id),
+  cancelAppointmentByDoctor(selectedAppointment: any, doctor: any, dialogRef: MatDialog): Promise<any> {
+    const appointmentsMap = this.removeAppointmentFromAppointmentMap(doctor.appointmentsMap, selectedAppointment);
+    return Promise.all([
+      this.doctorService.updateDoctorInfo({appointmentsMap: appointmentsMap.__proto__}, doctor.id),
       this.updateAppointment({isCanceledByDoctor: true}, selectedAppointment.id),
     ]).then(() => {
-      doctor.appointmentsMap = doctorAppointmentsMap.__proto__
-      localStorage.removeItem(USER_LOCALSTORAGE);
-      localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(doctor));
+      this.setDoctorInStorageAndDisplayMessage(doctor);
       dialogRef.closeAll();
-      this.uiAlertInterceptor.setUiError({
-        message: USER_CARD_TXT.cancelAppointmentSuccess,
-        class: UI_ALERTS_CLASSES.SUCCESS
-      });
-      // todo notify user
     }).catch((error) => {
       this.uiAlertInterceptor.setUiError({
         message: USER_CARD_TXT.cancelAppointmentError,
@@ -120,7 +114,6 @@ export class AppointmentsService {
       this.uiAlertInterceptor.setUiError({
         message: USER_CARD_TXT.cancelAppointmentSuccess,
         class: UI_ALERTS_CLASSES.SUCCESS
-        // todo notify user
       });
     }).catch((error) => {
       this.uiAlertInterceptor.setUiError({
@@ -131,8 +124,20 @@ export class AppointmentsService {
     })
   }
 
-  deleteAppointment(appointmentId: string): Promise<any> {
-    return this.firestoreService.deleteDocById(this.APPOINTMENT_COLLECTION, appointmentId)
+  deleteAppointment(appointment: any, doctor: any): Promise<any> {
+    const appointmentsMap = this.removeAppointmentFromAppointmentMap(doctor.appointmentsMap, appointment);
+    return Promise.all([
+      this.doctorService.updateDoctorInfo({appointmentsMap: appointmentsMap}, doctor.id),
+      this.firestoreService.deleteDocById(this.APPOINTMENT_COLLECTION, appointment.id)
+    ]).then(() => {
+      this.setDoctorInStorageAndDisplayMessage(doctor);
+    }).catch((error) => {
+      this.uiAlertInterceptor.setUiError({
+        message: USER_CARD_TXT.cancelAppointmentError,
+        class: UI_ALERTS_CLASSES.SUCCESS
+      });
+      console.error(error);
+    })
   }
 
   getAllCurrentUserAppointments(userData: any) {
@@ -182,7 +187,7 @@ export class AppointmentsService {
   }
 
   removeAppointmentFromAppointmentMap(doctorAppointmentsMap: any, appointment: any) {
-    const appointmentsMap = Object.create(doctorAppointmentsMap);
+    const appointmentsMap = Object.create(doctorAppointmentsMap).__proto__;
     const date = appointment.dateTime.split('-')[0].trim();
     appointmentsMap[date].forEach((interval: any, index: number) => {
       if (interval.startTimestamp === appointment.timestamp && interval.appointmentId === appointment.id) {
@@ -211,6 +216,16 @@ export class AppointmentsService {
     });
   }
 
+  private setDoctorInStorageAndDisplayMessage(doctor: any) {
+    localStorage.removeItem(USER_LOCALSTORAGE);
+    localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(doctor));
+    this.uiAlertInterceptor.setUiError({
+      message: USER_CARD_TXT.cancelAppointmentSuccess,
+      class: UI_ALERTS_CLASSES.SUCCESS
+      // todo notify user
+    });
+  }
+
   private updateAppointment(app: any, appointmentId: string): Promise<any> {
 
     return this.firestoreService.updateDocumentById(this.APPOINTMENT_COLLECTION, appointmentId, app)
@@ -230,7 +245,7 @@ export class AppointmentsService {
     appointmentDTO.dateTime = this.dateUtils.getDateFormat(appointmentForm.value.startDate)
       + ' - ' +
       appointmentForm.value.startTime;
-    appointmentDTO.userId = user?.id;
+    appointmentDTO.userId = user.clientId;
     appointmentDTO.userName = appointmentForm.value.patientName;
     appointmentDTO.doctorId = doctor.id;
     appointmentDTO.doctorName = doctor.doctorName;
@@ -241,8 +256,8 @@ export class AppointmentsService {
     appointmentDTO.isConfirmedByDoctor = false;
     appointmentDTO.isFinished = false;
     appointmentDTO.isUserNotified = false;
-    appointmentDTO.userPhone = this.setAndGetUserPhoneNumber(user?.phone);
-    appointmentDTO.userEmail = user?.email;
+    appointmentDTO.userPhone = this.setAndGetUserPhoneNumber(user.clientPhone);
+    appointmentDTO.userEmail = user.email;
     appointmentDTO.timestamp = appointmentForm.value.startDate.getTime();
     appointmentDTO.service = appointmentForm.value.medService;
     appointmentDTO.animalData = appointmentAnimalData;

@@ -8,7 +8,8 @@ export const APPOINTMENT_CALENDAR_TAG = {
 
 export const APPOINTMENTFORM_DATA = {
   animalLabel: APPOINTMENT_CALENDAR_TAG.ANIMAL,
-  animalSelectDefaultOption: 'Cauta un animal sau adauga unul nou',
+  animalNeedsRegistration: 'Pentru a putea face o programare te rugam sa inregistrezi animalul in pagina de "Lista clienti" la userul: ',
+  animalSelectDefaultOption: 'Selecteaza un animal',
   cancelBtn: 'Anuleaza',
   dateFormat: 'dd/mm/yyyy',
   dateLabel: 'Selecteaza data',
@@ -26,6 +27,7 @@ export const APPOINTMENTFORM_DATA = {
   patientPhonePlaceholder: '0743922xxx',
   patientLabel: 'Nume si prenume client',
   quickAppointmentError: 'Programarile rapide se pot face doar cu valorile: 1 zi, 2 saptamani, 1 luna, sau 1 an!',
+  SEARCH_BY_PHONE_LABEL: 'Cauta useri dupa numarul de telefon',
   servicesLabel: 'Servicii',
   servicesSelectDefaultOption: 'Selecteaza un serviciu',
   submitBtn: 'Salveaza',
@@ -39,6 +41,7 @@ export const APPOINTMENTFORM_DATA = {
 
 export const APPOINTMENT_MESSAGES = {
   APPOINTMENT_DELETION_FAILED: 'Programarea nu a putut fi stearsa',
+  APPOINTMENT_DELETION_SUCCESS: 'Programarea a fost stearsa si clientul notificat.',
   APPOINTMENT_IN_PAST_NOT_POSSIBLE: 'Programarea nu poate fi setata in trecut',
 };
 
@@ -329,13 +332,14 @@ export const UI_ALERT_MESSAGES = {
 }
 
 export const UI_USERS_OF_DOCTOR_MSGS = {
-  ERROR_CLIENT_ALREADY_EXISTS: 'Clientul exista deja si nu poate fi adaugat de doua ori!',
+  ERROR_CLIENT_ALREADY_EXISTS: 'Clientul cu acest numar de telefon exista deja si nu poate fi adaugat de doua ori!',
   ERROR_GETTING_ANIMAL_DATA: 'Animalul nu a fost gasit sau a aparut o eroare la conexiunea la server.',
   ERROR_GETTING_ANIMAL_MEDICAL_HISTORY: 'Animalul nu are istoric medical sau a aparut o eroare la conexiunea la server.',
   ERROR_GETTING_USERS_DATA: 'Userul nu a fost gasit sau a aparut o eroare la conexiunea la server.',
   ERROR_GETTING_USERS_DOCTORS: 'A aparut o problema de conexiune la server. Te rugam sa incerci din nou!',
   ERROR_SAVING_USERS_DOCTORS: 'A aparut o problema la salvarea acestui client. Te rugam sa incerci din nou!',
   NO_LOGGED_IN_DOCTOR: 'Sesiunea ta a expirat, te rugam sa te loghezi in aplicatie',
+  CREATE_AN_ACCOUNT_FOR_USER: 'Userii fara cont nu au datele animalelor salvate. Pentru a le salva, sterge userul din lista ta si creeaza-i un cont.',
 }
 
 export const USER_ANIMAL_DIALOG = {
@@ -355,15 +359,15 @@ export const USER_ANIMAL_DIALOG = {
   weight: 'Greutate: '
 };
 
-export const USERS_DOCTORS = 'clienti'
-export const USER_LOCALSTORAGE = 'user'
+export const USERS_DOCTORS = 'clienti';
+export const USER_LOCALSTORAGE = 'user';
 
 export const USER_CARD_TXT = {
   animalName: DOCTOR_CREATES_NEW_USER.animalNamePlaceholder,
   buttonCancelValue: 'Anuleaza programarea',
   buttonValue: 'Vezi detalii programare',
   cancelAppointmentError: 'Programarea nu a putut fi stearsa, te rugam sa incerci din nou.',
-  cancelAppointmentSuccess: 'Programarea a fost stearsa si clientul notificat.',
+  cancelAppointmentSuccess: APPOINTMENT_MESSAGES.APPOINTMENT_DELETION_SUCCESS,
   datePlaceholder: 'Data si ora procesarii',
   services: 'Servicii cerute',
 };
@@ -393,7 +397,7 @@ export const USERS_DOCTOR_PAGE_CONST = {
     buttonText: 'Adauga client fara cont'
   },
   SEARCH_BY_NAME_PLACEHOLDER: 'Cauta useri dupa nume',
-  SEARCH_BY_PHONE_LABEL: 'Cauta useri dupa numarul de telefon'
+  SEARCH_BY_PHONE_LABEL: APPOINTMENTFORM_DATA.SEARCH_BY_PHONE_LABEL
 }
 
 // Q
