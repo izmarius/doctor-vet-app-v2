@@ -53,7 +53,7 @@ export class CreateUserDialogComponent implements OnInit {
       phone: this.doctorCreatesUserForm.controls.patientPhone.value,
       photo: '',
       name: this.doctorCreatesUserForm.controls.patientName.value,
-      id: ''
+      id: this.doctorCreatesUserForm.controls.patientPhone.value
     }
 
     this.userService.createUserByDoctorAuthAndSaveAnimal(userDataPayload, this.dialogRef);

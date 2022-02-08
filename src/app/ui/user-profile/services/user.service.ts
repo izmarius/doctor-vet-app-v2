@@ -134,7 +134,6 @@ export class UserService {
     this.createUserWithEmailAndPassword(userData)
       .pipe(take(1))
       .subscribe(() => {
-          userData.id = this.firestoreService.getNewFirestoreId();
           // transaction here
           this.firestoreService.saveDocumentWithGeneratedFirestoreId(this.USER_COLLECTION, userData.id, JSON.parse(JSON.stringify(userData)))
             .then(() => {

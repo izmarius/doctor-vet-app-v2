@@ -24,6 +24,57 @@ export class UsersOfDoctorService {
     this.doctor = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
   }
 
+  addUserToDoctorList(user: any, isClientRegistered: boolean): Promise<any> | null {
+    if (!this.doctor || !this.doctor.id) {
+      this.uiAlert.setUiError({
+        class: UI_ALERTS_CLASSES.ERROR,
+        message: UI_USERS_OF_DOCTOR_MSGS.NO_LOGGED_IN_DOCTOR
+      });
+    }
+    const usersList: any[] = JSON.parse(<string>localStorage.getItem(USERS_DOCTORS));
+    if (this.isUserInDoctorsList(usersList, user)) {
+      return null;
+    }
+    const usersDoctorPayload: IUsersDoctors = {
+      animals: user.animals,
+      clientId: user.id,
+      clientName: user.name,
+      clientPhone: user.phone,
+      doctorId: this.doctor.id,
+      doctorName: this.doctor.doctorName,
+      isClientRegisteredInApp: isClientRegistered
+    }
+
+    return this.firestore.saveDocumentWithGeneratedFirestoreId(this.USERS_OF_DOCTOR_COLLECTION, usersDoctorPayload.clientPhone, JSON.parse(JSON.stringify(usersDoctorPayload)))
+      .then(() => {
+        usersList.push(usersDoctorPayload);
+        localStorage.removeItem(USERS_DOCTORS);
+        localStorage.setItem(USERS_DOCTORS, JSON.stringify(usersList));
+        // todo refactor here and send only the modified element - not urgent
+        this.userListService.setUsersDoctorList(usersList);
+      }).catch((error: any) => {
+        console.error(error);
+        this.uiAlert.setUiError({
+          class: UI_ALERTS_CLASSES.ERROR,
+          message: UI_USERS_OF_DOCTOR_MSGS.ERROR_SAVING_USERS_DOCTORS
+        });
+      });
+  }
+
+  isUserInDoctorsList(usersList: any[], user: any) {
+    const existingClient = usersList.find((currentClient: any) => {
+      return currentClient.clientPhone === user.phone && currentClient.doctorId === this.doctor.id;
+    });
+    if (existingClient) {
+      this.uiAlert.setUiError({
+        class: UI_ALERTS_CLASSES.ERROR,
+        message: UI_USERS_OF_DOCTOR_MSGS.ERROR_CLIENT_ALREADY_EXISTS
+      });
+      return true;
+    }
+    return false
+  }
+
   filterUsersOfDoctors(name: string, phone: string): Observable<any> {
     let keyToSearch = '';
     let valueToSearch = '';
@@ -61,47 +112,5 @@ export class UsersOfDoctorService {
     }
     return this.firestore.getCollectionByWhereClause(this.USERS_OF_DOCTOR_COLLECTION, 'doctorId', '==', this.doctor.id)
       .pipe(take(1));
-  }
-
-  addUserToDoctorList(user: any, isClientRegistered: boolean): Promise<any> | null{
-    if (!this.doctor || !this.doctor.id) {
-      this.uiAlert.setUiError({
-        class: UI_ALERTS_CLASSES.ERROR,
-        message: UI_USERS_OF_DOCTOR_MSGS.NO_LOGGED_IN_DOCTOR
-      });
-    }
-    const usersList: any[] = JSON.parse(<string>localStorage.getItem(USERS_DOCTORS));
-    const existingClient = usersList.find((currentClient: any) => {
-      return currentClient.clientPhone === user.phone && currentClient.doctorId === this.doctor.id;
-    });
-    if (existingClient) {
-      this.uiAlert.setUiError({
-        class: UI_ALERTS_CLASSES.ERROR,
-        message: UI_USERS_OF_DOCTOR_MSGS.ERROR_CLIENT_ALREADY_EXISTS
-      });
-      return null;
-    }
-    const usersDoctorPayload: IUsersDoctors = {
-      animals: user.animals,
-      clientId: user.id,
-      clientName: user.name,
-      clientPhone: user.phone,
-      doctorId: this.doctor.id,
-      doctorName: this.doctor.doctorName,
-      isClientRegisteredInApp: isClientRegistered
-    }
-
-    return this.firestore.saveDocumentByAutoId(this.USERS_OF_DOCTOR_COLLECTION, usersDoctorPayload).then(() => {
-      usersList.push(usersDoctorPayload);
-      localStorage.removeItem(USERS_DOCTORS);
-      localStorage.setItem(USERS_DOCTORS, JSON.stringify(usersList));
-      this.userListService.setUsersDoctorList(usersList);
-    }).catch((error) => {
-      console.error(error);
-      this.uiAlert.setUiError({
-        class: UI_ALERTS_CLASSES.ERROR,
-        message: UI_USERS_OF_DOCTOR_MSGS.ERROR_SAVING_USERS_DOCTORS
-      });
-    });
   }
 }

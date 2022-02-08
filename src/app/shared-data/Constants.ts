@@ -383,7 +383,7 @@ export const USER_SERVICE = {
   deleteUserError: 'Userul nu a putut fi sters, te rugam sa incerci din nou',
   deleteUserSuccess: 'Userul a fost sters cu succes',
   USER_ALREADY_EXISTS: 'Userul este deja inregistrat',
-  USER_ALREADY_EXISTS_WITH_EMAIL: 'Userul este deja inregistrat cu acest email',
+  USER_ALREADY_EXISTS_WITH_EMAIL: 'Userul este deja inregistrat cu acest numar de telefon',
 }
 
 export const USERS_DOCTOR_PAGE_CONST = {

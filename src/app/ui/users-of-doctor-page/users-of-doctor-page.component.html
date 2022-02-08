@@ -24,7 +24,7 @@
   <div class="vet-content d-flex">
     <app-sidebar class="user-sidebar p-around" [sidebarContent]="listOfClients"
                  (clickOnList)="getUserData($event)"
-                 (clickOnAddNewItem)="openModalToAddNewUser($event)"></app-sidebar>
+                 (clickOnAddNewItem)="openCreateUserWithoutAccountDialog()"></app-sidebar>
     <div class="user-content p-around">
       <div *ngIf="isUserDataFetched">
         <div class="d-flex justify-content-between">

@@ -12,7 +12,6 @@ import {
 import {IUsersDoctors} from "../../services/users-of-doctor/users-doctors-interface";
 import {UserService} from "../user-profile/services/user.service";
 import {AnimalService} from "../services/animal.service";
-import {CreateUserDialogComponent} from "../create-user-dialog/create-user-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
 import {UsersDoctorsListService} from "../../services/usersDoctorsObservableService/usersDoctorsListService";
 import {CreateUserWithoutAccountDialogComponent} from "../create-user-without-account-dialog/create-user-without-account-dialog.component";
@@ -34,6 +33,7 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
   diseasesTitle!: string;
   isAnimalDataFetched: boolean = false;
   isAnimalMedicalHistoryFetched: boolean = false;
+  isInitialLoadOfComponent: boolean = true;
   isSearchingByPhone: boolean = false;
   isUserDataFetched: boolean = false;
   listOfClients: any;
@@ -58,21 +58,8 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    const storedClients = JSON.parse(<string>localStorage.getItem(USERS_DOCTORS));
     this.searchTextPlaceholders = USERS_DOCTOR_PAGE_CONST;
-    if (storedClients) {
-      this.usersOfDoctorsSub = this.usersDoctorsListService.usersDoctorsListObs$
-        .subscribe((usersDoctorsList) => {
-          if (!usersDoctorsList || (usersDoctorsList && usersDoctorsList.length === storedClients.length)) {
-            this.listOfClients = this.getSidebarContent(storedClients);
-            return;
-          }
-          this.listOfClients = [];
-          this.listOfClients = this.getSidebarContent(usersDoctorsList);
-        });
-    } else {
-      this.getAllUsersDoctors();
-    }
+    this.setUsersOfDoctors();
   }
 
   ngOnDestroy() {
@@ -107,6 +94,8 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
   }
 
   addUserToDoctorList(user: any) {
+    // refresh user list
+    // on then set the users list to new localstorage
     this.usersOfDoctorsService.addUserToDoctorList(user, true);
   }
 
@@ -158,7 +147,6 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
       }
     });
 
-    // todo create a dto or interface
     sidebarContentUserWithAccount.title = this.searchTextPlaceholders.CLIENT_WITH_ACCOUNT.title;
     sidebarContentUserWithoutAccount.title = this.searchTextPlaceholders.CLIENT_WITHOUT_ACCOUNT.title;
     sidebarContentUserWithoutAccount.buttonText = this.searchTextPlaceholders.CLIENT_WITHOUT_ACCOUNT.buttonText;
@@ -267,27 +255,27 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
 
   }
 
-  openModalToAddNewUser(clientTitle: string) {
-    if (clientTitle === this.searchTextPlaceholders.CLIENT_WITH_ACCOUNT.title) {
-      this.openCreateUserDialog();
-    } else if (clientTitle === this.searchTextPlaceholders.CLIENT_WITHOUT_ACCOUNT.title) {
-      this.openCreateUserWithoutAccountDialog();
-    }
-  }
-
-  openCreateUserDialog(): void {
-    this.dialog.open(CreateUserDialogComponent, {
-      minWidth: '20%',
-      minHeight: '10rem',
-      panelClass: MODALS_DATA.DOCTOR_APP_MODAL,
-    });
-  }
-
   openCreateUserWithoutAccountDialog(): void {
     this.dialog.open(CreateUserWithoutAccountDialogComponent, {
       minWidth: '20%',
       minHeight: '10rem',
       panelClass: MODALS_DATA.DOCTOR_APP_MODAL,
     });
+  }
+
+  setUsersOfDoctors() {
+    const storedClients = JSON.parse(<string>localStorage.getItem(USERS_DOCTORS));
+    if (this.isInitialLoadOfComponent && storedClients) {
+      this.usersOfDoctorsSub = this.usersDoctorsListService.usersDoctorsListObs$
+        .subscribe((usersDoctorsList) => {
+          if (usersDoctorsList) {
+            this.listOfClients = this.getSidebarContent(usersDoctorsList);
+          }
+        });
+      this.listOfClients = this.getSidebarContent(storedClients);
+    } else if (this.isInitialLoadOfComponent && !storedClients) {
+      this.getAllUsersDoctors();
+    }
+    this.isInitialLoadOfComponent = false;
   }
 }
