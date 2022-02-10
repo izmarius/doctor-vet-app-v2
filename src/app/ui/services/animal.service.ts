@@ -67,7 +67,7 @@ export class AnimalService {
       .then(() => {
         console.log('Created animal history with success');
       }).catch((error: any) => {
-      console.log(error.message);
+      console.error(error.message);
     });
   }
 
@@ -76,7 +76,7 @@ export class AnimalService {
       .then(() => {
         console.log('Update success');
       }).catch((error) => {
-      console.log(error.message);
+      console.error(error.message);
     });
   }
 

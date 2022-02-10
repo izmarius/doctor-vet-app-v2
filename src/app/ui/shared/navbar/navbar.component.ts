@@ -40,7 +40,7 @@ export class NavbarComponent implements OnInit {
     this.dialog.open(DoctorAppointmentModalComponent, {
       height: '40rem',
       panelClass: MODALS_DATA.DOCTOR_APP_MODAL,
-      data: null
+      data: {date: new Date()}
     });
   }
 

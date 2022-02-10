@@ -27,7 +27,7 @@ export class DoctorService {
       .then((res) => {
         console.log('DOCTOR created');
       }).catch((err) => {
-      console.log(err);
+      console.error(err);
     });
   }
 

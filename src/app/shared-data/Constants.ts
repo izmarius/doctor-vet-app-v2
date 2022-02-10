@@ -282,7 +282,7 @@ export const NAVBAR_IMG = {
 export const NAVBAR_TEXT = {
   appointments: 'Programari',
   calendar: 'Calendar',
-  clientList: 'Lisa clienti',
+  clientList: 'Lista clienti',
   createAppointment: 'Adauga programare',
   home: 'Acasa',
   locations: 'Locatii',

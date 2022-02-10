@@ -110,7 +110,7 @@ export class DoctorAppointmentWithoutUserModalComponent implements OnInit {
       this.dialogRef.close();
     }).catch((error) => {
       this.uiAlertInterceptor.setUiError({message: error.message, class: UI_ALERTS_CLASSES.ERROR});
-      console.log('Error: ', error);
+      console.error('Error: ', error);
     })
   }
 

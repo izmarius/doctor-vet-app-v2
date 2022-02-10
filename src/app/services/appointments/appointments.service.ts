@@ -79,7 +79,7 @@ export class AppointmentsService {
       });
     }).catch((error: any) => {
       this.uiAlertService.setUiError({message: error.message, class: UI_ALERTS_CLASSES.ERROR});
-      console.log('Error: ', error);
+      console.error('Error: ', error);
     });
   }
 

@@ -210,7 +210,7 @@ export class UserService {
         this.uiAlertInterceptor.setUiError({message: USER_SERVICE.addUserSuccess, class: UI_ALERTS_CLASSES.SUCCESS});
       }).catch((error: any) => {
         this.uiAlertInterceptor.setUiError({message: USER_SERVICE.addUserError, class: UI_ALERTS_CLASSES.ERROR});
-        console.log('Error:', error);
+        console.error('Error:', error);
       });
   }
 
@@ -220,7 +220,7 @@ export class UserService {
       })
       .catch((error) => {
         this.uiAlertInterceptor.setUiError({message: error.message, class: UI_ALERTS_CLASSES.ERROR});
-        console.log('Error:', error);
+        console.error('Error:', error);
       });
   }
 
@@ -259,7 +259,7 @@ export class UserService {
       })
       .catch((error) => {
         this.uiAlertInterceptor.setUiError({message: USER_SERVICE.deleteUserError, class: UI_ALERTS_CLASSES.ERROR});
-        console.log('Error:', error);
+        console.error('Error:', error);
       });
   }
 }

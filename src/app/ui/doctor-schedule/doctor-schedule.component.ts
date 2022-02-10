@@ -83,7 +83,7 @@ export class DoctorScheduleComponent implements OnInit {
           message: SCHEDULE_HEADER_TEXT.saveScheduleError,
           class: UI_ALERTS_CLASSES.ERROR
         });
-        console.log('Error updating service', error);
+        console.error('Error updating service', error);
       });
   }
 

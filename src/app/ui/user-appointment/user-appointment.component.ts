@@ -102,7 +102,7 @@ export class UserAppointmentDialogComponent implements OnInit {
       });
     }).catch((error: any) => {
       this.uiAlertInterceptor.setUiError({message: error.message, class: UI_ALERTS_CLASSES.ERROR});
-      console.log('Error: ', error);
+      console.error('Error: ', error);
     });
   }
 
@@ -147,7 +147,7 @@ export class UserAppointmentDialogComponent implements OnInit {
       .subscribe((response: any) => {
         this.localities = response
       }, error => {
-        console.log(error);
+        console.error(error);
       });
   }
 

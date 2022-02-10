@@ -182,7 +182,7 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
           this.isAnimalDataFetched = true;
           this.getAnimalMedicalHistory(animal.animalId);
         }, error => {
-          console.log("ERROR while fetching animal data: ", JSON.stringify(error));
+          console.error("ERROR while fetching animal data: ", JSON.stringify(error));
           this.uiAlert.setUiError({
             class: UI_ALERTS_CLASSES.ERROR,
             message: UI_USERS_OF_DOCTOR_MSGS.ERROR_GETTING_USERS_DATA
@@ -210,10 +210,9 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
           this.animalMedicalHistory = medicalHistory.data();
           this.diseasesTitle = USER_ANIMAL_DIALOG.animalDiseases;
           this.recommendationTitle = USER_ANIMAL_DIALOG.medicalHistory;
-          console.log(medicalHistory.data());
         });
       }, error => {
-        console.log("ERROR while fetching animal medical history: ", JSON.stringify(error));
+        console.error("ERROR while fetching animal medical history: ", JSON.stringify(error));
         this.uiAlert.setUiError({
           class: UI_ALERTS_CLASSES.ERROR,
           message: UI_USERS_OF_DOCTOR_MSGS.ERROR_GETTING_ANIMAL_MEDICAL_HISTORY
@@ -263,7 +262,11 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
       this.dialog.open(DoctorAppointmentModalComponent, {
         height: '40rem',
         panelClass: MODALS_DATA.DOCTOR_APP_MODAL,
-        data: new Date()
+        data: {
+          date: new Date(),
+          userData: userOfDoctor,
+          animalData: animalData
+        }
       });
     } else {
       this.dialog.open(DoctorAppointmentWithoutUserModalComponent, {

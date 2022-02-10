@@ -41,7 +41,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
   public isSearchingByPhone: boolean = false;
   public selectedAnimal: any = {};
   selectedDate = new Date();
-  public selectedPatient!: IUserDTO;
+  public selectedPatient: any = {};
   stepMinutes: any
   stepMinute!: number;
   stepHours: any;
@@ -74,6 +74,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
       this.doctorServiceList = this.doctorServiceList.concat(this.doctor.services[service]);
     }
     this.initForm();
+    this.setUserAnimalData();
   }
 
   filterClients(nameOrPhone: string): void {
@@ -240,13 +241,34 @@ export class DoctorAppointmentModalComponent implements OnInit {
   }
 
   setDateAndHoursToForm() {
-    this.stepHour = this.stepHours[0];
-    this.stepMinute = this.stepMinutes[0];
+    let appMinutes;
+    let appHour;
+    if (this.data.date.getMinutes() > 0 && this.data.date.getMinutes() < 30) {
+      appMinutes = 30
+      appHour = this.data.date.getHours();
+    } else {
+      appMinutes = 0;
+      appHour = this.data.date.getHours() + 1;
+    }
+    this.data.date.setHours(appHour);
+    this.data.date.setMinutes(appMinutes);
+    this.stepHour = appHour;
+    this.stepMinute = appMinutes;
+    this.selectedDate = new Date(this.data.date);
+  }
 
-    if (this.data) {
-      this.stepHour = this.data.getHours();
-      this.stepMinute = this.data.getMinutes();
-      this.selectedDate = new Date(this.data);
+  setUserAnimalData() {
+    if (this.data && this.data.userData && this.data.animalData) {
+      this.appointmentForm.controls.patientName.setValue(this.data.userData.name);
+      this.appointmentForm.controls.patientPhone.setValue(this.data.userData.phone);
+      this.appointmentForm.controls.patientEmail.setValue(this.data.userData.email);
+      this.appointmentForm.controls.animalName.setValue(this.data.animalData.name);
+      this.animals = this.data.userData.animals;
+      this.selectedAnimal.animalName = this.data.animalData.name;
+      this.selectedAnimal.animalId = this.data.animalData.id;
+      this.selectedPatient.clientId = this.data.userData.id;
+      this.selectedPatient.email = this.data.userData.email;
+      this.selectedPatient.clientPhone = this.data.userData.phone;
     }
   }
 

@@ -61,7 +61,7 @@ export class MyProfileComponent implements OnInit {
       .subscribe((response: any) => {
         this.localities = response
       }, error => {
-        console.log(error);
+        console.error(error);
       });
   }
 
@@ -182,10 +182,8 @@ export class MyProfileComponent implements OnInit {
 
   onEditDoctorFormSubmit(): void {
     if (!this.isDataChanged()) {
-      console.log('datele nu s au modificat');
       return;
     } else if (!this.locality) {
-      console.log('Trebuie selectata o localitate');
       return;
     }
 
@@ -206,7 +204,7 @@ export class MyProfileComponent implements OnInit {
         this.isFormValid = true;
       }, 5000);
     }).catch((err) => {
-      console.log(err);
+      console.error(err);
     });
   }
 

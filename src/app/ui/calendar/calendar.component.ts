@@ -263,7 +263,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
     this.dialogRef.open(DoctorAppointmentModalComponent, {
       height: '40rem',
       panelClass: MODALS_DATA.DOCTOR_APP_MODAL,
-      data: date
+      data: {date}
     });
   }
 
