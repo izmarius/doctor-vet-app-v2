@@ -43,6 +43,10 @@
              [placeholder]="appointmentFormPlaceHolder.patientPhonePlaceholder"/>
     </div>
     <div class="m-btn-small">
+      <label>{{ appointmentFormPlaceHolder.animalLabel }}</label>
+      <span>{{this.data?.animalData.name}}</span>
+    </div>
+    <div class="m-btn-small">
       <label for="services">{{appointmentFormPlaceHolder.servicesLabel}}</label>
       <select name="services" id="services" class="form-control pointer" formControlName="medService">
         <option class="dropdown-elem" value="null" disabled="true" [selected]="true">

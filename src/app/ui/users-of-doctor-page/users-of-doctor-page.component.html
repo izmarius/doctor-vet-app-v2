@@ -22,20 +22,22 @@
     </div>
   </div>
   <div class="vet-content d-flex">
-    <app-sidebar class="user-sidebar p-around" [sidebarContent]="listOfClients"
-                 (clickOnList)="getUserData($event)"
-                 (clickOnAddNewItem)="openCreateUserWithoutAccountDialog()"></app-sidebar>
+      <app-sidebar class="user-sidebar p-around" [sidebarContent]="listOfClients"
+                   (clickOnList)="getUserData($event)"
+                   (clickOnAddNewItem)="openCreateUserWithoutAccountDialog()"></app-sidebar>
     <div class="user-content p-around">
       <div *ngIf="isUserDataFetched">
         <div class="d-flex justify-content-between">
           <h4>{{userData?.name}} : {{userData?.phone}}</h4>
+          <button class="btn button--incative"
+                  (click)="deleteUserOfDoctorFromList(userData)">{{searchTextPlaceholders.DELETE_USER_FROM_LIST_BTN}}</button>
         </div>
         <div>
           <span *ngFor="let  animal of userData.animals"
                 class="me-2 pointer highlighted-link"
-                (click)="getAnimalData(animal.animalId)">{{animal.animalName}} | </span>
+                (click)="getAnimalData(animal)">{{animal.animalName}} | </span>
         </div>
-        <div class="m-top-small m-btn-small border-bottom d-flex justify-content-between" *ngIf="isAnimalDataFetched">
+        <div class="m-top-small m-btn-small border-bottom d-flex justify-content-between" *ngIf="isAnimalDataFetched && userData.isClientRegisteredInApp">
           <div>
             <span>{{animalLabels.age}} {{animalData.age}} | </span>
             <span>{{animalLabels.weight}} {{animalData.weight}} | </span>
@@ -47,7 +49,7 @@
             <button class="btn btn-light">{{animalLabels.editAnimalData}}</button>
           </div>
         </div>
-        <div class="m-btn-small" *ngIf="isAnimalMedicalHistoryFetched">
+        <div class="m-top-small m-btn-small" *ngIf="isAnimalDataFetched">
           <div class="d-flex justify-content-between">
             <h4 class="m-btn-small">{{quickAppointmentPeriods.title}}</h4>
             <div>
@@ -60,7 +62,7 @@
               <button class="btn btn-light small-button me-2"
                       (click)="addRecurrentAppointment('year')">{{quickAppointmentPeriods.oneYear}}</button>
               <button class="btn btn-light small-button me-2"
-                      (click)="openAddAppointmentModal()">{{quickAppointmentPeriods.customAppointment}}</button>
+                      (click)="openAddAppointmentModal(userData, animalData)">{{quickAppointmentPeriods.customAppointment}}</button>
             </div>
           </div>
         </div>
@@ -77,5 +79,9 @@
         </div>
       </div>
     </div>
+  </div>
+  <div class="vet-content m-top-small">
+    <button class="btn button--incative"
+            (click)="getAllUsersDoctors()">{{searchTextPlaceholders.REFRESH_LIST_OF_USERS_DOCTORS}}</button>
   </div>
 </div>

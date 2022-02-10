@@ -1,8 +1,14 @@
+
 .user-sidebar {
   width: 20%;
   background : #f8f6f4;
   border-radius: 5%;
   max-height: 35rem;
+  z-index: 2;
+}
+
+.user-sidebar .sidebar-content {
+  background : #f8f6f4;
 }
 .user-content {
   width: 80%;

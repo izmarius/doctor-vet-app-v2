@@ -19,6 +19,8 @@ import {AppointmentsService} from "../../services/appointments/appointments.serv
 import {DateUtilsService} from "../../data/utils/date-utils.service";
 import {take} from "rxjs/operators";
 import {Subscription} from "rxjs";
+import {DoctorAppointmentModalComponent} from "../doctor-appointment-modal/doctor-appointment-modal.component";
+import {DoctorAppointmentWithoutUserModalComponent} from "../doctor-appointment-without-user-modal/doctor-appointment-without-user-modal.component";
 
 @Component({
   selector: 'app-users-of-doctor-page',
@@ -94,9 +96,11 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
   }
 
   addUserToDoctorList(user: any) {
-    // refresh user list
-    // on then set the users list to new localstorage
     this.usersOfDoctorsService.addUserToDoctorList(user, true);
+  }
+
+  deleteUserOfDoctorFromList(user: any) {
+    this.usersOfDoctorsService.deleteUsersOfDoctors(user);
   }
 
   filterAllUsers() {
@@ -169,44 +173,14 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
     return sidebarContentList;
   }
 
-  getUserData(link: any) {
-    if (link && link.id) {
-      this.userService.getUserDataById(link.id)
-        .pipe(take(1))
-        .subscribe((res) => {
-          this.userData = {};
-          this.animalData = {};
-          this.userData = res;
-          this.isAnimalDataFetched = false;
-          this.isAnimalMedicalHistoryFetched = false;
-          this.isUserDataFetched = true;
-        }, error => {
-          console.error('ERROR while fetching user data: ', JSON.stringify(error));
-          this.uiAlert.setUiError({
-            class: UI_ALERTS_CLASSES.ERROR,
-            message: UI_USERS_OF_DOCTOR_MSGS.ERROR_GETTING_USERS_DATA
-          })
-        });
-    } else {
-      this.userData = {};
-      this.animalData = {};
-      this.userData.phone = link.userDoctor.clientPhone
-      this.userData.name = link.userDoctor.clientName;
-      this.userData.animals = link.userDoctor.animals;
-      this.isUserDataFetched = true;
-      this.isAnimalDataFetched = false;
-      this.isAnimalMedicalHistoryFetched = false;
-    }
-  }
-
-  getAnimalData(animalId: string) {
-    if (animalId) {
-      this.animalService.getAnimalById(animalId, this.userData.id)
+  getAnimalData(animal: any) {
+    if (animal.animalId) {
+      this.animalService.getAnimalById(animal.animalId, this.userData.id)
         .pipe(take(1))
         .subscribe((res) => {
           this.animalData = res;
           this.isAnimalDataFetched = true;
-          this.getAnimalMedicalHistory(animalId);
+          this.getAnimalMedicalHistory(animal.animalId);
         }, error => {
           console.log("ERROR while fetching animal data: ", JSON.stringify(error));
           this.uiAlert.setUiError({
@@ -215,6 +189,8 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
           })
         })
     } else {
+      this.isAnimalDataFetched = true;
+      this.animalData.name = animal.animalName;
       this.uiAlert.setUiError({
         class: UI_ALERTS_CLASSES.ERROR,
         message: UI_USERS_OF_DOCTOR_MSGS.CREATE_AN_ACCOUNT_FOR_USER
@@ -245,14 +221,60 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
       });
   }
 
+  getUserData(link: any) {
+    if (link && link.id) {
+      this.userService.getUserDataById(link.id)
+        .pipe(take(1))
+        .subscribe((res) => {
+          this.userData = {};
+          this.animalData = {};
+          this.userData = res;
+          this.userData.isClientRegisteredInApp = true;
+          this.isAnimalDataFetched = false;
+          this.isAnimalMedicalHistoryFetched = false;
+          this.isUserDataFetched = true;
+        }, error => {
+          console.error('ERROR while fetching user data: ', JSON.stringify(error));
+          this.uiAlert.setUiError({
+            class: UI_ALERTS_CLASSES.ERROR,
+            message: UI_USERS_OF_DOCTOR_MSGS.ERROR_GETTING_USERS_DATA
+          })
+        });
+    } else {
+      this.userData = {};
+      this.animalData = {};
+      this.userData.phone = link.userDoctor.clientPhone
+      this.userData.name = link.userDoctor.clientName;
+      this.userData.animals = link.userDoctor.animals;
+      this.isUserDataFetched = true;
+      this.isAnimalDataFetched = false;
+      this.isAnimalMedicalHistoryFetched = false;
+    }
+  }
+
   onFocusUser(): void {
     if (this.searchedUserListElement.nativeElement.classList.contains('hide')) {
       this.searchedUserListElement.nativeElement.classList.remove('hide');
     }
   }
 
-  openAddAppointmentModal() {
-
+  openAddAppointmentModal(userOfDoctor: any, animalData: any) {
+    if (userOfDoctor.isClientRegisteredInApp) {
+      this.dialog.open(DoctorAppointmentModalComponent, {
+        height: '40rem',
+        panelClass: MODALS_DATA.DOCTOR_APP_MODAL,
+        data: new Date()
+      });
+    } else {
+      this.dialog.open(DoctorAppointmentWithoutUserModalComponent, {
+        height: '37rem',
+        panelClass: MODALS_DATA.DOCTOR_APP_MODAL,
+        data: {
+          userOfDoctor,
+          animalData
+        }
+      });
+    }
   }
 
   openCreateUserWithoutAccountDialog(): void {

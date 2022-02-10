@@ -45,7 +45,7 @@ export class UsersOfDoctorService {
       isClientRegisteredInApp: isClientRegistered
     }
 
-    return this.firestore.saveDocumentWithGeneratedFirestoreId(this.USERS_OF_DOCTOR_COLLECTION, usersDoctorPayload.clientPhone, JSON.parse(JSON.stringify(usersDoctorPayload)))
+    return this.firestore.saveDocumentByAutoId(this.USERS_OF_DOCTOR_COLLECTION, usersDoctorPayload)
       .then(() => {
         usersList.push(usersDoctorPayload);
         localStorage.removeItem(USERS_DOCTORS);
@@ -59,6 +59,30 @@ export class UsersOfDoctorService {
           message: UI_USERS_OF_DOCTOR_MSGS.ERROR_SAVING_USERS_DOCTORS
         });
       });
+  }
+
+  deleteUsersOfDoctors(userDoctor: any) {
+    this.firestore.deleteWhereClause(this.USERS_OF_DOCTOR_COLLECTION, 'clientPhone', userDoctor.phone, 'doctorId', this.doctor.id)
+      .pipe(take(1))
+      .subscribe((res) => {
+        let usersList: any[] = JSON.parse(<string>localStorage.getItem(USERS_DOCTORS));
+        res.docs.forEach((doc: any)=>{
+          doc.ref.delete();
+          usersList = usersList.filter((userOfDoctor) => {
+            return userOfDoctor.clientPhone !== doc.data().clientPhone;
+          });
+        });
+        debugger
+          localStorage.removeItem(USERS_DOCTORS);
+        localStorage.setItem(USERS_DOCTORS, JSON.stringify(usersList));
+        this.userListService.setUsersDoctorList(usersList);
+      }, (error: any) => {
+        console.error(error)
+        ;this.uiAlert.setUiError({
+          class: UI_ALERTS_CLASSES.ERROR,
+          message: UI_USERS_OF_DOCTOR_MSGS.ERROR_DELETING_CLIENT_FROM_LIST
+        });
+      })
   }
 
   isUserInDoctorsList(usersList: any[], user: any) {

@@ -1,5 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {MatDialogRef} from "@angular/material/dialog";
+import {Component, Inject, OnInit} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {
   APPOINTMENTFORM_DATA,
@@ -39,7 +39,8 @@ export class DoctorAppointmentWithoutUserModalComponent implements OnInit {
               private doctorAppointmentService: DoctorAppointmentsService,
               private doctorService: DoctorService,
               private firestoreService: FirestoreService,
-              private uiAlertInterceptor: UiErrorInterceptorService) {
+              private uiAlertInterceptor: UiErrorInterceptorService,
+              @Inject(MAT_DIALOG_DATA) public data: any) {
   }
 
   ngOnInit(): void {
@@ -52,6 +53,7 @@ export class DoctorAppointmentWithoutUserModalComponent implements OnInit {
       this.doctorServiceList = this.doctorServiceList.concat(this.doctor.services[service]);
     }
     this.initForm();
+    this.setAppointmentFormDefaultValuesIfModalDataExists();
   }
 
   setDateAndHoursToForm() {
@@ -92,8 +94,8 @@ export class DoctorAppointmentWithoutUserModalComponent implements OnInit {
     if (this.doctorAppointmentService.areAppointmentsOverlapping(this.appointmentWithoutUserForm.value.startDate, this.doctor, appointmentId)) {
       return;
     }
-
-    const appointmentDTO = this.appointmentService.getDoctorAppointmentUserWithoutAccount(null, this.appointmentWithoutUserForm, this.doctor, null, appointmentId);
+    debugger
+    const appointmentDTO = this.appointmentService.getDoctorAppointmentUserWithoutAccount(this.data.animalData, this.appointmentWithoutUserForm, this.doctor, this.data.userOfDoctor, appointmentId);
 
     Promise.all([
       this.appointmentService.createAppointment(appointmentDTO),
@@ -110,6 +112,24 @@ export class DoctorAppointmentWithoutUserModalComponent implements OnInit {
       this.uiAlertInterceptor.setUiError({message: error.message, class: UI_ALERTS_CLASSES.ERROR});
       console.log('Error: ', error);
     })
+  }
+
+  setAppointmentFormDefaultValuesIfModalDataExists() {
+    if (this.data && this.data.userOfDoctor) {
+      this.appointmentWithoutUserForm.controls.patientName.setValue(this.data.userOfDoctor.name);
+      this.appointmentWithoutUserForm.controls.patientPhone.setValue(this.data.userOfDoctor.phone);
+    }
+  }
+
+  setErrorMessage(value: string): void {
+    if (!value) {
+      this.isErrorDisplayed = false;
+      this.errorMessage = value;
+    } else {
+      this.isErrorDisplayed = true;
+      this.errorMessage = value;
+      throw value;
+    }
   }
 
   validateTime(): void {
@@ -129,16 +149,5 @@ export class DoctorAppointmentWithoutUserModalComponent implements OnInit {
     }
     this.setErrorMessage('');
     this.appointmentWithoutUserForm.controls.startTime.setValue(this.dateTimeUtils.formatTime(this.stepHour, this.stepMinute));
-  }
-
-  setErrorMessage(value: string): void {
-    if (!value) {
-      this.isErrorDisplayed = false;
-      this.errorMessage = value;
-    } else {
-      this.isErrorDisplayed = true;
-      this.errorMessage = value;
-      throw value;
-    }
   }
 }

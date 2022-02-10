@@ -155,6 +155,14 @@ export class FirestoreService {
     return this.dbRef.collection(collection).doc(id).delete();
   }
 
+  deleteWhereClause(collection: string, key1: string, value1: string, key2: string, value2: string): Observable<any> {
+    return this.dbRef
+      .collection(collection, ref => ref
+        .where(key1, '==', value1)
+        .where(key2, '==', value2))
+      .get();
+  }
+
 //  TRANSACTIONS
   /**
    * Get a new instance of a batch transaction
