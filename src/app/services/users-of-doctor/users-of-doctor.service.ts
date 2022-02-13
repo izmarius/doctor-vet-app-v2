@@ -66,14 +66,13 @@ export class UsersOfDoctorService {
       .pipe(take(1))
       .subscribe((res) => {
         let usersList: any[] = JSON.parse(<string>localStorage.getItem(USERS_DOCTORS));
-        res.docs.forEach((doc: any)=>{
+        res.docs.forEach((doc: any) => {
           doc.ref.delete();
           usersList = usersList.filter((userOfDoctor) => {
             return userOfDoctor.clientPhone !== doc.data().clientPhone;
           });
         });
-        debugger
-          localStorage.removeItem(USERS_DOCTORS);
+        localStorage.removeItem(USERS_DOCTORS);
         localStorage.setItem(USERS_DOCTORS, JSON.stringify(usersList));
         this.userListService.setUsersDoctorList(usersList);
       }, (error: any) => {
@@ -134,7 +133,18 @@ export class UsersOfDoctorService {
       });
       return of([]);
     }
-    return this.firestore.getCollectionByWhereClause(this.USERS_OF_DOCTOR_COLLECTION, 'doctorId', '==', this.doctor.id)
-      .pipe(take(1));
+    return this.firestore.getCollectionByWhereClauseSnapshotChanges(this.USERS_OF_DOCTOR_COLLECTION, 'doctorId', '==', this.doctor.id)
+      .pipe(take(1),
+        map((listOfUsers) => {
+          return listOfUsers.map((userOfDoctor: any) => {
+            let user = userOfDoctor.payload.doc.data();
+            user.docId = userOfDoctor.payload.doc.id;
+            return user;
+          });
+        }));
+  }
+
+  updateUserOfDoctor(docId: string, payload: any) {
+    return this.firestore.updateDocumentById(this.USERS_OF_DOCTOR_COLLECTION, docId, payload);
   }
 }

@@ -33,16 +33,18 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
   animalLabels = USER_ANIMAL_DIALOG;
   animalMedicalHistory: any;
   diseasesTitle!: string;
+  isAddAnimalFormDisplayed: boolean = false;
   isAnimalDataFetched: boolean = false;
   isAnimalMedicalHistoryFetched: boolean = false;
   isInitialLoadOfComponent: boolean = true;
   isSearchingByPhone: boolean = false;
   isUserDataFetched: boolean = false;
   listOfClients: any;
+  nameOrPhoneToSearch: string = '';
   recommendationTitle!: string;
   searchTextPlaceholders: any;
   searchUserList: any[] = [];
-  nameOrPhoneToSearch: string = '';
+  selectedUserOfDoctor: any;
   quickAppointmentPeriods = QUICK_APP_PERIOD;
   userData: any;
   usersOfDoctorsSub: Subscription = new Subscription();
@@ -221,6 +223,7 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
   }
 
   getUserData(link: any) {
+    this.selectedUserOfDoctor = link;
     if (link && link.id) {
       this.userService.getUserDataById(link.id)
         .pipe(take(1))
@@ -288,6 +291,14 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
     });
   }
 
+  saveNewAnimal(animal: any) {
+    if(this.userData.isClientRegisteredInApp) {
+      this.userService.updateUserWithAnimalData(animal, this.userData, this.selectedUserOfDoctor.userDoctor.docId);
+    } else {
+      // add only in localstorage
+    }
+  }
+
   setUsersOfDoctors() {
     const storedClients = JSON.parse(<string>localStorage.getItem(USERS_DOCTORS));
     if (this.isInitialLoadOfComponent && storedClients) {
@@ -302,5 +313,9 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
       this.getAllUsersDoctors();
     }
     this.isInitialLoadOfComponent = false;
+  }
+
+  toggleShowAddAnimalForm() {
+    this.isAddAnimalFormDisplayed = !this.isAddAnimalFormDisplayed;
   }
 }

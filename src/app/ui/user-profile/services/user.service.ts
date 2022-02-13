@@ -1,8 +1,7 @@
-import {map, first, take, mergeMap, debounceTime, distinctUntilChanged} from 'rxjs/operators';
+import {map, take, mergeMap, debounceTime, distinctUntilChanged} from 'rxjs/operators';
 import {Injectable} from '@angular/core';
 import {FirestoreService} from 'src/app/data/http/firestore.service';
 import {Observable, of} from 'rxjs';
-import {convertSnapshots} from 'src/app/data/utils/firestore-utils.service';
 import {UserDTO} from "../dto/user-dto";
 import {UiErrorInterceptorService} from "../../shared/alert-message/services/ui-error-interceptor.service";
 import {
@@ -12,14 +11,12 @@ import {
   USER_SERVICE,
   USERS_DOCTORS
 } from "../../../shared-data/Constants";
-import {IUserData} from "../../../shared-data/iuser-data";
 import {FirebaseUtilsService} from "../../../services/firebase-utils-service/firebase-utils.service";
 import {DateUtilsService} from "../../../data/utils/date-utils.service";
 import {AngularFireAuth} from "@angular/fire/auth";
 import {AngularFireFunctions} from "@angular/fire/functions";
 import {UsersOfDoctorService} from "../../../services/users-of-doctor/users-of-doctor.service";
 import {UsersDoctorsListService} from "../../../services/usersDoctorsObservableService/usersDoctorsListService";
-import {IUsersDoctors} from "../../../services/users-of-doctor/users-doctors-interface";
 
 @Injectable({
   providedIn: 'root'
@@ -177,29 +174,6 @@ export class UserService {
         });
   }
 
-  saveAnimal(user: any, animalName: string, animalDocUid: string): void {
-    const payload = {
-      id: animalDocUid,
-      birthDay: '-',
-      bloodType: '-',
-      age: 0,
-      name: animalName,
-      weight: 0
-    }
-    const animalDocumentRef = this.firestoreService.saveDocumentWithEmptyDoc(this.USER_COLLECTION + user.id + this.ANIMAL_COLLECTION, animalDocUid);
-    animalDocumentRef.set(payload);
-    if (!user.animals) {
-      // todo: refactor and don't do the check
-      user.animals = [];
-    }
-    user.animals.push({
-      animalName: animalName,
-      animalId: animalDocUid
-    })
-    const userAnimal = {animals: user.animals}
-    this.updateUserInfo(userAnimal, user.id);
-  }
-
   getUserDataById(userId: string): Observable<any> {
     return this.firestoreService.getDocById(this.USER_COLLECTION, userId).pipe(take(1));
   }
@@ -224,15 +198,30 @@ export class UserService {
       });
   }
 
-  updateUserWithAnimalData(animalPayload: any, userData: any): void {
+  updateUserWithAnimalData(animalPayload: any, userData: any, userDoctorDocId: string): void {
     animalPayload.id = this.firestoreService.getNewFirestoreId();
     userData.animals.push({
       animalName: animalPayload.name,
       animalId: animalPayload.id
     });
-    this.updateUserInfo(userData, userData.id).then(() => {
-      this.firestoreService.saveDocumentWithGeneratedFirestoreId(this.USER_COLLECTION + userData.id + this.ANIMAL_COLLECTION, animalPayload.id, animalPayload)
-        .then(() => {
+    this.updateUserInfo(userData, userData.id)
+      .then(() => {
+        Promise.all([
+            this.firestoreService.saveDocumentWithGeneratedFirestoreId(this.USER_COLLECTION + userData.id + this.ANIMAL_COLLECTION, animalPayload.id, animalPayload),
+            this.usersDoctorsService.updateUserOfDoctor(userDoctorDocId, {animals: userData.animals}),
+          ]
+        ).then(() => {
+          let clientList: any[] = JSON.parse(<string>localStorage.getItem(USERS_DOCTORS));
+          clientList.forEach((client, index) => {
+            debugger;
+            if (client.clientId === userData.id) {
+              client.animals = userData.animals
+              return;
+            }
+          });
+          debugger;
+          localStorage.removeItem(USERS_DOCTORS)
+          localStorage.setItem(USERS_DOCTORS, JSON.stringify(clientList));
           localStorage.removeItem(USER_LOCALSTORAGE);
           localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(userData));
           this.uiAlertInterceptor.setUiError({
@@ -240,26 +229,15 @@ export class UserService {
             class: UI_ALERTS_CLASSES.SUCCESS
           });
         }).catch((error: any) => {
-        this.uiAlertInterceptor.setUiError({
-          message: 'A aparut o eroare, te rugam sa incerci din nou',
-          class: UI_ALERTS_CLASSES.SUCCESS
+          this.uiAlertInterceptor.setUiError({
+            message: 'A aparut o eroare, te rugam sa incerci din nou',
+            class: UI_ALERTS_CLASSES.SUCCESS
+          });
+          console.error(error.message);
         });
-        console.error(error.message);
-      });
-    }).catch((error: any) => {
+      }).catch((error: any) => {
       this.uiAlertInterceptor.setUiError({message: error.message, class: UI_ALERTS_CLASSES.ERROR});
       console.error('Error:', error);
     })
-  }
-
-  deleteUser(userId: string): Promise<void> {
-    return this.firestoreService.deleteDocById(this.USER_COLLECTION, userId)
-      .then(() => {
-        this.uiAlertInterceptor.setUiError({message: USER_SERVICE.deleteUserSuccess, class: UI_ALERTS_CLASSES.SUCCESS});
-      })
-      .catch((error) => {
-        this.uiAlertInterceptor.setUiError({message: USER_SERVICE.deleteUserError, class: UI_ALERTS_CLASSES.ERROR});
-        console.error('Error:', error);
-      });
   }
 }

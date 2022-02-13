@@ -12,10 +12,13 @@ import {pipe} from "rxjs";
 })
 export class AnimalFormComponent implements OnInit {
   animalFormGroup!: FormGroup;
+  animalFormText: any;
   @Output() animalPayloadEmitter = new EventEmitter();
+  isAnimalOfMasculineSex: boolean = false;
+  isAnimalOfFeminineSex: boolean = true;
+  isAnimalSterilized = false;
   isErrorDisplayed = false;
   errorMessage = '';
-  animalFormText: any;
   maxDate = new Date();
 
   constructor(private dateUtils: DateUtilsService) {
@@ -49,6 +52,8 @@ export class AnimalFormComponent implements OnInit {
       age: this.animalFormGroup.controls.age.value,
       birthDay: this.dateUtils.getDateFormat(this.animalFormGroup.controls.birthDay.value),
       weight: this.animalFormGroup.controls.weight.value,
+      isAnimalSterilized: this.isAnimalSterilized,
+      animalSex: this.isAnimalOfFeminineSex ? this.animalFormText.labels.femaleLabel : this.animalFormText.labels.femaleLabel
     }
     this.animalPayloadEmitter.emit(animalPayload);
   }
@@ -57,9 +62,17 @@ export class AnimalFormComponent implements OnInit {
     this.animalFormGroup.get('birthDay')?.valueChanges
       .pipe(take(1))
       .subscribe((date) => {
-      const currentYear = new Date().getFullYear();
-      const ageOfAnimal = currentYear - date.getFullYear();
-      this.animalFormGroup.get('age')?.setValue(ageOfAnimal);
-    })
+        const currentYear = new Date().getFullYear();
+        const ageOfAnimal = currentYear - date.getFullYear();
+        this.animalFormGroup.get('age')?.setValue(ageOfAnimal);
+      })
+  }
+
+  toggleAnimalSex(isFeminine: boolean) {
+    if (isFeminine) {
+      this.isAnimalOfMasculineSex = false;
+    } else {
+      this.isAnimalOfFeminineSex = false;
+    }
   }
 }

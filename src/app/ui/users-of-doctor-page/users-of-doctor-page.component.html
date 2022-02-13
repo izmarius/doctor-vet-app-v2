@@ -22,9 +22,9 @@
     </div>
   </div>
   <div class="vet-content d-flex">
-      <app-sidebar class="user-sidebar p-around" [sidebarContent]="listOfClients"
-                   (clickOnList)="getUserData($event)"
-                   (clickOnAddNewItem)="openCreateUserWithoutAccountDialog()"></app-sidebar>
+    <app-sidebar class="user-sidebar p-around" [sidebarContent]="listOfClients"
+                 (clickOnList)="getUserData($event)"
+                 (clickOnAddNewItem)="openCreateUserWithoutAccountDialog()"></app-sidebar>
     <div class="user-content p-around">
       <div *ngIf="isUserDataFetched">
         <div class="d-flex justify-content-between">
@@ -36,14 +36,21 @@
           <span *ngFor="let  animal of userData.animals"
                 class="me-2 pointer highlighted-link"
                 (click)="getAnimalData(animal)">{{animal.animalName}} | </span>
+          <button class="btn btn-light" (click)="toggleShowAddAnimalForm()"><span
+            class="icon-plus px-2">{{searchTextPlaceholders.ADD_ANIMAL_BTN}}</span></button>
         </div>
-        <div class="m-top-small m-btn-small border-bottom d-flex justify-content-between" *ngIf="isAnimalDataFetched && userData.isClientRegisteredInApp">
+        <div *ngIf="isAddAnimalFormDisplayed">
+          <app-animal-form (animalPayloadEmitter)="saveNewAnimal($event)"></app-animal-form>
+        </div>
+        <div class="m-top-small m-btn-small border-bottom d-flex justify-content-between"
+             *ngIf="isAnimalDataFetched && userData.isClientRegisteredInApp">
           <div>
             <span>{{animalLabels.age}} {{animalData.age}} | </span>
             <span>{{animalLabels.weight}} {{animalData.weight}} | </span>
             <span>{{animalLabels.bloodType}} {{animalData.bloodType}} | </span>
             <span>{{animalLabels.birthDay}} {{animalData.birthDay}} | </span>
-            <!--          <span>Sterilizat/a: {{animalData.isSterilized}} | </span>-->
+            <span>{{animalLabels.animalSex}} {{animalData.animalSex}} | </span>
+            <span>Sterilizat/a: {{animalData.isAnimalSterilized ? 'Da' : 'Nu'}} | </span>
           </div>
           <div>
             <button class="btn btn-light">{{animalLabels.editAnimalData}}</button>

@@ -87,13 +87,17 @@ export const ANIMAL_FORM_TEXT = {
     ageLabel: 'Varsta animalului',
     birthDayLabel: 'Zi de nastere',
     weightLabel: 'Greutatea animalului',
-    nameLabel: 'Numele animalului'
+    nameLabel: 'Numele animalului',
+    isSterilizedLabel: 'Animalul este sterilizat?',
+    femaleLabel: 'Femela',
+    masculineLabel: 'Mascul'
   },
   placeholders: {
     agePlaceholder: 'Ex: 10 ani',
     birthDayPlaceholder: '10/03/2018',
     namePlaceholder: 'Azorel',
     weightPlaceholder: 'EX: 30 kg',
+    animalSexPlaceholder: 'EX: Mascul, femela',
   }
 }
 
@@ -347,6 +351,7 @@ export const USER_ANIMAL_DIALOG = {
   addDisease: 'Adauga patologie',
   addRecommendation: 'Adauga recomandare',
   animalDiseases: 'Patologii asociate:',
+  animalSex: 'sex: ',
   age: 'Varsta: ',
   birthDay: 'Zi de nastere: ',
   bloodType: 'Tipul de sange: ',
@@ -388,6 +393,7 @@ export const USER_SERVICE = {
 }
 
 export const USERS_DOCTOR_PAGE_CONST = {
+  ADD_ANIMAL_BTN: ANIMAL_FORM_TEXT.buttonText,
   ADD_USER_TO_DOCTOR_LIST_BTN: 'Adauga user in lista',
   DELETE_USER_FROM_LIST_BTN: 'Sterge client din lista ta',
   CLIENT_WITH_ACCOUNT: {

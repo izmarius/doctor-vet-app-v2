@@ -53,6 +53,7 @@ export class MyAnimalsComponent implements OnInit {
   }
 
   saveNewAnimal(animalPayload: any): void {
-    this.userService.updateUserWithAnimalData(animalPayload, this.user);
+    // todo : getUserOf Doctor and send Id to update
+    this.userService.updateUserWithAnimalData(animalPayload, this.user, '');
   }
 }

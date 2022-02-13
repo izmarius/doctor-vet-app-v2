@@ -4,7 +4,6 @@ import {Observable} from "rxjs";
 import {map, mergeMap, take} from "rxjs/operators";
 import {IUserAnimalAndMedicalHistory} from "../user-animal-info/dto/user-animal-medical-history-dto";
 import {UserService} from "../user-profile/services/user.service";
-import {AnimalDTO} from "../user-animal-info/dto/animal-dto";
 
 @Injectable({
   providedIn: 'root'

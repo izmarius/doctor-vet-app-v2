@@ -94,7 +94,6 @@ export class DoctorAppointmentWithoutUserModalComponent implements OnInit {
     if (this.doctorAppointmentService.areAppointmentsOverlapping(this.appointmentWithoutUserForm.value.startDate, this.doctor, appointmentId)) {
       return;
     }
-    debugger
     const appointmentDTO = this.appointmentService.getDoctorAppointmentUserWithoutAccount(this.data.animalData, this.appointmentWithoutUserForm, this.doctor, this.data.userOfDoctor, appointmentId);
 
     Promise.all([
