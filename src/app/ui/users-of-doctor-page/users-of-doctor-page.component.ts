@@ -203,7 +203,9 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
   }
 
   getAnimalData(animal: any) {
+    this.isAddAnimalFormDisplayed = false;
     if (this.animalData && this.animalData.id === animal.animalId) {
+      this.isAnimalDataFetched = true;
       return;
     }
     if (animal.animalId) {
@@ -231,14 +233,13 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
   }
 
   getAnimalMedicalHistory(animalId: string) {
-    if (this.animalMedicalHistory && this.animalData.id === animalId) {
-      return;
-    }
+    this.isAnimalMedicalHistoryFetched = false;
     this.animalService.getAnimalsMedicalHistoryDocs(animalId, this.userData.id)
       .pipe(take(1))
       .subscribe((medicalHistoryCollection) => {
         this.isAnimalMedicalHistoryFetched = true;
         if (medicalHistoryCollection.docs && medicalHistoryCollection.docs.length === 0) {
+          this.isAnimalMedicalHistoryFetched = false;
           return;
         }
         medicalHistoryCollection.docs.forEach((medicalHistory: any) => {
@@ -354,5 +355,7 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
 
   toggleShowAddAnimalForm() {
     this.isAddAnimalFormDisplayed = !this.isAddAnimalFormDisplayed;
+    this.isAnimalMedicalHistoryFetched = false;
+    this.isAnimalDataFetched = false;
   }
 }
