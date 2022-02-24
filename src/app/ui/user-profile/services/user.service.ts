@@ -17,6 +17,7 @@ import {AngularFireAuth} from "@angular/fire/auth";
 import {AngularFireFunctions} from "@angular/fire/functions";
 import {UsersOfDoctorService} from "../../../services/users-of-doctor/users-of-doctor.service";
 import {UsersDoctorsListService} from "../../../services/usersDoctorsObservableService/usersDoctorsListService";
+import {BatchService} from "../../../services/batch/batch.service";
 
 @Injectable({
   providedIn: 'root'
@@ -28,15 +29,15 @@ export class UserService {
   private doctor: any;
   private USER_COLLECTION = 'user/';
 
-  constructor(
-    private firestoreService: FirestoreService,
-    private uiAlertInterceptor: UiErrorInterceptorService,
-    private firebaseUtils: FirebaseUtilsService,
-    private dateUtils: DateUtilsService,
-    private afAuth: AngularFireAuth,
-    private functions: AngularFireFunctions,
-    private usersDoctorsService: UsersOfDoctorService,
-    private userDoctorListService: UsersDoctorsListService
+  constructor(private batchService: BatchService,
+              private firestoreService: FirestoreService,
+              private uiAlertInterceptor: UiErrorInterceptorService,
+              private firebaseUtils: FirebaseUtilsService,
+              private dateUtils: DateUtilsService,
+              private afAuth: AngularFireAuth,
+              private functions: AngularFireFunctions,
+              private usersDoctorsService: UsersOfDoctorService,
+              private userDoctorListService: UsersDoctorsListService
   ) {
     this.doctor = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
   }
@@ -101,8 +102,8 @@ export class UserService {
     return of([])
   }
 
-  saveAnimalToUser(userData: any, userDocId: string): Promise<any> {
-    const animalPayload = {
+  private getAnimalDoc(userData: any) {
+    return {
       id: userData.animals[0].animalId,
       birthDay: '-',
       bloodType: '-',
@@ -110,9 +111,6 @@ export class UserService {
       name: userData.animals[0].animalName,
       weight: 0
     }
-    return this.firestoreService.saveDocumentWithGeneratedFirestoreId(
-      this.USER_COLLECTION + userDocId + this.ANIMAL_COLLECTION,
-      userData.animals[0].animalId, animalPayload);
   }
 
   createUserWithEmailAndPassword(user: any): Observable<any> {
@@ -125,25 +123,41 @@ export class UserService {
   }
 
   createUserByDoctorAuthAndSaveAnimal(userData: any, dialog: any): void {
+
     userData.animals[0].animalId = this.firestoreService.getNewFirestoreId();
-    // todo handle this with a cloud function?
-    // todo refactor!!!!
     this.createUserWithEmailAndPassword(userData)
       .pipe(take(1))
       .subscribe(() => {
-          // transaction here
           this.firestoreService.saveDocumentWithGeneratedFirestoreId(this.USER_COLLECTION, userData.id, JSON.parse(JSON.stringify(userData)))
             .then(() => {
-              Promise.all([
-                this.saveAnimalToUser(userData, userData.id),
-                this.usersDoctorsService.addUserToDoctorList(userData, true)
-              ]).then(() => {
-                this.firebaseUtils.resendValidationEmail();
-                this.uiAlertInterceptor.setUiError({
-                  message: USER_SERVICE.addUserSuccess,
-                  class: UI_ALERTS_CLASSES.SUCCESS
-                });
-              }).catch((error) => {
+              // todo : refactor here - to ugly
+              const usersList: any[] = JSON.parse(<string>localStorage.getItem(USERS_DOCTORS));
+              let userToDoctorListBatchDocument = null;
+              if (!this.usersDoctorsService.isUserInDoctorsList(usersList, userData)) {
+                const userOdDocPayload = this.usersDoctorsService.getUserOfDoc(userData, true)
+                userToDoctorListBatchDocument = this.batchService.getMapper(
+                  'users-doctors',
+                  this.firestoreService.getNewFirestoreId(),
+                  userOdDocPayload,
+                  'set');
+              }
+
+              const animalToUserBatch = this.batchService.getMapper(
+                this.USER_COLLECTION + userData.id + this.ANIMAL_COLLECTION,
+                userData.animals[0].animalId,
+                this.getAnimalDoc(userData),
+                'set');
+
+              const batchList = !userToDoctorListBatchDocument ? [animalToUserBatch] : [animalToUserBatch, userToDoctorListBatchDocument]
+
+              this.batchService.createBatch(batchList)
+                .then(() => {
+                  this.firebaseUtils.resendValidationEmail();
+                  this.uiAlertInterceptor.setUiError({
+                    message: USER_SERVICE.addUserSuccess,
+                    class: UI_ALERTS_CLASSES.SUCCESS
+                  });
+                }).catch((error) => {
                 this.uiAlertInterceptor.setUiError({
                   message: USER_SERVICE.addUserError,
                   class: UI_ALERTS_CLASSES.SUCCESS
@@ -206,31 +220,38 @@ export class UserService {
     });
     this.updateUserInfo(userData, userData.id)
       .then(() => {
-        Promise.all([
-            this.firestoreService.saveDocumentWithGeneratedFirestoreId(this.USER_COLLECTION + userData.id + this.ANIMAL_COLLECTION, animalPayload.id, animalPayload),
-            this.usersDoctorsService.updateUserOfDoctor(userDoctorDocId, {animals: userData.animals}),
-          ]
-        ).then(() => {
-          let clientList: any[] = JSON.parse(<string>localStorage.getItem(USERS_DOCTORS));
-          clientList.forEach((client, index) => {
-            debugger;
-            if (client.clientId === userData.id) {
-              client.animals = userData.animals
-              return;
-            }
-          });
-          debugger;
-          localStorage.removeItem(USERS_DOCTORS)
-          localStorage.setItem(USERS_DOCTORS, JSON.stringify(clientList));
-          localStorage.removeItem(USER_LOCALSTORAGE);
-          localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(userData));
+        const animalDataBatchDoc = this.batchService.getMapper(
+          this.USER_COLLECTION + userData.id + this.ANIMAL_COLLECTION,
+          animalPayload.id,
+          animalPayload,
+          'set');
+
+        const updateDoctorDataBatchDoc = this.batchService.getMapper(
+          'users-doctors',
+          userDoctorDocId,
+          {animals: userData.animals},
+          'update');
+
+        this.batchService.createBatch([animalDataBatchDoc, updateDoctorDataBatchDoc])
+          .then(() => {
+            let clientList: any[] = JSON.parse(<string>localStorage.getItem(USERS_DOCTORS));
+            clientList.forEach((client, index) => {
+              if (client.clientId === userData.id) {
+                client.animals = userData.animals
+                return;
+              }
+            });
+            localStorage.removeItem(USERS_DOCTORS)
+            localStorage.setItem(USERS_DOCTORS, JSON.stringify(clientList));
+            localStorage.removeItem(USER_LOCALSTORAGE);
+            localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(userData));
+            this.uiAlertInterceptor.setUiError({
+              message: USER_SERVICE.ADD_ANIMAL_TO_USER_WITH_SUCCESS,
+              class: UI_ALERTS_CLASSES.SUCCESS
+            });
+          }).catch((error: any) => {
           this.uiAlertInterceptor.setUiError({
-            message: 'Animalul a fost adaugat cu succes',
-            class: UI_ALERTS_CLASSES.SUCCESS
-          });
-        }).catch((error: any) => {
-          this.uiAlertInterceptor.setUiError({
-            message: 'A aparut o eroare, te rugam sa incerci din nou',
+            message: USER_SERVICE.ADD_ANIMAL_TO_USER_WITH_ERROR,
             class: UI_ALERTS_CLASSES.SUCCESS
           });
           console.error(error.message);

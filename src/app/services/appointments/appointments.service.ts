@@ -16,6 +16,7 @@ import {DoctorDTO} from "../../data/model-dto/doctor-DTO";
 import {MatDialog} from "@angular/material/dialog";
 import {DoctorService} from "../doctor/doctor.service";
 import {DoctorAppointmentsService} from "../../ui/services/doctor-appointments.service";
+import {BatchService} from "../batch/batch.service";
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +25,8 @@ export class AppointmentsService {
   private APPOINTMENT_COLLECTION = '/appointments';
   private APPOINTMENT_TAG_DELIMITER = ', ';
 
-  constructor(private firestoreService: FirestoreService,
+  constructor(private batchService: BatchService,
+              private firestoreService: FirestoreService,
               private uiAlertInterceptor: UiErrorInterceptorService,
               private dateUtils: DateUtilsService,
               private doctorService: DoctorService,
@@ -66,18 +68,18 @@ export class AppointmentsService {
     // save new appointment to animal and to doctor
 
     const appointmentDTO = this.getUserAnimalInfoAppointmentDTO(appointment, doctor, appointmentId);
-
-    Promise.all([
-      this.doctorService.updateDoctorInfo({appointmentsMap: doctor.appointmentsMap}, doctor.id),
-      this.createAppointment(appointmentDTO),
-    ]).then(() => {
-      localStorage.removeItem(USER_LOCALSTORAGE);
-      localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(doctor));
-      this.uiAlertService.setUiError({
-        message: APPOINTMENTFORM_DATA.successAppointment,
-        class: UI_ALERTS_CLASSES.SUCCESS
-      });
-    }).catch((error: any) => {
+    // todo : extract it to another method and use it everywhere
+    const doctorBatchDocument = this.batchService.getMapper('doctors', doctor.id, {appointmentsMap: doctor.appointmentsMap}, 'update');
+    const appointmentBatchDoc = this.batchService.getMapper(this.APPOINTMENT_COLLECTION, appointmentDTO.id, appointmentDTO, 'set');
+    this.batchService.createBatch([appointmentBatchDoc, doctorBatchDocument])
+      .then(() => {
+        localStorage.removeItem(USER_LOCALSTORAGE);
+        localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(doctor));
+        this.uiAlertService.setUiError({
+          message: APPOINTMENTFORM_DATA.successAppointment,
+          class: UI_ALERTS_CLASSES.SUCCESS
+        });
+      }).catch((error: any) => {
       this.uiAlertService.setUiError({message: error.message, class: UI_ALERTS_CLASSES.ERROR});
       console.error('Error: ', error);
     });
@@ -89,55 +91,54 @@ export class AppointmentsService {
 
   cancelAppointmentByDoctor(selectedAppointment: any, doctor: any, dialogRef: MatDialog): Promise<any> {
     const appointmentsMap = this.removeAppointmentFromAppointmentMap(doctor.appointmentsMap, selectedAppointment);
-    return Promise.all([
-      this.doctorService.updateDoctorInfo({appointmentsMap: appointmentsMap.__proto__}, doctor.id),
-      this.updateAppointment({isCanceledByDoctor: true}, selectedAppointment.id),
-    ]).then(() => {
-      this.setDoctorInStorageAndDisplayMessage(doctor);
-      dialogRef.closeAll();
-    }).catch((error) => {
-      this.uiAlertInterceptor.setUiError({
-        message: USER_CARD_TXT.cancelAppointmentError,
-        class: UI_ALERTS_CLASSES.SUCCESS
-      });
-      console.error(error);
-    })
+    const doctorBatchDocument = this.batchService.getMapper('doctors', doctor.id, {appointmentsMap: appointmentsMap.__proto__}, 'update');
+    const appointmentBatchDoc = this.batchService.getMapper(this.APPOINTMENT_COLLECTION, selectedAppointment.id, {isCanceledByDoctor: true}, 'update');
+    return this.batchService.createBatch([appointmentBatchDoc, doctorBatchDocument])
+      .then(() => {
+        this.setDoctorInStorageAndDisplayMessage(doctor);
+        dialogRef.closeAll();
+      }).catch((error) => {
+        this.uiAlertInterceptor.setUiError({
+          message: USER_CARD_TXT.cancelAppointmentError,
+          class: UI_ALERTS_CLASSES.SUCCESS
+        });
+        console.error(error);
+      })
   }
 
   cancelAnimalAppointmentByUser(selectedAppointment: any, doctor: any): Promise<any> {
-    //todo maybe update also doctor's appointment instead of deleting it?
     this.setAppointmentFromAppointmentMapAsCanceledByUser(selectedAppointment, doctor);
-    return Promise.all([
-      this.doctorService.updateDoctorInfo({appointmentsMap: doctor.appointmentsMap}, doctor.id),
-      this.updateAppointment({isCanceledByUser: true}, selectedAppointment.id)
-    ]).then((res) => {
-      this.uiAlertInterceptor.setUiError({
-        message: USER_CARD_TXT.cancelAppointmentSuccess,
-        class: UI_ALERTS_CLASSES.SUCCESS
-      });
-    }).catch((error) => {
-      this.uiAlertInterceptor.setUiError({
-        message: USER_CARD_TXT.cancelAppointmentError,
-        class: UI_ALERTS_CLASSES.SUCCESS
-      });
-      console.error(error);
-    })
+    const doctorBatchDocument = this.batchService.getMapper('doctors', doctor.id, {appointmentsMap: doctor.appointmentsMap}, 'update');
+    const appointmentBatchDoc = this.batchService.getMapper(this.APPOINTMENT_COLLECTION, selectedAppointment.id, {isCanceledByUser: true}, 'update');
+    return this.batchService.createBatch([appointmentBatchDoc, doctorBatchDocument])
+      .then(() => {
+        this.uiAlertInterceptor.setUiError({
+          message: USER_CARD_TXT.cancelAppointmentSuccess,
+          class: UI_ALERTS_CLASSES.SUCCESS
+        });
+      }).catch((error) => {
+        this.uiAlertInterceptor.setUiError({
+          message: USER_CARD_TXT.cancelAppointmentError,
+          class: UI_ALERTS_CLASSES.SUCCESS
+        });
+        console.error(error);
+      })
   }
 
   deleteAppointment(appointment: any, doctor: any): Promise<any> {
     const appointmentsMap = this.removeAppointmentFromAppointmentMap(doctor.appointmentsMap, appointment);
-    return Promise.all([
-      this.doctorService.updateDoctorInfo({appointmentsMap: appointmentsMap}, doctor.id),
-      this.firestoreService.deleteDocById(this.APPOINTMENT_COLLECTION, appointment.id)
-    ]).then(() => {
-      this.setDoctorInStorageAndDisplayMessage(doctor);
-    }).catch((error) => {
-      this.uiAlertInterceptor.setUiError({
-        message: USER_CARD_TXT.cancelAppointmentError,
-        class: UI_ALERTS_CLASSES.SUCCESS
-      });
-      console.error(error);
-    })
+    const doctorBatchDocument = this.batchService.getMapper('doctors', doctor.id, {appointmentsMap: appointmentsMap}, 'update');
+    const appointmentBatchDoc = this.batchService.getMapper(this.APPOINTMENT_COLLECTION, appointment.id, null, 'delete');
+    return this.batchService.createBatch([appointmentBatchDoc, doctorBatchDocument])
+      .then(() => {
+        this.setDoctorInStorageAndDisplayMessage(doctor);
+      }).catch((error) => {
+        this.uiAlertInterceptor.setUiError({
+          message: USER_CARD_TXT.cancelAppointmentError,
+          class: UI_ALERTS_CLASSES.SUCCESS
+        });
+        console.error(error);
+      })
   }
 
   getAllCurrentUserAppointments(userData: any) {
@@ -225,17 +226,6 @@ export class AppointmentsService {
       // todo notify user
     });
   }
-
-  private updateAppointment(app: any, appointmentId: string): Promise<any> {
-
-    return this.firestoreService.updateDocumentById(this.APPOINTMENT_COLLECTION, appointmentId, app)
-      .then(() => {
-        // do something here
-      }, (error) => {
-        console.error('Appointment from doctor already was deleted so it cannot be updated', error);
-      });
-  }
-
 
   //START DTOs
 

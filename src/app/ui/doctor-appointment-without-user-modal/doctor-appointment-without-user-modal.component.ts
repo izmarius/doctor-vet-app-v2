@@ -13,6 +13,8 @@ import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-err
 import {FirestoreService} from "../../data/http/firestore.service";
 import {DoctorService} from "../../services/doctor/doctor.service";
 import {AppointmentsService} from "../../services/appointments/appointments.service";
+import {BatchDocuments} from "../../services/batch/BatchInterface";
+import {BatchService} from "../../services/batch/batch.service";
 
 @Component({
   selector: 'app-doctor-appointment-without-user-modal',
@@ -34,6 +36,7 @@ export class DoctorAppointmentWithoutUserModalComponent implements OnInit {
   public isErrorDisplayed: boolean = false;
 
   constructor(private appointmentService: AppointmentsService,
+              private batchService: BatchService,
               private dialogRef: MatDialogRef<DoctorAppointmentWithoutUserModalComponent>,
               private dateTimeUtils: DateUtilsService,
               private doctorAppointmentService: DoctorAppointmentsService,
@@ -96,18 +99,19 @@ export class DoctorAppointmentWithoutUserModalComponent implements OnInit {
     }
     const appointmentDTO = this.appointmentService.getDoctorAppointmentUserWithoutAccount(this.data.animalData, this.appointmentWithoutUserForm, this.doctor, this.data.userOfDoctor, appointmentId);
 
-    Promise.all([
-      this.appointmentService.createAppointment(appointmentDTO),
-      this.doctorService.updateDoctorInfo({appointmentsMap: this.doctor.appointmentsMap}, this.doctor.id)
-    ]).then(() => {
-      localStorage.removeItem(USER_LOCALSTORAGE);
-      localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.doctor));
-      this.uiAlertInterceptor.setUiError({
-        message: APPOINTMENTFORM_DATA.successAppointment,
-        class: UI_ALERTS_CLASSES.SUCCESS
-      });
-      this.dialogRef.close();
-    }).catch((error) => {
+
+    const appointmentBatchDoc = this.batchService.getMapper('appointments', appointmentId, JSON.parse(JSON.stringify(appointmentDTO)), 'set');
+    const doctorBatchDocument = this.batchService.getMapper('doctors', this.doctor.id, {appointmentsMap: this.doctor.appointmentsMap}, 'update');
+    this.batchService.createBatch([appointmentBatchDoc, doctorBatchDocument])
+      .then(() => {
+        localStorage.removeItem(USER_LOCALSTORAGE);
+        localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.doctor));
+        this.uiAlertInterceptor.setUiError({
+          message: APPOINTMENTFORM_DATA.successAppointment,
+          class: UI_ALERTS_CLASSES.SUCCESS
+        });
+        this.dialogRef.close();
+      }).catch((error) => {
       this.uiAlertInterceptor.setUiError({message: error.message, class: UI_ALERTS_CLASSES.ERROR});
       console.error('Error: ', error);
     })

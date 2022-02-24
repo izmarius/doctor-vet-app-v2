@@ -49,11 +49,12 @@ export class UserAppointmentsComponent implements OnInit {
           this.doctorService.getDoctorById(appointment.doctorId)
             .pipe(take(1))
             .subscribe((doctor: any) => {
-              this.appointmentService.cancelAnimalAppointmentByUser(appointment, doctor).then(() => {
-                this.appointmentList = this.appointmentList.filter((app) => {
-                  return app.id !== appointment.id;
+              this.appointmentService.cancelAnimalAppointmentByUser(appointment, doctor)
+                .then(() => {
+                  this.appointmentList = this.appointmentList.filter((app) => {
+                    return app.id !== appointment.id;
+                  });
                 });
-              });
             });
         }
       });

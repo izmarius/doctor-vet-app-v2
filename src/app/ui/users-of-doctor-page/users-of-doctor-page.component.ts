@@ -32,6 +32,7 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
   animalData!: any;
   animalLabels = USER_ANIMAL_DIALOG;
   animalMedicalHistory: any;
+  animalOfUserWithoutAccount: string = '';
   diseasesTitle!: string;
   isAddAnimalFormDisplayed: boolean = false;
   isAnimalDataFetched: boolean = false;
@@ -68,6 +69,32 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.usersOfDoctorsSub.unsubscribe();
+  }
+
+  addAnimalToUserWithoutAccount() {
+    if (this.animalOfUserWithoutAccount && this.animalOfUserWithoutAccount.length >= 2) {
+      const newAnimalsList = this.userData.animals.splice();
+      newAnimalsList.push({animalName: this.animalOfUserWithoutAccount})
+      this.usersOfDoctorsService.updateUserOfDoctor(this.userData.docId, {animals: newAnimalsList})
+        .then(() => {
+          this.userData.animals = newAnimalsList;
+          let clientList: any[] = JSON.parse(<string>localStorage.getItem(USERS_DOCTORS));
+          clientList.forEach((client, index) => {
+            if (client.clientPhone === this.userData.phone) {
+              client.animals = newAnimalsList
+              return;
+            }
+          });
+          localStorage.removeItem(USERS_DOCTORS)
+          localStorage.setItem(USERS_DOCTORS, JSON.stringify(clientList));
+        }).catch((error) => {
+        console.error('Error saving animal data to user', error);
+        this.uiAlert.setUiError({
+          class: UI_ALERTS_CLASSES.ERROR,
+          message: UI_USERS_OF_DOCTOR_MSGS.ERROR_UPDATING_ANIMALS_OF_USERS_DOCTORS
+        });
+      });
+    }
   }
 
   addRecurrentAppointment(period: string) {
@@ -176,6 +203,9 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
   }
 
   getAnimalData(animal: any) {
+    if (this.animalData && this.animalData.id === animal.animalId) {
+      return;
+    }
     if (animal.animalId) {
       this.animalService.getAnimalById(animal.animalId, this.userData.id)
         .pipe(take(1))
@@ -201,6 +231,9 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
   }
 
   getAnimalMedicalHistory(animalId: string) {
+    if (this.animalMedicalHistory && this.animalData.id === animalId) {
+      return;
+    }
     this.animalService.getAnimalsMedicalHistoryDocs(animalId, this.userData.id)
       .pipe(take(1))
       .subscribe((medicalHistoryCollection) => {
@@ -224,6 +257,9 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
 
   getUserData(link: any) {
     this.selectedUserOfDoctor = link;
+    if (this.userData && this.userData.id === link.id) {
+      return;
+    }
     if (link && link.id) {
       this.userService.getUserDataById(link.id)
         .pipe(take(1))
@@ -248,6 +284,7 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
       this.userData.phone = link.userDoctor.clientPhone
       this.userData.name = link.userDoctor.clientName;
       this.userData.animals = link.userDoctor.animals;
+      this.userData.docId = link.userDoctor.docId;
       this.isUserDataFetched = true;
       this.isAnimalDataFetched = false;
       this.isAnimalMedicalHistoryFetched = false;
@@ -292,7 +329,7 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
   }
 
   saveNewAnimal(animal: any) {
-    if(this.userData.isClientRegisteredInApp) {
+    if (this.userData.isClientRegisteredInApp) {
       this.userService.updateUserWithAnimalData(animal, this.userData, this.selectedUserOfDoctor.userDoctor.docId);
     } else {
       // add only in localstorage

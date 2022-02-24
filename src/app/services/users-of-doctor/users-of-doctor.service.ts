@@ -84,6 +84,18 @@ export class UsersOfDoctorService {
       })
   }
 
+  getUserOfDoc(user: any, isClientRegistered: boolean){
+    return {
+      animals: user.animals,
+      clientId: user.id,
+      clientName: user.name,
+      clientPhone: user.phone,
+      doctorId: this.doctor.id,
+      doctorName: this.doctor.doctorName,
+      isClientRegisteredInApp: isClientRegistered
+    }
+  }
+
   isUserInDoctorsList(usersList: any[], user: any) {
     const existingClient = usersList.find((currentClient: any) => {
       return currentClient.clientPhone === user.phone && currentClient.doctorId === this.doctor.id;

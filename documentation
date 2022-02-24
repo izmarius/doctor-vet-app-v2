@@ -17,7 +17,6 @@ firebase functions:config:get
 DELETE ENV VAR
 firebase functions:config:unset "var name"
 
-
 firebase deploy --only functions
 firebase deploy --only "functions:createNewUser"
 
@@ -35,10 +34,9 @@ https://www.npmjs.com/package/schematics-scss-migrate
 
 DEPLOY APPLICATION
 1.build app - ng build (default production - public folder)
-2.firebase deploy  sau firebase deploy --only hosting
+2.firebase deploy sau firebase deploy --only hosting
 3.firebase open hosting:site
 - to change hosting config: firebase init hosting (configs are in firebase.json)
-
 
 BUILD/SERVE PROD
 ng serve --configuration=production

@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
-import {UI_ALERTS_CLASSES, USER_LOCALSTORAGE, USER_STATE} from 'src/app/shared-data/Constants';
+import {UI_ALERTS_CLASSES, USER_LOCALSTORAGE, USER_STATE, USERS_DOCTORS} from 'src/app/shared-data/Constants';
 import {take} from "rxjs/operators";
 import {UiErrorInterceptorService} from "../../ui/shared/alert-message/services/ui-error-interceptor.service";
 import {UserService} from "../../ui/user-profile/services/user.service";
@@ -45,6 +45,7 @@ export class AuthStateChangeService {
       } else if (!user) {
         this.loaderService.hide();
         localStorage.removeItem(USER_LOCALSTORAGE);
+        localStorage.removeItem(USERS_DOCTORS);
       } else {
         this.loaderService.hide();
       }

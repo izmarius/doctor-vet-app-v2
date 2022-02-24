@@ -15,6 +15,7 @@ import {DoctorAppointmentsService} from "../services/doctor-appointments.service
 import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-error-interceptor.service";
 import {AppointmentsService} from "../../services/appointments/appointments.service";
 import {take} from "rxjs/operators";
+import {BatchService} from "../../services/batch/batch.service";
 
 @Component({
   selector: 'app-user-appointment',
@@ -41,6 +42,7 @@ export class UserAppointmentDialogComponent implements OnInit {
   isUserWithoutAnimal = false;
 
   constructor(private appointmentService: AppointmentsService,
+              private batchService: BatchService,
               private dateTimeUtils: DateUtilsService,
               private doctorAppointmentService: DoctorAppointmentsService,
               private doctorService: DoctorService,
@@ -91,16 +93,15 @@ export class UserAppointmentDialogComponent implements OnInit {
     const newAppointment = this.appointmentService.getUserAppointmentDTO(newAnimalInfo, doctorDetails, this.user, appointmentId);
 
     // todo update doctor - also on cancel appointment by user
-    // todo create a transaction
-    Promise.all([
-      this.doctorService.updateDoctorInfo({appointmentsMap: doctorDetails.doctor.appointmentsMap}, doctorDetails.doctor.id),
-      this.appointmentService.createAppointment(newAppointment),
-    ]).then(() => {
-      this.uiAlertInterceptor.setUiError({
-        message: APPOINTMENTFORM_DATA.successAppointment,
-        class: UI_ALERTS_CLASSES.SUCCESS
-      });
-    }).catch((error: any) => {
+    const doctorBatchDocument = this.batchService.getMapper('doctors', doctorDetails.doctor.id, {appointmentsMap: doctorDetails.doctor.appointmentsMap}, 'update');
+    const appointmentBatchDoc = this.batchService.getMapper('appointments', newAppointment.id, newAppointment, 'set');
+    this.batchService.createBatch([appointmentBatchDoc, doctorBatchDocument])
+      .then(() => {
+        this.uiAlertInterceptor.setUiError({
+          message: APPOINTMENTFORM_DATA.successAppointment,
+          class: UI_ALERTS_CLASSES.SUCCESS
+        });
+      }).catch((error: any) => {
       this.uiAlertInterceptor.setUiError({message: error.message, class: UI_ALERTS_CLASSES.ERROR});
       console.error('Error: ', error);
     });

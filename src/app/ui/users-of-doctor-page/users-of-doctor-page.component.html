@@ -39,8 +39,18 @@
           <button class="btn btn-light" (click)="toggleShowAddAnimalForm()"><span
             class="icon-plus px-2">{{searchTextPlaceholders.ADD_ANIMAL_BTN}}</span></button>
         </div>
-        <div *ngIf="isAddAnimalFormDisplayed">
+        <div *ngIf="isAddAnimalFormDisplayed && userData.isClientRegisteredInApp">
           <app-animal-form (animalPayloadEmitter)="saveNewAnimal($event)"></app-animal-form>
+        </div>
+        <div *ngIf="isAddAnimalFormDisplayed && !userData.isClientRegisteredInApp">
+          <label>{{'Animal'}}</label>
+          <input type="text" [(ngModel)]="animalOfUserWithoutAccount"
+                 class="m-btn-dialog-row form-control" [placeholder]="'Nume animal'">
+          <div class="d-flex justify-content-end">
+            <button class="btn button--active" (click)="addAnimalToUserWithoutAccount()"
+                    [disabled]="animalOfUserWithoutAccount.length < 2">Add animal
+            </button>
+          </div>
         </div>
         <div class="m-top-small m-btn-small border-bottom d-flex justify-content-between"
              *ngIf="isAnimalDataFetched && userData.isClientRegisteredInApp">

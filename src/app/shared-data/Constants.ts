@@ -344,6 +344,7 @@ export const UI_USERS_OF_DOCTOR_MSGS = {
   ERROR_GETTING_USERS_DATA: 'Userul nu a fost gasit sau a aparut o eroare la conexiunea la server.',
   ERROR_GETTING_USERS_DOCTORS: 'A aparut o problema de conexiune la server. Te rugam sa incerci din nou!',
   ERROR_SAVING_USERS_DOCTORS: 'A aparut o problema la salvarea acestui client. Te rugam sa incerci din nou!',
+  ERROR_UPDATING_ANIMALS_OF_USERS_DOCTORS: 'A aparut o problema la salvarea acestui animal. Te rugam sa incerci din nou!',
   NO_LOGGED_IN_DOCTOR: 'Sesiunea ta a expirat, te rugam sa te loghezi in aplicatie',
 }
 
@@ -384,6 +385,8 @@ export const USER_STATE = {
 }
 
 export const USER_SERVICE = {
+  ADD_ANIMAL_TO_USER_WITH_SUCCESS: 'Animalul a fost adaugat cu succes',
+  ADD_ANIMAL_TO_USER_WITH_ERROR: 'A aparut o eroare, te rugam sa incerci din nou',
   addUserError: 'Userul nu a putut fi creat, te rugam sa incerci din nou',
   addUserSuccess: 'Userul a fost creat cu succes',
   deleteUserError: 'Userul nu a putut fi sters, te rugam sa incerci din nou',
