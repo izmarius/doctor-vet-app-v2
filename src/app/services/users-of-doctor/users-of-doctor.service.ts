@@ -42,10 +42,11 @@ export class UsersOfDoctorService {
       clientPhone: user.phone,
       doctorId: this.doctor.id,
       doctorName: this.doctor.doctorName,
-      isClientRegisteredInApp: isClientRegistered
+      isClientRegisteredInApp: isClientRegistered,
+      id: this.firestore.getNewFirestoreId()
     }
 
-    return this.firestore.saveDocumentByAutoId(this.USERS_OF_DOCTOR_COLLECTION, usersDoctorPayload)
+    return this.firestore.saveDocumentWithGeneratedFirestoreId(this.USERS_OF_DOCTOR_COLLECTION, usersDoctorPayload.id,  usersDoctorPayload)
       .then(() => {
         usersList.push(usersDoctorPayload);
         localStorage.removeItem(USERS_DOCTORS);

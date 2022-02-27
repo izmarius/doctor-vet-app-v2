@@ -1,21 +1,36 @@
-
 .user-sidebar {
   width: 20%;
-  background : #f8f6f4;
   border-radius: 5%;
   max-height: 35rem;
   z-index: 2;
 }
 
-.user-sidebar .sidebar-content {
-  background : #f8f6f4;
+.sidebar-container {
+  max-width: 20%
 }
+
+.sidebar-container {
+  background: #f8f6f4;
+  padding: 5px;
+  border-radius: 5px;
+}
+
 .user-content {
   width: 80%;
 }
 
 li {
   list-style-position: inside;
+  cursor: pointer;
+  word-break: break-word;
+}
+
+.search-input {
+  max-width: 100%;
+}
+
+.search-input li {
+  max-width: 100%;
 }
 
 .dropdown-elem {

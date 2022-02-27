@@ -1,26 +1,26 @@
 <div class="vet-container">
-  <div class="vet-content d-flex">
-    <div>
+  <div class="vet-content d-flex m-btn-small">
+    <div class="sidebar-container">
       <div>
         <div class="search-input">
+          <label class="m-btn-small">Adauga client cu cont:</label>
           <input type="text" autocomplete="none"
                  class="form-control m-btn-small"
                  [placeholder]="searchTextPlaceholders.SEARCH_BY_NAME_PLACEHOLDER"
                  [(ngModel)]="nameOrPhoneToSearch"
                  (ngModelChange)="filterAllUsers()"
                  (focus)="onFocusUser()">
-          <ul class="list-group" #searchedUserListElement>
-            <li class="list-group-item list-group-item-action dropdown-elem d-flex justify-content-between"
-                *ngFor="let user of searchUserList">
-              <span class="m-1">{{user.name}} | {{user.phone}} | {{user.email}}</span>
-              <button class="btn button--active" (click)="addUserToDoctorList(user)">
-                {{searchTextPlaceholders.ADD_USER_TO_DOCTOR_LIST_BTN}}</button>
+          <ul class="list-group search-list" #searchedUserListElement>
+            <li class="list-group-item list-group-item-action dropdown-elem d-flex"
+                *ngFor="let user of searchUserList"
+                (click)="addUserToDoctorList(user)">
+              {{user.name}} | {{user.phone}} | {{user.email}}
             </li>
           </ul>
         </div>
-        <div>
+        <div class="d-flex m-btn-small">
+          <input type="checkbox" class="me-1" [(ngModel)]="isSearchingByPhone"/>
           <label>{{searchTextPlaceholders.SEARCH_BY_PHONE_LABEL}}</label>
-          <input type="checkbox" class="m-btn-small" [(ngModel)]="isSearchingByPhone"/>
         </div>
       </div>
       <app-sidebar class="user-sidebar p-around" [sidebarContent]="listOfClients"
@@ -28,7 +28,6 @@
                    (clickOnAddNewItem)="openCreateUserWithoutAccountDialog()">
       </app-sidebar>
     </div>
-
 
     <div class="user-content p-around">
       <div *ngIf="isUserDataFetched">
@@ -57,6 +56,7 @@
             </button>
           </div>
         </div>
+        <!--todo: transform into reusable components-->
         <div class="m-top-small m-btn-small border-bottom d-flex justify-content-between"
              *ngIf="isAnimalDataFetched && userData.isClientRegisteredInApp">
           <div>
@@ -68,8 +68,11 @@
             <span>Sterilizat/a: {{animalData.isAnimalSterilized ? 'Da' : 'Nu'}} | </span>
           </div>
           <div>
-            <button class="btn btn-light">{{animalLabels.editAnimalData}}</button>
+            <button class="btn btn-light" (click)="toggleEditAndSetAnimalData(animalData)">{{animalLabels.editAnimalData}}</button>
           </div>
+        </div>
+        <div *ngIf="isEditAnimalDataClicked && userData.isClientRegisteredInApp">
+          <app-animal-form [animalFormInputData]="animalFormData" (animalPayloadEmitter)="editAnimalData($event)"></app-animal-form>
         </div>
         <div class="m-top-small m-btn-small" *ngIf="isAnimalDataFetched">
           <div class="d-flex justify-content-between">
@@ -102,7 +105,7 @@
       </div>
     </div>
   </div>
-  <div class="vet-content m-top-small">
+  <div class="vet-content">
     <button class="btn button--incative"
             (click)="getAllUsersDoctors()">{{searchTextPlaceholders.REFRESH_LIST_OF_USERS_DOCTORS}}</button>
   </div>

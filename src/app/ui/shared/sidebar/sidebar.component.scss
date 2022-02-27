@@ -1,6 +1,7 @@
 li {
   list-style-position: inside;
   cursor: pointer;
+  word-break: break-word;
 }
 
 .sidebar-content {
@@ -11,9 +12,11 @@ li {
   max-height: 35rem;
 }
 
-//.sidebar-content::-webkit-scrollbar {
-//  display: none;
-//}
+.sidebar-list {
+  padding: 1.5rem 0;
+  border-bottom: 1px solid lightgrey;
+  border-top: 1px solid lightgrey;
+}
 
 .list-style-type-none {
   list-style-type: none;

@@ -30,13 +30,16 @@ import {DoctorAppointmentWithoutUserModalComponent} from "../doctor-appointment-
 export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
 
   animalData!: any;
+  animalFormData: any;
   animalLabels = USER_ANIMAL_DIALOG;
   animalMedicalHistory: any;
   animalOfUserWithoutAccount: string = '';
   diseasesTitle!: string;
+  doctor: any;
   isAddAnimalFormDisplayed: boolean = false;
   isAnimalDataFetched: boolean = false;
   isAnimalMedicalHistoryFetched: boolean = false;
+  isEditAnimalDataClicked: boolean = false;
   isInitialLoadOfComponent: boolean = true;
   isSearchingByPhone: boolean = false;
   isUserDataFetched: boolean = false;
@@ -64,6 +67,7 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.searchTextPlaceholders = USERS_DOCTOR_PAGE_CONST;
+    this.doctor = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE))
     this.setUsersOfDoctors();
   }
 
@@ -130,6 +134,38 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
 
   deleteUserOfDoctorFromList(user: any) {
     this.usersOfDoctorsService.deleteUsersOfDoctors(user);
+  }
+
+  editAnimalData(event: any) {
+    if (event.name !== this.animalData.name) {
+      // modifica si user of Doctor si user animalList page - batch si
+      // mofica localstorage with user list
+      let animalList = this.userData.animals.slice();
+      animalList.forEach((animal: any) => {
+        if (animal.animalId === this.animalData.id) {
+          animal.animalName = event.name;
+          return;
+        }
+      })
+      this.animalService.updateAnimalsDataFromAllDocs(this.userData.id, this.selectedUserOfDoctor.userDoctor.id, this.animalData.id, animalList, event)
+        .then(() => {
+          this.animalData = {...event};
+          this.isEditAnimalDataClicked = false;
+          debugger;
+        }).catch((error) => {
+        debugger;
+        // this.uiAlertMsg.setUiError({
+        //   message: ANIMAL_SERVICE_MESSAGES.ANIMAL_UPDATE_WITH_ERROR,
+        //   class: UI_ALERTS_CLASSES.ERROR,
+        // });
+      });
+    } else {
+      this.animalService.updateAnimalsSubCollections(`user/${this.userData.id}/animals`, this.animalData.id, event)
+        .then(() => {
+          this.animalData = {...event};
+          this.isEditAnimalDataClicked = false;
+        });
+    }
   }
 
   filterAllUsers() {
@@ -329,7 +365,7 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  saveNewAnimal(animal: any) {
+  saveNewAnimal(animal: any,) {
     if (this.userData.isClientRegisteredInApp) {
       this.userService.updateUserWithAnimalData(animal, this.userData, this.selectedUserOfDoctor.userDoctor.docId);
     } else {
@@ -353,9 +389,19 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
     this.isInitialLoadOfComponent = false;
   }
 
+  toggleEditAndSetAnimalData(animalData: any) {
+    this.animalFormData = {
+      isAnimalOfFeminineSex: animalData.animalSex === 'F',
+      ...this.animalData
+    }
+    this.isAddAnimalFormDisplayed = false;
+    this.isEditAnimalDataClicked = !this.isEditAnimalDataClicked;
+  }
+
   toggleShowAddAnimalForm() {
     this.isAddAnimalFormDisplayed = !this.isAddAnimalFormDisplayed;
     this.isAnimalMedicalHistoryFetched = false;
     this.isAnimalDataFetched = false;
+    this.isEditAnimalDataClicked = false
   }
 }

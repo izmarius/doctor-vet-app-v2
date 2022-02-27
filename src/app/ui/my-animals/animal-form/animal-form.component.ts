@@ -1,9 +1,8 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {ANIMAL_FORM_TEXT} from "../../../shared-data/Constants";
 import {DateUtilsService} from "../../../data/utils/date-utils.service";
 import {take} from "rxjs/operators";
-import {pipe} from "rxjs";
 
 @Component({
   selector: 'app-animal-form',
@@ -11,6 +10,8 @@ import {pipe} from "rxjs";
   styleUrls: ['./animal-form.component.scss']
 })
 export class AnimalFormComponent implements OnInit {
+  @Input() animalFormInputData: any = null;
+  isEditButtonActive: boolean = false;
   animalFormGroup!: FormGroup;
   animalFormText: any;
   @Output() animalPayloadEmitter = new EventEmitter();
@@ -31,11 +32,29 @@ export class AnimalFormComponent implements OnInit {
   }
 
   initAnimalForm(): void {
+    let age = '';
+    let birthDay: any = '';
+    let bloodType = '';
+    let name = '';
+    let weight = '';
+    if (this.animalFormInputData) {
+      this.isEditButtonActive = true;
+      age = this.animalFormInputData.age;
+      birthDay = new Date(this.animalFormInputData.birthDay);
+      bloodType = this.animalFormInputData.bloodType;
+      name = this.animalFormInputData.name;
+      weight = this.animalFormInputData.weight;
+      this.isAnimalSterilized = this.animalFormInputData.isAnimalSterilized;
+      this.isAnimalOfFeminineSex = this.animalFormInputData.isAnimalOfFeminineSex;
+      this.isAnimalOfMasculineSex = !this.animalFormInputData.isAnimalOfFeminineSex;
+    }
+
     this.animalFormGroup = new FormGroup({
-      name: new FormControl('', Validators.required),
-      birthDay: new FormControl('', Validators.required),
-      age: new FormControl('', Validators.required),
-      weight: new FormControl('', Validators.required),
+      age: new FormControl(age, Validators.required),
+      birthDay: new FormControl(birthDay, Validators.required),
+      bloodType: new FormControl(bloodType, Validators.required),
+      name: new FormControl(name, Validators.required),
+      weight: new FormControl(weight, Validators.required),
     });
   }
 
@@ -44,6 +63,14 @@ export class AnimalFormComponent implements OnInit {
       this.isErrorDisplayed = true;
       this.errorMessage = this.animalFormText.errorFromValidation;
     }
+
+    if (this.isEditButtonActive) {
+      if (this.animalFormInputData.isAnimalSterilized !== this.isAnimalSterilized) {
+      } else if (this.animalFormInputData.animalSex === 'F' && !this.isAnimalOfFeminineSex) {
+      } else if (!this.animalFormGroup.dirty) {
+        return;
+      }
+    }
     this.isErrorDisplayed = false;
     this.errorMessage = '';
 
@@ -51,9 +78,10 @@ export class AnimalFormComponent implements OnInit {
       name: this.animalFormGroup.controls.name.value,
       age: this.animalFormGroup.controls.age.value,
       birthDay: this.dateUtils.getDateFormat(this.animalFormGroup.controls.birthDay.value),
+      bloodType: this.animalFormGroup.controls.bloodType.value,
       weight: this.animalFormGroup.controls.weight.value,
       isAnimalSterilized: this.isAnimalSterilized,
-      animalSex: this.isAnimalOfFeminineSex ? this.animalFormText.labels.femaleLabel : this.animalFormText.labels.femaleLabel
+      animalSex: this.isAnimalOfFeminineSex ? this.animalFormText.labels.femaleShortLabel : this.animalFormText.labels.masculineShortLabel
     }
     this.animalPayloadEmitter.emit(animalPayload);
   }

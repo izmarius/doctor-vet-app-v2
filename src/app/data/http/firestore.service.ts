@@ -16,7 +16,7 @@ export class FirestoreService {
   ) {
   }
 
-  getAuth(){
+  getAuth() {
     return this.afAuth;
   }
 
@@ -130,21 +130,16 @@ export class FirestoreService {
   }
 
   /**
-   * Saves a new empty document into a collection
-   */
-  saveDocumentWithEmptyDoc(collection: string, documentId: string): any {
-    return this.dbRef.collection(collection).doc(documentId);
-  }
-
-  /**
    * Saves a new document into a collection with an id generated from application
    */
   saveDocumentWithGeneratedFirestoreId(collection: string, documentId: string, payload: any): any {
     return this.dbRef.collection(collection).doc(documentId).set(payload);
   }
 
-  getDooRef(collection: string, documentId: string): any {
-    return this.dbRef.collection(collection).doc(documentId);
+  getDocBySingleWhereClause(collection: string, key: string, value: string, key1: string, value1: string): any {
+    return this.dbRef.collection(collection,
+      (ref) => ref.where(key, '==', value)
+        .where(key1, '==', value1)).get();
   }
 
   /**

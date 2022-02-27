@@ -82,23 +82,35 @@ export const AUTH_SIGNUP_FORM_TEXT = {
 
 export const ANIMAL_FORM_TEXT = {
   buttonText: 'Adauga animal',
+  editButtonText: 'Editeaza date animal',
   errorFromValidation: AUTH_SIGNUP_FORM_TEXT.formErrorMessage,
   labels: {
     ageLabel: 'Varsta animalului',
     birthDayLabel: 'Zi de nastere',
+    bloodType: 'Grupa de sange',
     weightLabel: 'Greutatea animalului',
     nameLabel: 'Numele animalului',
     isSterilizedLabel: 'Animalul este sterilizat?',
     femaleLabel: 'Femela',
-    masculineLabel: 'Mascul'
+    femaleShortLabel: 'F',
+    masculineLabel: 'Mascul',
+    masculineShortLabel: 'M'
   },
   placeholders: {
     agePlaceholder: 'Ex: 10 ani',
     birthDayPlaceholder: '10/03/2018',
+    bloodType: 'D.E.A. 1',
     namePlaceholder: 'Azorel',
     weightPlaceholder: 'EX: 30 kg',
-    animalSexPlaceholder: 'EX: Mascul, femela',
+    animalSexPlaceholder: 'EX: Mascul, Femela',
   }
+}
+
+export const ANIMAL_SERVICE_MESSAGES = {
+  ANIMAL_SAVED_WITH_SUCCESS: 'Animalul a fost adaugat cu succes',
+  ANIMAL_SAVED_WITH_ERROR: 'A aparut o eroare la adaugarea animalului. Te rugam sa incerci din nou!',
+  ANIMAL_UPDATED_WITH_SUCCESS: 'Datele animalului au fost modificate cu succes',
+  ANIMAL_UPDATE_WITH_ERROR: 'A aparut o eroare la la editarea datelor animalului! Te rugam sa incerci din nou',
 }
 
 // C

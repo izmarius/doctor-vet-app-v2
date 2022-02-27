@@ -1,5 +1,5 @@
 <div class="sidebar-content">
-  <div *ngFor="let sidebarObj of sidebarContent">
+  <div class="sidebar-list" *ngFor="let sidebarObj of sidebarContent">
     <div class="m-btn-small">
       <h2 class="bold-text ">{{sidebarObj.title}}</h2>
       <button *ngIf="sidebarObj?.buttonText?.length>0" class="btn button--active"
