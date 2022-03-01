@@ -26,7 +26,8 @@
 						"polyfills": "src/polyfills.ts",
 						"tsConfig": "tsconfig.app.json",
 						"assets": [
-							"src/assets"
+							"src/assets",
+							"src/manifest.webmanifest"
 						],
 						"styles": [
 							"node_modules/angular-calendar/css/angular-calendar.css",
@@ -38,7 +39,9 @@
 							"./node_modules/jquery/dist/jquery.min.js",
 							"./node_modules/popper.js/dist/umd/popper.min.js",
 							"./node_modules/bootstrap/dist/js/bootstrap.min.js"
-						]
+						],
+						"serviceWorker": true,
+						"ngswConfigPath": "ngsw-config.json"
 					},
 					"configurations": {
 						"production": {
@@ -99,7 +102,8 @@
 						"tsConfig": "tsconfig.spec.json",
 						"karmaConfig": "karma.conf.js",
 						"assets": [
-							"src/assets"
+							"src/assets",
+							"src/manifest.webmanifest"
 						],
 						"styles": [
 							"node_modules/angular-calendar/css/angular-calendar.css",

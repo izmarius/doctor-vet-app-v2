@@ -50,6 +50,7 @@ import { UserCreateAppCardComponent } from './ui/shared/user-create-app-card/use
 import {AppCalendarModule} from "./ui/calendar/app-calendar-module";
 import { DoctorAppointmentWithoutUserModalComponent } from './ui/doctor-appointment-without-user-modal/doctor-appointment-without-user-modal.component';
 import { UserWithoutAccountDetailsCardComponent } from './ui/user-without-account-details-card/user-without-account-details-card.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 @NgModule({
   entryComponents: [AlertMessageComponent],
@@ -105,7 +106,13 @@ import { UserWithoutAccountDetailsCardComponent } from './ui/user-without-accoun
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    AppCalendarModule
+    AppCalendarModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production,
+      // Register the ServiceWorker as soon as the app is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000'
+    })
   ],
   providers: [AngularFirestore],
   bootstrap: [AppComponent]
