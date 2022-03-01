@@ -1,30 +1,35 @@
 <div class="dialog-container bg-alternative p-around">
   <div class="schedule-button d-flex justify-content-end m-btn-dialog-row">
-    <p class="my-auto mx-2 text-center">Reprogrameaza in :</p>
-    <button class="btn btn-light close-btn small-button me-2" (click)="addRecurrentAppointment('day')">1 zi</button>
-    <button class="btn btn-light close-btn small-button me-2" (click)="addRecurrentAppointment('week')">2 saptamana
+    <p class="my-auto mx-2 text-center">{{quickAppointmentPeriods.rescheduleTitle}}</p>
+    <button class="btn btn-light close-btn small-button me-2"
+            (click)="addRecurrentAppointment('day')">{{quickAppointmentPeriods.oneDay}}</button>
+    <button class="btn btn-light close-btn small-button me-2"
+            (click)="addRecurrentAppointment('week')">{{quickAppointmentPeriods.twoWeeks}}
     </button>
-    <button class="btn btn-light close-btn small-button me-2" (click)="addRecurrentAppointment('month')">1 luna</button>
-    <button class="btn btn-light close-btn small-button me-2" (click)="addRecurrentAppointment('year')">1 an</button>
+    <button class="btn btn-light close-btn small-button me-2"
+            (click)="addRecurrentAppointment('month')">{{quickAppointmentPeriods.oneMonth}}</button>
+    <button class="btn btn-light close-btn small-button me-2"
+            (click)="addRecurrentAppointment('year')">{{quickAppointmentPeriods.oneMonth}}</button>
 
-    <button class="btn button--active me-2" (click)="addNewAppointment()">Programare noua</button>
-    <button class="btn btn-light close-btn me-2" (click)="openConfirmationModalModal()">Anuleaza programarea</button>
+    <button class="btn btn-light close-btn me-2"
+            (click)="openConfirmationModalModal()">{{quickAppointmentPeriods.cancelAppointment}}</button>
     <button class="btn button--active small-button" (click)="closeAppointmentDetails()">X</button>
   </div>
   <div class="user-animal-data-container d-flex justify-content-between">
     <!--  ANIMAL GENERAL DATA -->
     <div class="animal-data-container vet-border-right">
       <div class="vet-border-bottom">
-        <p class="m-btn-small error-msg" *ngIf="userAnimalData?.appointment?.isCanceledByUser">PROGRAMARE ANULATA</p>
+        <p class="m-btn-small error-msg"
+           *ngIf="data?.appointment?.isCanceledByUser">{{quickAppointmentPeriods.cancelAppointmentSuccess}}</p>
         <p>{{userAnimalData?.userData?.name}}</p>
-        <p>{{userAnimalData?.appointment?.phone}}</p>
+        <p>{{data?.appointment?.userPhone}}</p>
         <div class="animal-info d-flex">
-<!--          //FOR MULTIPLE ANIMALS-->
-<!--          <p class="bold-text me-2">{{userAnimalDialog.ownersPets}}</p>-->
-<!--          <div class="d-flex flex-wrap" #animalsParent>-->
-<!--            <p class="me-2 pointer hover-button-active-state"-->
-<!--               (click)="getAndSetAnimalData($event, userAnimalData.animalData.id)">{{userAnimalData.animalData.name}}</p>-->
-<!--          </div>-->
+          <!--          //FOR MULTIPLE ANIMALS-->
+          <!--          <p class="bold-text me-2">{{userAnimalDialog.ownersPets}}</p>-->
+          <!--          <div class="d-flex flex-wrap" #animalsParent>-->
+          <!--            <p class="me-2 pointer hover-button-active-state"-->
+          <!--               (click)="getAndSetAnimalData($event, userAnimalData.animalData.id)">{{userAnimalData.animalData.name}}</p>-->
+          <!--          </div>-->
         </div>
       </div>
       <div class="m-top-small">
@@ -66,9 +71,9 @@
               <input [(ngModel)]="newDisease" class="form-control action-input" type="text"
                      [placeholder]="userAnimalDialog.editInputPlaceholder">
               <div>
-                <span class="px-2 action-icon mr-2 pointer" (click)="addDisease()">Salveaza<span
+                <span class="px-2 action-icon mr-2 pointer" (click)="addDisease()">{{userAnimalDialog.saveTxt}}<span
                   class="icon-check"></span></span>
-                <span class="px-2 action-icon pointer" (click)="hideDiseaseInput()">Cancel <span
+                <span class="px-2 action-icon pointer" (click)="hideDiseaseInput()">{{userAnimalDialog.cancelTxt}}<span
                   class="icon-close"></span></span>
               </div>
             </div>
@@ -143,7 +148,6 @@
               </div>
             </div>
           </div>
-
         </ul>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import {NAVBAR_IMG} from './../../../shared-data/Constants';
+import {MODALS_DATA, NAVBAR_IMG} from './../../../shared-data/Constants';
 import {Component, OnInit} from '@angular/core';
 import {MatDialog} from "@angular/material/dialog";
 import {LogInService} from "../../../services/login/log-in.service";
@@ -6,8 +6,6 @@ import {NAVBAR_TEXT, USER_LOCALSTORAGE} from "../../../shared-data/Constants";
 import {DoctorAppointmentModalComponent} from "../../doctor-appointment-modal/doctor-appointment-modal.component";
 import {CreateUserDialogComponent} from "../../create-user-dialog/create-user-dialog.component";
 import {AuthLoggedInServiceService} from "../../../services/auth-logged-in/auth-logged-in";
-import {DoctorAppointmentWithoutUserModalComponent} from "../../doctor-appointment-without-user-modal/doctor-appointment-without-user-modal.component";
-import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-navbar',
@@ -41,16 +39,8 @@ export class NavbarComponent implements OnInit {
     // @ts-ignore
     this.dialog.open(DoctorAppointmentModalComponent, {
       height: '40rem',
-      panelClass: 'doctor-appointment-dialog',
-      data: null
-    });
-  }
-
-  openAppointmentsWithoutUserModal(): void {
-    this.dialog.open(DoctorAppointmentWithoutUserModalComponent, {
-      height: '37rem',
-      panelClass: 'doctor-appointment-dialog',
-      data: null
+      panelClass: MODALS_DATA.DOCTOR_APP_MODAL,
+      data: {date: new Date()}
     });
   }
 
@@ -58,7 +48,7 @@ export class NavbarComponent implements OnInit {
     this.dialog.open(CreateUserDialogComponent, {
       minWidth: '20%',
       minHeight: '10rem',
-      panelClass: 'doctor-appointment-dialog',
+      panelClass: MODALS_DATA.DOCTOR_APP_MODAL,
     });
   }
 

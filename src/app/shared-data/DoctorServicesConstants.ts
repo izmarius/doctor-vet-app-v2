@@ -1,7 +1,7 @@
 export const DOCTOR_SERVICES = {
   GENERAL: {
     serviceName: 'General',
-    services: [['Consultatie generala', false], ['Control periodic', false], ['Consultatie la domiciliu', false], ['Vaccinare', false], ['Insamantare artificiala caini', false]]
+    services: [['Consult medical', true], ['Control medical', true], ['Consultatie la domiciliu', false], ['Vaccinare', false], ['Insamantare artificiala caini', false]]
   },
   DATA: {
     serviceName: 'Documente',

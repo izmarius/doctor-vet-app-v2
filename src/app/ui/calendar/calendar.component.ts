@@ -6,7 +6,13 @@ import {
   CalendarWeekViewBeforeRenderEvent
 } from 'angular-calendar';
 import {isSameDay, isSameMonth} from 'date-fns';
-import {APPOINTMENT_MESSAGES, CALENDAR_DATA, UI_ALERTS_CLASSES, USER_LOCALSTORAGE} from "../../shared-data/Constants";
+import {
+  APPOINTMENT_MESSAGES,
+  CALENDAR_DATA,
+  MODALS_DATA,
+  UI_ALERTS_CLASSES,
+  USER_LOCALSTORAGE
+} from "../../shared-data/Constants";
 import {DoctorAppointmentsService} from "../services/doctor-appointments.service";
 import {AnimalService} from "../services/animal.service";
 import {UserAnimalInfoComponent} from "../user-animal-info/user-animal-info.component";
@@ -17,6 +23,7 @@ import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-err
 import {UserWithoutAccountDetailsCardComponent} from "../user-without-account-details-card/user-without-account-details-card.component";
 import {UserService} from "../user-profile/services/user.service";
 import {take} from "rxjs/operators";
+import {AppointmentsService} from "../../services/appointments/appointments.service";
 
 @Component({
   selector: 'app-calendar',
@@ -38,12 +45,12 @@ export class CalendarComponent implements OnInit, OnDestroy {
   weekStartsOn: number = 1;
 
 
-  constructor(private doctorService: DoctorAppointmentsService,
-              private animalService: AnimalService,
+  constructor(private animalService: AnimalService,
               private dialogRef: MatDialog,
               private alertInterceptor: UiErrorInterceptorService,
               private doctorAppointmentService: DoctorAppointmentsService,
-              private userService: UserService) {
+              private userService: UserService,
+              private appointmentService: AppointmentsService) {
   }
 
   ngOnInit() {
@@ -95,12 +102,22 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   getDoctorAppointments() {
-    this.doctorAppointmentsSub$ = this.doctorService.getDoctorAppointments(this.doctor.id).subscribe((res) => {
-      this.resetDoctorAppointmentsMap();
-      this.appointments = res.map((calendarApp: any) => {
-        return this.setAndGetCalendarAppointmentsBasedOnDoctorAndUser(calendarApp);
+    this.doctorAppointmentsSub$ = this.appointmentService.getDoctorAppointments()
+      .subscribe((res) => {
+        this.resetDoctorAppointmentsMap();
+        let newAppointments = res.map((calendarApp: any) => {
+          return this.setAndGetCalendarAppointmentsBasedOnDoctorAndUser(calendarApp);
+        });
+        //for when we add to db and duplicates comes in 2 separate subscriptions
+        if (newAppointments.length === 1) {
+          this.appointments.forEach((currentApp, i) => {
+            if (currentApp.appointment.id === newAppointments[0].appointment.id) {
+              this.appointments.splice(i, 1);
+            }
+          });
+        }
+        this.appointments = this.appointments.concat(newAppointments);
       });
-    });
   }
 
   resetDoctorAppointmentsMap() {
@@ -165,19 +182,23 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
   calendarIntervalClicked(event: CalendarEvent | any) {
     if (!event.userId) {
-      const appointmentPayload = {
-        appointment: event.appointment,
-        appointmentId: event.appointmentId
-      }
-      this.openUserWithoutAccountAnimalAppointmentModal(appointmentPayload);
+      this.openUserWithoutAccountAnimalAppointmentModal(event.appointment);
     } else {
       this.userAnimalData = {
         userAnimalDataObs: this.animalService.getAnimalDataAndMedicalHistoryByAnimalId(event.animalId, event.userId),
         userId: event.userId,
         appointment: event.appointment,
-        appointmentId: event.appointmentId
       }
-      this.openUserAnimalAppointmentModal();
+      this.animalService.getAnimalDataAndMedicalHistoryByAnimalId(event.animalId, event.userId)
+        .pipe(take(1))
+        .subscribe((userAnimalData: any) => {
+          this.userAnimalData = {
+            userAnimalData: userAnimalData,
+            userId: event.userId,
+            appointment: event.appointment,
+          }
+          this.openUserAnimalAppointmentModal();
+        });
     }
   }
 
@@ -201,31 +222,54 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   openUserAnimalAppointmentModal(): void {
-    this.dialogRef.open(UserAnimalInfoComponent, {
+    const dialog = this.dialogRef.open(UserAnimalInfoComponent, {
       width: '80%',
       panelClass: 'user-animal-details-dialog',
       data: this.userAnimalData
     });
+
+    dialog.afterClosed()
+      .pipe(take(1))
+      .subscribe(isAppointmentCanceled => {
+        if (isAppointmentCanceled) {
+          this.appointmentService.cancelAppointmentByDoctor(this.userAnimalData.appointment, this.doctor, this.dialogRef)
+            .then(() => {
+              this.resetAppointmentList(this.userAnimalData.appointment.id);
+            });
+        }
+      });
   }
 
-  openUserWithoutAccountAnimalAppointmentModal(appointmentPayload: any): void {
+  openUserWithoutAccountAnimalAppointmentModal(appointment: any): void {
     const dialogRef = this.dialogRef.open(UserWithoutAccountDetailsCardComponent, {
       width: '20%',
       panelClass: 'user-without-account-details-dialog',
-      data: appointmentPayload
+      data: appointment
     });
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.doctorService.deleteAppointment(appointmentPayload.appointmentId, this.doctor.id);
-      }
-    });
+
+    dialogRef.afterClosed()
+      .pipe(take(1))
+      .subscribe(result => {
+        if (result) {
+          this.appointmentService.deleteAppointment(appointment, this.doctor)
+            .then(() => {
+              this.resetAppointmentList(appointment.id);
+            });
+        }
+      });
   }
 
   openAppointmentsModal(date: Date): void {
     this.dialogRef.open(DoctorAppointmentModalComponent, {
       height: '40rem',
-      panelClass: 'doctor-appointment-dialog',
-      data: date
+      panelClass: MODALS_DATA.DOCTOR_APP_MODAL,
+      data: {date}
+    });
+  }
+
+  resetAppointmentList(appointmentId: string) {
+    this.appointments = this.appointments.filter((currentSelection, i) => {
+      return currentSelection.appointment.id !== appointmentId
     });
   }
 }

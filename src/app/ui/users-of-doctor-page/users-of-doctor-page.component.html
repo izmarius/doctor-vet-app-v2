@@ -1,0 +1,112 @@
+<div class="vet-container">
+  <div class="vet-content d-flex m-btn-small">
+    <div class="sidebar-container">
+      <div>
+        <div class="search-input">
+          <label class="m-btn-small">Adauga client cu cont:</label>
+          <input type="text" autocomplete="none"
+                 class="form-control m-btn-small"
+                 [placeholder]="searchTextPlaceholders.SEARCH_BY_NAME_PLACEHOLDER"
+                 [(ngModel)]="nameOrPhoneToSearch"
+                 (ngModelChange)="filterAllUsers()"
+                 (focus)="onFocusUser()">
+          <ul class="list-group search-list" #searchedUserListElement>
+            <li class="list-group-item list-group-item-action dropdown-elem d-flex"
+                *ngFor="let user of searchUserList"
+                (click)="addUserToDoctorList(user)">
+              {{user.name}} | {{user.phone}} | {{user.email}}
+            </li>
+          </ul>
+        </div>
+        <div class="d-flex m-btn-small">
+          <input type="checkbox" class="me-1" [(ngModel)]="isSearchingByPhone"/>
+          <label>{{searchTextPlaceholders.SEARCH_BY_PHONE_LABEL}}</label>
+        </div>
+      </div>
+      <app-sidebar class="user-sidebar p-around" [sidebarContent]="listOfClients"
+                   (clickOnList)="getUserData($event)"
+                   (clickOnAddNewItem)="openCreateUserWithoutAccountDialog()">
+      </app-sidebar>
+    </div>
+
+    <div class="user-content p-around">
+      <div *ngIf="isUserDataFetched">
+        <div class="d-flex justify-content-between">
+          <h4>{{userData?.name}} : {{userData?.phone}}</h4>
+          <button class="btn button--incative"
+                  (click)="deleteUserOfDoctorFromList(userData)">{{searchTextPlaceholders.DELETE_USER_FROM_LIST_BTN}}</button>
+        </div>
+        <div>
+          <span *ngFor="let  animal of userData.animals"
+                class="me-2 pointer highlighted-link"
+                (click)="getAnimalData(animal)">{{animal.animalName}} | </span>
+          <button class="btn btn-light" (click)="toggleShowAddAnimalForm()"><span
+            class="icon-plus px-2">{{searchTextPlaceholders.ADD_ANIMAL_BTN}}</span></button>
+        </div>
+        <div *ngIf="isAddAnimalFormDisplayed && userData.isClientRegisteredInApp">
+          <app-animal-form (animalPayloadEmitter)="saveNewAnimal($event)"></app-animal-form>
+        </div>
+        <div *ngIf="isAddAnimalFormDisplayed && !userData.isClientRegisteredInApp">
+          <label>{{'Animal'}}</label>
+          <input type="text" [(ngModel)]="animalOfUserWithoutAccount"
+                 class="m-btn-dialog-row form-control" [placeholder]="'Nume animal'">
+          <div class="d-flex justify-content-end">
+            <button class="btn button--active" (click)="addAnimalToUserWithoutAccount()"
+                    [disabled]="animalOfUserWithoutAccount.length < 2">Add animal
+            </button>
+          </div>
+        </div>
+        <!--todo: transform into reusable components-->
+        <div class="m-top-small m-btn-small border-bottom d-flex justify-content-between"
+             *ngIf="isAnimalDataFetched && userData.isClientRegisteredInApp">
+          <div>
+            <span>{{animalLabels.age}} {{animalData.age}} | </span>
+            <span>{{animalLabels.weight}} {{animalData.weight}} | </span>
+            <span>{{animalLabels.bloodType}} {{animalData.bloodType}} | </span>
+            <span>{{animalLabels.birthDay}} {{animalData.birthDay}} | </span>
+            <span>{{animalLabels.animalSex}} {{animalData.animalSex}} | </span>
+            <span>Sterilizat/a: {{animalData.isAnimalSterilized ? 'Da' : 'Nu'}} | </span>
+          </div>
+          <div>
+            <button class="btn btn-light" (click)="toggleEditAndSetAnimalData(animalData)">{{animalLabels.editAnimalData}}</button>
+          </div>
+        </div>
+        <div *ngIf="isEditAnimalDataClicked && userData.isClientRegisteredInApp">
+          <app-animal-form [animalFormInputData]="animalFormData" (animalPayloadEmitter)="editAnimalData($event)"></app-animal-form>
+        </div>
+        <div class="m-top-small m-btn-small" *ngIf="isAnimalDataFetched">
+          <div class="d-flex justify-content-between">
+            <h4 class="m-btn-small">{{quickAppointmentPeriods.title}}</h4>
+            <div>
+              <button class="btn btn-light small-button me-2"
+                      (click)="addRecurrentAppointment('day')">{{quickAppointmentPeriods.oneDay}}</button>
+              <button class="btn btn-light small-button me-2"
+                      (click)="addRecurrentAppointment('week')">{{quickAppointmentPeriods.twoWeeks}}</button>
+              <button class="btn btn-light small-button me-2"
+                      (click)="addRecurrentAppointment('month')">{{quickAppointmentPeriods.oneMonth}}</button>
+              <button class="btn btn-light small-button me-2"
+                      (click)="addRecurrentAppointment('year')">{{quickAppointmentPeriods.oneYear}}</button>
+              <button class="btn btn-light small-button me-2"
+                      (click)="openAddAppointmentModal(userData, animalData)">{{quickAppointmentPeriods.customAppointment}}</button>
+            </div>
+          </div>
+        </div>
+        <div class="m-top-small" *ngIf="isAnimalMedicalHistoryFetched">
+          <h4 class="m-btn-small">{{diseasesTitle}}</h4>
+          <ul>
+            <li class="m-btn-small" *ngFor="let disease of animalMedicalHistory?.diseases">{{disease}}</li>
+          </ul>
+          <h4 class="m-btn-small">{{recommendationTitle}}</h4>
+          <ul>
+            <li class="m-btn-small"
+                *ngFor="let recommendation of animalMedicalHistory?.recommendations">{{recommendation}}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="vet-content">
+    <button class="btn button--incative"
+            (click)="getAllUsersDoctors()">{{searchTextPlaceholders.REFRESH_LIST_OF_USERS_DOCTORS}}</button>
+  </div>
+</div>

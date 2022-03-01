@@ -11,6 +11,7 @@ import {MyAnimalsComponent} from "./ui/my-animals/my-animals.component";
 import {UserAppointmentsComponent} from "./ui/user-appointments/user-appointments.component";
 import {UserAppointmentDialogComponent} from "./ui/user-appointment/user-appointment.component";
 import {CalendarComponent} from "./ui/calendar/calendar.component";
+import {UsersOfDoctorPageComponent} from "./ui/users-of-doctor-page/users-of-doctor-page.component";
 
 const routes: Routes = [
   {path: '', redirectTo: '/home', pathMatch: 'full'},
@@ -25,6 +26,7 @@ const routes: Routes = [
   {path: 'profile', component: MyProfileComponent},
   {path: 'calendar', component: CalendarComponent},
   {path: 'home', component: HomePageComponent},
+  {path: 'my-users', component: UsersOfDoctorPageComponent},
 ];
 
 @NgModule({

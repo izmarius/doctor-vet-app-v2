@@ -1,23 +1,16 @@
 import {Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {AnimalService} from "../services/animal.service";
 import {
-  APPOINTMENTFORM_DATA,
-  DIALOG_UI_ERRORS, UI_ALERTS_CLASSES,
+  DIALOG_UI_ERRORS, MODALS_DATA, QUICK_APP_PERIOD,
   USER_ANIMAL_DIALOG,
   USER_LOCALSTORAGE
 } from "../../shared-data/Constants";
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
-import {DoctorAppointmentModalComponent} from "../doctor-appointment-modal/doctor-appointment-modal.component";
-import {take} from "rxjs/operators";
 import {FirestoreService} from "../../data/http/firestore.service";
-import {DoctorsAppointmentDTO} from "../dto/doctor-appointments-dto";
 import {Subscription} from "rxjs";
-import {DoctorAppointmentsService} from "../services/doctor-appointments.service";
-import {AnimalAppointmentService} from "../../services/animal-appointment/animal-appointment.service";
-import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-error-interceptor.service";
 import {ConfirmDialogComponent} from "../shared/confirm-dialog/confirm-dialog.component";
-import {DoctorService} from "../../services/doctor/doctor.service";
-import {DateUtilsService} from "../../data/utils/date-utils.service";
+import {AppointmentsService} from "../../services/appointments/appointments.service";
+import {take} from "rxjs/operators";
 
 @Component({
   selector: 'app-user-animal-info',
@@ -27,45 +20,31 @@ import {DateUtilsService} from "../../data/utils/date-utils.service";
 export class UserAnimalInfoComponent implements OnInit, OnDestroy {
 
   @ViewChild('animalsParent') private ANIMAL_PARENT_ELEM!: ElementRef;
-
+  public doctor: any;
+  private HIDE_CLASS = 'hide';
   public isAddDiseaseEnabled!: boolean;
   public isAddRecEnabled!: boolean;
   public newDisease: string = '';
   public newRecommendation: string = '';
+  quickAppointmentPeriods = QUICK_APP_PERIOD;
   public userAnimalData!: any;
-  public doctor: any;
   public userAnimalDialog: any;
   public userAnimalDialogErrorTxt: any;
   public userAnimalDataSub!: Subscription;
 
   constructor(private animalService: AnimalService,
+              private appointmentService: AppointmentsService,
               private dialog: MatDialog,
               public dialogRef: MatDialogRef<UserAnimalInfoComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any,
-              private firestoreService: FirestoreService,
-              private doctorAppointmentsService: DoctorAppointmentsService,
-              private animalAppointment: AnimalAppointmentService,
-              private uiAlertService: UiErrorInterceptorService,
-              private doctorService: DoctorService,
-              private dateUtils: DateUtilsService
-  ) {
+              private firestoreService: FirestoreService) {
   }
 
   ngOnInit(): void {
     this.userAnimalDialog = USER_ANIMAL_DIALOG;
     this.userAnimalDialogErrorTxt = DIALOG_UI_ERRORS;
     this.doctor = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
-    this.userAnimalDataSub = this.data?.userAnimalDataObs
-      .pipe(take(1))
-      .subscribe((userAnimalData: any) => {
-        // todo refactor and get initial data only from one place!!!! - spaghetti
-        this.userAnimalData = userAnimalData;
-        this.userAnimalData.appointment = this.data.appointment;
-        this.userAnimalData.appointmentId = this.data.appointmentId;
-        this.userAnimalData.animalMedicalHistory = userAnimalData.animalMedicalHistory;
-        this.userAnimalData.animalMedicalHistory.diseases = !userAnimalData.animalMedicalHistory.diseases ? [] : userAnimalData.animalMedicalHistory.diseases;
-        this.userAnimalData.animalMedicalHistory.recommendations = !userAnimalData.animalMedicalHistory.recommendations ? [] : userAnimalData.animalMedicalHistory.recommendations;
-      });
+    this.userAnimalData = this.data.userAnimalData;
   }
 
   ngOnDestroy() {
@@ -75,136 +54,31 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
   // todo : daca au depasit orele de munca? sau programarea a expirat?
   openConfirmationModalModal(): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      panelClass: 'confirmation-modal'
+      panelClass: MODALS_DATA.CONFIRMATION_MODAL
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.userAnimalData.appointment.id = this.userAnimalData.appointmentId;
-        // how to handle the filing request - we will have corrupted data
-        this.removeAppointmentFromAppointmentMap();
-        this.doctorAppointmentsService.cancelAppointment(this.userAnimalData.appointment, this.doctor, this.dialog);
-      }
-    });
-  }
-
-  removeAppointmentFromAppointmentMap() {
-    const date = this.userAnimalData.appointment.dateTime.split('-')[0].trim();
-    this.doctor.appointmentsMap[date].forEach((interval: any, index: number) => {
-      if (interval.startTimestamp === this.userAnimalData.appointment.timestamp && interval.appointmentId === this.userAnimalData.appointment.id) {
-        this.doctor.appointmentsMap[date].splice(index, 1);
-        return;
-      }
-    });
-    if (this.doctor.appointmentsMap[date].length === 0) {
-      delete this.doctor.appointmentsMap[date];
-    }
+    dialogRef.afterClosed()
+      .pipe(take(1))
+      .subscribe(isAppointmentCanceled => {
+        this.dialogRef.close(isAppointmentCanceled);
+      });
   }
 
   addRecurrentAppointment(period: string) {
-    let appointmentDate = new Date(this.userAnimalData.appointment.timestamp);
-    if (period === 'day') {
-      appointmentDate.setDate(appointmentDate.getDate() + 1);
-    } else if (period === 'week') {
-      appointmentDate.setDate(appointmentDate.getDate() + 14);
-    } else if (period === 'month') {
-      appointmentDate.setMonth(appointmentDate.getMonth() + 1);
-    } else if (period === 'year') {
-      appointmentDate.setFullYear(appointmentDate.getFullYear() + 1);
-    } else {
-      // todo display error message
-      return;
-    }
-    if (this.doctorAppointmentsService.isFreeDayForDoctor(this.doctor.schedule, appointmentDate)) {
-      return;
-    }
-    const doctorAppointmentId = this.firestoreService.getNewFirestoreId();
-    const animalAppointmentId = this.firestoreService.getNewFirestoreId();
-
-    if (this.doctorAppointmentsService.areAppointmentsOverlapping(appointmentDate, this.doctor, doctorAppointmentId)) {
-      return;
-    }
-    let appointment = Object.create(this.userAnimalData.appointment);
-    appointment.timestamp = appointmentDate.getTime();
-    const localeDate = this.dateUtils.getDateFormat(appointmentDate);
-    const dateTime = appointment.dateTime.split(' ');
-    appointment.dateTime = localeDate + ' ' + dateTime[1] + ' ' + dateTime[2];
-
-    // save new appointment to animal and to doctor
-
-    const newDoctorAppointment = this.getDoctorAppointment(animalAppointmentId, appointment);
-    const newAnimalAppointment = this.getAnimalAppointmentPayload(doctorAppointmentId, animalAppointmentId, appointment);
-
-    // todo update appointment date
-
-    Promise.all([
-      this.doctorService.updateDoctorInfo({appointmentsMap: this.doctor.appointmentsMap}, this.doctor.id),
-      this.doctorAppointmentsService.createAppointment(newDoctorAppointment, this.doctor.id, doctorAppointmentId),
-      this.animalAppointment.saveAnimalAppointment(newAnimalAppointment, appointment.userId, animalAppointmentId)
-    ]).then(() => {
-      localStorage.removeItem(USER_LOCALSTORAGE);
-      localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.doctor));
-      this.uiAlertService.setUiError({
-        message: APPOINTMENTFORM_DATA.successAppointment,
-        class: UI_ALERTS_CLASSES.SUCCESS
-      });
-    }).catch((error: any) => {
-      this.uiAlertService.setUiError({message: error.message, class: UI_ALERTS_CLASSES.ERROR});
-      console.log('Error: ', error);
-    });
-  }
-
-  getDoctorAppointment(animalAppointmentId: string, appointmentInfo: any) {
-    return new DoctorsAppointmentDTO()
-      .setUserName(appointmentInfo.userName)
-      .setUserId(appointmentInfo.userId)
-      .setServices(appointmentInfo.services)
-      .setDateTime(
-        appointmentInfo.dateTime
-      )
-      .setAnimal(appointmentInfo.animalData)
-      .setLocation(appointmentInfo.location)
-      .setUserEmail(appointmentInfo.userEmail)
-      .setPhone(appointmentInfo.phone)
-      .setIsAppointmentFinished(false)
-      .setIsConfirmedByDoctor(true)
-      .setAnimalAppointmentId(animalAppointmentId)
-      .setTimestamp(appointmentInfo.timestamp);
-  }
-
-  getAnimalAppointmentPayload(doctorAppointmentId: string, animalAppointmentId: string, appointmentInfo: any): any {
-    let userPhoneNumber = '+4';
-    if (appointmentInfo.phone.length === 10) {
-      // this change is made for sms notification!! - also validate on cloud functions to make sure that the phone respects this prefix
-      userPhoneNumber += appointmentInfo.phone;
-    }
-    return {
-      animalName: appointmentInfo.animalData.name,
-      isCanceled: false,
-      dateTime: appointmentInfo.dateTime,
-      doctorId: this.doctor.id,
-      doctorName: this.doctor.doctorName,
-      location: this.doctor.location,
-      service: appointmentInfo.services,
-      doctorAppointmentId: doctorAppointmentId,
-      timestamp: appointmentInfo.timestamp,
-      email: appointmentInfo.userEmail,
-      phone: userPhoneNumber,
-      userId: appointmentInfo.userId,
-      id: animalAppointmentId
-    }
+    this.appointmentService.addRecurrentAppointment(period, this.doctor, this.data)
+    this.appointmentService.addRecurrentAppointment(period, this.doctor, this.data)
   }
 
   addDisease(): void {
     if (!this.newDisease) {
       return;
     }
-    this.userAnimalData.animalMedicalHistory.diseases.push(this.newDisease);
-    if (!this.userAnimalData.medicalHistoryDocId) {
-      this.userAnimalData.medicalHistoryDocId = this.firestoreService.getNewFirestoreId();
-      this.createMedicalHistory(this.data.userId, this.userAnimalData.animalData.id, {diseases: this.userAnimalData.animalMedicalHistory.diseases});
+    this.userAnimalData.userAnimalData.animalMedicalHistory.diseases.push(this.newDisease);
+    if (!this.userAnimalData.userAnimalData.medicalHistoryDocId) {
+      this.userAnimalData.userAnimalData.medicalHistoryDocId = this.firestoreService.getNewFirestoreId();
+      this.createMedicalHistory(this.data.userId, this.userAnimalData.animalData.id, {diseases: this.userAnimalData.userAnimalData.animalMedicalHistory.diseases});
     } else {
-      this.updateMedicalHistory(this.data.userId, this.userAnimalData.animalData.id, {diseases: this.userAnimalData.animalMedicalHistory.diseases});
+      this.updateMedicalHistory(this.data.userId, this.userAnimalData.animalData.id, {diseases: this.userAnimalData.userAnimalData.animalMedicalHistory.diseases});
     }
     this.hideDiseaseInput();
   }
@@ -213,19 +87,8 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
     this.isAddDiseaseEnabled = true;
   }
 
-  addNewAppointment(): void {
-    const dialogRef = this.dialog.open(DoctorAppointmentModalComponent, {
-      height: '37.5rem',
-      panelClass: 'doctor-appointment-dialog',
-      data: null
-    });
-
-
-    dialogRef.afterClosed().subscribe(result => {
-    });
-  }
-
   addRecommendation(): void {
+    // TODO when is this happening? how to delete it?
     if (!this.newRecommendation) {
       return;
     }
@@ -264,7 +127,7 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
               closeInputIcon: HTMLSpanElement,
               diseaseItem: HTMLLIElement): void {
     if (!diseaseItem.innerText || !this.newDisease || diseaseItem.innerText === this.newDisease.trim()) {
-      errorElem.classList.remove('hide');
+      errorElem.classList.remove(this.HIDE_CLASS);
       return;
     }
     this.resetErrorMessage(errorElem);
@@ -285,7 +148,7 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
                       recItem: HTMLLIElement): void {
 
     if (!recItem.innerText || !this.newRecommendation || recItem.innerText === this.newRecommendation.trim()) {
-      errorElem.classList.remove('hide');
+      errorElem.classList.remove(this.HIDE_CLASS);
       return;
     }
     this.resetErrorMessage(errorElem);
@@ -300,7 +163,7 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
 
   resetErrorMessage(errorElem: HTMLLIElement): void {
     if (errorElem.innerText) {
-      errorElem.classList.add('hide');
+      errorElem.classList.add(this.HIDE_CLASS);
       errorElem.innerText = '';
     }
   }
@@ -314,20 +177,19 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
                              diseaseItem: HTMLLIElement): void {
     if (isInputDisplayed) {
       editInput.value = diseaseItem.innerText;
-      diseaseItem.classList.add('hide');
-      editIcon.classList.add('hide');
-      checkIcon.classList.remove('hide');
-      editInput.classList.remove('hide');
-      closeInputIcon.classList.remove('hide');
+      diseaseItem.classList.add(this.HIDE_CLASS);
+      editIcon.classList.add(this.HIDE_CLASS);
+      checkIcon.classList.remove(this.HIDE_CLASS);
+      editInput.classList.remove(this.HIDE_CLASS);
+      closeInputIcon.classList.remove(this.HIDE_CLASS);
     } else {
-      // reset input value
       editInput.value = '';
-      diseaseItem.classList.remove('hide');
-      editIcon.classList.remove('hide');
-      errorText.classList.add('hide');
-      checkIcon.classList.add('hide');
-      editInput.classList.add('hide');
-      closeInputIcon.classList.add('hide');
+      diseaseItem.classList.remove(this.HIDE_CLASS);
+      editIcon.classList.remove(this.HIDE_CLASS);
+      errorText.classList.add(this.HIDE_CLASS);
+      checkIcon.classList.add(this.HIDE_CLASS);
+      editInput.classList.add(this.HIDE_CLASS);
+      closeInputIcon.classList.add(this.HIDE_CLASS);
     }
   }
 
@@ -358,45 +220,5 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
     this.userAnimalData.animalMedicalHistory.recommendations.splice(indexOfRecommendation, 1);
     this.updateMedicalHistory(this.data.userId, this.userAnimalData.animalData.id, {recommendations: this.userAnimalData.animalMedicalHistory.recommendations});
   }
-
-  //FOR MULTIPLE ANIMALS
-
-  // getAndSetAnimalData(event: any, animalId: string): void {
-  //   // todo validation here - if same id => don't go further
-  //   // if(animalId !== this.userAnimalData) {
-  //   //
-  //   // }
-  //   this.animalService.getAnimalDataAndMedicalHistoryByAnimalId(animalId, this.data.userId).subscribe((res) => {
-  //     this.userAnimalData = res;
-  //     this.userAnimalData.appointment = this.data.appointment;
-  //     this.userAnimalData.appointmentId = this.data.appointmentId;
-  //     this.userAnimalData.animalMedicalHistory = res.animalMedicalHistory;
-  //     this.userAnimalData.animalMedicalHistory.diseases = !res.animalMedicalHistory.diseases? [] : res.animalMedicalHistory.diseases;
-  //     this.userAnimalData.animalMedicalHistory.recommendations = !res.animalMedicalHistory.recommendations? [] : res.animalMedicalHistory.recommendations;
-  //     // this.toggleActiveClass(event);
-  //   });
-  // }
-
-  //
-  // setSelectedAnimalActive(animalId: string): void {
-  //   for (const elem of this.ANIMAL_PARENT_ELEM.nativeElement.children) {
-  //     if (elem.id === animalId) {
-  //       this.selectedLink = elem;
-  //       this.isActiveLink = true;
-  //       break;
-  //     }
-  //   }
-  // }
-
-  // toggleActiveClass(event: any): void {
-  //   for (const elem of this.ANIMAL_PARENT_ELEM.nativeElement.children) {
-  //     if (elem.id === event.target.id && this.selectedLink.id !== event.target.id) {
-  //       this.selectedLink = elem;
-  //       this.isActiveLink = true;
-  //       return;
-  //     }
-  //   }
-  // }
-
 }
 

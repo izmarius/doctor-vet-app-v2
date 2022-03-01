@@ -3,6 +3,9 @@
     <label>{{animalFormText?.labels.nameLabel}}</label>
     <input formControlName="name" type="text"
            class="m-btn-dialog-row form-control" [placeholder]="animalFormText?.placeholders.namePlaceholder">
+    <label>{{animalFormText?.labels.bloodType}}</label>
+    <input formControlName="bloodType" type="text"
+           class="m-btn-dialog-row form-control" [placeholder]="animalFormText?.placeholders.bloodType">
     <label>{{animalFormText?.labels.birthDayLabel}}</label>
     <div class="d-flex justify-content-between">
       <input matInput class="form-control" [matDatepicker]="birthDayPicker" [max]="maxDate" formControlName="birthDay"
@@ -16,9 +19,20 @@
     <label>{{animalFormText?.labels.weightLabel}}</label>
     <input formControlName="weight" type="number" [max]="999"
            class="m-btn-dialog-row form-control" [placeholder]="animalFormText?.placeholders.weightPlaceholder">
+    <div>
+      <label>{{animalFormText?.labels.femaleLabel}}</label>
+      <input type="checkbox" class="mx-2" (click)="toggleAnimalSex(true)" [(ngModel)]="isAnimalOfFeminineSex"
+             [ngModelOptions]="{standalone: true}">
+      <label>{{animalFormText?.labels.masculineLabel}}</label>
+      <input type="checkbox" class="mx-2" (click)="toggleAnimalSex(false)" [(ngModel)]="isAnimalOfMasculineSex"
+             [ngModelOptions]="{standalone: true}">
+    </div>
+    <label>{{animalFormText?.labels.isSterilizedLabel}}</label>
+    <input type="checkbox" class="mx-2" [(ngModel)]="isAnimalSterilized" [ngModelOptions]="{standalone: true}">
     <p class="error-msg m-top-small" *ngIf="isErrorDisplayed">{{errorMessage}}</p>
     <div class="d-flex justify-content-end">
-      <button [disabled]="!animalFormGroup.valid" class="btn button--active" type="submit">{{animalFormText.buttonText}}</button>
+      <button [disabled]="!animalFormGroup.valid" class="btn button--active"
+              type="submit">{{isEditButtonActive ? animalFormText.editButtonText : animalFormText.buttonText}}</button>
     </div>
   </form>
 </div>

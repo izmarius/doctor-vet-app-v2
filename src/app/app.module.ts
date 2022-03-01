@@ -2,11 +2,10 @@ import { NgModule } from '@angular/core';
 import { AngularFireModule } from '@angular/fire';
 import { BrowserModule } from '@angular/platform-browser';
 import { environment } from 'src/environments/environment';
-import { AngularFireFunctionsModule } from '@angular/fire/functions';
-import { AngularFireDatabaseModule } from '@angular/fire/database';
-import { AngularFireAuthModule } from '@angular/fire/auth';
-import { AngularFirestoreModule } from '@angular/fire/firestore';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFireFunctionsModule, USE_EMULATOR as  FUNCTIONS_EMULATOR} from '@angular/fire/functions';
+import { AngularFireDatabaseModule, USE_EMULATOR as DB_EMULATOR} from '@angular/fire/database';
+import { AngularFireAuthModule, USE_EMULATOR as AUTH_EMULATOR} from '@angular/fire/auth';
+import { AngularFirestoreModule, AngularFirestore, USE_EMULATOR as FIRE_EMULATOR} from '@angular/fire/firestore';
 import { HomePageComponent } from './ui/home-page/home-page.component';
 import { LoginComponent } from './ui/login/login.component';
 import { SignupComponent } from './ui/signup/signup.component';
@@ -51,6 +50,9 @@ import {AppCalendarModule} from "./ui/calendar/app-calendar-module";
 import { DoctorAppointmentWithoutUserModalComponent } from './ui/doctor-appointment-without-user-modal/doctor-appointment-without-user-modal.component';
 import { UserWithoutAccountDetailsCardComponent } from './ui/user-without-account-details-card/user-without-account-details-card.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { UsersOfDoctorPageComponent } from './ui/users-of-doctor-page/users-of-doctor-page.component';
+import { SidebarComponent } from './ui/shared/sidebar/sidebar.component';
+import { CreateUserWithoutAccountDialogComponent } from './ui/create-user-without-account-dialog/create-user-without-account-dialog.component';
 
 @NgModule({
   entryComponents: [AlertMessageComponent],
@@ -92,6 +94,9 @@ import { ServiceWorkerModule } from '@angular/service-worker';
     UserCreateAppCardComponent,
     DoctorAppointmentWithoutUserModalComponent,
     UserWithoutAccountDetailsCardComponent,
+    UsersOfDoctorPageComponent,
+    SidebarComponent,
+    CreateUserWithoutAccountDialogComponent,
   ],
   imports: [
     BrowserModule,

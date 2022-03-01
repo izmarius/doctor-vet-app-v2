@@ -13,7 +13,6 @@ import {DOCTOR_SERVICES} from "../../shared-data/DoctorServicesConstants";
 import {LocationService} from "../../services/location-service/location.service";
 import {LoaderService} from "../../services/loader/loader.service";
 import {finalize} from "rxjs/operators";
-import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-error-interceptor.service";
 
 @Component({
   selector: 'app-signup',
@@ -24,21 +23,20 @@ export class SignupComponent implements OnInit {
   authFormGroup!: FormGroup;
   counties!: any[];
   countiesAbbr!: any;
-  localities!: string[];
-  locality: string = '';
   errorMessage: string = '';
   isAllowedToGoToFirstStep = true;
   isAllowedToGoToThirdStep = false;
   isErrorMessage = false;
+  localities!: string[];
+  locality: string = '';
   selectedCounty: string = '';
   private selectedServices: any = {};
   servicesObjectsForDoctor: any;
   signupText: any;
 
-  constructor(private signUpService: SignUpService,
+  constructor(private loaderService: LoaderService,
               private locationService: LocationService,
-              private loaderService: LoaderService,
-              private uiAlertMessageService: UiErrorInterceptorService) {
+              private signUpService: SignUpService) {
   }
 
   ngOnInit(): void {
@@ -57,16 +55,6 @@ export class SignupComponent implements OnInit {
       this.isErrorMessage = false;
       this.goToServicesStep();
     }
-  }
-
-  initAuthForm(): void {
-    this.authFormGroup = new FormGroup({
-      email: new FormControl('', [Validators.required, Validators.pattern(INPUT_REGEX_TEXTS.email)]),
-      password: new FormControl('', [Validators.required, Validators.minLength(6)]),
-      phoneNumber: new FormControl('', [Validators.required, Validators.minLength(10), Validators.pattern(INPUT_REGEX_TEXTS.phoneNumber)]),
-      name: new FormControl('', Validators.required),
-      address: new FormControl('', Validators.required),
-    });
   }
 
   getDoctorDto(): any {
@@ -97,21 +85,19 @@ export class SignupComponent implements OnInit {
     }
   }
 
-  goToServicesStep(): void {
-    this.servicesObjectsForDoctor = DOCTOR_SERVICES;
-    this.isAllowedToGoToThirdStep = true;
+  initAuthForm(): void {
+    this.authFormGroup = new FormGroup({
+      address: new FormControl('', Validators.required),
+      email: new FormControl('', [Validators.required, Validators.pattern(INPUT_REGEX_TEXTS.email)]),
+      name: new FormControl('', Validators.required),
+      password: new FormControl('', [Validators.required, Validators.minLength(6)]),
+      phoneNumber: new FormControl('', [Validators.required, Validators.minLength(10), Validators.pattern(INPUT_REGEX_TEXTS.phoneNumber)]),
+    });
   }
 
-  toggleServiceSelection(serviceDesc: string, serviceKey: string): void {
-    if (!this.selectedServices[serviceKey]) {
-      this.selectedServices[serviceKey] = [serviceDesc];
-    } else {
-      if (this.selectedServices[serviceKey].indexOf(serviceDesc) !== -1) {
-        this.selectedServices[serviceKey].splice(this.selectedServices[serviceKey].indexOf(serviceDesc), 1);
-      } else {
-        this.selectedServices[serviceKey].push(serviceDesc);
-      }
-    }
+  goToServicesStep(): void {
+    this.isAllowedToGoToThirdStep = true;
+    this.servicesObjectsForDoctor = DOCTOR_SERVICES;
   }
 
   isFormBtnDisabled(): boolean {
@@ -128,6 +114,18 @@ export class SignupComponent implements OnInit {
     return true;
   }
 
+  toggleServiceSelection(serviceDesc: string, serviceKey: string): void {
+    if (!this.selectedServices[serviceKey]) {
+      this.selectedServices[serviceKey] = [serviceDesc];
+    } else {
+      if (this.selectedServices[serviceKey].indexOf(serviceDesc) !== -1) {
+        this.selectedServices[serviceKey].splice(this.selectedServices[serviceKey].indexOf(serviceDesc), 1);
+      } else {
+        this.selectedServices[serviceKey].push(serviceDesc);
+      }
+    }
+  }
+
   setCountyAndSetLocalities(value: any): void {
     this.selectedCounty = value;
     this.loaderService.show();
@@ -137,7 +135,7 @@ export class SignupComponent implements OnInit {
         this.localities = response
       }, error => {
         // this.uiAlertMessageService.setUiError({message:})
-        console.log(error);
+        console.error(error);
       });
   }
 

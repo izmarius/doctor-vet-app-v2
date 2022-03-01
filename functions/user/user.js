@@ -10,7 +10,6 @@ exports.doctorCreatesUser = functions.firestore.document('user/{userId}')
       isUserAlreadyRegistered = true;
     }).catch((err) => {
       console.error("No user found - saving new user");
-      // todo extract to another function
       if(!isUserAlreadyRegistered) {
         admin.auth().createUser({
           email: userSnap.data().email,
@@ -25,6 +24,24 @@ exports.doctorCreatesUser = functions.firestore.document('user/{userId}')
         });
       }
     });
-
-
   });
+
+exports.createUserByDoctor = functions.https.onCall(async (user, context) => {
+  console.log("Start creating user", user.email);
+  try {
+    const createdUser = await admin.auth().createUser({
+      email: user.email,
+      emailVerified: true,
+      password: user.password,
+      disabled: false,
+    });
+
+    console.log("User created by doctor: ", user.email);
+    return {
+      response: createdUser
+    };
+  } catch (error) {
+    console.error("Error while creating user: ", error)
+    throw error;
+  }
+});

@@ -9,5 +9,7 @@ const user = require('./user/user');
 exports.scheduledSMSNotification = notification.scheduledSMSNotification;
 exports.getNotifications = notification.getNotifications;
 exports.addNotification = notification.addNotification;
+// exports.deleteNotification = notification.deleteNotification;
 
 exports.createNewUser = user.doctorCreatesUser;
+exports.createUserByDoctor = user.createUserByDoctor;

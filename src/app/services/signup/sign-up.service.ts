@@ -28,7 +28,7 @@ export class SignUpService {
   }
 
   signUpNewUser(userPayload: any) {
-    this.firestoreService.getCollectionByWhereClause(this.USER_COLLECTION, 'email', '==', userPayload.email)
+    this.firestoreService.getCollectionByWhereClause(this.USER_COLLECTION, 'phone', '==', userPayload.phone)
       .pipe(take(1))
       .subscribe((users) => {
         if (users && users.length > 0) {
@@ -41,7 +41,7 @@ export class SignUpService {
 
         this.afAuth.createUserWithEmailAndPassword(userPayload.email, userPayload.password)
           .then((userCredentials) => {
-            this.userService.createUser(this.getUserDTO(userCredentials, userPayload));
+            this.userService.createUser(this.getUserDTO(userPayload));
           })
           .catch((error) => {
             this.uiErrorInterceptor.setUiError({message: error.message, class: UI_ALERTS_CLASSES.ERROR});
@@ -49,9 +49,9 @@ export class SignUpService {
       });
   }
 
-  getUserDTO(userCredentials: any, userPayload: any) {
+  getUserDTO(userPayload: any) {
     return {
-      id: userCredentials.user?.uid,
+      id: userPayload.phone,
       animals: [],
       email: userPayload.email,
       phone: userPayload.phone,

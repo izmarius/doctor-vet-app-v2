@@ -66,6 +66,12 @@
 							"outputHashing": "all"
 						},
 						"development": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.test.ts"
+                }
+              ],
 							"buildOptimizer": false,
 							"optimization": false,
 							"vendorChunk": true,

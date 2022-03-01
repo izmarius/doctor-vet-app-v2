@@ -1,5 +1,22 @@
-set env variables to firebase
+SKIP MINIFICATION
+ng build --optimisation=false
+
+SET ENV VARS TO FUNCTIONS
 firebase functions:config:set twilio.sid="account sid" twilio.token="auth token"
+firebase functions:config:set doctorvet.twillio_account_sid=AC3214cd7bf8c9aa77a7bbe9ec5bb7988f doctorvet.twillio_token=04f11f21b63823394b269295474eb433 doctorvet.twillio_phone=+16318304395
+ "doctorvet": {
+    "twillio_phone": "+16318304395",
+    "twillio_account_sid": "AC3214cd7bf8c9aa77a7bbe9ec5bb7988f",
+    "twillio_token": "04f11f21b63823394b269295474eb433"
+  }
+
+WRITE/READ ENV VARS
+firebase functins: set env_var=""
+firebase functions:config:get
+
+DELETE ENV VAR
+firebase functions:config:unset "var name"
+
 firebase deploy --only functions
 firebase deploy --only "functions:createNewUser"
 
@@ -12,16 +29,25 @@ firebase init emulators
 start emulators:
 firebase emulators:start
 
-WRITE/READ ENV VARS
-firebase functins: set env_var=""
-firebase functions:config:get
-
-
 transform css to scss
 https://www.npmjs.com/package/schematics-scss-migrate
 
 DEPLOY APPLICATION
 1.build app - ng build (default production - public folder)
-2.firebase deploy  sau firebase deploy --only hosting
+2.firebase deploy sau firebase deploy --only hosting
 3.firebase open hosting:site
 - to change hosting config: firebase init hosting (configs are in firebase.json)
+
+BUILD/SERVE PROD
+ng serve --configuration=production
+ng build
+
+BUILD/SERVE DEV
+ng serve
+ng build --configuration=development
+
+SWITCH BETWEEN ENVS
+-to add a new project - firebase use --add
+-firebase use "project name"
+-switch to test: firebase use test
+-firebase deploy

@@ -11,10 +11,11 @@ import {DoctorService} from "../../services/doctor/doctor.service";
 import {LocationService} from "../../services/location-service/location.service";
 import {AnimalUtilInfo} from "../dto/animal-util-info";
 import {FirestoreService} from "../../data/http/firestore.service";
-import {DoctorsAppointmentDTO} from "../dto/doctor-appointments-dto";
 import {DoctorAppointmentsService} from "../services/doctor-appointments.service";
-import {AnimalAppointmentService} from "../../services/animal-appointment/animal-appointment.service";
 import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-error-interceptor.service";
+import {AppointmentsService} from "../../services/appointments/appointments.service";
+import {take} from "rxjs/operators";
+import {BatchService} from "../../services/batch/batch.service";
 
 @Component({
   selector: 'app-user-appointment',
@@ -40,12 +41,13 @@ export class UserAppointmentDialogComponent implements OnInit {
   isAnimalSelected: any;
   isUserWithoutAnimal = false;
 
-  constructor(private dateTimeUtils: DateUtilsService,
-              private doctorService: DoctorService,
-              private locationService: LocationService,
-              private firestoreService: FirestoreService,
+  constructor(private appointmentService: AppointmentsService,
+              private batchService: BatchService,
+              private dateTimeUtils: DateUtilsService,
               private doctorAppointmentService: DoctorAppointmentsService,
-              private animalAppointmentService: AnimalAppointmentService,
+              private doctorService: DoctorService,
+              private firestoreService: FirestoreService,
+              private locationService: LocationService,
               private uiAlertInterceptor: UiErrorInterceptorService
   ) {
   }
@@ -79,9 +81,8 @@ export class UserAppointmentDialogComponent implements OnInit {
       return;
     }
 
-    const doctorAppointmentId = this.firestoreService.getNewFirestoreId();
-    const animalAppointmentId = this.firestoreService.getNewFirestoreId();
-    if(this.doctorAppointmentService.areAppointmentsOverlapping(new Date(doctorDetails.timestamp), doctorDetails.doctor, doctorAppointmentId)) {
+    const appointmentId = this.firestoreService.getNewFirestoreId();
+    if (this.doctorAppointmentService.areAppointmentsOverlapping(new Date(doctorDetails.timestamp), doctorDetails.doctor, appointmentId)) {
       return;
     }
 
@@ -89,65 +90,21 @@ export class UserAppointmentDialogComponent implements OnInit {
       .setName(this.selectedAnimal.animalName)
       .setUid(this.selectedAnimal.animalId);
 
-    const newDoctorAppointment = this.getDoctorAppointment(animalAppointmentId, newAnimalInfo, doctorDetails);
-    const newAnimalAppointment = this.getAnimalAppointmentPayload(doctorAppointmentId, animalAppointmentId, doctorDetails, newAnimalInfo);
+    const newAppointment = this.appointmentService.getUserAppointmentDTO(newAnimalInfo, doctorDetails, this.user, appointmentId);
 
     // todo update doctor - also on cancel appointment by user
-    // todo create a transaction
-    Promise.all([
-      this.doctorService.updateDoctorInfo({appointmentsMap: doctorDetails.doctor.appointmentsMap}, doctorDetails.doctor.id),
-      this.doctorAppointmentService.createAppointment(newDoctorAppointment, doctorDetails.doctor.id, doctorAppointmentId),
-      this.animalAppointmentService.saveAnimalAppointment(newAnimalAppointment, this.user?.id, animalAppointmentId)
-    ]).then(() => {
-          this.uiAlertInterceptor.setUiError({
-            message: APPOINTMENTFORM_DATA.successAppointment,
-            class: UI_ALERTS_CLASSES.SUCCESS
-          });
-    }).catch((error: any) => {
+    const doctorBatchDocument = this.batchService.getMapper('doctors', doctorDetails.doctor.id, {appointmentsMap: doctorDetails.doctor.appointmentsMap}, 'update');
+    const appointmentBatchDoc = this.batchService.getMapper('appointments', newAppointment.id, newAppointment, 'set');
+    this.batchService.createBatch([appointmentBatchDoc, doctorBatchDocument])
+      .then(() => {
+        this.uiAlertInterceptor.setUiError({
+          message: APPOINTMENTFORM_DATA.successAppointment,
+          class: UI_ALERTS_CLASSES.SUCCESS
+        });
+      }).catch((error: any) => {
       this.uiAlertInterceptor.setUiError({message: error.message, class: UI_ALERTS_CLASSES.ERROR});
-      console.log('Error: ', error);
+      console.error('Error: ', error);
     });
-  }
-
-  getDoctorAppointment(animalAppointmentId: string, newAnimalInfo: any, doctorDetails: any) {
-    return new DoctorsAppointmentDTO()
-      .setUserName(this.user.name)
-      .setUserId(this.user.id)
-      .setServices(doctorDetails.service)
-      .setDateTime(doctorDetails.date)
-      .setAnimal(newAnimalInfo)
-      .setLocation(doctorDetails.doctor.location)
-      .setUserEmail(this.user.email)
-      .setPhone(this.user.phone)
-      .setIsAppointmentFinished(false)
-      .setIsUserCreated(true)
-      .setIsCanceledByUser(false)
-      .setIsConfirmedByDoctor(true)
-      .setAnimalAppointmentId(animalAppointmentId)
-      .setTimestamp(doctorDetails.timestamp);
-  }
-
-  getAnimalAppointmentPayload(doctorAppointmentId: string, animalAppointmentId: string, doctorDetails: any, animalInfo: any): any {
-    let userPhoneNumber = '+4';
-    if (this.user.phone.length === 10) {
-      // this change is made for sms notification!! - also validate on cloud functions to make sure that the phone respects this prefix
-      userPhoneNumber += this.user.phone;
-    }
-    return {
-      isCanceled: false,
-      animalName: animalInfo.name,
-      dateTime: doctorDetails.date,
-      doctorId: doctorDetails.doctor.id,
-      doctorName: doctorDetails.doctor.doctorName,
-      location: doctorDetails.doctor.location,
-      service: doctorDetails.service,
-      doctorAppointmentId: doctorAppointmentId,
-      timestamp: doctorDetails.timestamp,
-      email: this.user.email,
-      phone: userPhoneNumber,
-      userId: this.user.id,
-      id: animalAppointmentId
-    }
   }
 
   setAnimalToDoAppointment(element: any, animal: any) {
@@ -168,7 +125,10 @@ export class UserAppointmentDialogComponent implements OnInit {
       || (doctorDetails.stepHour < currentHours && this.dateTimeUtils.isCurrentDay(doctorDetails.localeDate))) {
       // todo - refactor this - debugg
       // || (this.stepHour <= currentHours && this.stepMinute <= currentMinutes)
-      this.uiAlertInterceptor.setUiError({message: APPOINTMENTFORM_DATA.timeValidation, class: UI_ALERTS_CLASSES.ERROR});
+      this.uiAlertInterceptor.setUiError({
+        message: APPOINTMENTFORM_DATA.timeValidation,
+        class: UI_ALERTS_CLASSES.ERROR
+      });
       return false;
     }
     return true;
@@ -184,10 +144,11 @@ export class UserAppointmentDialogComponent implements OnInit {
   setCountyAndSetLocalities(county: string): void {
     this.county = county;
     this.locationService.getCitiesByCountyCode(this.countiesAbbr[county])
+      .pipe(take(1))
       .subscribe((response: any) => {
         this.localities = response
       }, error => {
-        console.log(error);
+        console.error(error);
       });
   }
 
@@ -209,18 +170,20 @@ export class UserAppointmentDialogComponent implements OnInit {
 
     this.isErrorDisplayed = false;
     this.formErrorMessage = '';
-    this.doctorService.getDoctorsByLocation(this.locality).subscribe((doctors) => {
-      if (doctors && doctors.length === 0) {
-        this.isSearchByUserSuccessAndEmpty = true;
-        this.isSearchByUserSuccess = false;
-      } else if (doctors.length > 0) {
-        this.isSearchByUserSuccessAndEmpty = false;
-        this.isSearchByUserSuccess = true;
-        this.doctorList = doctors;
-      }
-    }, error => {
-      // todo  alert error
-    });
+    this.doctorService.getDoctorsByLocation(this.locality)
+      .pipe(take(1))
+      .subscribe((doctors) => {
+        if (doctors && doctors.length === 0) {
+          this.isSearchByUserSuccessAndEmpty = true;
+          this.isSearchByUserSuccess = false;
+        } else if (doctors.length > 0) {
+          this.isSearchByUserSuccessAndEmpty = false;
+          this.isSearchByUserSuccess = true;
+          this.doctorList = doctors;
+        }
+      }, error => {
+        // todo  alert error
+      });
   }
 
   //END FORM VALIDATION AND SETTERS

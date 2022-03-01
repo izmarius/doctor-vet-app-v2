@@ -12,13 +12,14 @@ import {
   USER_LOCALSTORAGE
 } from "../../shared-data/Constants";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {DoctorAppointmentFormService} from "./services/doctor-appointment-form.service";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {Subscription} from "rxjs";
-import {AnimalAppointmentService} from "../../services/animal-appointment/animal-appointment.service";
 import {FirestoreService} from "../../data/http/firestore.service";
 import {UserService} from "../user-profile/services/user.service";
 import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-error-interceptor.service";
+import {AppointmentsService} from "../../services/appointments/appointments.service";
+import {UsersOfDoctorService} from "../../services/users-of-doctor/users-of-doctor.service";
+import {take} from "rxjs/operators";
+import {BatchService} from "../../services/batch/batch.service";
 
 @Component({
   selector: 'app-doctor-appointment-modal',
@@ -27,46 +28,44 @@ import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-err
 })
 export class DoctorAppointmentModalComponent implements OnInit {
 
+  public animals: IAnimalUserInfo[] = [];
+  public appointmentForm!: FormGroup;
+  public appointmentFormPlaceHolder: any;
+  public doctor: any;
+  public doctorAppointment!: DoctorsAppointmentDTO;
+  public doctorServiceList: string[] = [];
+  public errorMessage: string = '';
+  public filteredAnimals: IAnimalUserInfo[] = [];
+  public isErrorDisplayed: boolean = false;
+  public minDate = new Date();
+  public isSearchingByPhone: boolean = false;
+  public selectedAnimal: any = {};
+  selectedDate = new Date();
+  public selectedPatient: any = {};
   stepMinutes: any
   stepMinute!: number;
   stepHours: any;
   stepHour!: number;
-  public appointmentForm!: FormGroup;
   public users!: IUserDTO[];
-  public animals: IAnimalUserInfo[] = [];
-  public filteredAnimals: IAnimalUserInfo[] = [];
-  public doctorAppointment!: DoctorsAppointmentDTO;
-  public appointmentFormPlaceHolder: any;
-  public doctor: any;
-  public doctorServiceList: string[] = [];
-  public isErrorDisplayed: boolean = false;
-  public minDate = new Date();
-  public selectedPatient!: IUserDTO;
-  public selectedAnimal: any = {};
-  public errorMessage: string = '';
-  selectedDate = new Date();
-
-
   @ViewChild('patientList') patientListElem: any;
   @ViewChild('animalList') animalListElem: any;
 
   constructor(
+    private appointmentService: AppointmentsService,
+    private batchService: BatchService,
+    private dateTimeUtils: DateUtilsService,
     public dialogRef: MatDialogRef<DoctorAppointmentModalComponent>,
     private doctorService: DoctorService,
     private doctorAppointmentService: DoctorAppointmentsService,
-    private appointmentFormService: DoctorAppointmentFormService,
-    private dateTimeUtils: DateUtilsService,
-    private animalAppointment: AnimalAppointmentService,
     private firestoreService: FirestoreService,
     private userService: UserService,
+    private usersOfDoctorService: UsersOfDoctorService,
     private uiAlertInterceptor: UiErrorInterceptorService,
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
   }
 
   ngOnInit(): void {
-    // todo: set time in inputs to the closest hour possible that can be booked today - if current day -set to closest from dropdown
-    // if no hours available display message to user that today is out of work hours
     this.appointmentFormPlaceHolder = APPOINTMENTFORM_DATA;
     this.doctor = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
     this.stepHours = this.doctor.appointmentFrequency.hourIntervals;
@@ -76,6 +75,34 @@ export class DoctorAppointmentModalComponent implements OnInit {
       this.doctorServiceList = this.doctorServiceList.concat(this.doctor.services[service]);
     }
     this.initForm();
+    this.setUserAnimalData();
+  }
+
+  filterClients(nameOrPhone: string): void {
+    if (!this.isSearchingByPhone) {
+      this.usersOfDoctorService.filterUsersOfDoctors(nameOrPhone, '')
+        .pipe(take(1))
+        .subscribe((users: any) => {
+          this.users = users;
+        });
+    } else {
+      this.usersOfDoctorService.filterUsersOfDoctors('', nameOrPhone)
+        .pipe(take(1))
+        .subscribe((users: any) => {
+          this.users = users;
+        });
+    }
+  }
+
+  filterAnimals(searchText: string): void {
+    if (!this.animals || this.animals.length === 0) {
+      this.selectedAnimal.animalName = searchText;
+      this.isErrorDisplayed = false;
+      return;
+    }
+    this.filteredAnimals = this.animals.filter((animal) => {
+      return animal.animalName.toLowerCase().startsWith(searchText.toLowerCase());
+    });
   }
 
   initForm() {
@@ -86,18 +113,68 @@ export class DoctorAppointmentModalComponent implements OnInit {
       patientName: new FormControl(null, Validators.required),
       animalName: new FormControl(null, Validators.required),
       patientPhone: new FormControl(null, [Validators.required, Validators.minLength(10), Validators.pattern(INPUT_REGEX_TEXTS.phoneNumber)]),
-      patientEmail: new FormControl(null, [Validators.required, Validators.pattern(INPUT_REGEX_TEXTS.email)]),
+      patientEmail: new FormControl(null, [Validators.pattern(INPUT_REGEX_TEXTS.email)]),
     });
   }
 
-  setDateAndHoursToForm() {
-    this.stepHour = this.stepHours[0];
-    this.stepMinute = this.stepMinutes[0];
+  isAnimalRegisteredToUser(): boolean {
+    if (this.animals && this.animals.length !== 0) {
+      const filteredAnimals = this.animals.filter((animal) => {
+        return animal.animalName === this.appointmentForm.value.animalName;
+      });
+      return filteredAnimals.length > 0;
+    } else {
+      return false;
+    }
+  }
 
-    if (this.data) {
-      this.stepHour = this.data.getHours();
-      this.stepMinute = this.data.getMinutes();
-      this.selectedDate = new Date(this.data);
+  onCancelForm(isAppointmentSuccess: boolean): void {
+    this.dialogRef.close(isAppointmentSuccess);
+  }
+
+  onFocusAnimal(): void {
+    if (this.selectedPatient && (!this.animals || this.animals.length === 0)) {
+      this.setErrorMessage(APPOINTMENTFORM_DATA.userDoesNotHaveAnimal);
+    }
+    if (this.animalListElem.nativeElement.classList.contains('hide')) {
+      this.animalListElem.nativeElement.classList.remove('hide');
+    }
+  }
+
+  onFocusPatient(): void {
+    if (this.patientListElem.nativeElement.classList.contains('hide')) {
+      this.patientListElem.nativeElement.classList.remove('hide');
+    }
+  }
+
+  onSelectAnimal(animal: any): void {
+    this.appointmentForm.controls.animalName.setValue(animal.animalName);
+    this.selectedAnimal = animal;
+    this.animalListElem.nativeElement.classList.add('hide');
+  }
+
+  onSelectPatient(selectedPatient: any): void {
+    if (selectedPatient.isClientRegisteredInApp) {
+      this.userService.getUserDataById(selectedPatient.clientId)
+        .pipe(take(1))
+        .subscribe((userData) => {
+          this.selectedPatient = selectedPatient;
+          this.selectedPatient.email = userData.email;
+          this.appointmentForm.controls.patientName.setValue(userData.name);
+          this.appointmentForm.controls.patientPhone.setValue(userData.phone);
+          this.appointmentForm.controls.patientEmail.setValue(userData.email);
+          this.patientListElem.nativeElement.classList.add('hide');
+          this.animals = userData.animals;
+          this.filteredAnimals = this.animals;
+        });
+    } else {
+      this.selectedPatient = selectedPatient;
+      this.appointmentForm.controls.patientName.setValue(selectedPatient.clientName);
+      this.appointmentForm.controls.patientPhone.setValue(selectedPatient.clientPhone);
+      this.appointmentForm.controls.patientEmail.setValue('');
+      this.patientListElem.nativeElement.classList.add('hide');
+      this.animals = selectedPatient.animals;
+      this.filteredAnimals = this.animals;
     }
   }
 
@@ -113,119 +190,44 @@ export class DoctorAppointmentModalComponent implements OnInit {
       this.setErrorMessage(APPOINTMENTFORM_DATA.formAllFieldsValidMessage);
       return;
     }
-    const doctorAppointmentId = this.firestoreService.getNewFirestoreId();
-    const animalAppointmentId = this.firestoreService.getNewFirestoreId();
+    const appointmentId = this.firestoreService.getNewFirestoreId();
     this.appointmentForm.value.startDate.setHours(this.stepHour, this.stepMinute);
-    if (this.doctorAppointmentService.areAppointmentsOverlapping(this.appointmentForm.value.startDate, this.doctor, doctorAppointmentId)) {
+    if (this.doctorAppointmentService.areAppointmentsOverlapping(this.appointmentForm.value.startDate, this.doctor, appointmentId)) {
       return;
     }
 
     const newAnimalInfo = new AnimalUtilInfo()
-      .setName(this.selectedAnimal.animalName);
+      .setName(this.selectedAnimal.animalName)
+      .setUid(this.selectedAnimal.animalId);
 
     if (!this.isAnimalRegisteredToUser()) {
-      // todo: save also new collections with empty document? to avoid errors
-      // save animal to user - create new animal + insert in user animal name + id
-      // todo: check animal sub collection if we have problems - create an appointment and get data
-      // todo get data directly from user service
-      const animalDocUID = this.firestoreService.getNewFirestoreId();
-      this.selectedAnimal.animalId = animalDocUID;
-      this.userService.saveAnimal(this.selectedPatient, this.appointmentForm.value.animalName, animalDocUID);
-      newAnimalInfo.setUid(animalDocUID);
-      newAnimalInfo.setName(this.appointmentForm.value.animalName);
-    } else {
-      newAnimalInfo.setUid(this.selectedAnimal.animalId)
+      this.setErrorMessage(APPOINTMENTFORM_DATA.animalNeedsRegistration);
+      return;
     }
-
     this.setErrorMessage('');
+    const appointmentDTO = this.appointmentService.getAppointmentDTO(newAnimalInfo, this.appointmentForm, this.doctor, this.selectedPatient, appointmentId);
 
-    const newDoctorAppointment = this.getDoctorAppointment(animalAppointmentId, newAnimalInfo);
-    const newAnimalAppointment = this.getAnimalAppointmentPayload(doctorAppointmentId, animalAppointmentId, newAnimalInfo);
-
-    // todo create a transaction
-    Promise.all([
-      this.doctorService.updateDoctorInfo({appointmentsMap: this.doctor.appointmentsMap}, this.doctor.id),
-      this.doctorAppointmentService.createAppointment(newDoctorAppointment, this.doctor.id, doctorAppointmentId),
-      this.animalAppointment.saveAnimalAppointment(newAnimalAppointment, this.selectedPatient?.id, animalAppointmentId)
-    ]).then(() => {
-      localStorage.removeItem(USER_LOCALSTORAGE);
-      localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.doctor));
-      this.uiAlertInterceptor.setUiError({
-        message: APPOINTMENTFORM_DATA.successAppointment,
-        class: UI_ALERTS_CLASSES.SUCCESS
-      });
-      this.onCancelForm(true);
-    }).catch((error) => {
+    const appointmentBatchDoc = this.batchService.getMapper('appointments', appointmentId, JSON.parse(JSON.stringify(appointmentDTO)), 'set');
+    const doctorBatchDocument = this.batchService.getMapper('doctors', this.doctor.id, {appointmentsMap: this.doctor.appointmentsMap}, 'update');
+    this.batchService.createBatch([appointmentBatchDoc, doctorBatchDocument])
+      .then(() => {
+        localStorage.removeItem(USER_LOCALSTORAGE);
+        localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.doctor));
+        this.uiAlertInterceptor.setUiError({
+          message: APPOINTMENTFORM_DATA.successAppointment,
+          class: UI_ALERTS_CLASSES.SUCCESS
+        });
+        this.onCancelForm(true);
+      }).catch((error) => {
       this.uiAlertInterceptor.setUiError({message: error.message, class: UI_ALERTS_CLASSES.ERROR});
-      console.log('Error: ', error);
+      console.error('Error: ', error);
     });
-  }
-
-  getDoctorAppointment(animalAppointmentId: string, newAnimalInfo: any) {
-    return new DoctorsAppointmentDTO()
-      .setUserName(this.appointmentForm.value.patientName)
-      .setUserId(this.selectedPatient?.id)
-      .setServices(this.appointmentForm.value.medService)
-      .setDateTime(
-        this.dateTimeUtils.getDateFormat(this.appointmentForm.value.startDate)
-        + ' - ' +
-        this.appointmentForm.value.startTime
-      )
-      .setAnimal(newAnimalInfo)
-      .setLocation(this.doctor.location)
-      .setUserEmail(this.selectedPatient.email)
-      .setPhone(this.selectedPatient.phone)
-      .setIsAppointmentFinished(false)
-      .setIsUserCreated(false)
-      .setIsCanceledByUser(false)
-      .setIsConfirmedByDoctor(true)
-      .setAnimalAppointmentId(animalAppointmentId)
-      .setTimestamp(this.appointmentForm.value.startDate.getTime());
-    // todo set Timestamp is correct?
-  }
-
-  getAnimalAppointmentPayload(doctorAppointmentId: string, animalAppointmentId: string, animalInfo: any): any {
-    let userPhoneNumber = '+4';
-    if (this.selectedPatient.phone.length === 10) {
-      // this change is made for sms notification!! - also validate on cloud functions to make sure that the phone respects this prefix
-      userPhoneNumber += this.selectedPatient.phone;
-    }
-    return {
-      isCanceled: false,
-      animalName: animalInfo.name,
-      dateTime: this.dateTimeUtils.getDateFormat(this.appointmentForm.value.startDate) + ' - ' +
-        this.appointmentForm.value.startTime,
-      doctorId: this.doctor.id,
-      doctorName: this.doctor.doctorName,
-      location: this.doctor.location,
-      service: this.appointmentForm.value.medService,
-      doctorAppointmentId: doctorAppointmentId,
-      timestamp: this.appointmentForm.value.startDate.getTime(),
-      email: this.selectedPatient.email,
-      phone: userPhoneNumber,
-      userId: this.selectedPatient?.id,
-      id: animalAppointmentId
-    }
-  }
-
-  isAnimalRegisteredToUser(): boolean {
-    if (this.animals && this.animals.length !== 0) {
-      const filteredAnimals = this.animals.filter((animal) => {
-        return animal.animalName === this.appointmentForm.value.animalName;
-      });
-
-      return filteredAnimals.length > 0;
-    } else {
-      return false;
-    }
   }
 
   validateTime(): void {
     const currentTime = new Date();
     const currentHours = currentTime.getHours();
     // const currentMinutes = currentTime.getMinutes();
-    // todo check when doctor has last appointment - set in dropdown only available hours?
-    // todo - add start hour/ end hour? - if doctor wants to block 2 hours for an appointment what he'll do?
     if (this.stepHour === null
       || this.stepMinute === null
       || !this.dateTimeUtils.isSelectedDateGreaterOrEqualComparedToCurrentDate(this.dateTimeUtils.getDateFormat(this.appointmentForm.value.startDate))
@@ -239,35 +241,36 @@ export class DoctorAppointmentModalComponent implements OnInit {
     this.appointmentForm.controls.startTime.setValue(this.dateTimeUtils.formatTime(this.stepHour, this.stepMinute));
   }
 
-  onCancelForm(isAppointmentSuccess: boolean): void {
-    this.dialogRef.close(isAppointmentSuccess);
+  setDateAndHoursToForm() {
+    let appMinutes;
+    let appHour;
+    if (this.data.date.getMinutes() > 0 && this.data.date.getMinutes() < 30) {
+      appMinutes = 30
+      appHour = this.data.date.getHours();
+    } else {
+      appMinutes = 0;
+      appHour = this.data.date.getHours() + 1;
+    }
+    this.data.date.setHours(appHour);
+    this.data.date.setMinutes(appMinutes);
+    this.stepHour = appHour;
+    this.stepMinute = appMinutes;
+    this.selectedDate = new Date(this.data.date);
   }
 
-  filterClients(searchText: string): void {
-    // todo - filter patient after email?
-    let subscription: Subscription;
-    if (this.appointmentFormService.filterClients(searchText)) {
-      subscription = this.appointmentFormService.filterClients(searchText).subscribe((users: any) => {
-        if (searchText.length > 2 && users.length === 0) {
-          this.setErrorMessage(APPOINTMENTFORM_DATA.patientDoesNotExist);
-        } else {
-          subscription?.unsubscribe();
-          this.setErrorMessage('');
-        }
-        this.users = users;
-      });
+  setUserAnimalData() {
+    if (this.data && this.data.userData && this.data.animalData) {
+      this.appointmentForm.controls.patientName.setValue(this.data.userData.name);
+      this.appointmentForm.controls.patientPhone.setValue(this.data.userData.phone);
+      this.appointmentForm.controls.patientEmail.setValue(this.data.userData.email);
+      this.appointmentForm.controls.animalName.setValue(this.data.animalData.name);
+      this.animals = this.data.userData.animals;
+      this.selectedAnimal.animalName = this.data.animalData.name;
+      this.selectedAnimal.animalId = this.data.animalData.id;
+      this.selectedPatient.clientId = this.data.userData.id;
+      this.selectedPatient.email = this.data.userData.email;
+      this.selectedPatient.clientPhone = this.data.userData.phone;
     }
-  }
-
-  filterAnimals(searchText: string): void {
-    if (!this.animals || this.animals.length === 0) {
-      this.selectedAnimal.animalName = searchText;
-      this.isErrorDisplayed = false;
-      return;
-    }
-    this.filteredAnimals = this.animals.filter((animal) => {
-      return animal.animalName.toLowerCase().startsWith(searchText.toLowerCase());
-    });
   }
 
   setErrorMessage(value: string): void {
@@ -278,37 +281,6 @@ export class DoctorAppointmentModalComponent implements OnInit {
       this.isErrorDisplayed = true;
       this.errorMessage = value;
       throw value;
-    }
-  }
-
-  onSelectPatient(selectedPatient: IUserDTO | any): void {
-    this.selectedPatient = selectedPatient;
-    this.appointmentForm.controls.patientName.setValue(selectedPatient.name);
-    this.appointmentForm.controls.patientPhone.setValue(selectedPatient.phone);
-    this.appointmentForm.controls.patientEmail.setValue(selectedPatient.email);
-    this.patientListElem.nativeElement.classList.add('hide');
-    this.animals = selectedPatient.animals;
-    this.filteredAnimals = this.animals;
-  }
-
-  onSelectAnimal(animal: any): void {
-    this.appointmentForm.controls.animalName.setValue(animal.animalName);
-    this.selectedAnimal = animal;
-    this.animalListElem.nativeElement.classList.add('hide');
-  }
-
-  onFocusAnimal(): void {
-    if (this.selectedPatient && (!this.animals || this.animals.length === 0)) {
-      this.setErrorMessage(APPOINTMENTFORM_DATA.userDoesNotHaveAnimal);
-    }
-    if (this.animalListElem.nativeElement.classList.contains('hide')) {
-      this.animalListElem.nativeElement.classList.remove('hide');
-    }
-  }
-
-  onFocusPatient(): void {
-    if (this.patientListElem.nativeElement.classList.contains('hide')) {
-      this.patientListElem.nativeElement.classList.remove('hide');
     }
   }
 }

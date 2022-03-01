@@ -7,7 +7,8 @@
       <label>{{ appointmentFormPlaceHolder.dateLabel }}</label>
       <div class="d-flex">
         <input matInput class="form-control" [min]="minDate" [matDatepicker]="picker" formControlName="startDate"
-               [placeholder]="appointmentFormPlaceHolder.dateFormat" [(ngModel)]="selectedDate" (ngModelChange)="onStartDateChange($event)">
+               [placeholder]="appointmentFormPlaceHolder.dateFormat" [(ngModel)]="selectedDate"
+               (ngModelChange)="onStartDateChange($event)">
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       </div>
       <mat-datepicker #picker color="accent"></mat-datepicker>
@@ -41,9 +42,11 @@
         <li class=" list-group-item list-group-item-action pointer dropdown-elem"
             *ngFor="let user of users"
             (click)="onSelectPatient(user)">
-          {{ user.name }}
+          {{ user.clientName }}
         </li>
       </ul>
+      <label for="phone">{{appointmentFormPlaceHolder.SEARCH_BY_PHONE_LABEL}}</label>
+      <input type="checkbox" [(ngModel)]="isSearchingByPhone" [ngModelOptions]="{standalone: true}">
     </div>
     <div class="m-btn-small">
       <label for="animal">{{ appointmentFormPlaceHolder.animalSelectDefaultOption }}</label>

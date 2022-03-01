@@ -29,7 +29,7 @@ export class CreateUserDialogComponent implements OnInit {
   initForm() {
     this.doctorCreatesUserForm = new FormGroup({
       patientName: new FormControl(null, Validators.required),
-      animalName: new FormControl(null),
+      animalName: new FormControl(null, Validators.required),
       patientPhone: new FormControl(null, [Validators.required, Validators.minLength(10), Validators.pattern(INPUT_REGEX_TEXTS.phoneNumber)]),
       patientEmail: new FormControl(null, [Validators.required, Validators.pattern(INPUT_REGEX_TEXTS.email)]),
     });
@@ -44,13 +44,18 @@ export class CreateUserDialogComponent implements OnInit {
     this.errorMessage = '';
 
     const userDataPayload = {
+      animals: [{
+        animalName: this.doctorCreatesUserForm.controls.animalName.value,
+        animalId: null
+      }],
+      city: '-',
       email: this.doctorCreatesUserForm.controls.patientEmail.value,
       phone: this.doctorCreatesUserForm.controls.patientPhone.value,
+      photo: '',
       name: this.doctorCreatesUserForm.controls.patientName.value,
-      animalName: this.doctorCreatesUserForm.controls.animalName.value,
+      id: this.doctorCreatesUserForm.controls.patientPhone.value
     }
 
-    // todo check for user to be authenticated
     this.userService.createUserByDoctorAuthAndSaveAnimal(userDataPayload, this.dialogRef);
   }
 

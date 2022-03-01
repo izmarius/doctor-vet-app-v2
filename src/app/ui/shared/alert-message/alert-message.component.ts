@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from "@angular/material/snack-bar";
 import {UiErrorInterceptorService} from "./services/ui-error-interceptor.service";
+import {take} from "rxjs/operators";
 
 @Component({
   selector: 'app-alert-message',
@@ -17,7 +18,8 @@ export class AlertMessageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.uiInterceptor.uiError.subscribe((alert) => {
+    this.uiInterceptor.uiError
+      .subscribe((alert) => {
       if (alert?.message) {
         this.openSnackBar(alert.message, alert.class);
       }

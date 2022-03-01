@@ -12,6 +12,7 @@ import {
 } from "../../shared-data/Constants";
 import {DOCTOR_SERVICES} from "../../shared-data/DoctorServicesConstants";
 import {LocationService} from "../../services/location-service/location.service";
+import {take} from "rxjs/operators";
 
 @Component({
   selector: 'app-my-profile',
@@ -56,10 +57,11 @@ export class MyProfileComponent implements OnInit {
     this.county = county;
     this.locality = '';
     this.locationService.getCitiesByCountyCode(this.countiesAbbr[county])
+      .pipe(take(1))
       .subscribe((response: any) => {
         this.localities = response
       }, error => {
-        console.log(error);
+        console.error(error);
       });
   }
 
@@ -180,10 +182,8 @@ export class MyProfileComponent implements OnInit {
 
   onEditDoctorFormSubmit(): void {
     if (!this.isDataChanged()) {
-      console.log('datele nu s au modificat');
       return;
     } else if (!this.locality) {
-      console.log('Trebuie selectata o localitate');
       return;
     }
 
@@ -204,7 +204,7 @@ export class MyProfileComponent implements OnInit {
         this.isFormValid = true;
       }, 5000);
     }).catch((err) => {
-      console.log(err);
+      console.error(err);
     });
   }
 
