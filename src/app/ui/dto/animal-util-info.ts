@@ -1,6 +1,17 @@
+export interface IAnimalDoc {
+  animalSex: 'F'| 'M' | string,
+  age: number,
+  birthDay: string,
+  bloodType: string,
+  id?: string,
+  isAnimalSterilized: boolean
+  name: string,
+  weight: number
+}
+
 export interface IAnimalUserInfo {
   animalName: string;
-  animalId: string;
+  animalId: string | null;
 }
 export class AnimalUtilInfo {
   name: string;
