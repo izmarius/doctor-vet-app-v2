@@ -1,5 +1,8 @@
+import {IAnimalUserInfo} from "../../dto/animal-util-info";
+
 export interface IUserDTO {
-  id: string;
+  animals: IAnimalUserInfo[];
+  id?: string;
   city: string;
   email: string;
   name: string;

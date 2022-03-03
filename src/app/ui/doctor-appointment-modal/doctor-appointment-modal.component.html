@@ -65,13 +65,13 @@
     </div>
     <div class="m-btn-small">
       <label for="phone">{{ appointmentFormPlaceHolder.patientPhoneLabel }}</label>
-      <input type="text" id="phone" class="form-control"
+      <input type="text" id="phone" class="form-control" autocomplete="off"
              formControlName="patientPhone" maxlength="10"
              [placeholder]="appointmentFormPlaceHolder.patientPhonePlaceholder"/>
     </div>
     <div class="m-btn-small">
       <label for="email">{{ appointmentFormPlaceHolder.patientEmailLabel }}</label>
-      <input type="text" id="email" class="form-control"
+      <input type="text" autocomplete="off" id="email" class="form-control"
              formControlName="patientEmail"
              [placeholder]="appointmentFormPlaceHolder.patientEmailPlaceholder"/>
     </div>

@@ -3,6 +3,7 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {ANIMAL_FORM_TEXT} from "../../../shared-data/Constants";
 import {DateUtilsService} from "../../../data/utils/date-utils.service";
 import {take} from "rxjs/operators";
+import {IAnimalDoc} from "../../dto/animal-util-info";
 
 @Component({
   selector: 'app-animal-form',
@@ -14,10 +15,11 @@ export class AnimalFormComponent implements OnInit {
   isEditButtonActive: boolean = false;
   animalFormGroup!: FormGroup;
   animalFormText: any;
-  @Output() animalPayloadEmitter = new EventEmitter();
+  @Output() animalPayloadEmitter = new EventEmitter<IAnimalDoc>();
   isAnimalOfMasculineSex: boolean = false;
   isAnimalOfFeminineSex: boolean = true;
   isAnimalSterilized = false;
+  isSterilizedNotChanged: boolean = true;
   isErrorDisplayed = false;
   errorMessage = '';
   maxDate = new Date();
@@ -44,7 +46,6 @@ export class AnimalFormComponent implements OnInit {
       bloodType = this.animalFormInputData.bloodType;
       name = this.animalFormInputData.name;
       weight = this.animalFormInputData.weight;
-      this.isAnimalSterilized = this.animalFormInputData.isAnimalSterilized;
       this.isAnimalOfFeminineSex = this.animalFormInputData.isAnimalOfFeminineSex;
       this.isAnimalOfMasculineSex = !this.animalFormInputData.isAnimalOfFeminineSex;
     }
@@ -56,6 +57,11 @@ export class AnimalFormComponent implements OnInit {
       name: new FormControl(name, Validators.required),
       weight: new FormControl(weight, Validators.required),
     });
+  }
+
+  isSubmitButtonDisabled(): boolean {
+    console.log(!this.animalFormGroup.valid && this.isSterilizedNotChanged);
+    return !this.animalFormGroup.valid && this.isSterilizedNotChanged;
   }
 
   onAnimalFormSubmit(): void {

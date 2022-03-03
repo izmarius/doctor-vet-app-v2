@@ -125,8 +125,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
       .pipe(take(1))
       .subscribe((doctor: any) => {
         this.doctor = doctor;
-        localStorage.removeItem(USER_LOCALSTORAGE);
-        localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.doctor));
+        this.userService.setUserDataToLocalStorage(this.doctor);
       });
   }
 

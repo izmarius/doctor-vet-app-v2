@@ -1,6 +1,6 @@
 export interface BatchDocuments {
   collection: string,
-  docId: string,
+  docId: string | null,
   payload: any,
   action: any
 }

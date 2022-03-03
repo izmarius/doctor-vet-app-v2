@@ -4,6 +4,8 @@ import {DOCTOR_CREATES_NEW_USER, INPUT_REGEX_TEXTS} from "../../shared-data/Cons
 import {MatDialogRef} from "@angular/material/dialog";
 import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-error-interceptor.service";
 import {UserService} from "../user-profile/services/user.service";
+import {IUsersDoctors} from "../../services/users-of-doctor/users-doctors-interface";
+import {IUserDTO} from "../user-profile/dto/user-dto";
 
 @Component({
   selector: 'app-create-user-dialog',
@@ -43,18 +45,15 @@ export class CreateUserDialogComponent implements OnInit {
     this.isErrorDisplayed = false;
     this.errorMessage = '';
 
-    const userDataPayload = {
-      animals: [{
-        animalName: this.doctorCreatesUserForm.controls.animalName.value,
-        animalId: null
-      }],
-      city: '-',
-      email: this.doctorCreatesUserForm.controls.patientEmail.value,
-      phone: this.doctorCreatesUserForm.controls.patientPhone.value,
-      photo: '',
-      name: this.doctorCreatesUserForm.controls.patientName.value,
-      id: this.doctorCreatesUserForm.controls.patientPhone.value
-    }
+    const userDataPayload = this.userService.getUserPayload(
+      this.doctorCreatesUserForm.controls.animalName.value,
+      null,
+      '-',
+      this.doctorCreatesUserForm.controls.patientEmail.value,
+      this.doctorCreatesUserForm.controls.patientName.value,
+      this.doctorCreatesUserForm.controls.patientPhone.value,
+      ''
+    )
 
     this.userService.createUserByDoctorAuthAndSaveAnimal(userDataPayload, this.dialogRef);
   }

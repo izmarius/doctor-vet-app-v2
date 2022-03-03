@@ -24,35 +24,25 @@ export class UsersOfDoctorService {
     this.doctor = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
   }
 
+  addUsersOfDoctorsToLocalStorageList(usersDoctorPayload: IUsersDoctors) {
+    let usersList: IUsersDoctors[] = JSON.parse(<string>localStorage.getItem(USERS_DOCTORS));
+    usersList.push(usersDoctorPayload);
+    this.resetUserDoctorLocalStorageList(usersList);
+  }
+
   addUserToDoctorList(user: any, isClientRegistered: boolean): Promise<any> | null {
-    if (!this.doctor || !this.doctor.id) {
+    if (this.isUserInDoctorsList(user)) {
       this.uiAlert.setUiError({
         class: UI_ALERTS_CLASSES.ERROR,
-        message: UI_USERS_OF_DOCTOR_MSGS.NO_LOGGED_IN_DOCTOR
+        message: UI_USERS_OF_DOCTOR_MSGS.ERROR_CLIENT_ALREADY_EXISTS
       });
-    }
-    const usersList: any[] = JSON.parse(<string>localStorage.getItem(USERS_DOCTORS));
-    if (this.isUserInDoctorsList(usersList, user)) {
       return null;
     }
-    const usersDoctorPayload: IUsersDoctors = {
-      animals: user.animals,
-      clientId: user.id,
-      clientName: user.name,
-      clientPhone: user.phone,
-      doctorId: this.doctor.id,
-      doctorName: this.doctor.doctorName,
-      isClientRegisteredInApp: isClientRegistered,
-      id: this.firestore.getNewFirestoreId()
-    }
-
-    return this.firestore.saveDocumentWithGeneratedFirestoreId(this.USERS_OF_DOCTOR_COLLECTION, usersDoctorPayload.id,  usersDoctorPayload)
+    const usersDoctorPayload: IUsersDoctors = this.getUserOfDoc(user, this.doctor, isClientRegistered)
+    return this.firestore.saveDocumentWithGeneratedFirestoreId(this.USERS_OF_DOCTOR_COLLECTION, usersDoctorPayload.id, JSON.parse(JSON.stringify(usersDoctorPayload)))
       .then(() => {
-        usersList.push(usersDoctorPayload);
-        localStorage.removeItem(USERS_DOCTORS);
-        localStorage.setItem(USERS_DOCTORS, JSON.stringify(usersList));
+        this.addUsersOfDoctorsToLocalStorageList(usersDoctorPayload);
         // todo refactor here and send only the modified element - not urgent
-        this.userListService.setUsersDoctorList(usersList);
       }).catch((error: any) => {
         console.error(error);
         this.uiAlert.setUiError({
@@ -63,43 +53,37 @@ export class UsersOfDoctorService {
   }
 
   deleteUsersOfDoctors(userDoctor: any) {
-    this.firestore.deleteWhereClause(this.USERS_OF_DOCTOR_COLLECTION, 'clientPhone', userDoctor.phone, 'doctorId', this.doctor.id)
-      .pipe(take(1))
-      .subscribe((res) => {
-        let usersList: any[] = JSON.parse(<string>localStorage.getItem(USERS_DOCTORS));
-        res.docs.forEach((doc: any) => {
-          doc.ref.delete();
-          usersList = usersList.filter((userOfDoctor) => {
-            return userOfDoctor.clientPhone !== doc.data().clientPhone;
-          });
-        });
-        localStorage.removeItem(USERS_DOCTORS);
-        localStorage.setItem(USERS_DOCTORS, JSON.stringify(usersList));
-        this.userListService.setUsersDoctorList(usersList);
-      }, (error: any) => {
-        console.error(error)
-        ;this.uiAlert.setUiError({
-          class: UI_ALERTS_CLASSES.ERROR,
-          message: UI_USERS_OF_DOCTOR_MSGS.ERROR_DELETING_CLIENT_FROM_LIST
-        });
-      })
+    return this.firestore.deleteWhereClauseWithOneKeyValuePair(this.USERS_OF_DOCTOR_COLLECTION, 'id', userDoctor.docId);
   }
 
-  getUserOfDoc(user: any, isClientRegistered: boolean){
+  deleteUsersOfDoctorsFromLocalStorageList(user: any) {
+    const usersList: any[] = JSON.parse(<string>localStorage.getItem(USERS_DOCTORS));
+    usersList.forEach((userDoctor, index) => {
+      if (userDoctor.clientPhone === user.phone) {
+        usersList.splice(index, 1);
+        return;
+      }
+    });
+    this.resetUserDoctorLocalStorageList(usersList);
+  }
+
+  getUserOfDoc(user: any, doctor: any, isClientRegistered: boolean): IUsersDoctors {
     return {
       animals: user.animals,
       clientId: user.id,
       clientName: user.name,
       clientPhone: user.phone,
-      doctorId: this.doctor.id,
-      doctorName: this.doctor.doctorName,
+      doctorId: doctor.id,
+      doctorName: doctor.doctorName,
+      id: this.firestore.getNewFirestoreId(),
       isClientRegisteredInApp: isClientRegistered
     }
   }
 
-  isUserInDoctorsList(usersList: any[], user: any) {
+  isUserInDoctorsList(user: any) {
+    const usersList: any[] = JSON.parse(<string>localStorage.getItem(USERS_DOCTORS));
     const existingClient = usersList.find((currentClient: any) => {
-      return currentClient.clientPhone === user.phone && currentClient.doctorId === this.doctor.id;
+      return currentClient.clientPhone === user.phone && currentClient.clientName === user.name && currentClient.doctorId === this.doctor.id;
     });
     if (existingClient) {
       this.uiAlert.setUiError({
@@ -155,6 +139,35 @@ export class UsersOfDoctorService {
             return user;
           });
         }));
+  }
+
+  setAnimalsToUserOfDoctorList(userData: any, clientKey = 'clientId', userDataKey = 'id') {
+    let clientList: IUsersDoctors[] = JSON.parse(<string>localStorage.getItem(USERS_DOCTORS));
+    clientList.forEach((client, index) => {
+      // @ts-ignore
+      if (client[clientKey] === userData[userDataKey]) {
+        client.animals = userData.animals
+        return;
+      }
+    });
+    this.resetUserDoctorLocalStorageList(clientList);
+  }
+
+  resetUserDoctorLocalStorageList(usersList: IUsersDoctors[] | null = null) {
+    if (!usersList) {
+      usersList = JSON.parse(<string>localStorage.getItem(USERS_DOCTORS));
+    }
+    this.resetOnlyLocalStorage(usersList);
+    this.userListService.setUsersDoctorList(usersList);
+  }
+
+  resetOnlyLocalStorage(clientList: IUsersDoctors[] | null = null) {
+    if (!clientList) {
+      clientList = JSON.parse(<string>localStorage.getItem(USERS_DOCTORS));
+    }
+    localStorage.removeItem(USERS_DOCTORS)
+    localStorage.setItem(USERS_DOCTORS, JSON.stringify(clientList));
+    return this;
   }
 
   updateUserOfDoctor(docId: string, payload: any) {

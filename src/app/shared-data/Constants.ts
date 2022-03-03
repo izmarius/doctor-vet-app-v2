@@ -349,7 +349,7 @@ export const UI_ALERT_MESSAGES = {
 
 export const UI_USERS_OF_DOCTOR_MSGS = {
   CREATE_AN_ACCOUNT_FOR_USER: 'Userii fara cont nu au datele animalelor salvate. Pentru a le salva, sterge userul din lista ta si creeaza-i un cont.',
-  ERROR_CLIENT_ALREADY_EXISTS: 'Clientul cu acest numar de telefon exista deja si nu poate fi adaugat de doua ori!',
+  ERROR_CLIENT_ALREADY_EXISTS: 'Clientul exista deja si nu poate fi adaugat de doua ori!',
   ERROR_DELETING_CLIENT_FROM_LIST: 'Clientul nu a putut fi sters din lista, te rugam sa incerci din nou!',
   ERROR_GETTING_ANIMAL_DATA: 'Animalul nu a fost gasit sau a aparut o eroare la conexiunea la server.',
   ERROR_GETTING_ANIMAL_MEDICAL_HISTORY: 'Animalul nu are istoric medical sau a aparut o eroare la conexiunea la server.',
@@ -358,6 +358,8 @@ export const UI_USERS_OF_DOCTOR_MSGS = {
   ERROR_SAVING_USERS_DOCTORS: 'A aparut o problema la salvarea acestui client. Te rugam sa incerci din nou!',
   ERROR_UPDATING_ANIMALS_OF_USERS_DOCTORS: 'A aparut o problema la salvarea acestui animal. Te rugam sa incerci din nou!',
   NO_LOGGED_IN_DOCTOR: 'Sesiunea ta a expirat, te rugam sa te loghezi in aplicatie',
+  SUCCESS_ADDING_ANIMAL_TO_USER_WITHOUT_ACCOUNT: 'Animalul a fost adaugat cu success!',
+  SUCCESS_DELETING_USER_FROM_LIST: 'Clientul a fost sters cu succes!',
 }
 
 export const USER_ANIMAL_DIALOG = {
@@ -397,6 +399,7 @@ export const USER_STATE = {
 }
 
 export const USER_SERVICE = {
+  ADD_USER_WITH_SERVER_ERROR: 'A aparut o eroare de server. Te rugam sa incerci din nou, iar daca problema persista contacteaza un administrator.',
   ADD_ANIMAL_TO_USER_WITH_SUCCESS: 'Animalul a fost adaugat cu succes',
   ADD_ANIMAL_TO_USER_WITH_ERROR: 'A aparut o eroare, te rugam sa incerci din nou',
   addUserError: 'Userul nu a putut fi creat, te rugam sa incerci din nou',
@@ -404,7 +407,7 @@ export const USER_SERVICE = {
   deleteUserError: 'Userul nu a putut fi sters, te rugam sa incerci din nou',
   deleteUserSuccess: 'Userul a fost sters cu succes',
   USER_ALREADY_EXISTS: 'Userul este deja inregistrat',
-  USER_ALREADY_EXISTS_WITH_EMAIL: 'Userul este deja inregistrat cu acest numar de telefon',
+  USER_ALREADY_EXISTS_WITH_EMAIL: 'Userul este deja inregistrat cu acest email',
 }
 
 export const USERS_DOCTOR_PAGE_CONST = {

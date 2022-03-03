@@ -54,6 +54,8 @@ export class MyAnimalsComponent implements OnInit {
 
   saveNewAnimal(animalPayload: any): void {
     // todo : getUserOf Doctor and send Id to update
-    this.userService.updateUserWithAnimalData(animalPayload, this.user, '');
+    this.userService.updateUserWithAnimalData(animalPayload, this.user).then(() => {
+      this.userService.setUserDataToLocalStorage(this.user);
+    });
   }
 }

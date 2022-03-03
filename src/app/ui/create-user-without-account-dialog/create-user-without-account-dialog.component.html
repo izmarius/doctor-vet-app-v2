@@ -6,19 +6,19 @@
     <div class="m-btn-small">
       <label>{{doctorCreatesUserText.patientLabel}}</label>
       <input type="text" id="patient" class="form-control"
-             formControlName="patientName"
+             formControlName="patientName" autocomplete="off"
              [placeholder]="doctorCreatesUserText.patientNamePlaceholder"/>
     </div>
     <div class="m-btn-small">
       <label>{{doctorCreatesUserText.phoneLabel}}</label>
       <input type="text" id="phone" class="form-control" maxlength="10"
-             formControlName="patientPhone"
+             formControlName="patientPhone" autocomplete="off"
              [placeholder]="doctorCreatesUserText.phonePlaceholder"/>
     </div>
     <div class="m-btn-small">
       <label>{{doctorCreatesUserText.animalNameLabel}}</label>
       <input type="text" id="animalName" class="form-control"
-             formControlName="animalName"
+             formControlName="animalName" autocomplete="off"
              [placeholder]="doctorCreatesUserText.animalNamePlaceholder"/>
     </div>
     <p class="error-msg m-top-small" *ngIf="isErrorDisplayed">

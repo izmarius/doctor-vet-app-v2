@@ -2,22 +2,22 @@ import {map, take, mergeMap, debounceTime, distinctUntilChanged} from 'rxjs/oper
 import {Injectable} from '@angular/core';
 import {FirestoreService} from 'src/app/data/http/firestore.service';
 import {Observable, of} from 'rxjs';
-import {UserDTO} from "../dto/user-dto";
+import {IUserDTO, UserDTO} from "../dto/user-dto";
 import {UiErrorInterceptorService} from "../../shared/alert-message/services/ui-error-interceptor.service";
 import {
   FIREBASE_ERRORS,
   UI_ALERTS_CLASSES,
   USER_LOCALSTORAGE,
   USER_SERVICE,
-  USERS_DOCTORS
 } from "../../../shared-data/Constants";
 import {FirebaseUtilsService} from "../../../services/firebase-utils-service/firebase-utils.service";
 import {DateUtilsService} from "../../../data/utils/date-utils.service";
 import {AngularFireAuth} from "@angular/fire/auth";
 import {AngularFireFunctions} from "@angular/fire/functions";
 import {UsersOfDoctorService} from "../../../services/users-of-doctor/users-of-doctor.service";
-import {UsersDoctorsListService} from "../../../services/usersDoctorsObservableService/usersDoctorsListService";
 import {BatchService} from "../../../services/batch/batch.service";
+import {MatDialogRef} from "@angular/material/dialog";
+import {IAnimalDoc} from "../../dto/animal-util-info";
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +25,6 @@ import {BatchService} from "../../../services/batch/batch.service";
 export class UserService {
   private ANIMAL_COLLECTION = '/animals';
   private DOCTORS_COLLECTION = 'doctors';
-  private DEFAULT_PASS = 'bunvenit123';
   private doctor: any;
   private USER_COLLECTION = 'user/';
 
@@ -37,7 +36,6 @@ export class UserService {
               private afAuth: AngularFireAuth,
               private functions: AngularFireFunctions,
               private usersDoctorsService: UsersOfDoctorService,
-              private userDoctorListService: UsersDoctorsListService
   ) {
     this.doctor = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
   }
@@ -102,76 +100,88 @@ export class UserService {
     return of([])
   }
 
-  private getAnimalDoc(userData: any) {
+  private getAnimalDoc(userData: any): IAnimalDoc {
     return {
-      id: userData.animals[0].animalId,
-      birthDay: '-',
-      bloodType: '-',
+      animalSex: 'F',
       age: 0,
+      birthDay: this.dateUtils.getDateFormat(new Date()),
+      bloodType: '-',
+      id: userData.animals[0].animalId,
+      isAnimalSterilized: false,
       name: userData.animals[0].animalName,
       weight: 0
     }
   }
 
-  createUserWithEmailAndPassword(user: any): Observable<any> {
+  getUserPayload(animalName: string, animalId: string | null, city: string, email: string, name: string, phone: string, photo: string): IUserDTO {
+    return {
+      animals: [{
+        animalName,
+        animalId
+      }],
+      city,
+      email,
+      name,
+      phone,
+      photo,
+    }
+  }
+
+  createUserWithEmailAndPassword(user: any):
+    Observable<any> {
     const userAuthPayload = {
       email: user.email,
-      password: this.DEFAULT_PASS
     }
     const createUser = this.functions.httpsCallable('createUserByDoctor');
     return createUser(userAuthPayload);
   }
 
-  createUserByDoctorAuthAndSaveAnimal(userData: any, dialog: any): void {
-
+  createUserByDoctorAuthAndSaveAnimal(userData: IUserDTO, dialog: MatDialogRef<any>): void {
     userData.animals[0].animalId = this.firestoreService.getNewFirestoreId();
     this.createUserWithEmailAndPassword(userData)
       .pipe(take(1))
       .subscribe(() => {
-          this.firestoreService.saveDocumentWithGeneratedFirestoreId(this.USER_COLLECTION, userData.id, JSON.parse(JSON.stringify(userData)))
+          userData.id = this.firestoreService.getNewFirestoreId();
+          if (this.usersDoctorsService.isUserInDoctorsList(userData)) {
+            this.usersDoctorsService.deleteUsersOfDoctorsFromLocalStorageList(userData);
+          }
+          const userOfDocPayload = this.usersDoctorsService.getUserOfDoc(userData, this.doctor, true);
+          let userToDoctorListBatchDocument = this.batchService.getMapper(
+            'users-doctors',
+            userOfDocPayload.id,
+            userOfDocPayload,
+            'set');
+
+          const setUserDataBatchDoc = this.batchService.getMapper(
+            this.USER_COLLECTION,
+            userData.id,
+            JSON.parse(JSON.stringify(userData)),
+            'set');
+
+          const animalToUserBatch = this.batchService.getMapper(
+            this.USER_COLLECTION + userData.id + this.ANIMAL_COLLECTION,
+            userData.animals[0].animalId,
+            this.getAnimalDoc(userData),
+            'set');
+
+          const batchList = !userToDoctorListBatchDocument ? [setUserDataBatchDoc, animalToUserBatch] : [setUserDataBatchDoc, animalToUserBatch, userToDoctorListBatchDocument]
+
+          this.batchService.createBatch(batchList)
             .then(() => {
-              // todo : refactor here - to ugly
-              const usersList: any[] = JSON.parse(<string>localStorage.getItem(USERS_DOCTORS));
-              let userToDoctorListBatchDocument = null;
-              if (!this.usersDoctorsService.isUserInDoctorsList(usersList, userData)) {
-                const userOdDocPayload = this.usersDoctorsService.getUserOfDoc(userData, true)
-                userToDoctorListBatchDocument = this.batchService.getMapper(
-                  'users-doctors',
-                  this.firestoreService.getNewFirestoreId(),
-                  userOdDocPayload,
-                  'set');
-              }
-
-              const animalToUserBatch = this.batchService.getMapper(
-                this.USER_COLLECTION + userData.id + this.ANIMAL_COLLECTION,
-                userData.animals[0].animalId,
-                this.getAnimalDoc(userData),
-                'set');
-
-              const batchList = !userToDoctorListBatchDocument ? [animalToUserBatch] : [animalToUserBatch, userToDoctorListBatchDocument]
-
-              this.batchService.createBatch(batchList)
-                .then(() => {
-                  this.firebaseUtils.resendValidationEmail();
-                  this.uiAlertInterceptor.setUiError({
-                    message: USER_SERVICE.addUserSuccess,
-                    class: UI_ALERTS_CLASSES.SUCCESS
-                  });
-                }).catch((error) => {
-                this.uiAlertInterceptor.setUiError({
-                  message: USER_SERVICE.addUserError,
-                  class: UI_ALERTS_CLASSES.SUCCESS
-                });
-                console.error("ERROR", error);
-              })
-              dialog.close();
-            }).catch((error: any) => {
-            console.error('Error: ', error);
+              this.usersDoctorsService.addUsersOfDoctorsToLocalStorageList(userOfDocPayload)
+              this.firebaseUtils.resendValidationEmail();
+              this.uiAlertInterceptor.setUiError({
+                message: USER_SERVICE.addUserSuccess,
+                class: UI_ALERTS_CLASSES.SUCCESS
+              });
+            }).catch((error) => {
             this.uiAlertInterceptor.setUiError({
               message: USER_SERVICE.addUserError,
-              class: UI_ALERTS_CLASSES.ERROR
+              class: UI_ALERTS_CLASSES.SUCCESS
             });
-          });
+            console.error("ERROR", error);
+          })
+          dialog.close();
         },
         (error: any) => {
           if (error && FIREBASE_ERRORS[error.code]) {
@@ -180,8 +190,9 @@ export class UserService {
               class: UI_ALERTS_CLASSES.ERROR
             });
           } else {
+            // todo: IMPORTANT : WHY IS THROWN FROM CLOUD FUNCTION AN UNHANDLED ERROR?
             this.uiAlertInterceptor.setUiError({
-              message: error.code,
+              message: USER_SERVICE.USER_ALREADY_EXISTS_WITH_EMAIL,
               class: UI_ALERTS_CLASSES.ERROR
             });
           }
@@ -192,7 +203,8 @@ export class UserService {
     return this.firestoreService.getDocById(this.USER_COLLECTION, userId).pipe(take(1));
   }
 
-  createUser(userDto: any): Promise<void> {
+  createUser(userDto: IUserDTO): Promise<void> {
+    // @ts-ignore
     return this.firestoreService.saveDocumentWithGeneratedFirestoreId(this.USER_COLLECTION, userDto.id, userDto)
       .then(() => {
         this.uiAlertInterceptor.setUiError({message: USER_SERVICE.addUserSuccess, class: UI_ALERTS_CLASSES.SUCCESS});
@@ -202,63 +214,49 @@ export class UserService {
       });
   }
 
-  updateUserInfo(userDto: any, userId: string): Promise<void> {
-    return this.firestoreService.updateDocumentById(this.USER_COLLECTION, userId, userDto)
-      .then(() => {
-      })
-      .catch((error) => {
-        this.uiAlertInterceptor.setUiError({message: error.message, class: UI_ALERTS_CLASSES.ERROR});
-        console.error('Error:', error);
-      });
+  setUserDataToLocalStorage(userData: any) {
+    localStorage.removeItem(USER_LOCALSTORAGE);
+    localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(userData));
   }
 
-  updateUserWithAnimalData(animalPayload: any, userData: any, userDoctorDocId: string): void {
+  updateUserWithAnimalData(animalPayload: any, userData: any): Promise<void> {
     animalPayload.id = this.firestoreService.getNewFirestoreId();
     userData.animals.push({
       animalName: animalPayload.name,
       animalId: animalPayload.id
     });
-    this.updateUserInfo(userData, userData.id)
+
+    const updateUserDataBatchDoc = this.batchService.getMapper(
+      'user',
+      userData.id,
+      userData,
+      'update');
+
+    const animalDataBatchDoc = this.batchService.getMapper(
+      this.USER_COLLECTION + userData.id + this.ANIMAL_COLLECTION,
+      animalPayload.id,
+      animalPayload,
+      'set');
+
+    const updateDoctorDataBatchDoc = this.batchService.getMapper(
+      'users-doctors',
+      userData.docId,
+      {animals: userData.animals},
+      'update');
+
+    return this.batchService.createBatch([updateUserDataBatchDoc, animalDataBatchDoc, updateDoctorDataBatchDoc])
       .then(() => {
-        const animalDataBatchDoc = this.batchService.getMapper(
-          this.USER_COLLECTION + userData.id + this.ANIMAL_COLLECTION,
-          animalPayload.id,
-          animalPayload,
-          'set');
-
-        const updateDoctorDataBatchDoc = this.batchService.getMapper(
-          'users-doctors',
-          userDoctorDocId,
-          {animals: userData.animals},
-          'update');
-
-        this.batchService.createBatch([animalDataBatchDoc, updateDoctorDataBatchDoc])
-          .then(() => {
-            let clientList: any[] = JSON.parse(<string>localStorage.getItem(USERS_DOCTORS));
-            clientList.forEach((client, index) => {
-              if (client.clientId === userData.id) {
-                client.animals = userData.animals
-                return;
-              }
-            });
-            localStorage.removeItem(USERS_DOCTORS)
-            localStorage.setItem(USERS_DOCTORS, JSON.stringify(clientList));
-            localStorage.removeItem(USER_LOCALSTORAGE);
-            localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(userData));
-            this.uiAlertInterceptor.setUiError({
-              message: USER_SERVICE.ADD_ANIMAL_TO_USER_WITH_SUCCESS,
-              class: UI_ALERTS_CLASSES.SUCCESS
-            });
-          }).catch((error: any) => {
-          this.uiAlertInterceptor.setUiError({
-            message: USER_SERVICE.ADD_ANIMAL_TO_USER_WITH_ERROR,
-            class: UI_ALERTS_CLASSES.SUCCESS
-          });
-          console.error(error.message);
+        this.usersDoctorsService.setAnimalsToUserOfDoctorList(userData);
+        this.uiAlertInterceptor.setUiError({
+          message: USER_SERVICE.ADD_ANIMAL_TO_USER_WITH_SUCCESS,
+          class: UI_ALERTS_CLASSES.SUCCESS
         });
       }).catch((error: any) => {
-      this.uiAlertInterceptor.setUiError({message: error.message, class: UI_ALERTS_CLASSES.ERROR});
-      console.error('Error:', error);
-    })
+      this.uiAlertInterceptor.setUiError({
+        message: USER_SERVICE.ADD_ANIMAL_TO_USER_WITH_ERROR,
+        class: UI_ALERTS_CLASSES.SUCCESS
+      });
+      console.error(error.message);
+    });
   }
 }

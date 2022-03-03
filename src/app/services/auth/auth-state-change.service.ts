@@ -38,8 +38,7 @@ export class AuthStateChangeService {
               this.redirectToPageBasedOnUser(userOrDoctor);
             }
             this.loaderService.hide();
-            localStorage.removeItem(USER_LOCALSTORAGE);
-            localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(userOrDoctor));
+            this.userService.setUserDataToLocalStorage(userOrDoctor);
             this.userLoggedInService.setLoggedInUser(JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE)));
           });
       } else if (!user) {

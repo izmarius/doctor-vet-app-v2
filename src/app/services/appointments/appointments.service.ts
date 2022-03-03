@@ -69,8 +69,9 @@ export class AppointmentsService {
 
     const appointmentDTO = this.getUserAnimalInfoAppointmentDTO(appointment, doctor, appointmentId);
     // todo : extract it to another method and use it everywhere
+
     const doctorBatchDocument = this.batchService.getMapper('doctors', doctor.id, {appointmentsMap: doctor.appointmentsMap}, 'update');
-    const appointmentBatchDoc = this.batchService.getMapper(this.APPOINTMENT_COLLECTION, appointmentDTO.id, appointmentDTO, 'set');
+    const appointmentBatchDoc = this.batchService.getMapper(this.APPOINTMENT_COLLECTION, appointmentDTO.id, JSON.parse(JSON.stringify(appointmentDTO)), 'set');
     this.batchService.createBatch([appointmentBatchDoc, doctorBatchDocument])
       .then(() => {
         localStorage.removeItem(USER_LOCALSTORAGE);

@@ -2,9 +2,9 @@
   <div class="sidebar-list" *ngFor="let sidebarObj of sidebarContent">
     <div class="m-btn-small">
       <h2 class="bold-text ">{{sidebarObj.title}}</h2>
-      <button *ngIf="sidebarObj?.buttonText?.length>0" class="btn button--active"
+      <a *ngIf="sidebarObj?.buttonText?.length>0" class="link--active text-decoration-underline"
               (click)="addNewItemIsClicked(sidebarObj.title)"><span
-        class="icon-plus px-2"></span>{{sidebarObj.buttonText}}</button>
+        class="icon-plus px-2"></span>{{sidebarObj.buttonText}}</a>
     </div>
     <ul *ngFor="let link of sidebarObj.list">
       <li [class.list-style-type-none]="isListBullet"

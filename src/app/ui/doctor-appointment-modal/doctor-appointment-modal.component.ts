@@ -1,5 +1,4 @@
 import {Component, Inject, OnInit, ViewChild} from '@angular/core';
-import {IUserDTO} from "../user-profile/dto/user-dto";
 import {AnimalUtilInfo, IAnimalUserInfo} from "../dto/animal-util-info";
 import {DoctorsAppointmentDTO} from "../dto/doctor-appointments-dto";
 import {DoctorService} from "../../services/doctor/doctor.service";
@@ -20,6 +19,7 @@ import {AppointmentsService} from "../../services/appointments/appointments.serv
 import {UsersOfDoctorService} from "../../services/users-of-doctor/users-of-doctor.service";
 import {take} from "rxjs/operators";
 import {BatchService} from "../../services/batch/batch.service";
+import {IUsersDoctors} from "../../services/users-of-doctor/users-doctors-interface";
 
 @Component({
   selector: 'app-doctor-appointment-modal',
@@ -46,7 +46,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
   stepMinute!: number;
   stepHours: any;
   stepHour!: number;
-  public users!: IUserDTO[];
+  public users!: IUsersDoctors[];
   @ViewChild('patientList') patientListElem: any;
   @ViewChild('animalList') animalListElem: any;
 
@@ -82,13 +82,13 @@ export class DoctorAppointmentModalComponent implements OnInit {
     if (!this.isSearchingByPhone) {
       this.usersOfDoctorService.filterUsersOfDoctors(nameOrPhone, '')
         .pipe(take(1))
-        .subscribe((users: any) => {
+        .subscribe((users: IUsersDoctors[]) => {
           this.users = users;
         });
     } else {
       this.usersOfDoctorService.filterUsersOfDoctors('', nameOrPhone)
         .pipe(take(1))
-        .subscribe((users: any) => {
+        .subscribe((users: IUsersDoctors[]) => {
           this.users = users;
         });
     }
@@ -211,8 +211,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
     const doctorBatchDocument = this.batchService.getMapper('doctors', this.doctor.id, {appointmentsMap: this.doctor.appointmentsMap}, 'update');
     this.batchService.createBatch([appointmentBatchDoc, doctorBatchDocument])
       .then(() => {
-        localStorage.removeItem(USER_LOCALSTORAGE);
-        localStorage.setItem(USER_LOCALSTORAGE, JSON.stringify(this.doctor));
+        this.userService.setUserDataToLocalStorage(this.doctor);
         this.uiAlertInterceptor.setUiError({
           message: APPOINTMENTFORM_DATA.successAppointment,
           class: UI_ALERTS_CLASSES.SUCCESS
