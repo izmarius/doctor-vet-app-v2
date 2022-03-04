@@ -50,9 +50,10 @@ export class FirestoreService {
   /**
    * Gets all snapshots of a collection that validates where clauses
    */
-  getCollectionByMultipleWhereClauses(collection: string, timestamp: any): Observable<any> {
+  getCollectionByMultipleWhereClauses(collection: string, timestamp: any, field: string, value: string): Observable<any> {
     return this.dbRef.collection(collection,
       ref => ref.where('timestamp', '>=', timestamp)
+        .where(field, '==', value)
         .where('isCanceledByDoctor', '==', false))
       .stateChanges();
   }

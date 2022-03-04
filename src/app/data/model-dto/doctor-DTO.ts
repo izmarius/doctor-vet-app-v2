@@ -1,5 +1,5 @@
 export class DoctorDTO {
-  public id: string | undefined;
+  public id!: string;
   public clinicId?: string;
   public email!: string;
   public doctorName!: string;

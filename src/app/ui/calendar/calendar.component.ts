@@ -102,7 +102,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   getDoctorAppointments() {
-    this.doctorAppointmentsSub$ = this.appointmentService.getDoctorAppointments()
+    this.doctorAppointmentsSub$ = this.appointmentService.getDoctorAppointments(this.doctor)
       .subscribe((res) => {
         this.resetDoctorAppointmentsMap();
         let newAppointments = res.map((calendarApp: any) => {

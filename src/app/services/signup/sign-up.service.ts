@@ -65,7 +65,9 @@ export class SignUpService {
     return this.afAuth.createUserWithEmailAndPassword(doctorDTO.email, password)
       .then((userCredentials) => {
         userCredentials?.user?.sendEmailVerification();
-        doctorDTO.id = userCredentials?.user?.uid;
+        if (userCredentials?.user?.uid != undefined) { //used != to catch null too
+          doctorDTO.id = userCredentials?.user?.uid;
+        }
         this.doctorService.createDoctor(doctorDTO);
         this.loginService.logIn(doctorDTO.email, password);
       })

@@ -147,10 +147,10 @@ export class AppointmentsService {
     return this.firestoreService.getCollectionByTimestampAndUserId(this.APPOINTMENT_COLLECTION, timestamps, 'userId', userData.id);
   }
 
-  getDoctorAppointments(): Observable<any> {
+  getDoctorAppointments(doctorData: DoctorDTO): Observable<any> {
     const timestamps = this.dateUtils.getDateFromOneMonthAgo();
     // get appointments from 1 month ago
-    return this.firestoreService.getCollectionByMultipleWhereClauses(this.APPOINTMENT_COLLECTION, timestamps)
+    return this.firestoreService.getCollectionByMultipleWhereClauses(this.APPOINTMENT_COLLECTION, timestamps, 'doctorId', doctorData.id)
       .pipe(
         map((appointmentsSnaps) => {
           let appointmentList: any[] = [];
