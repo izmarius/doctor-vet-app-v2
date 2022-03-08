@@ -32,6 +32,8 @@ export class AuthStateChangeService {
           .subscribe((userOrDoctor) => {
             if (!userOrDoctor) {
               this.uiAlertInterceptor.setUiError({message: USER_STATE.patientNotFound, class: UI_ALERTS_CLASSES.ERROR});
+              this.loaderService.hide();
+              return;
             }
             const userFromLocalStorage = localStorage.getItem(USER_LOCALSTORAGE);
             if (!userFromLocalStorage && userOrDoctor) {

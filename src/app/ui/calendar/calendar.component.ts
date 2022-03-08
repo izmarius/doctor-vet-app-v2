@@ -108,6 +108,8 @@ export class CalendarComponent implements OnInit, OnDestroy {
           return this.setAndGetCalendarAppointmentsBasedOnDoctorAndUser(calendarApp);
         });
         //for when we add to db and duplicates comes in 2 separate subscriptions
+        console.log(`Calendar New appointments length : ${newAppointments.length}`);
+
         if (newAppointments.length === 1) {
           this.appointments.forEach((currentApp, i) => {
             if (currentApp.appointment.id === newAppointments[0].appointment.id) {
@@ -115,7 +117,19 @@ export class CalendarComponent implements OnInit, OnDestroy {
             }
           });
         }
+        newAppointments.forEach((app: any)=>{
+          console.log(`Calendar New appointments: ${JSON.stringify(app)}`);
+        })
+
+
+        console.log(`Calendar appointments length BEFORE concat: ${this.appointments.length}`);
+
         this.appointments = this.appointments.concat(newAppointments);
+        newAppointments.forEach((app: any)=>{
+          console.log(`Calendar Final appointments: ${JSON.stringify(app)}`);
+        })
+        console.log(`Calendar appointments length AFTER concat: ${this.appointments.length}`);
+
       });
   }
 

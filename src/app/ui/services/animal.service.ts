@@ -103,7 +103,7 @@ export class AnimalService {
     const batch = this.fireStoreService.getDbRef().batch();
     batch.update(userDocRef, {animals: animals});
     batch.update(animalDocRef, JSON.parse(JSON.stringify(payload)));
-    batch.update(userOfDoctorBatchDocument, {animalData: animals});
+    batch.update(userOfDoctorBatchDocument, {animals: animals});
     return batch.commit();
   }
 

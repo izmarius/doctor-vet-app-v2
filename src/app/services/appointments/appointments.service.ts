@@ -152,12 +152,12 @@ export class AppointmentsService {
     return this.firestoreService.getCollectionByMultipleWhereClauses(this.APPOINTMENT_COLLECTION, timestamps, 'doctorId', doctorData.id)
       .pipe(
         map((appointmentsSnaps) => {
+          debugger;
           let appointmentList: any[] = [];
           appointmentsSnaps.map((appSnap: any) => {
             if (appSnap.type == 'removed') {
               return;
             }
-            // TODO when adding data to db returns duplicates - check
             const appointment = appSnap.payload.doc.data();
             let appointmentDate = new Date(new Date(appointment['dateTime'].split('-')[0].trim()));
             const hour = parseInt(appointment['dateTime'].split('-')[1].trim().split(':')[0], 10)

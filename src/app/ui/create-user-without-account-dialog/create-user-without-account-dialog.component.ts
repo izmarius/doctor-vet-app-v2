@@ -54,7 +54,7 @@ export class CreateUserWithoutAccountDialogComponent implements OnInit {
       phone: this.doctorCreatesUserForm.controls.patientPhone.value,
     }
 
-    const isUserAdded: any = this.usersDoctorsService.addUserToDoctorList(userDataPayload, false);
+    const isUserAdded = this.usersDoctorsService.addUserToDoctorList(userDataPayload, false);
     if (isUserAdded) {
       this.dialogRef.close();
     }
