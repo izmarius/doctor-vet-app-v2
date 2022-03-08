@@ -104,7 +104,6 @@ export class CalendarComponent implements OnInit, OnDestroy {
   getDoctorAppointments() {
     this.doctorAppointmentsSub$ = this.appointmentService.getDoctorAppointments(this.doctor)
       .subscribe((res) => {
-        this.resetDoctorAppointmentsMap();
         let newAppointments = res.map((calendarApp: any) => {
           return this.setAndGetCalendarAppointmentsBasedOnDoctorAndUser(calendarApp);
         });
@@ -117,15 +116,6 @@ export class CalendarComponent implements OnInit, OnDestroy {
           });
         }
         this.appointments = this.appointments.concat(newAppointments);
-      });
-  }
-
-  resetDoctorAppointmentsMap() {
-    this.userService.getUserByEmail(this.doctor.email)
-      .pipe(take(1))
-      .subscribe((doctor: any) => {
-        this.doctor = doctor;
-        this.userService.setUserDataToLocalStorage(this.doctor);
       });
   }
 
@@ -231,9 +221,10 @@ export class CalendarComponent implements OnInit, OnDestroy {
       .pipe(take(1))
       .subscribe(isAppointmentCanceled => {
         if (isAppointmentCanceled) {
-          this.appointmentService.cancelAppointmentByDoctor(this.userAnimalData.appointment, this.doctor, this.dialogRef)
+          this.appointmentService.cancelAppointmentByDoctor(this.userAnimalData.appointment, this.doctor)
             .then(() => {
               this.resetAppointmentList(this.userAnimalData.appointment.id);
+              this.dialogRef.closeAll();
             });
         }
       });
@@ -259,10 +250,16 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   openAppointmentsModal(date: Date): void {
-    this.dialogRef.open(DoctorAppointmentModalComponent, {
+    const dialog = this.dialogRef.open(DoctorAppointmentModalComponent, {
       height: '40rem',
       panelClass: MODALS_DATA.DOCTOR_APP_MODAL,
       data: {date}
+    });
+
+    dialog.afterClosed().pipe(take(1)).subscribe((isAppoinetmentSaved: boolean) => {
+      if (isAppoinetmentSaved) {
+        this.doctor = JSON.parse(<string>localStorage.getItem(USER_LOCALSTORAGE));
+      }
     });
   }
 

@@ -128,10 +128,6 @@ export class DoctorAppointmentModalComponent implements OnInit {
     }
   }
 
-  onCancelForm(isAppointmentSuccess: boolean): void {
-    this.dialogRef.close(isAppointmentSuccess);
-  }
-
   onFocusAnimal(): void {
     if (this.selectedPatient && (!this.animals || this.animals.length === 0)) {
       this.setErrorMessage(APPOINTMENTFORM_DATA.userDoesNotHaveAnimal);
@@ -216,7 +212,7 @@ export class DoctorAppointmentModalComponent implements OnInit {
           message: APPOINTMENTFORM_DATA.successAppointment,
           class: UI_ALERTS_CLASSES.SUCCESS
         });
-        this.onCancelForm(true);
+        this.dialogRef.close(true);
       }).catch((error) => {
       this.uiAlertInterceptor.setUiError({message: error.message, class: UI_ALERTS_CLASSES.ERROR});
       console.error('Error: ', error);

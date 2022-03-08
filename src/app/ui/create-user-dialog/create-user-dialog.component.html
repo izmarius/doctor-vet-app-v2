@@ -1,6 +1,6 @@
 <div class="create-user-dialog-container">
   <div class="d-flex justify-content-end"><span class="icon-close modal-close-icon"
-                                                (click)="onCancelForm()"></span></div>
+                                                (click)="dialogRef.close()"></span></div>
   <h4 class="text-center">{{doctorCreatesUserText.titleDialog}}</h4>
   <form [formGroup]="doctorCreatesUserForm" (ngSubmit)="onSubmitCreateUser()">
     <div class="m-btn-small">

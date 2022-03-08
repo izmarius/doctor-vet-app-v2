@@ -1,6 +1,6 @@
 <div class="container">
   <div class="d-flex justify-content-end"><span class="icon-close modal-close-icon"
-                                                (click)="onCancelForm(false)"></span></div>
+                                                (click)="dialogRef.close(false)"></span></div>
   <h4 class="text-center">{{appointmentFormPlaceHolder.title}}</h4>
   <form [formGroup]="appointmentForm" (ngSubmit)="onSubmitAppointment()">
     <div class="m-btn-small">
@@ -90,7 +90,7 @@
       </p>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-light" type="button" (click)="onCancelForm(false)">
+      <button class="btn btn-light" type="button" (click)="dialogRef.close(false)">
         {{ appointmentFormPlaceHolder.cancelBtn }}
       </button>
       <button class="btn button--active" type="submit" [disabled]="!appointmentForm.valid">

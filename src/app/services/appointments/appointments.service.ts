@@ -90,14 +90,13 @@ export class AppointmentsService {
     return this.firestoreService.saveDocumentWithGeneratedFirestoreId(this.APPOINTMENT_COLLECTION, appointmentDto.id, JSON.parse(JSON.stringify(appointmentDto)));
   }
 
-  cancelAppointmentByDoctor(selectedAppointment: any, doctor: any, dialogRef: MatDialog): Promise<any> {
+  cancelAppointmentByDoctor(selectedAppointment: any, doctor: any): Promise<any> {
     const appointmentsMap = this.removeAppointmentFromAppointmentMap(doctor.appointmentsMap, selectedAppointment);
     const doctorBatchDocument = this.batchService.getMapper('doctors', doctor.id, {appointmentsMap: appointmentsMap.__proto__}, 'update');
     const appointmentBatchDoc = this.batchService.getMapper(this.APPOINTMENT_COLLECTION, selectedAppointment.id, {isCanceledByDoctor: true}, 'update');
     return this.batchService.createBatch([appointmentBatchDoc, doctorBatchDocument])
       .then(() => {
         this.setDoctorInStorageAndDisplayMessage(doctor);
-        dialogRef.closeAll();
       }).catch((error) => {
         this.uiAlertInterceptor.setUiError({
           message: USER_CARD_TXT.cancelAppointmentError,

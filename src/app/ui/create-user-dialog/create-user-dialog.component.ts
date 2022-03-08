@@ -57,8 +57,4 @@ export class CreateUserDialogComponent implements OnInit {
 
     this.userService.createUserByDoctorAuthAndSaveAnimal(userDataPayload, this.dialogRef);
   }
-
-  onCancelForm(): void {
-    this.dialogRef.close();
-  }
 }
