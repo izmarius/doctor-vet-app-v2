@@ -43,6 +43,7 @@ export const APPOINTMENT_MESSAGES = {
   APPOINTMENT_DELETION_FAILED: 'Programarea nu a putut fi stearsa',
   APPOINTMENT_DELETION_SUCCESS: 'Programarea a fost stearsa si clientul notificat.',
   APPOINTMENT_IN_PAST_NOT_POSSIBLE: 'Programarea nu poate fi setata in trecut',
+  CANCEL_APPOINTMENT_IN_PAST_NOT_POSSIBLE: 'Programarea este in trecut si nu mai poate fi stearsa!',
 };
 
 export const AUTH_LOGIN_FORM_TEXT = {

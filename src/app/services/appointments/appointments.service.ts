@@ -152,7 +152,6 @@ export class AppointmentsService {
 
   getDoctorAppointments(doctorData: DoctorDTO): Observable<any> {
     const timestamps = this.dateUtils.getDateFromOneMonthAgo();
-    // get appointments from 1 month ago
     const listOfClauses: IFirestoreWhereClauseRefs[] = [];
     listOfClauses.push({key: 'doctorId', operator: '==', value: doctorData.id});
     listOfClauses.push({key: 'timestamp', operator: '>=', value: timestamps});

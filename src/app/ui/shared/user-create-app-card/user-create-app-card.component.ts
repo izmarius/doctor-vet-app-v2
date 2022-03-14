@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {DateUtilsService} from "../../../data/utils/date-utils.service";
 import { UiErrorInterceptorService } from '../alert-message/services/ui-error-interceptor.service';
 import {DoctorAppointmentsService} from "../../services/doctor-appointments.service";
+import {DoctorDTO} from "../../../data/model-dto/doctor-DTO";
 
 @Component({
   selector: 'app-user-create-app-card',
@@ -9,7 +10,8 @@ import {DoctorAppointmentsService} from "../../services/doctor-appointments.serv
   styleUrls: ['./user-create-app-card.component.scss']
 })
 export class UserCreateAppCardComponent implements OnInit {
-  @Input() doctor: any;
+  // @ts-ignore
+  @Input() doctor: DoctorDTO;
   @Output() createAppointmentEmitter = new EventEmitter();
   services: string[] = [];
   selectedService!: string;
@@ -51,6 +53,7 @@ export class UserCreateAppCardComponent implements OnInit {
 
   setDoctorServices(): void {
     for (let key in this.doctor.services) {
+      // @ts-ignore
       this.services.push(...this.doctor.services[key]);
     }
   }
