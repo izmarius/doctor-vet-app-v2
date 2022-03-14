@@ -1,10 +1,19 @@
 import {Injectable} from '@angular/core';
-import {AngularFirestore} from '@angular/fire/firestore';
+import {AngularFirestore, AngularFirestoreCollection, Query} from '@angular/fire/firestore';
 import firebase from 'firebase';
 import OrderByDirection = firebase.firestore.OrderByDirection;
 import {Observable} from 'rxjs';
 import {AngularFirestoreDocument} from "@angular/fire/firestore/document/document";
 import {AngularFireAuth} from "@angular/fire/auth";
+import WhereFilterOp = firebase.firestore.WhereFilterOp;
+import {take} from "rxjs/operators";
+import {CollectionReference, QueryFn} from "@angular/fire/firestore/interfaces";
+
+export interface IFirestoreWhereClauseRefs {
+  key: string;
+  operator: WhereFilterOp;
+  value: string | number | boolean;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -49,22 +58,31 @@ export class FirestoreService {
 
   /**
    * Gets all snapshots of a collection that validates where clauses
+   * keep the connection to firestore opened through a subscription
    */
-  getCollectionByMultipleWhereClauses(collection: string, timestamp: any, field: string, value: string): Observable<any> {
-    return this.dbRef.collection(collection,
-      ref => ref.where('timestamp', '>=', timestamp)
-        .where(field, '==', value)
-        .where('isCanceledByDoctor', '==', false))
-      .stateChanges();
+  getCollectionByMultipleWhereClausesOpenConnection(collection: string, listOfClauses: IFirestoreWhereClauseRefs[]): Observable<any> {
+    return this.getCollectionByMultipleWhereClauses(collection, listOfClauses).stateChanges(['added']);
   }
 
   /**
-   * Gets all snapshots of a collection that validates where clauses
+   * Gets all snapshots of a collection that validates multiple where clauses
    */
-  getCollectionByTimestampAndUserId(collection: string, timestamp: any, field: string, value: string): Observable<any> {
-    return this.dbRef.collection(collection,
-      ref => ref.where('timestamp', '>=', timestamp.today).where(field, '==', value))
-      .get()
+  private getCollectionByMultipleWhereClauses(collection: string, listOfClauses: IFirestoreWhereClauseRefs[]): AngularFirestoreCollection<any> {
+    function getCollectionQueryRef(ref: Query) {
+      listOfClauses.forEach(clause => {
+        ref = ref.where(clause.key, clause.operator, clause.value)
+      });
+      return ref;
+    }
+
+    return this.dbRef.collection(collection, ref => getCollectionQueryRef(ref));
+  }
+
+  /**
+   * Gets all snapshots of a collection that validates where clauses and closes the connection to firestore
+   */
+  getCollectionByMultipleWhereClausesClosedConnection(collection: string, listOfClauses: IFirestoreWhereClauseRefs[]): Observable<any> {
+    return this.getCollectionByMultipleWhereClauses(collection, listOfClauses).valueChanges();
   }
 
   /**

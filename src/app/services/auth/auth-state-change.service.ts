@@ -21,9 +21,9 @@ export class AuthStateChangeService {
               private routerService: Router) {
     // todo needs to be opened all the time?
     this.afAuth.authState.subscribe((user) => {
+      console.log('Entered in auth');
       this.loaderService.show();
       if (user) {
-        // todo: fix in cloud functions
         // if(!user.emailVerified) {
         //   this.uiAlertInterceptor.setUiError({message: USER_STATE.emailVerified, class: UI_ALERTS_CLASSES.ERROR});
         // }

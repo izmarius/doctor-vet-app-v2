@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {UserService} from "../user-profile/services/user.service";
 import {MODALS_DATA, USER_LOCALSTORAGE} from "../../shared-data/Constants";
 import {take} from "rxjs/operators";
 import {MatDialog} from "@angular/material/dialog";
@@ -31,10 +30,8 @@ export class UserAppointmentsComponent implements OnInit {
   getAllAppointments(userData: any): void {
     this.appointmentService.getAllCurrentUserAppointments(userData)
       .pipe(take(1))
-      .subscribe((snaps) => {
-        snaps.docs.forEach((doc: any) => {
-          this.appointmentList.push(doc.data())
-        });
+      .subscribe((appointments) => {
+        this.appointmentList = appointments;
       });
   }
 

@@ -24,7 +24,7 @@ export class BatchService {
     return batch.commit();
   }
 
-  getMapper(collection: string, docId: string | null, payload: any, action: any) {
+  getMapper(collection: string, docId: string | any, payload: any, action: any) {
     return {
       collection,
       docId,

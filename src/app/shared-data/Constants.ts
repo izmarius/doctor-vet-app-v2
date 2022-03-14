@@ -273,6 +273,10 @@ export const INPUT_REGEX_TEXTS = {
 };
 
 // M
+export const MY_ANIMALS = {
+  ERROR_FETCHING_MEDICAL_HISTORY: 'A aparut o eroare, te rugam sa iti verifici conexiunea la internet si sa incerci din nou!'
+}
+
 export const MY_PROFILE = {
   clinicPlaceholder: 'Regina Maria',
   editBtn: 'Editeaza profilul',

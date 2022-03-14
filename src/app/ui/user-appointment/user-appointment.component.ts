@@ -75,6 +75,7 @@ export class UserAppointmentDialogComponent implements OnInit {
 
     if (this.isAppointmentDataInvalid(doctorDetails)) {
       this.uiAlertInterceptor.setUiError({
+        // todo : add to constants
         message: 'Selecteaza toate datele de pe card pentru a creea o programare',
         class: UI_ALERTS_CLASSES.ERROR
       });
@@ -82,6 +83,7 @@ export class UserAppointmentDialogComponent implements OnInit {
     }
 
     const appointmentId = this.firestoreService.getNewFirestoreId();
+    // todo see where we use this and modify?
     if (this.doctorAppointmentService.areAppointmentsOverlapping(new Date(doctorDetails.timestamp), doctorDetails.doctor, appointmentId)) {
       return;
     }
@@ -94,7 +96,7 @@ export class UserAppointmentDialogComponent implements OnInit {
 
     // todo update doctor - also on cancel appointment by user
     const doctorBatchDocument = this.batchService.getMapper('doctors', doctorDetails.doctor.id, {appointmentsMap: doctorDetails.doctor.appointmentsMap}, 'update');
-    const appointmentBatchDoc = this.batchService.getMapper('appointments', newAppointment.id, newAppointment, 'set');
+    const appointmentBatchDoc = this.batchService.getMapper('appointments', newAppointment.id, JSON.parse(JSON.stringify(newAppointment)), 'set');
     this.batchService.createBatch([appointmentBatchDoc, doctorBatchDocument])
       .then(() => {
         this.uiAlertInterceptor.setUiError({
@@ -107,7 +109,7 @@ export class UserAppointmentDialogComponent implements OnInit {
     });
   }
 
-  setAnimalToDoAppointment(element: any, animal: any) {
+  setSelectedAnimal(element: any, animal: any) {
     const currentSelectedElement = document.getElementById(this.selectedAnimal.animalId);
     // @ts-ignore
     currentSelectedElement.classList.remove('link--active');
@@ -162,11 +164,11 @@ export class UserAppointmentDialogComponent implements OnInit {
 
 
   searchDoctorsByCountyAndLocation(): void {
-    // if (this.isSearchByLocationDisabled()) {
-    //   this.isErrorDisplayed = true;
-    //   this.errorMessage = 'Judetul si localitatea trebuie selectate';
-    //   return;
-    // }
+    if (this.isSearchByLocationDisabled()) {
+      this.isErrorDisplayed = true;
+      this.errorMessage = 'Judetul si localitatea trebuie selectate';
+      return;
+    }
 
     this.isErrorDisplayed = false;
     this.formErrorMessage = '';

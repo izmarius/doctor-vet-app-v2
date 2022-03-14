@@ -41,7 +41,6 @@ export class UsersOfDoctorService {
     const usersDoctorPayload: IUsersDoctors = this.getUserOfDoc(user, this.doctor, isClientRegistered)
     return this.firestore.saveDocumentWithGeneratedFirestoreId(this.USERS_OF_DOCTOR_COLLECTION, usersDoctorPayload.id, JSON.parse(JSON.stringify(usersDoctorPayload)))
       .then(() => {
-        debugger;
         this.addUsersOfDoctorsToLocalStorageList(usersDoctorPayload);
         // todo refactor here and send only the modified element - not urgent
         return usersDoctorPayload;
