@@ -75,6 +75,7 @@ export class UserAppointmentDialogComponent implements OnInit {
 
     if (this.isAppointmentDataInvalid(doctorDetails)) {
       this.uiAlertInterceptor.setUiError({
+        // todo : add to constants
         message: 'Selecteaza toate datele de pe card pentru a creea o programare',
         class: UI_ALERTS_CLASSES.ERROR
       });
@@ -82,6 +83,7 @@ export class UserAppointmentDialogComponent implements OnInit {
     }
 
     const appointmentId = this.firestoreService.getNewFirestoreId();
+    // todo see where we use this and modify?
     if (this.doctorAppointmentService.areAppointmentsOverlapping(new Date(doctorDetails.timestamp), doctorDetails.doctor, appointmentId)) {
       return;
     }
@@ -92,9 +94,8 @@ export class UserAppointmentDialogComponent implements OnInit {
 
     const newAppointment = this.appointmentService.getUserAppointmentDTO(newAnimalInfo, doctorDetails, this.user, appointmentId);
 
-    // todo update doctor - also on cancel appointment by user
     const doctorBatchDocument = this.batchService.getMapper('doctors', doctorDetails.doctor.id, {appointmentsMap: doctorDetails.doctor.appointmentsMap}, 'update');
-    const appointmentBatchDoc = this.batchService.getMapper('appointments', newAppointment.id, newAppointment, 'set');
+    const appointmentBatchDoc = this.batchService.getMapper('appointments', newAppointment.id, JSON.parse(JSON.stringify(newAppointment)), 'set');
     this.batchService.createBatch([appointmentBatchDoc, doctorBatchDocument])
       .then(() => {
         this.uiAlertInterceptor.setUiError({
@@ -107,7 +108,7 @@ export class UserAppointmentDialogComponent implements OnInit {
     });
   }
 
-  setAnimalToDoAppointment(element: any, animal: any) {
+  setSelectedAnimal(element: any, animal: any) {
     const currentSelectedElement = document.getElementById(this.selectedAnimal.animalId);
     // @ts-ignore
     currentSelectedElement.classList.remove('link--active');
@@ -157,28 +158,57 @@ export class UserAppointmentDialogComponent implements OnInit {
   }
 
   isSearchByLocationDisabled(): boolean {
-    return !this.county || !this.locality || !this.selectedAnimal || Object.entries(this.selectedAnimal).length === 0;
+    return !this.county || !this.locality && (!this.selectedAnimal || Object.entries(this.selectedAnimal).length === 0);
   }
 
 
   searchDoctorsByCountyAndLocation(): void {
-    // if (this.isSearchByLocationDisabled()) {
-    //   this.isErrorDisplayed = true;
-    //   this.errorMessage = 'Judetul si localitatea trebuie selectate';
-    //   return;
-    // }
+    if (this.isSearchByLocationDisabled()) {
+      this.isErrorDisplayed = true;
+      this.errorMessage = 'Judetul si localitatea trebuie selectate';
+      return;
+    }
 
     this.isErrorDisplayed = false;
     this.formErrorMessage = '';
+
+    if(this.county && !this.locality){
+      this.getDoctorsByCounty();
+    } else {
+      this.getDoctorsByLocality();
+    }
+  }
+
+  toggleUIMessages(isDoctorFound: boolean) {
+    this.isSearchByUserSuccessAndEmpty = !isDoctorFound;
+    this.isSearchByUserSuccess = isDoctorFound;
+  }
+
+  getDoctorsByCounty(){
+    this.doctorService.getDoctorsByCounty(this.county)
+      .pipe(take(1))
+      .subscribe((doctors) => {
+        if (doctors && doctors.length === 0) {
+          this.toggleUIMessages(false);
+          this.doctorList = [];
+        } else if (doctors.length > 0) {
+          this.toggleUIMessages(true);
+          this.doctorList = doctors;
+        }
+      }, error => {
+        // todo  alert error
+      });
+  }
+
+  getDoctorsByLocality(){
     this.doctorService.getDoctorsByLocation(this.locality)
       .pipe(take(1))
       .subscribe((doctors) => {
         if (doctors && doctors.length === 0) {
-          this.isSearchByUserSuccessAndEmpty = true;
-          this.isSearchByUserSuccess = false;
+          this.toggleUIMessages(false);
+          this.doctorList = [];
         } else if (doctors.length > 0) {
-          this.isSearchByUserSuccessAndEmpty = false;
-          this.isSearchByUserSuccess = true;
+          this.toggleUIMessages(true);
           this.doctorList = doctors;
         }
       }, error => {

@@ -1,13 +1,17 @@
 <div class="vet-container">
   <div class="vet-content">
-      <div class="d-flex border-bottom">
-        <p class="pe-4 border-end" (click)="toggleShowAnimalForm()"><span class="icon-plus px-1"></span><a>Adauga animale</a></p>
-        <div class="my-animals-links-container d-flex">
-          <p class="pe-4 ps-4" *ngFor="let animal of user?.animals" (click)="getAnimalDetails(animal.animalId)"><span class="icon-emotsmile px-1"></span><a>{{animal.animalName}}</a></p>
-        </div>
+    <div class="d-flex border-bottom">
+      <p class="pe-4 border-end" (click)="toggleShowAnimalForm()"><span class="icon-plus px-1"></span><a>Adauga
+        animale</a></p>
+      <div class="my-animals-links-container d-flex">
+        <p #parentElem class="pe-4 ps-4" *ngFor="let animal of user?.animals; let i=index; first as isFirst"
+           [class.link--active]="isFirst"
+           [id]="animal.animalId" (click)="getAnimalDetails(animal.animalId, parentElem)">
+          <span class="icon-emotsmile px-1"></span><a>{{animal.animalName}}</a></p>
       </div>
+    </div>
     <div class="add-animal-form-container" *ngIf="isAnimalFormShown">
-        <app-animal-form (animalPayloadEmitter)="saveNewAnimal($event)"></app-animal-form>
+      <app-animal-form (animalPayloadEmitter)="saveNewAnimalByUser($event)"></app-animal-form>
     </div>
     <div class="p-bottom-top-small" *ngIf="isMedicalHistoryShown">
       <p class="m-btn-small"><strong>Istoric patologii</strong></p>
@@ -16,8 +20,9 @@
       </ul>
       <p class="m-btn-small"><strong>Istoric recomandari</strong></p>
       <ul>
-      <li class="list-style-type-none" *ngFor="let recommendation of medicalHistory?.recommendations">- {{recommendation}}</li>
-    </ul>
+        <li class="list-style-type-none" *ngFor="let recommendation of medicalHistory?.recommendations">
+          - {{recommendation}}</li>
+      </ul>
     </div>
     <p *ngIf="isNoMedicalHistoryDisplayed"><strong>Istoricul medical este gol</strong></p>
   </div>

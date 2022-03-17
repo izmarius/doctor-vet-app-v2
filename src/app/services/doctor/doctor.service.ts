@@ -22,6 +22,11 @@ export class DoctorService {
       .pipe(take(1));
   }
 
+  getDoctorsByCounty(county: string): Observable<any> {
+    return this.firestoreService.getCollectionByWhereClause(this.DOCTOR_COLLECTION, 'county', '==', county)
+      .pipe(take(1));
+  }
+
   createDoctor(doctorDTO: DoctorDTO): void {
     this.firestoreService.saveDocumentWithCustomId(this.DOCTOR_COLLECTION, doctorDTO, doctorDTO.id)
       .then((res) => {

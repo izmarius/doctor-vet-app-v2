@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {FirestoreService} from "../../data/http/firestore.service";
+import {FirestoreService, IFirestoreWhereClauseRefs} from "../../data/http/firestore.service";
 import {UiErrorInterceptorService} from "../../ui/shared/alert-message/services/ui-error-interceptor.service";
 import {DateUtilsService} from "../../data/utils/date-utils.service";
 import {IAppointmentDto} from "./appointment-dto";
@@ -142,14 +142,21 @@ export class AppointmentsService {
   }
 
   getAllCurrentUserAppointments(userData: any) {
-    const timestamps = this.dateUtils.setAndGetDateToFetch();
-    return this.firestoreService.getCollectionByTimestampAndUserId(this.APPOINTMENT_COLLECTION, timestamps, 'userId', userData.id);
+    const timestamp = this.dateUtils.setAndGetDateToFetch();
+    const listToSearchBy: IFirestoreWhereClauseRefs[] = [];
+    listToSearchBy.push({key: 'userId', operator: "==", value: userData.id});
+    listToSearchBy.push({key: 'isCanceledByUser', operator: "==", value: false});
+    listToSearchBy.push({key: 'timestamp', operator: ">=", value: timestamp.today});
+    return this.firestoreService.getCollectionByMultipleWhereClausesClosedConnection(this.APPOINTMENT_COLLECTION, listToSearchBy);
   }
 
   getDoctorAppointments(doctorData: DoctorDTO): Observable<any> {
     const timestamps = this.dateUtils.getDateFromOneMonthAgo();
-    // get appointments from 1 month ago
-    return this.firestoreService.getCollectionByMultipleWhereClauses(this.APPOINTMENT_COLLECTION, timestamps, 'doctorId', doctorData.id)
+    const listOfClauses: IFirestoreWhereClauseRefs[] = [];
+    listOfClauses.push({key: 'doctorId', operator: '==', value: doctorData.id});
+    listOfClauses.push({key: 'timestamp', operator: '>=', value: timestamps});
+    listOfClauses.push({key: 'isCanceledByDoctor', operator: '==', value: false});
+    return this.firestoreService.getCollectionByMultipleWhereClausesOpenConnection(this.APPOINTMENT_COLLECTION, listOfClauses)
       .pipe(
         map((appointmentsSnaps) => {
           let appointmentList: any[] = [];
@@ -157,7 +164,6 @@ export class AppointmentsService {
             if (appSnap.type == 'removed') {
               return;
             }
-            // TODO when adding data to db returns duplicates - check
             const appointment = appSnap.payload.doc.data();
             let appointmentDate = new Date(new Date(appointment['dateTime'].split('-')[0].trim()));
             const hour = parseInt(appointment['dateTime'].split('-')[1].trim().split(':')[0], 10)

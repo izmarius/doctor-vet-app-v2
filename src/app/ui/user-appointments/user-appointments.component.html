@@ -1,8 +1,9 @@
 <div class="vet-container">
   <div class="vet-content row">
-      <app-user-appointment-card class="user-appointment p-around" *ngFor="let appointment of appointmentList"
-                                 [appointment]="appointment"
-                                 (cancelAppointmentEmitter)="cancelAppointmentByUser($event)">
-      </app-user-appointment-card>
+    <p>Pentru a face o programare noua mergeti la sectiunea 'Programare noua'</p>
+    <app-user-appointment-card class="user-appointment p-around" *ngFor="let appointment of appointmentList"
+                               [appointment]="appointment"
+                               (cancelAppointmentEmitter)="cancelAppointmentByUser($event)">
+    </app-user-appointment-card>
   </div>
 </div>

@@ -23,7 +23,6 @@ export class AuthStateChangeService {
     this.afAuth.authState.subscribe((user) => {
       this.loaderService.show();
       if (user) {
-        // todo: fix in cloud functions
         // if(!user.emailVerified) {
         //   this.uiAlertInterceptor.setUiError({message: USER_STATE.emailVerified, class: UI_ALERTS_CLASSES.ERROR});
         // }
@@ -32,6 +31,8 @@ export class AuthStateChangeService {
           .subscribe((userOrDoctor) => {
             if (!userOrDoctor) {
               this.uiAlertInterceptor.setUiError({message: USER_STATE.patientNotFound, class: UI_ALERTS_CLASSES.ERROR});
+              this.loaderService.hide();
+              return;
             }
             const userFromLocalStorage = localStorage.getItem(USER_LOCALSTORAGE);
             if (!userFromLocalStorage && userOrDoctor) {

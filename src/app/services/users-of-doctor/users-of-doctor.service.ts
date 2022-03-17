@@ -30,7 +30,7 @@ export class UsersOfDoctorService {
     this.resetUserDoctorLocalStorageList(usersList);
   }
 
-  addUserToDoctorList(user: any, isClientRegistered: boolean): Promise<any> | null {
+  addUserToDoctorList(user: any, isClientRegistered: boolean): Promise<IUsersDoctors> | null {
     if (this.isUserInDoctorsList(user)) {
       this.uiAlert.setUiError({
         class: UI_ALERTS_CLASSES.ERROR,
@@ -43,6 +43,7 @@ export class UsersOfDoctorService {
       .then(() => {
         this.addUsersOfDoctorsToLocalStorageList(usersDoctorPayload);
         // todo refactor here and send only the modified element - not urgent
+        return usersDoctorPayload;
       }).catch((error: any) => {
         console.error(error);
         this.uiAlert.setUiError({

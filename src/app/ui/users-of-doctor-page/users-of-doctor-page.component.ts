@@ -23,6 +23,8 @@ import {Subscription} from "rxjs";
 import {DoctorAppointmentModalComponent} from "../doctor-appointment-modal/doctor-appointment-modal.component";
 import {DoctorAppointmentWithoutUserModalComponent} from "../doctor-appointment-without-user-modal/doctor-appointment-without-user-modal.component";
 import {IAnimalUserInfo} from "../dto/animal-util-info";
+import {IUserDTO} from "../user-profile/dto/user-dto";
+import {IUserData} from "../../shared-data/iuser-data";
 
 @Component({
   selector: 'app-users-of-doctor-page',
@@ -45,7 +47,7 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
   isInitialLoadOfComponent: boolean = true;
   isSearchingByPhone: boolean = false;
   isUserDataFetched: boolean = false;
-  listOfClients: any;
+  listOfClients: any = [[], []];
   nameOrPhoneToSearch: string = '';
   recommendationTitle!: string;
   searchTextPlaceholders: any;
@@ -64,7 +66,6 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
               private uiAlert: UiErrorInterceptorService,
               private usersOfDoctorsService: UsersOfDoctorService,
               private userService: UserService,
-              private userListService: UsersDoctorsListService,
               private usersDoctorsListService: UsersDoctorsListService) {
   }
 
@@ -85,7 +86,8 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
       this.usersOfDoctorsService.updateUserOfDoctor(this.userData.docId, {animals: newAnimalsList})
         .then(() => {
           this.userData.animals = newAnimalsList;
-          this.usersOfDoctorsService.setAnimalsToUserOfDoctorList(this.userData, 'docId', 'docId')
+          this.usersOfDoctorsService.setAnimalsToUserOfDoctorList(this.userData, 'docId', 'docId');
+          this.resetUsersAnimals(newAnimalsList);
           this.uiAlert.setUiError({
             class: UI_ALERTS_CLASSES.SUCCESS,
             message: UI_USERS_OF_DOCTOR_MSGS.SUCCESS_ADDING_ANIMAL_TO_USER_WITHOUT_ACCOUNT
@@ -129,9 +131,11 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
   }
 
   addUserToDoctorList(user: any) {
-    this.usersOfDoctorsService.addUserToDoctorList(user, true)?.then(() => {
+    this.usersOfDoctorsService.addUserToDoctorList(user, true)?.then((res) => {
       this.searchedUserListElement.nativeElement.classList.add('hide');
       this.nameOrPhoneToSearch = '';
+      const storedClients = JSON.parse(<string>localStorage.getItem(USERS_DOCTORS));
+      this.listOfClients = this.getSidebarContent(storedClients);
     });
   }
 
@@ -172,9 +176,10 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
       this.animalService.updateAnimalsDataFromAllDocs(this.userData.id, this.selectedUserOfDoctor.userDoctor.id, this.animalData.id, animalList, event)
         .then(() => {
           this.animalData = {...event};
-          // todo edit localstorage
+          this.resetUsersAnimals(animalList);
           this.isEditAnimalDataClicked = false;
         }).catch((error) => {
+        console.error(error)
         this.uiAlert.setUiError({
           message: ANIMAL_SERVICE_MESSAGES.ANIMAL_UPDATE_WITH_ERROR,
           class: UI_ALERTS_CLASSES.ERROR,
@@ -393,9 +398,6 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
       this.userService.updateUserWithAnimalData(animal, this.userData).then(() => {
         this.isAddAnimalFormDisplayed = false;
       });
-    } else {
-      //TODO TEST update user-doctors
-      // add only in localstorage
     }
   }
 
@@ -421,6 +423,17 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
     this.isAnimalDataFetched = false;
     this.isEditAnimalDataClicked = false
     this.isAddAnimalFormDisplayed = false;
+  }
+
+  resetUsersAnimals(animals: any[]) {
+    const storedClients = JSON.parse(<string>localStorage.getItem(USERS_DOCTORS));
+    storedClients.forEach((userDoctor: IUsersDoctors) => {
+      if (userDoctor.clientId === this.selectedUserOfDoctor.userDoctor.clientId) {
+        userDoctor.animals = animals;
+        return;
+      }
+    })
+    this.usersOfDoctorsService.resetOnlyLocalStorage(storedClients);
   }
 
   toggleEditAndSetAnimalData(animalData: any) {

@@ -115,6 +115,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
             }
           });
         }
+
         this.appointments = this.appointments.concat(newAppointments);
       });
   }
@@ -125,7 +126,6 @@ export class CalendarComponent implements OnInit, OnDestroy {
         primary: '#ad2121',
         secondary: '#FAE3E3',
       }
-      return calendarApp;
     } else if (calendarApp.appointment.isUserCreated) {
       calendarApp.color = {
         primary: '#e3bc08',

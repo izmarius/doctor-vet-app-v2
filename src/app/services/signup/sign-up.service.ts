@@ -9,6 +9,7 @@ import {UserService} from "../../ui/user-profile/services/user.service";
 import {take} from "rxjs/operators";
 import {FirestoreService} from "../../data/http/firestore.service";
 import {UI_ALERTS_CLASSES, USER_SERVICE} from "../../shared-data/Constants";
+import {IUserDTO} from "../../ui/user-profile/dto/user-dto";
 
 @Injectable({
   providedIn: 'root'
@@ -19,16 +20,16 @@ export class SignUpService {
   constructor(
     private afAuth: AngularFireAuth,
     private doctorService: DoctorService,
+    private firestoreService: FirestoreService,
     private loginService: LogInService,
     private uiErrorInterceptor: UiErrorInterceptorService,
     private userService: UserService,
-    private firestoreService: FirestoreService,
     private uiAlertInterceptor: UiErrorInterceptorService
   ) {
   }
 
   signUpNewUser(userPayload: any) {
-    this.firestoreService.getCollectionByWhereClause(this.USER_COLLECTION, 'phone', '==', userPayload.phone)
+    this.firestoreService.getCollectionByWhereClause(this.USER_COLLECTION, 'email', '==', userPayload.email)
       .pipe(take(1))
       .subscribe((users) => {
         if (users && users.length > 0) {
@@ -40,7 +41,7 @@ export class SignUpService {
         }
 
         this.afAuth.createUserWithEmailAndPassword(userPayload.email, userPayload.password)
-          .then((userCredentials) => {
+          .then(() => {
             this.userService.createUser(this.getUserDTO(userPayload));
           })
           .catch((error) => {
@@ -49,9 +50,9 @@ export class SignUpService {
       });
   }
 
-  getUserDTO(userPayload: any) {
+  getUserDTO(userPayload: any): IUserDTO {
     return {
-      id: userPayload.phone,
+      id: this.firestoreService.getNewFirestoreId(),
       animals: [],
       email: userPayload.email,
       phone: userPayload.phone,
