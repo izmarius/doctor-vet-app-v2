@@ -55,7 +55,7 @@ export class FirestoreService {
       ref => ref.where('timestamp', '>=', timestamp)
         .where(field, '==', value)
         .where('isCanceledByDoctor', '==', false))
-      .stateChanges();
+        .stateChanges(['added']);
   }
 
   /**
