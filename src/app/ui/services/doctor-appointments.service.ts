@@ -1,3 +1,6 @@
+import { Observable } from 'rxjs';
+import { DoctorDTO } from './../../data/model-dto/doctor-DTO';
+import { AppointmentsService } from './../../services/appointments/appointments.service';
 import {Injectable} from '@angular/core';
 import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-error-interceptor.service";
 import {APPOINTMENTFORM_DATA, UI_ALERTS_CLASSES,} from "../../shared-data/Constants";
@@ -9,7 +12,8 @@ import {DateUtilsService} from "../../data/utils/date-utils.service";
 export class DoctorAppointmentsService {
 
   constructor(private uiAlertInterceptor: UiErrorInterceptorService,
-              private dateUtils: DateUtilsService) {
+              private dateUtils: DateUtilsService,
+              private appointmentService: AppointmentsService) {
   }
 
   isFreeDayForDoctor(schedule: any, appointmentNewStartDate: Date): boolean {
@@ -104,4 +108,17 @@ export class DoctorAppointmentsService {
     doctor.appointmentsMap[appointmentDate].push({startTimestamp, endTimestamp, appointmentId});
     return false;
   }
+
+  getDoctorAppointmentsDataStream(doctor: DoctorDTO): Observable<any> {
+    return this.appointmentService.getDoctorAppointments(doctor);
+  }
+
+  cancelDoctorAppointment(userAnimalDataAppointment: any, doctor: DoctorDTO): Promise<any> {
+    return this.appointmentService.cancelAppointmentByDoctor(userAnimalDataAppointment, doctor);
+  }
+
+  deleteDoctorAppontment(appointment: any, doctor: DoctorDTO): Promise<any> {
+    return this.appointmentService.deleteAppointment(appointment, doctor);
+  }
+
 }

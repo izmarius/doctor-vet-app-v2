@@ -1,3 +1,4 @@
+import { DoctorAppointmentsService } from './../services/doctor-appointments.service';
 import {Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {AnimalService} from "../services/animal.service";
 import {
@@ -37,7 +38,8 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
               private dialog: MatDialog,
               public dialogRef: MatDialogRef<UserAnimalInfoComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any,
-              private firestoreService: FirestoreService) {
+              private firestoreService: FirestoreService,
+              private doctorAppointmentsService: DoctorAppointmentsService) {
   }
 
   ngOnInit(): void {
@@ -65,8 +67,8 @@ export class UserAnimalInfoComponent implements OnInit, OnDestroy {
   }
 
   addRecurrentAppointment(period: string) {
-    this.appointmentService.addRecurrentAppointment(period, this.doctor, this.data)
-    this.appointmentService.addRecurrentAppointment(period, this.doctor, this.data)
+    this.appointmentService.addRecurrentAppointment(period, this.doctor, this.data, this.doctorAppointmentsService)
+    this.appointmentService.addRecurrentAppointment(period, this.doctor, this.data, this.doctorAppointmentsService)
   }
 
   addDisease(): void {

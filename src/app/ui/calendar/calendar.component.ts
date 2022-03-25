@@ -49,8 +49,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
               private dialogRef: MatDialog,
               private alertInterceptor: UiErrorInterceptorService,
               private doctorAppointmentService: DoctorAppointmentsService,
-              private userService: UserService,
-              private appointmentService: AppointmentsService) {
+              private userService: UserService) {
   }
 
   ngOnInit() {
@@ -102,7 +101,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   getDoctorAppointments() {
-    this.doctorAppointmentsSub$ = this.appointmentService.getDoctorAppointments(this.doctor)
+    this.doctorAppointmentsSub$ = this.doctorAppointmentService.getDoctorAppointmentsDataStream(this.doctor)
       .subscribe((res) => {
         let newAppointments = res.map((calendarApp: any) => {
           return this.setAndGetCalendarAppointmentsBasedOnDoctorAndUser(calendarApp);
@@ -221,7 +220,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
       .pipe(take(1))
       .subscribe(isAppointmentCanceled => {
         if (isAppointmentCanceled) {
-          this.appointmentService.cancelAppointmentByDoctor(this.userAnimalData.appointment, this.doctor)
+          this.doctorAppointmentService.cancelDoctorAppointment(this.userAnimalData.appointment, this.doctor)
             .then(() => {
               this.resetAppointmentList(this.userAnimalData.appointment.id);
               this.dialogRef.closeAll();
@@ -241,7 +240,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
       .pipe(take(1))
       .subscribe(result => {
         if (result) {
-          this.appointmentService.deleteAppointment(appointment, this.doctor)
+          this.doctorAppointmentService.deleteDoctorAppontment(appointment, this.doctor)
             .then(() => {
               this.resetAppointmentList(appointment.id);
             });

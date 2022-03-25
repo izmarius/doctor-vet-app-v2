@@ -1,3 +1,4 @@
+import { DoctorAppointmentsService } from './../services/doctor-appointments.service';
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {UsersOfDoctorService} from "../../services/users-of-doctor/users-of-doctor.service";
 import {UiErrorInterceptorService} from "../shared/alert-message/services/ui-error-interceptor.service";
@@ -66,7 +67,8 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
               private uiAlert: UiErrorInterceptorService,
               private usersOfDoctorsService: UsersOfDoctorService,
               private userService: UserService,
-              private usersDoctorsListService: UsersDoctorsListService) {
+              private usersDoctorsListService: UsersDoctorsListService,
+              private doctorAppointmentsService: DoctorAppointmentsService) {
   }
 
   ngOnInit(): void {
@@ -127,7 +129,7 @@ export class UsersOfDoctorPageComponent implements OnInit, OnDestroy {
         uid: this.animalData.id
       },
     }
-    this.appointmentService.addRecurrentAppointment(period, doctor, {appointment});
+    this.appointmentService.addRecurrentAppointment(period, doctor, {appointment}, this.doctorAppointmentsService);
   }
 
   addUserToDoctorList(user: any) {

@@ -29,12 +29,10 @@ export class AppointmentsService {
               private firestoreService: FirestoreService,
               private uiAlertInterceptor: UiErrorInterceptorService,
               private dateUtils: DateUtilsService,
-              private doctorService: DoctorService,
-              private doctorAppointmentsService: DoctorAppointmentsService,
               private uiAlertService: UiErrorInterceptorService) {
   }
 
-  addRecurrentAppointment(period: string, doctor: any, userAnimalData: any) {
+  addRecurrentAppointment(period: string, doctor: any, userAnimalData: any, doctorAppointmentsService: DoctorAppointmentsService) {
     let appointmentDate = new Date(userAnimalData.appointment.timestamp);
     if (period === 'day') {
       appointmentDate.setDate(appointmentDate.getDate() + 1);
@@ -51,12 +49,12 @@ export class AppointmentsService {
       })
       return;
     }
-    if (this.doctorAppointmentsService.isFreeDayForDoctor(doctor.schedule, appointmentDate)) {
+    if (doctorAppointmentsService.isFreeDayForDoctor(doctor.schedule, appointmentDate)) {
       return;
     }
     const appointmentId = this.firestoreService.getNewFirestoreId();
 
-    if (this.doctorAppointmentsService.areAppointmentsOverlapping(appointmentDate, doctor, appointmentId)) {
+    if (doctorAppointmentsService.areAppointmentsOverlapping(appointmentDate, doctor, appointmentId)) {
       return;
     }
     let appointment = Object.create(userAnimalData.appointment);
